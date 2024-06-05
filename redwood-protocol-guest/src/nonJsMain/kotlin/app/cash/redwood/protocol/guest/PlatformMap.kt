@@ -22,3 +22,16 @@ package app.cash.redwood.protocol.guest
   "ACTUAL_WITHOUT_EXPECT",
 )
 internal actual typealias PlatformMap<K, V> = LinkedHashMap<K, V>
+
+internal actual inline operator fun <K, V> PlatformMap<K, V>.set(key: K, value: V) {
+  put(key, value)
+}
+
+internal actual inline operator fun <K, V> PlatformMap<K, V>.contains(key: K): Boolean {
+  return containsKey(key)
+}
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // Not true in common.
+internal actual inline fun <K, V> PlatformMap<K, V>.remove(key: K) {
+  remove(key)
+}

@@ -15,9 +15,11 @@
  */
 package app.cash.redwood.protocol.guest
 
+@Suppress("unused") // Type parameter used by extensions.
 internal expect class PlatformList<E>() {
   val size: Int
-  fun add(element: E)
 }
 
-internal expect fun <E> PlatformList<E>.asList(): List<E>
+internal expect inline fun <E> PlatformList<E>.add(element: E)
+
+internal expect inline fun <E> PlatformList<E>.asList(): List<E>

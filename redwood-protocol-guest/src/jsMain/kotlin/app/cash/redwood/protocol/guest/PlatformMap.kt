@@ -18,13 +18,21 @@ package app.cash.redwood.protocol.guest
 @JsName("Map")
 internal external class JsMap<K, V> {
   operator fun get(key: K): V?
-  operator fun set(key: K, value: V)
-
-  @JsName("has")
-  operator fun contains(key: K): Boolean
-
-  @JsName("delete")
-  fun remove(key: K)
+  fun set(key: K, value: V)
+  fun has(key: K): Boolean
+  fun delete(key: K)
 }
 
 internal actual typealias PlatformMap<K, V> = JsMap<K, V>
+
+internal actual inline operator fun <K, V> PlatformMap<K, V>.set(key: K, value: V) {
+  set(key, value)
+}
+
+internal actual inline operator fun <K, V> PlatformMap<K, V>.contains(key: K): Boolean {
+  return has(key)
+}
+
+internal actual inline fun <K, V> PlatformMap<K, V>.remove(key: K) {
+  delete(key)
+}

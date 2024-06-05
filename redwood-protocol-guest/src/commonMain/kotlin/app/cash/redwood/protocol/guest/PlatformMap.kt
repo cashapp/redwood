@@ -17,7 +17,10 @@ package app.cash.redwood.protocol.guest
 
 internal expect class PlatformMap<K, V>() {
   operator fun get(key: K): V?
-  operator fun set(key: K, value: V)
-  operator fun contains(key: K): Boolean
-  fun remove(key: K)
 }
+
+internal expect inline operator fun <K, V> PlatformMap<K, V>.set(key: K, value: V)
+
+internal expect inline operator fun <K, V> PlatformMap<K, V>.contains(key: K): Boolean
+
+internal expect inline fun <K, V> PlatformMap<K, V>.remove(key: K)
