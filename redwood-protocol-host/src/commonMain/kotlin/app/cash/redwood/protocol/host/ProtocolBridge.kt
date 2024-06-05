@@ -373,7 +373,8 @@ public class ProtocolBridge<W : Any>(
 @OptIn(RedwoodCodegenApi::class)
 private class RootProtocolNode<W : Any>(
   children: Widget.Children<W>,
-) : ProtocolNode<W>(Id.Root, UnknownWidgetTag), Widget<W> {
+) : ProtocolNode<W>(Id.Root, UnknownWidgetTag),
+  Widget<W> {
   private val children = ProtocolChildren(children)
 
   override fun apply(change: PropertyChange, eventSink: EventSink) {

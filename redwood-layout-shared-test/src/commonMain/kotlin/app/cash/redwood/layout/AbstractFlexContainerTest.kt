@@ -604,7 +604,9 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 }
 
-interface TestFlexContainer<T : Any> : Widget<T>, ChangeListener {
+interface TestFlexContainer<T : Any> :
+  Widget<T>,
+  ChangeListener {
   override val value: T
   val children: Widget.Children<T>
   fun width(width: Constraint)

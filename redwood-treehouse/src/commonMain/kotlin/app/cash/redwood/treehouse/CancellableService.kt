@@ -21,4 +21,6 @@ import kotlin.native.ObjCName
 
 /** Redwood's [Cancellable] but implementing [ZiplineService]. */
 @ObjCName("CancellableService", exact = true)
-public interface CancellableService : ZiplineService, Cancellable
+public interface CancellableService :
+  ZiplineService,
+  Cancellable

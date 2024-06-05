@@ -53,7 +53,8 @@ private const val VIEW_TYPE_ITEM = 1
 
 internal open class ViewLazyList private constructor(
   internal val recyclerView: RecyclerView,
-) : LazyList<View>, ChangeListener {
+) : LazyList<View>,
+  ChangeListener {
   private val adapter = LazyContentItemListAdapter()
   private val scope = MainScope()
 
@@ -292,7 +293,8 @@ internal open class ViewLazyList private constructor(
 
 internal class ViewRefreshableLazyList(
   context: Context,
-) : ViewLazyList(context), RefreshableLazyList<View> {
+) : ViewLazyList(context),
+  RefreshableLazyList<View> {
 
   private val swipeRefreshLayout = SwipeRefreshLayout(context)
 

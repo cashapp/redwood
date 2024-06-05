@@ -158,9 +158,15 @@ public interface ProtocolWidget : Widget {
   public sealed interface ProtocolTrait : Trait {
     public val tag: Int
   }
-  public interface ProtocolProperty : Property, ProtocolTrait
-  public interface ProtocolEvent : Event, ProtocolTrait
-  public interface ProtocolChildren : Children, ProtocolTrait
+  public interface ProtocolProperty :
+    Property,
+    ProtocolTrait
+  public interface ProtocolEvent :
+    Event,
+    ProtocolTrait
+  public interface ProtocolChildren :
+    Children,
+    ProtocolTrait
 }
 
 public interface ProtocolModifier : Modifier {

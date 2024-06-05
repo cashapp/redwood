@@ -21,4 +21,6 @@ import kotlin.native.ObjCName
 
 /** Redwood's [ChangesSink] but implementing [ZiplineService]. */
 @ObjCName("ChangesSinkService", exact = true)
-public interface ChangesSinkService : ZiplineService, ChangesSink
+public interface ChangesSinkService :
+  ZiplineService,
+  ChangesSink

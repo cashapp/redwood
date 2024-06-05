@@ -27,7 +27,8 @@ import kotlin.math.min
 
 internal class ViewSpacer(
   context: Context,
-) : View(context), Spacer<View> {
+) : View(context),
+  Spacer<View> {
   private val density = Density(context.resources)
 
   override val value get() = this

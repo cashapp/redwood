@@ -82,7 +82,9 @@ internal class TreehouseAppContent<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val codeEventPublisher: CodeEventPublisher,
   private val source: TreehouseContentSource<A>,
-) : Content, CodeHost.Listener<A>, CodeSession.Listener<A> {
+) : Content,
+  CodeHost.Listener<A>,
+  CodeSession.Listener<A> {
   private val stateFlow = MutableStateFlow<State<A>>(
     State(ViewState.None, CodeState.Idle(isInitialLaunch = true)),
   )
@@ -303,7 +305,9 @@ private class ViewContentCodeBinding<A : AppService>(
   private val isInitialLaunch: Boolean,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
-) : ChangesSinkService, TreehouseView.SaveCallback, ZiplineTreehouseUi.Host {
+) : ChangesSinkService,
+  TreehouseView.SaveCallback,
+  ZiplineTreehouseUi.Host {
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val bindingScope = CoroutineScope(

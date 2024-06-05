@@ -39,7 +39,8 @@ import app.cash.redwood.yoga.isHorizontal
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
-) : YogaFlexContainer<View>, ChangeListener {
+) : YogaFlexContainer<View>,
+  ChangeListener {
   private val yogaLayout: YogaLayout = YogaLayout(
     context,
     applyModifier = { node, index ->

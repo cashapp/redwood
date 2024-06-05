@@ -65,7 +65,9 @@ class ViewFlexContainerTest(
 
   class ViewTestFlexContainer internal constructor(
     private val delegate: ViewFlexContainer,
-  ) : TestFlexContainer<View>, FlexContainer<View> by delegate, ChangeListener by delegate {
+  ) : TestFlexContainer<View>,
+    FlexContainer<View> by delegate,
+    ChangeListener by delegate {
     private var childCount = 0
     override val children: ViewGroupChildren = delegate.children
     override fun add(widget: Widget<View>) {

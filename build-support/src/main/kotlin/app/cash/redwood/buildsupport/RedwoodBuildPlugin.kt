@@ -126,7 +126,10 @@ class RedwoodBuildPlugin : Plugin<Project> {
           )
           .editorConfigOverride(
             mapOf(
+              // Lowercase names are great for grouping multiple functions and/or types.
               "ktlint_standard_filename" to "disabled",
+              // Making something an expression body should be a choice around readability.
+              "ktlint_standard_function-expression-body" to "disabled",
               "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
               "ktlint_compose_compositionlocal-allowlist" to "disabled",
             ),

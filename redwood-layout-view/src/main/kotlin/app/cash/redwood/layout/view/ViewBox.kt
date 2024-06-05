@@ -39,7 +39,8 @@ import app.cash.redwood.widget.ViewGroupChildren
 
 internal class ViewBox(
   context: Context,
-) : FrameLayout(context), Box<View> {
+) : FrameLayout(context),
+  Box<View> {
   private val density = Density(context.resources)
   private var horizontalAlignment = CrossAxisAlignment.Start
   private var verticalAlignment = CrossAxisAlignment.Start

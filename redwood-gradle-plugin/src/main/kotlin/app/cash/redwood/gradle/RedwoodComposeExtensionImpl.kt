@@ -23,7 +23,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 internal class RedwoodComposeExtensionImpl(
   private val project: Project,
-) : RedwoodComposeExtension, DangerZone {
+) : RedwoodComposeExtension,
+  DangerZone {
   private var metricsEnabled = false
   private var reportsEnabled = false
 

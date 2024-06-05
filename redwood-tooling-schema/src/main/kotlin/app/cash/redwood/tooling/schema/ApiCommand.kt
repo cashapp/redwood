@@ -34,10 +34,11 @@ import com.github.ajalt.clikt.parameters.types.path
 import java.io.File
 import java.net.URLClassLoader
 
-internal class ApiCommand : CliktCommand(
-  name = "api",
-  help = "Write schema protocol API to XML, or validate schema compatibility with existing XML",
-) {
+internal class ApiCommand :
+  CliktCommand(
+    name = "api",
+    help = "Write schema protocol API to XML, or validate schema compatibility with existing XML",
+  ) {
   private val file by option("-f", "--file")
     .path()
     .required()

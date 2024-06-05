@@ -66,7 +66,8 @@ class ComposeUiFlexContainerTest(
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiFlexContainer,
-  ) : TestFlexContainer<@Composable () -> Unit>, FlexContainer<@Composable () -> Unit> by delegate {
+  ) : TestFlexContainer<@Composable () -> Unit>,
+    FlexContainer<@Composable () -> Unit> by delegate {
     private var childCount = 0
     override val children: ComposeWidgetChildren = delegate.children
     constructor(direction: FlexDirection, backgroundColor: Int) : this(

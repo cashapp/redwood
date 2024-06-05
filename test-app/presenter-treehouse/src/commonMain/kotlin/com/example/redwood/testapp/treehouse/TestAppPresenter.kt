@@ -21,7 +21,9 @@ import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 
 @ObjCName("TestAppPresenter", exact = true)
-interface TestAppPresenter : AppService, ZiplineService {
+interface TestAppPresenter :
+  AppService,
+  ZiplineService {
   fun launchForApp(): ZiplineTreehouseUi
   fun launchForTester(): ZiplineTreehouseUi
 }

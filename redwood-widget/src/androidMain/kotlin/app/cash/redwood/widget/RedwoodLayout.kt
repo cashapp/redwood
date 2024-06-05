@@ -37,7 +37,8 @@ import kotlinx.coroutines.flow.StateFlow
 public open class RedwoodLayout(
   context: Context,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
-) : FrameLayout(context), RedwoodView<View> {
+) : FrameLayout(context),
+  RedwoodView<View> {
   init {
     // The view needs to have an ID to participate in instance state saving.
     id = R.id.redwood_layout

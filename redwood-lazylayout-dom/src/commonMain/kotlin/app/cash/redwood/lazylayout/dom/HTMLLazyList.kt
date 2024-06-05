@@ -162,7 +162,8 @@ internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
 
 internal class HTMLRefreshableLazyList(
   document: Document,
-) : HTMLLazyList(document), RefreshableLazyList<HTMLElement> {
+) : HTMLLazyList(document),
+  RefreshableLazyList<HTMLElement> {
   override fun refreshing(refreshing: Boolean) {
   }
 

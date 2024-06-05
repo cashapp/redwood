@@ -31,7 +31,8 @@ import platform.UIKit.UIView
 public class TreehouseUIView private constructor(
   override val widgetSystem: WidgetSystem<UIView>,
   view: RootUiView,
-) : TreehouseView<UIView>, RedwoodUIView(view) {
+) : RedwoodUIView(view),
+  TreehouseView<UIView> {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 

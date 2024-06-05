@@ -104,7 +104,8 @@ class ComposeUiLazyListTest(
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,
-  ) : TestFlexContainer<@Composable () -> Unit>, LazyList<@Composable () -> Unit> by delegate {
+  ) : TestFlexContainer<@Composable () -> Unit>,
+    LazyList<@Composable () -> Unit> by delegate {
     private var childCount = 0
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(

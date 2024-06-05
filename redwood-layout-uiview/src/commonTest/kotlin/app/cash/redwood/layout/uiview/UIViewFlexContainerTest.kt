@@ -46,7 +46,9 @@ class UIViewFlexContainerTest(
 
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,
-  ) : TestFlexContainer<UIView>, FlexContainer<UIView> by delegate, ChangeListener by delegate {
+  ) : TestFlexContainer<UIView>,
+    FlexContainer<UIView> by delegate,
+    ChangeListener by delegate {
     private var childCount = 0
     override val children: Widget.Children<UIView> = delegate.children
 
