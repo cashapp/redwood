@@ -163,6 +163,8 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
 
 /*
 internal class MutableButton : Button<WidgetValue> {
+  private var detached: Boolean = false
+
   public override val value: WidgetValue
     get() = ButtonValue(modifier, text, enabled!!, maxLength!!)
 
@@ -173,11 +175,17 @@ internal class MutableButton : Button<WidgetValue> {
   private var maxLength: Int? = null
 
   public override fun text(text: String?) {
+    check(!detached) { "detached" }
     this.text = text
   }
 
   public override fun enabled(enabled: Boolean) {
+    check(!detached) { "detached" }
     this.enabled = enabled
+  }
+
+  public override fun detach() {
+    this.detached = true
   }
 }
 */
@@ -190,6 +198,13 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
         .addSuperinterface(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
+        .addProperty(
+          PropertySpec.builder("detached", BOOLEAN)
+            .addModifiers(PRIVATE)
+            .mutable(true)
+            .initializer("false")
+            .build(),
+        )
         .addProperty(
           PropertySpec.builder("value", RedwoodTesting.WidgetValue)
             .addModifiers(OVERRIDE)
@@ -251,7 +266,8 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, type)
-                    .addCode("this.%N = %N", trait.name, trait.name)
+                    .addStatement("check(!detached) { %S }", "detached")
+                    .addStatement("this.%N = %N", trait.name, trait.name)
                     .build(),
                 )
               }
@@ -271,6 +287,12 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
             }
           }
         }
+        .addFunction(
+          FunSpec.builder("detach")
+            .addModifiers(OVERRIDE)
+            .addStatement("this.detached = true")
+            .build(),
+        )
         .build(),
     )
     .build()

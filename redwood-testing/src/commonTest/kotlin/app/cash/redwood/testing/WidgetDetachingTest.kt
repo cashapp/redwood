@@ -32,6 +32,7 @@ import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.compose.reuse
+import com.example.redwood.testapp.widget.Text
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
@@ -53,14 +54,20 @@ class WidgetDetachingTest {
 
       awaitSnapshot()
       val protocolText = widgetBridge.extractProtocolText()
-      assertThat(protocolText.widget).isNotNull()
+      val protocolTextWidget = protocolText.widget as Text<*>?
+      assertThat(protocolTextWidget).isNotNull()
 
       step++
       awaitSnapshot()
-      val thrown = assertFailsWith<IllegalStateException> {
+      val thrownOnAccessWidget = assertFailsWith<IllegalStateException> {
         protocolText.widget
       }
-      assertThat(thrown).hasMessage("detached")
+      assertThat(thrownOnAccessWidget).hasMessage("detached")
+
+      val thrownOnMutateWidget = assertFailsWith<IllegalStateException> {
+        protocolTextWidget?.text("goodbye")
+      }
+      assertThat(thrownOnMutateWidget).hasMessage("detached")
     }
   }
 
@@ -79,14 +86,20 @@ class WidgetDetachingTest {
 
       awaitSnapshot()
       val protocolText = widgetBridge.extractProtocolText()
-      assertThat(protocolText.widget).isNotNull()
+      val protocolTextWidget = protocolText.widget as Text<*>?
+      assertThat(protocolTextWidget).isNotNull()
 
       step++
       awaitSnapshot()
-      val thrown = assertFailsWith<IllegalStateException> {
+      val thrownOnAccessWidget = assertFailsWith<IllegalStateException> {
         protocolText.widget
       }
-      assertThat(thrown).hasMessage("detached")
+      assertThat(thrownOnAccessWidget).hasMessage("detached")
+
+      val thrownOnMutateWidget = assertFailsWith<IllegalStateException> {
+        protocolTextWidget?.text("goodbye")
+      }
+      assertThat(thrownOnMutateWidget).hasMessage("detached")
     }
   }
 
