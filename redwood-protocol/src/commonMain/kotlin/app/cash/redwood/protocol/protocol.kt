@@ -43,8 +43,7 @@ public class Event(
   public val args: List<JsonElement> = emptyList(),
 )
 
-@Serializable
-public sealed interface Change {
+public expect sealed interface Change {
   /** Identifier for the widget which is the subject of this change. */
   public val id: Id
 }

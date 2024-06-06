@@ -203,7 +203,7 @@ public fun LazyRow(
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
   verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
-  pullRefreshContentColor: UInt = 0xFF000000u,
+  pullRefreshContentColor: Int = 0xFF000000u.toInt(),
   content: LazyListScope.() -> Unit,
 ) {
   RefreshableLazyList(
@@ -316,7 +316,7 @@ public fun LazyColumn(
   height: Constraint = Constraint.Wrap,
   margin: Margin = Margin.Zero,
   horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
-  pullRefreshContentColor: UInt = 0xFF000000u,
+  pullRefreshContentColor: Int = 0.toInt(),
   content: LazyListScope.() -> Unit,
 ) {
   RefreshableLazyList(

@@ -9,6 +9,7 @@ redwoodBuild {
 }
 
 apply plugin: 'com.github.gmazzo.buildconfig'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 kotlin {
   sourceSets {

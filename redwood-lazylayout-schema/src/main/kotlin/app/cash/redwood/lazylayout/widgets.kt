@@ -121,7 +121,7 @@ public data class RefreshableLazyList(
   /**
    * The color of the pull-to-refresh indicator as an ARGB color int.
    */
-  @Property(12) val pullRefreshContentColor: UInt,
+  @Property(12) val pullRefreshContentColor: Int,
 
   /**
    * A block which describes the content of each placeholder item.

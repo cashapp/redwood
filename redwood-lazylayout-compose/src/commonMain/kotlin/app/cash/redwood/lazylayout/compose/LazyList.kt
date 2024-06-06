@@ -76,7 +76,7 @@ internal fun RefreshableLazyList(
   height: Constraint,
   margin: Margin,
   crossAxisAlignment: CrossAxisAlignment,
-  pullRefreshContentColor: UInt,
+  pullRefreshContentColor: Int,
   placeholder: @Composable () -> Unit,
   modifier: Modifier = Modifier,
   content: LazyListScope.() -> Unit,

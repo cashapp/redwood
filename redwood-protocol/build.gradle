@@ -22,5 +22,14 @@ kotlin {
         implementation libs.assertk
       }
     }
+    nonJsMain {
+      dependsOn(commonMain)
+    }
+    jvmMain {
+      dependsOn(nonJsMain)
+    }
+    nativeMain {
+      dependsOn(nonJsMain)
+    }
   }
 }

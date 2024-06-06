@@ -439,8 +439,8 @@ internal class UIViewRefreshableLazyList :
     }
   }
 
-  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
-    refreshControl.tintColor = UIColor(pullRefreshContentColor)
+  override fun pullRefreshContentColor(pullRefreshContentColor: Int) {
+    refreshControl.tintColor = UIColor(pullRefreshContentColor.toUInt())
   }
 
   override fun detach() {

@@ -159,7 +159,7 @@ internal fun generateProtocolBridge(
                 .addParameter("json", KotlinxSerialization.Json)
                 .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
                 .returns(type)
-                .addStatement("val state = %T(hostVersion)", ProtocolGuest.ProtocolState)
+                .addStatement("val state = %T(json, hostVersion)", ProtocolGuest.ProtocolState)
                 .addStatement("val root = %T(%T.Root, %T.Root, state)", ProtocolGuest.ProtocolWidgetChildren, Protocol.Id, Protocol.ChildrenTag)
                 .apply {
                   val arguments = buildList {
@@ -187,17 +187,17 @@ internal class ProtocolExampleWidgetFactory(
 ) : ExampleWidgetFactory<Unit> {
   override fun Box(): Box<Unit> {
     val widget = ProtocolExampleBox(state, json, mismatchHandler)
-    state.append(Create(widget.id, widget.tag))
+    state.appendCreate(widget.id, widget.tag)
     return widget
   }
   override fun Text(): Text<Unit> {
     return ProtocolExampleText(state, json, mismatchHandler)
-    state.append(Create(widget.id, widget.tag))
+    state.appendCreate(widget.id, widget.tag)
     return widget
   }
   override fun Button(): Button<Unit> {
     val widget = ProtocolExampleButton(state, json, mismatchHandler)
-    state.append(Create(widget.id, widget.tag))
+    state.appendCreate(widget.id, widget.tag)
     return widget
   }
 }
@@ -246,7 +246,7 @@ internal fun generateProtocolWidgetFactory(
                   "val widget = %T(state, json, mismatchHandler)",
                   schema.protocolWidgetType(widget, host),
                 )
-                .addStatement("state.append(%T(widget.id, widget.tag))", Protocol.Create)
+                .addStatement("state.appendCreate(widget.id, widget.tag)")
                 .addStatement("return widget")
                 .build(),
             )
@@ -286,17 +286,17 @@ internal class ProtocolButton(
       val json = buildJsonArray {
         value.forEach { element -> add(element.toJsonElement(json))
       }
-      state.append(ModifierChange(id, json))
+      state.appendModifierChange(id, json))
     }
 
   override fun text(text: String?) {
-    state.append(PropertyChange(this.id, PropertyTag(1), json.encodeToJsonElement(serializer_0, text)))
+    state.appendPropertyChange(this.id, PropertyTag(1), json.encodeToJsonElement(serializer_0, text))
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
     val onClickSet = onClick != null
     if (onClickSet != (this.onClick != null)) {
-      state.append(PropertyChange(this.id, PropertyTag(3), onClickSet))
+      state.appendPropertyChange(this.id, PropertyTag(3), onClickSet)
     }
     this.onClick = onClick
   }
@@ -380,8 +380,7 @@ internal fun generateProtocolWidget(
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
                     .addStatement(
-                      "this.state.append(%T(this.id, %T(%L), json.encodeToJsonElement(serializer_%L, %N)))",
-                      Protocol.PropertyChange,
+                      "this.state.appendPropertyChange(this.id, %T(%L), serializer_%L, %N)",
                       Protocol.PropertyTag,
                       trait.tag,
                       serializerId,
@@ -421,11 +420,9 @@ internal fun generateProtocolWidget(
                         "true"
                       }
                       addStatement(
-                        "this.state.append(%T(this.id, %T(%L), %M(%L)))",
-                        Protocol.PropertyChange,
+                        "this.state.appendPropertyChange(this.id, %T(%L), %L)",
                         Protocol.PropertyTag,
                         trait.tag,
-                        KotlinxSerialization.JsonPrimitive,
                         newValue,
                       )
                     }
@@ -501,7 +498,7 @@ internal fun generateProtocolWidget(
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.Modifier)
-                .addStatement("state.append(%T(id, value.%M(json)))", Protocol.ModifierChange, host.modifierToProtocol)
+                .addStatement("state.appendModifierChange(id, value.%M(json))", host.modifierToProtocol)
                 .build(),
             )
             .build(),

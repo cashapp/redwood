@@ -317,8 +317,8 @@ internal class ViewRefreshableLazyList(
     swipeRefreshLayout.setOnRefreshListener(onRefresh)
   }
 
-  override fun pullRefreshContentColor(@ColorInt pullRefreshContentColor: UInt) {
-    swipeRefreshLayout.setColorSchemeColors(pullRefreshContentColor.toInt())
+  override fun pullRefreshContentColor(@ColorInt pullRefreshContentColor: Int) {
+    swipeRefreshLayout.setColorSchemeColors(pullRefreshContentColor)
   }
 }
 

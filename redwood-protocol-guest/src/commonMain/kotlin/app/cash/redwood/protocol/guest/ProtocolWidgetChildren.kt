@@ -35,7 +35,7 @@ public class ProtocolWidgetChildren(
     widget as ProtocolWidget
     _widgets.add(index, widget)
     state.addWidget(widget)
-    state.append(ChildrenChange.Add(id, tag, widget.id, index))
+    state.appendAdd(id, tag, widget.id, index)
   }
 
   override fun remove(index: Int, count: Int) {
@@ -51,10 +51,10 @@ public class ProtocolWidgetChildren(
           for (childId in childIds) {
             state.removeWidget(childId)
           }
-          state.append(ChildrenChange.Remove(parent.id, childrenTag, 0, childIds.size, childIds))
+          state.appendRemove(parent.id, childrenTag, 0, childIds.size, childIds)
         }
       }
-      state.append(ChildrenChange.Remove(id, tag, index, count, removedIds))
+      state.appendRemove(id, tag, index, count, removedIds)
     } else {
       for (i in index until index + count) {
         val widget = _widgets[i]
@@ -65,7 +65,7 @@ public class ProtocolWidgetChildren(
           }
         }
       }
-      state.append(ChildrenChange.Remove(id, tag, index, count))
+      state.appendRemove(id, tag, index, count)
     }
 
     _widgets.remove(index, count)
@@ -73,7 +73,7 @@ public class ProtocolWidgetChildren(
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
-    state.append(ChildrenChange.Move(id, tag, fromIndex, toIndex, count))
+    state.appendMove(id, tag, fromIndex, toIndex, count)
   }
 
   override fun onModifierUpdated(index: Int, widget: Widget<Unit>) {
