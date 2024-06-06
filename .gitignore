@@ -11,6 +11,9 @@ build
 # Android
 local.properties
 
+# Kotlin
+.kotlin
+
 # iOS / XCode
 *.xcworkspace
 xcuserdata

@@ -2,9 +2,10 @@ import static app.cash.redwood.buildsupport.TargetGroup.TreehouseHost
 
 redwoodBuild {
   targets(TreehouseHost)
-  composeCompiler()
   publishing()
 }
+
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 kotlin {
   sourceSets {

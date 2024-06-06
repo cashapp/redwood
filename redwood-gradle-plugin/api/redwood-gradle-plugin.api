@@ -1,26 +1,5 @@
-public abstract interface class app/cash/redwood/gradle/RedwoodComposeExtension {
-	public abstract fun dangerZone (Lorg/gradle/api/Action;)V
-	public abstract fun getKotlinCompilerPlugin ()Lorg/gradle/api/provider/Property;
-}
-
-public abstract interface class app/cash/redwood/gradle/RedwoodComposeExtension$DangerZone {
-	public abstract fun enableMetrics ()V
-	public abstract fun enableReports ()V
-}
-
 public final class app/cash/redwood/gradle/RedwoodComposeGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
 	public fun <init> ()V
-}
-
-public final class app/cash/redwood/gradle/RedwoodComposePlugin : org/jetbrains/kotlin/gradle/plugin/KotlinCompilerPluginSupportPlugin {
-	public fun <init> ()V
-	public synthetic fun apply (Ljava/lang/Object;)V
-	public fun apply (Lorg/gradle/api/Project;)V
-	public fun applyToCompilation (Lorg/jetbrains/kotlin/gradle/plugin/KotlinCompilation;)Lorg/gradle/api/provider/Provider;
-	public fun getCompilerPluginId ()Ljava/lang/String;
-	public fun getPluginArtifact ()Lorg/jetbrains/kotlin/gradle/plugin/SubpluginArtifact;
-	public fun getPluginArtifactForNative ()Lorg/jetbrains/kotlin/gradle/plugin/SubpluginArtifact;
-	public fun isApplicable (Lorg/jetbrains/kotlin/gradle/plugin/KotlinCompilation;)Z
 }
 
 public final class app/cash/redwood/gradle/RedwoodComposeProtocolGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {

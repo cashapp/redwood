@@ -50,7 +50,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
-import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
@@ -88,7 +87,6 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
     target.configureCommonSpotless()
     target.configureCommonTesting()
-    target.configureCommonCompose()
     target.configureCommonAndroid()
     target.configureCommonKotlin()
   }
@@ -147,36 +145,6 @@ class RedwoodBuildPlugin : Plugin<Project> {
         }
         it.exceptionFormat = FULL
       }
-    }
-  }
-
-  /**
-   * Force Android Compose UI and JetPack Compose UI usage to Compose compiler versions which
-   * are compatible with the project's Kotlin version.
-   */
-  private fun Project.configureCommonCompose() {
-    plugins.withId("com.android.base") {
-      val android = extensions.getByName("android") as BaseExtension
-      android.composeOptions {
-        it.kotlinCompilerExtensionVersion = libs.androidx.compose.compiler.get().version
-      }
-    }
-
-    plugins.withId("org.jetbrains.compose") {
-      val compose = extensions.getByName("compose") as ComposeExtension
-      compose.kotlinCompilerPlugin.set(libs.jetbrains.compose.compiler.get().version)
-    }
-
-    tasks.withType(KotlinJsCompile::class.java) {
-      it.kotlinOptions.freeCompilerArgs += listOf(
-        // https://github.com/JetBrains/compose-multiplatform/issues/3421
-        "-Xpartial-linkage=disable",
-        // https://github.com/JetBrains/compose-multiplatform/issues/3418
-        "-Xklib-enable-signature-clash-checks=false",
-        // Translate capturing lambdas into anonymous JS functions rather than hoisting parameters
-        // and creating a named sibling function. Only affects targets which produce actual JS.
-        "-Xir-generate-inline-anonymous-functions",
-      )
     }
   }
 
@@ -306,6 +274,18 @@ class RedwoodBuildPlugin : Plugin<Project> {
         }
       }
     }
+
+    tasks.withType(KotlinJsCompile::class.java) {
+      it.kotlinOptions.freeCompilerArgs += listOf(
+        // https://github.com/JetBrains/compose-multiplatform/issues/3421
+        "-Xpartial-linkage=disable",
+        // https://github.com/JetBrains/compose-multiplatform/issues/3418
+        "-Xklib-enable-signature-clash-checks=false",
+        // Translate capturing lambdas into anonymous JS functions rather than hoisting parameters
+        // and creating a named sibling function. Only affects targets which produce actual JS.
+        "-Xir-generate-inline-anonymous-functions",
+      )
+    }
   }
 }
 
@@ -375,10 +355,6 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         }
       }
     }
-  }
-
-  override fun composeCompiler() {
-    project.plugins.apply(ComposePlugin::class.java)
   }
 
   override fun publishing() {

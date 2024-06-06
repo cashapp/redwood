@@ -13,9 +13,9 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
     constructor <init>() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.<init>|<init>(){}[0]
     final class <#A1: kotlin/Any, #B1: kotlin/Any> Binding { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding|null[0]
         final fun unbind() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.unbind|unbind(){}[0]
-        final val isBound // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.isBound|<get-isBound>(){}[0]
+        final val isBound // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.isBound|{}isBound[0]
             final fun <get-isBound>(): kotlin/Boolean // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.isBound.<get-isBound>|<get-isBound>(){}[0]
-        final var view // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view|<get-view>(){}[0]
+        final var view // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view|{}view[0]
             final fun <get-view>(): #A1? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view.<get-view>|<get-view>(){}[0]
     }
     final fun bind(kotlin/Int, #A): app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding<#A, #B> // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.bind|bind(kotlin.Int;1:0){}[0]
@@ -64,7 +64,7 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/RedwoodLa
     abstract fun RefreshableLazyList(): app.cash.redwood.lazylayout.widget/RefreshableLazyList<#A> // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory.RefreshableLazyList|RefreshableLazyList(){}[0]
 }
 abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner : app.cash.redwood.widget/WidgetFactoryOwner<#A> { // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner|null[0]
-    abstract val RedwoodLazyLayout // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner.RedwoodLazyLayout|<get-RedwoodLazyLayout>(){}[0]
+    abstract val RedwoodLazyLayout // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner.RedwoodLazyLayout|{}RedwoodLazyLayout[0]
         abstract fun <get-RedwoodLazyLayout>(): app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<#A> // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner.RedwoodLazyLayout.<get-RedwoodLazyLayout>|<get-RedwoodLazyLayout>(){}[0]
     final object Companion { // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner.Companion|null[0]
         final fun <#A2: kotlin/Any> apply(app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<#A2>, #A2, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner.Companion.apply|apply(app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory<0:0>;0:0;app.cash.redwood.Modifier.UnscopedElement){0§<kotlin.Any>}[0]

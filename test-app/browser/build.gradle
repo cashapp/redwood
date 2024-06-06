@@ -1,5 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
-apply plugin: 'app.cash.redwood'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 // The name of the final JS file to be referenced from HTML.
 archivesBaseName = 'test-app'
@@ -15,6 +15,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        implementation projects.redwoodCompose
         implementation projects.testApp.schema.modifiers
         implementation projects.testApp.schema.widget
         implementation projects.testApp.presenter

@@ -47,12 +47,6 @@ dependencies {
 
 gradlePlugin {
   plugins {
-    redwood {
-      id = "app.cash.redwood"
-      displayName = "Redwood"
-      description = "Redwood Compose Gradle plugin"
-      implementationClass = "app.cash.redwood.gradle.RedwoodComposePlugin"
-    }
     redwoodLint {
       id = "app.cash.redwood.lint"
       displayName = "Redwood lint"
@@ -140,6 +134,5 @@ buildConfig {
   }
 
   packageName('app.cash.redwood.gradle')
-  buildConfigField("String", "composeCompilerVersion", "\"${libs.jetbrains.compose.compiler.get().version}\"")
   buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
 }

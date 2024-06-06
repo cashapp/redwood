@@ -15,15 +15,11 @@
  */
 package app.cash.redwood.gradle
 
-import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.containsExactly
-import assertk.assertions.containsOnly
-import assertk.assertions.exists
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
-import assertk.assertions.isNotNull
 import assertk.assertions.prop
 import java.io.File
 import org.gradle.testkit.runner.BuildTask
@@ -172,72 +168,6 @@ class FixtureTest {
     // Ensure that it does not produce warnings (which are set to error in this build).
     val fixtureDir = File("src/test/fixture/protocol-no-modifiers")
     fixtureGradleRunner(fixtureDir).build()
-  }
-
-  @Test fun customCompilerCoordinates() {
-    val fixtureDir = File("src/test/fixture/custom-compiler-coordinates")
-    fixtureGradleRunner(fixtureDir).build()
-  }
-
-  @Test fun customCompilerInvalid() {
-    val fixtureDir = File("src/test/fixture/custom-compiler-invalid")
-    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
-    assertThat(result.output).contains(
-      """
-      |Illegal format of 'redwood.kotlinCompilerPlugin' property.
-      |Expected format: either '<VERSION>' or '<GROUP_ID>:<ARTIFACT_ID>:<VERSION>'
-      |Actual value: 'wrong:format'
-      """.trimMargin(),
-    )
-  }
-
-  @Test fun customCompilerVersion() {
-    val fixtureDir = File("src/test/fixture/custom-compiler-version")
-    fixtureGradleRunner(fixtureDir).build()
-  }
-
-  @Test fun withAndroidPluginComposeFeature() {
-    val fixtureDir = File("src/test/fixture/with-android-plugin-compose-feature")
-    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
-    assertThat(result.output).contains(
-      "The Redwood Gradle plugin cannot be applied to an Android project which enables Compose.",
-    )
-  }
-
-  @Test fun withJetbrainsComposePlugin() {
-    val fixtureDir = File("src/test/fixture/with-jetbrains-compose-plugin")
-    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
-    assertThat(result.output).contains(
-      "The Redwood Gradle plugin cannot be applied to the same project as the JetBrains Compose Gradle plugin.",
-    )
-  }
-
-  @Test fun composeCompilerMetrics() {
-    val fixtureDir = File("src/test/fixture/compose-compiler-metrics")
-    fixtureGradleRunner(fixtureDir).build()
-    assertThat(fixtureDir.resolve("build/reports/redwood/compose-metrics/compileKotlin")).all {
-      exists()
-      prop("children", File::list)
-        .isNotNull()
-        .containsOnly(
-          "compose-compiler-metrics-module.json",
-        )
-    }
-  }
-
-  @Test fun composeCompilerReports() {
-    val fixtureDir = File("src/test/fixture/compose-compiler-reports")
-    fixtureGradleRunner(fixtureDir).build()
-    assertThat(fixtureDir.resolve("build/reports/redwood/compose-reports/compileKotlin")).all {
-      exists()
-      prop("children", File::list)
-        .isNotNull()
-        .containsOnly(
-          "compose-compiler-reports-classes.txt",
-          "compose-compiler-reports-composables.csv",
-          "compose-compiler-reports-composables.txt",
-        )
-    }
   }
 
   private fun fixtureGradleRunner(

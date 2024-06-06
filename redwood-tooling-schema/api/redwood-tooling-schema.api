@@ -43,13 +43,13 @@ public final class app/cash/redwood/tooling/schema/FqType {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class app/cash/redwood/tooling/schema/FqType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/tooling/schema/FqType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/tooling/schema/FqType$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/tooling/schema/FqType;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/tooling/schema/FqType;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/tooling/schema/FqType;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/tooling/schema/FqType;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }

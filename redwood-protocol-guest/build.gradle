@@ -4,10 +4,10 @@ import static app.cash.redwood.buildsupport.TargetGroup.Common
 
 redwoodBuild {
   targets(Common)
-  composeCompiler()
   publishing()
 }
 
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.github.gmazzo.buildconfig'
 
 kotlin {

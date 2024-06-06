@@ -11,15 +11,15 @@ public final class app/cash/redwood/layout/api/Constraint {
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class app/cash/redwood/layout/api/Constraint$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/layout/api/Constraint$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/Constraint$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-wZ9MJrE (Lkotlinx/serialization/encoding/Decoder;)I
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-wZ9MJrE (Lkotlinx/serialization/encoding/Decoder;)I
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-NlcmwgM (Lkotlinx/serialization/encoding/Encoder;I)V
+	public final fun serialize-NlcmwgM (Lkotlinx/serialization/encoding/Encoder;I)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
@@ -42,15 +42,15 @@ public final class app/cash/redwood/layout/api/CrossAxisAlignment {
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class app/cash/redwood/layout/api/CrossAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/layout/api/CrossAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/CrossAxisAlignment$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-ZTU8t1M (Lkotlinx/serialization/encoding/Decoder;)I
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-ZTU8t1M (Lkotlinx/serialization/encoding/Decoder;)I
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-9tyzA_o (Lkotlinx/serialization/encoding/Encoder;I)V
+	public final fun serialize-9tyzA_o (Lkotlinx/serialization/encoding/Encoder;I)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
@@ -75,15 +75,15 @@ public final class app/cash/redwood/layout/api/MainAxisAlignment {
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class app/cash/redwood/layout/api/MainAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/layout/api/MainAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/MainAxisAlignment$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-8E2bK0c (Lkotlinx/serialization/encoding/Decoder;)I
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-8E2bK0c (Lkotlinx/serialization/encoding/Decoder;)I
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-x5n47qk (Lkotlinx/serialization/encoding/Encoder;I)V
+	public final fun serialize-x5n47qk (Lkotlinx/serialization/encoding/Encoder;I)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
@@ -110,15 +110,15 @@ public final class app/cash/redwood/layout/api/Overflow {
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class app/cash/redwood/layout/api/Overflow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class app/cash/redwood/layout/api/Overflow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/Overflow$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-yYV8bQ4 (Lkotlinx/serialization/encoding/Decoder;)I
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-yYV8bQ4 (Lkotlinx/serialization/encoding/Decoder;)I
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-PeVkpMM (Lkotlinx/serialization/encoding/Encoder;I)V
+	public final fun serialize-PeVkpMM (Lkotlinx/serialization/encoding/Encoder;I)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
