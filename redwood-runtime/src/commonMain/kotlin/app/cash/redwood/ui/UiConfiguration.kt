@@ -37,6 +37,12 @@ public class UiConfiguration(
    * raw pixels, if needed.
    */
   public val density: Double = 1.0,
+  /**
+   * The device's layout direction. This defines whether `Start` alignment means left (as in
+   * [LayoutDirection.Ltr]) or right (as in [LayoutDirection.Rtl]), and conversely whether `End`
+   * alignment means right or left.
+   */
+  public val layoutDirection: LayoutDirection = LayoutDirection.Ltr,
 ) {
   public companion object
 }

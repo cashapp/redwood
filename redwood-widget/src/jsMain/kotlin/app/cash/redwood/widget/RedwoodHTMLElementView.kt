@@ -16,6 +16,7 @@
 package app.cash.redwood.widget
 
 import app.cash.redwood.ui.Cancellable
+import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
@@ -67,6 +68,12 @@ private class RedwoodHTMLElementView(
       UiConfiguration(
         darkMode = colorSchemeQuery.matches,
         viewportSize = Size(width = element.offsetWidth.dp, height = element.offsetHeight.dp),
+        layoutDirection = when (element.dir) {
+          "ltr" -> LayoutDirection.Ltr
+          "rtl" -> LayoutDirection.Rtl
+          "auto" -> LayoutDirection.Auto
+          else -> LayoutDirection.Ltr
+        },
       ),
     )
 
@@ -77,6 +84,7 @@ private class RedwoodHTMLElementView(
           safeAreaInsets = old.safeAreaInsets,
           viewportSize = old.viewportSize,
           density = old.density,
+          layoutDirection = old.layoutDirection,
         )
       }
     })
@@ -108,6 +116,7 @@ private class RedwoodHTMLElementView(
         safeAreaInsets = old.safeAreaInsets,
         viewportSize = old.viewportSize,
         density = window.devicePixelRatio,
+        layoutDirection = old.layoutDirection,
       )
     }
   }

@@ -18,6 +18,7 @@ package app.cash.redwood.widget
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
@@ -30,6 +31,9 @@ import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRect
 import platform.UIKit.UIApplication
 import platform.UIKit.UITraitCollection
+import platform.UIKit.UIUserInterfaceLayoutDirection
+import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight
+import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionRightToLeft
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 
@@ -40,7 +44,13 @@ public open class RedwoodUIView(
   override val children: Widget.Children<UIView> get() = _children
 
   private val mutableUiConfiguration =
-    MutableStateFlow(computeUiConfiguration(view.traitCollection, view.bounds))
+    MutableStateFlow(
+      computeUiConfiguration(
+        traitCollection = view.traitCollection,
+        layoutDirection = view.effectiveUserInterfaceLayoutDirection,
+        bounds = view.bounds,
+      ),
+    )
 
   override val onBackPressedDispatcher: OnBackPressedDispatcher = object : OnBackPressedDispatcher {
     override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -67,6 +77,7 @@ public open class RedwoodUIView(
   protected fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = view.traitCollection,
+      layoutDirection = view.effectiveUserInterfaceLayoutDirection,
       bounds = view.bounds,
     )
   }
@@ -74,6 +85,7 @@ public open class RedwoodUIView(
 
 internal fun computeUiConfiguration(
   traitCollection: UITraitCollection,
+  layoutDirection: UIUserInterfaceLayoutDirection,
   bounds: CValue<CGRect>,
 ): UiConfiguration {
   return UiConfiguration(
@@ -85,6 +97,11 @@ internal fun computeUiConfiguration(
       }
     },
     density = Density.Default.rawDensity,
+    layoutDirection = when (layoutDirection) {
+      UIUserInterfaceLayoutDirectionRightToLeft -> LayoutDirection.Rtl
+      UIUserInterfaceLayoutDirectionLeftToRight -> LayoutDirection.Ltr
+      else -> throw IllegalArgumentException("Layout direction must be RightToLeft or LeftToRight")
+    },
   )
 }
 

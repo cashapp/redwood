@@ -26,6 +26,7 @@ import androidx.core.graphics.Insets
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import app.cash.redwood.ui.Size
@@ -115,6 +116,11 @@ public open class RedwoodLayout(
       safeAreaInsets = insets.toMargin(Density(resources)),
       viewportSize = viewportSize,
       density = density,
+      layoutDirection = when (config.layoutDirection) {
+        View.LAYOUT_DIRECTION_LTR -> LayoutDirection.Ltr
+        View.LAYOUT_DIRECTION_RTL -> LayoutDirection.Rtl
+        else -> throw IllegalArgumentException("layoutDirection must be LTR or RTL")
+      },
     )
   }
 }
