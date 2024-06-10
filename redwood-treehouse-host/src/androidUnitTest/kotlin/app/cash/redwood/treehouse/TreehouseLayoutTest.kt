@@ -27,6 +27,7 @@ import androidx.core.view.WindowInsetsCompat
 import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
@@ -36,6 +37,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
+import java.util.Locale
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -134,6 +136,19 @@ class TreehouseLayoutTest {
         )
       }
       assertThat(awaitItem()).isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
+    }
+  }
+
+  @Test fun uiConfigurationEmitsLayoutDirectionChanges() = runTest {
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    layout.uiConfiguration.test {
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(layoutDirection = LayoutDirection.Ltr))
+
+      val newConfig = Configuration(activity.resources.configuration)
+      newConfig.setLayoutDirection(Locale("he")) // Hebrew is RTL
+
+      layout.dispatchConfigurationChanged(newConfig)
+      assertThat(awaitItem()).isEqualTo(UiConfiguration(layoutDirection = LayoutDirection.Rtl))
     }
   }
 

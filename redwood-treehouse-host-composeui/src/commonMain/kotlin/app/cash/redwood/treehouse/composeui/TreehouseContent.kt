@@ -27,6 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.composeui.safeAreaInsets
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.CodeListener
@@ -38,6 +40,7 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.LayoutDirection as RedwoodLayoutDirection
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
@@ -63,6 +66,10 @@ public fun <A : AppService> TreehouseContent(
     safeAreaInsets = safeAreaInsets(),
     viewportSize = viewportSize,
     density = density.density.toDouble(),
+    layoutDirection = when (LocalLayoutDirection.current) {
+      LayoutDirection.Ltr -> RedwoodLayoutDirection.Ltr
+      LayoutDirection.Rtl -> RedwoodLayoutDirection.Rtl
+    },
   )
 
   val treehouseView = remember(widgetSystem) {

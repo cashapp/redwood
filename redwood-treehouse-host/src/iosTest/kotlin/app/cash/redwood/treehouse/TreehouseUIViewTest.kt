@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.UIViewChildren
@@ -31,6 +32,8 @@ import kotlinx.coroutines.test.runTest
 import platform.Foundation.NSDate
 import platform.Foundation.NSRunLoop
 import platform.Foundation.runUntilDate
+import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight
+import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionRightToLeft
 import platform.UIKit.UIUserInterfaceStyle.UIUserInterfaceStyleDark
 import platform.UIKit.UIView
 import platform.UIKit.UIWindow
@@ -127,5 +130,22 @@ class TreehouseUIViewTest {
 
     assertThat(layout.uiConfiguration.value)
       .isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
+  }
+
+  @Test
+  fun uiConfigurationReflectsInitialLayoutDirection() {
+    val parent = UIWindow()
+
+    val layout = TreehouseUIView(throwingWidgetSystem)
+    parent.addSubview(layout.view)
+
+    val expectedLayoutDirection = when (val direction = parent.effectiveUserInterfaceLayoutDirection) {
+      UIUserInterfaceLayoutDirectionLeftToRight -> LayoutDirection.Ltr
+      UIUserInterfaceLayoutDirectionRightToLeft -> LayoutDirection.Rtl
+      else -> throw IllegalStateException("Unknown layout direction $direction")
+    }
+    assertThat(layout.uiConfiguration.value).isEqualTo(
+      expected = UiConfiguration(layoutDirection = expectedLayoutDirection),
+    )
   }
 }
