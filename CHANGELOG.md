@@ -6,7 +6,6 @@
 New:
 - Added a basic DOM-based LazyList implementation.
 -`TreehouseApp.close()` stops the app and prevents it from being started again later.
--`Widget.detach()` is called when a widget will receive no further updates from the presenter.
 - Added `UiConfiguration.layoutDirection` to support reading the host's layout direction.
 
 Changed:

@@ -506,7 +506,6 @@ internal fun generateProtocolNode(
                 }
               }
             }
-            .addStatement("_widget?.detach()")
             .addStatement("_widget = null")
             .build(),
         )

@@ -65,10 +65,6 @@ class ImageBinding: Image {
     private func didTapImage() {
         onClick?()
     }
-
-    func detach() {
-        onClick = nil
-    }
 }
 
 private class ImageView: UIImageView {
