@@ -33,7 +33,6 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/Widget { // app.cash
     abstract var modifier // app.cash.redwood.widget/Widget.modifier|{}modifier[0]
         abstract fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.widget/Widget.modifier.<get-modifier>|<get-modifier>(){}[0]
         abstract fun <set-modifier>(app.cash.redwood/Modifier) // app.cash.redwood.widget/Widget.modifier.<set-modifier>|<set-modifier>(app.cash.redwood.Modifier){}[0]
-    open fun detach() // app.cash.redwood.widget/Widget.detach|detach(){}[0]
 }
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/WidgetFactoryOwner // app.cash.redwood.widget/WidgetFactoryOwner|null[0]
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/WidgetSystem { // app.cash.redwood.widget/WidgetSystem|null[0]
