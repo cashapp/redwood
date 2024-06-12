@@ -49,11 +49,12 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       json = json,
     )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val textInput = bridge.widgetSystem.TestSchema.TextInput()
 
     textInput.customType(10.seconds)
@@ -62,7 +63,7 @@ class GeneratedProtocolBridgeTest {
       Create(Id(1), WidgetTag(5)),
       PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
     )
-    assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
+    assertThat(state.takeChanges()).isEqualTo(expected)
   }
 
   @Test fun modifierUsesSerializersModule() {
@@ -71,11 +72,12 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       json = json,
     )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val button = bridge.widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
@@ -96,7 +98,7 @@ class GeneratedProtocolBridgeTest {
         ),
       ),
     )
-    assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
+    assertThat(state.takeChanges()).isEqualTo(expected)
   }
 
   @Test fun modifierDefaultValueNotSerialized() {
@@ -105,11 +107,12 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       json = json,
     )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val button = bridge.widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
@@ -130,7 +133,7 @@ class GeneratedProtocolBridgeTest {
         ),
       ),
     )
-    assertThat(bridge.getChangesOrNull()).isEqualTo(expected)
+    assertThat(state.takeChanges()).isEqualTo(expected)
   }
 
   @Test fun eventUsesSerializersModule() {
@@ -139,11 +142,12 @@ class GeneratedProtocolBridgeTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       json = json,
     )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val textInput = bridge.widgetSystem.TestSchema.TextInput()
 
     val protocolWidget = textInput as ProtocolWidget
@@ -159,10 +163,11 @@ class GeneratedProtocolBridgeTest {
   }
 
   @Test fun unknownEventThrowsDefault() {
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
     )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
@@ -174,9 +179,12 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
+    )
+    val bridge = TestSchemaProtocolBridge.create(
+      state = state,
       mismatchHandler = handler,
     )
     val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
@@ -187,10 +195,11 @@ class GeneratedProtocolBridgeTest {
   }
 
   @Test fun unknownEventNodeThrowsDefault() {
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
     )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendEvent(Event(Id(3456543), EventTag(1)))
     }
@@ -199,9 +208,12 @@ class GeneratedProtocolBridgeTest {
 
   @Test fun unknownEventNodeCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val bridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
+    )
+    val bridge = TestSchemaProtocolBridge.create(
+      state = state,
       mismatchHandler = handler,
     )
 

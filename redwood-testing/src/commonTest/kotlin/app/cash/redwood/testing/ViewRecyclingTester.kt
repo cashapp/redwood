@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.protocol.guest.DefaultProtocolState
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.protocol.host.hostRedwoodVersion
@@ -47,9 +48,11 @@ import kotlinx.coroutines.coroutineScope
 class ViewRecyclingTester(
   coroutineScope: CoroutineScope,
 ) {
-  private val compositionProtocolBridge = TestSchemaProtocolBridge.create(
+  private val state = DefaultProtocolState(
     hostVersion = hostRedwoodVersion,
   )
+
+  private val compositionProtocolBridge = TestSchemaProtocolBridge.create(state)
 
   internal val composition = TestRedwoodComposition(
     scope = coroutineScope,
@@ -86,7 +89,7 @@ class ViewRecyclingTester(
   /** Returns the a list of value objects. */
   suspend fun awaitSnapshot(): List<WidgetValue> {
     composition.awaitSnapshot()
-    widgetBridge.sendChanges(compositionProtocolBridge.getChangesOrNull() ?: listOf())
+    widgetBridge.sendChanges(state.takeChanges())
     return widgetContainer.map { it.value }
   }
 }

@@ -15,7 +15,9 @@
  */
 package app.cash.redwood.testing
 
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.SnapshotChangeList
+import app.cash.redwood.protocol.guest.DefaultProtocolState
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import kotlinx.serialization.json.Json
@@ -24,19 +26,21 @@ import kotlinx.serialization.json.Json
  * Encode this snapshot of widget values into a list of changes which can be serialized and
  * later applied to the UI to recreate the structure and state.
  */
+@OptIn(RedwoodCodegenApi::class)
 public fun List<WidgetValue>.toChangeList(
   factory: ProtocolBridge.Factory,
   json: Json = Json.Default,
 ): SnapshotChangeList {
-  val bridge = factory.create(
+  val state = DefaultProtocolState(
     // Use latest guest version as the host version to avoid any compatibility behavior.
     hostVersion = guestRedwoodVersion,
     json = json,
   )
+  val bridge = factory.create(state)
   for ((index, child) in withIndex()) {
     bridge.root.insert(index, child.toWidget(bridge.widgetSystem))
   }
-  return SnapshotChangeList(bridge.getChangesOrNull() ?: emptyList())
+  return SnapshotChangeList(state.takeChanges())
 }
 
 /**

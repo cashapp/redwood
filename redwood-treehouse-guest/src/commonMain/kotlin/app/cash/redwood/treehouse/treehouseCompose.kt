@@ -16,9 +16,11 @@
 package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.guest.DefaultProtocolState
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
@@ -38,20 +40,26 @@ import kotlinx.coroutines.plus
 /**
  * The Kotlin/JS side of a treehouse UI.
  */
+@OptIn(RedwoodCodegenApi::class)
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val bridge = appLifecycle.protocolBridgeFactory.create(
+  val state = DefaultProtocolState(
     hostVersion = appLifecycle.hostProtocolVersion,
     json = appLifecycle.json,
+  )
+  val bridge = appLifecycle.protocolBridgeFactory.create(
+    state = state,
     mismatchHandler = appLifecycle.mismatchHandler,
   )
-  return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
+  return RedwoodZiplineTreehouseUi(appLifecycle, this, state, bridge)
 }
 
+@OptIn(RedwoodCodegenApi::class)
 private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
+  private val state: DefaultProtocolState,
   private val bridge: ProtocolBridge,
 ) : ZiplineTreehouseUi,
   ZiplineScoped,
@@ -102,10 +110,17 @@ private class RedwoodZiplineTreehouseUi(
       ): CancellableService = onBackPressedDispatcher.addCallback(onBackPressedCallbackService)
     }
 
-    start(host)
+    start(host, changesSink)
   }
 
   override fun start(host: ZiplineTreehouseUi.Host) {
+    start(host, host)
+  }
+
+  private fun start(
+    host: ZiplineTreehouseUi.Host,
+    changesSink: ChangesSinkService,
+  ) {
     this.saveableStateRegistry = SaveableStateRegistry(
       restoredValues = host.stateSnapshot?.content,
       // Note: values will only be restored by SaveableStateRegistry if `canBeSaved` returns true.
@@ -115,11 +130,13 @@ private class RedwoodZiplineTreehouseUi(
       canBeSaved = { true },
     )
 
+    state.initChangesSink(changesSink)
+
     val composition = ProtocolRedwoodComposition(
       scope = coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
       widgetVersion = appLifecycle.widgetVersion,
-      changesSink = host,
+      onEndChanges = { state.emitChanges() },
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = host.uiConfigurations,

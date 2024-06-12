@@ -15,15 +15,14 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
-import kotlinx.serialization.json.Json
 
 /**
  * Exposes a [Widget.Children] and [WidgetSystem] whose changes can be captured as a list
@@ -44,17 +43,11 @@ public interface ProtocolBridge : EventSink {
    */
   public val widgetSystem: WidgetSystem<Unit>
 
-  /**
-   * Returns any changes to [root] or [widgetSystem]-produced widgets since the last time this
-   * function was called. Returns null if no changes occurred.
-   */
-  public fun getChangesOrNull(): List<Change>?
-
   public interface Factory {
     /** Create a new [ProtocolBridge] with its own protocol state and set of tracked widgets. */
+    @OptIn(RedwoodCodegenApi::class)
     public fun create(
-      hostVersion: RedwoodVersion,
-      json: Json = Json.Default,
+      state: ProtocolState,
       mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
     ): ProtocolBridge
   }
