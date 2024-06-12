@@ -18,7 +18,7 @@ package com.example.redwood.testapp.treehouse
 import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import kotlinx.serialization.json.Json
 
 class RealTestAppPresenter(
@@ -26,7 +26,7 @@ class RealTestAppPresenter(
   json: Json,
 ) : TestAppPresenter {
   override val appLifecycle = StandardAppLifecycle(
-    protocolBridgeFactory = TestSchemaProtocolBridge,
+    protocolWidgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     json = json,
     widgetVersion = 0U,
   )

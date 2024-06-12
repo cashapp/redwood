@@ -21,10 +21,10 @@ public abstract class app/cash/redwood/testing/TestSavedState {
 }
 
 public final class app/cash/redwood/testing/ToChangeListKt {
-	public static final fun toChangeList (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;)Ljava/util/List;
-	public static final fun toChangeList (Ljava/util/List;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;)Ljava/util/List;
-	public static synthetic fun toChangeList$default (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;ILjava/lang/Object;)Ljava/util/List;
-	public static synthetic fun toChangeList$default (Ljava/util/List;Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lkotlinx/serialization/json/Json;ILjava/lang/Object;)Ljava/util/List;
+	public static final fun toChangeList (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lkotlinx/serialization/json/Json;)Ljava/util/List;
+	public static final fun toChangeList (Ljava/util/List;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lkotlinx/serialization/json/Json;)Ljava/util/List;
+	public static synthetic fun toChangeList$default (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lkotlinx/serialization/json/Json;ILjava/lang/Object;)Ljava/util/List;
+	public static synthetic fun toChangeList$default (Ljava/util/List;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lkotlinx/serialization/json/Json;ILjava/lang/Object;)Ljava/util/List;
 }
 
 public abstract interface class app/cash/redwood/testing/WidgetValue {

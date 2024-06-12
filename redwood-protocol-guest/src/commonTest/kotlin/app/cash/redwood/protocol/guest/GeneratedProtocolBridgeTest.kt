@@ -31,7 +31,7 @@ import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.TestScope
-import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.time.Duration
@@ -54,8 +54,8 @@ class GeneratedProtocolBridgeTest {
       hostVersion = guestRedwoodVersion,
       json = json,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
-    val textInput = bridge.widgetSystem.TestSchema.TextInput()
+    val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(state)
+    val textInput = widgetSystem.TestSchema.TextInput()
 
     textInput.customType(10.seconds)
 
@@ -77,8 +77,8 @@ class GeneratedProtocolBridgeTest {
       hostVersion = guestRedwoodVersion,
       json = json,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
-    val button = bridge.widgetSystem.TestSchema.Button()
+    val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(state)
+    val button = widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
       Modifier.customType(10.seconds)
@@ -112,8 +112,8 @@ class GeneratedProtocolBridgeTest {
       hostVersion = guestRedwoodVersion,
       json = json,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
-    val button = bridge.widgetSystem.TestSchema.Button()
+    val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(state)
+    val button = widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
       Modifier.customTypeWithDefault(10.seconds, "sup")
@@ -147,8 +147,8 @@ class GeneratedProtocolBridgeTest {
       hostVersion = guestRedwoodVersion,
       json = json,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
-    val textInput = bridge.widgetSystem.TestSchema.TextInput()
+    val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(state)
+    val textInput = widgetSystem.TestSchema.TextInput()
 
     val protocolWidget = textInput as ProtocolWidget
 
@@ -167,8 +167,8 @@ class GeneratedProtocolBridgeTest {
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
-    val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
+    val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(state)
+    val button = widgetSystem.TestSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.sendEvent(Event(Id(1), EventTag(3456543)))
@@ -183,11 +183,11 @@ class GeneratedProtocolBridgeTest {
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
     )
-    val bridge = TestSchemaProtocolBridge.create(
+    val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(
       state = state,
       mismatchHandler = handler,
     )
-    val button = bridge.widgetSystem.TestSchema.Button() as ProtocolWidget
+    val button = widgetSystem.TestSchema.Button() as ProtocolWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
 
@@ -199,7 +199,10 @@ class GeneratedProtocolBridgeTest {
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
+    val bridge = ProtocolBridge(
+      state = state,
+      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+    )
     val t = assertFailsWith<IllegalArgumentException> {
       bridge.sendEvent(Event(Id(3456543), EventTag(1)))
     }
@@ -212,8 +215,9 @@ class GeneratedProtocolBridgeTest {
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
     )
-    val bridge = TestSchemaProtocolBridge.create(
+    val bridge = ProtocolBridge(
       state = state,
+      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       mismatchHandler = handler,
     )
 

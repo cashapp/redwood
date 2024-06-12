@@ -20,14 +20,13 @@ public final class app/cash/redwood/protocol/guest/DefaultProtocolState : app/ca
 	public final fun takeChanges ()Ljava/util/List;
 }
 
-public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge : app/cash/redwood/protocol/EventSink {
-	public abstract fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
-	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
-}
-
-public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge$Factory {
-	public abstract fun create (Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
-	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+public final class app/cash/redwood/protocol/guest/ProtocolBridge : app/cash/redwood/protocol/EventSink {
+	public static final field $stable I
+	public fun <init> (Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)V
+	public synthetic fun <init> (Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
+	public fun sendEvent (Lapp/cash/redwood/protocol/Event;)V
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolMismatchHandler {
@@ -83,6 +82,11 @@ public final class app/cash/redwood/protocol/guest/ProtocolWidgetChildren : app/
 	public fun move (III)V
 	public fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
 	public fun remove (II)V
+}
+
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory {
+	public abstract fun create (Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/widget/WidgetSystem;
+	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/widget/WidgetSystem;
 }
 
 public final class app/cash/redwood/protocol/guest/VersionKt {

@@ -55,111 +55,44 @@ import com.squareup.kotlinpoet.joinToCode
 private val protocolViewType = UNIT
 
 /*
-class ExampleProtocolBridge private constructor(
-  private val state: ProtocolState,
-  private val mismatchHandler: ProtocolMismatchHandler,
-  override val root: Widget.Children<Unit>,
-  override val widgetSystem: ExampleWidgetSystem<Unit>,
-) : ProtocolBridge {
-  override fun sendEvent(event: Event) {
-    val node = state.getWidget(event.id)
-    if (node != null) {
-      node.sendEvent(event)
-    } else {
-      mismatchHandler.onUnknownEventNode(event.id, event.tag)
-    }
-  }
-
-  companion object : ProtocolBridge.Factory {
-    override fun create(
-      state: ProtocolState,
-      mismatchHandler: ProtocolMismatchHandler,
-    ): ExampleProtocolBridge {
-      val root = ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, state)
-      val widgetSystem = ExampleWidgetSystem(
-          Example = ProtocolExampleWidgetFactory(state, mismatchHandler),
-          RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(state, mismatchHandler),
-      )
-      return ExampleProtocolBridge(state, mismatchHandler, root, widgetSystem)
-    }
+object ExampleProtocolWidgetSystemFactory : ProtocolWidgetSystemFactory {
+  override fun create(
+    state: ProtocolState,
+    mismatchHandler: ProtocolMismatchHandler,
+  ): ExampleProtocolBridge {
+    return ExampleWidgetSystem(
+      Example = ProtocolExampleWidgetFactory(state, mismatchHandler),
+      RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(state, mismatchHandler),
+    )
   }
 }
 */
-internal fun generateProtocolBridge(
+internal fun generateProtocolWidgetSystemFactory(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
-  val type = ClassName(schema.guestProtocolPackage(), "${schema.type.flatName}ProtocolBridge")
+  val type = ClassName(schema.guestProtocolPackage(), "${schema.type.flatName}ProtocolWidgetSystemFactory")
   val widgetSystemType = schema.getWidgetSystemType().parameterizedBy(protocolViewType)
   return FileSpec.builder(type)
     .addAnnotation(suppressDeprecations)
     .addType(
-      TypeSpec.classBuilder(type)
-        .addSuperinterface(ProtocolGuest.ProtocolBridge)
-        .optIn(Redwood.RedwoodCodegenApi)
-        .primaryConstructor(
-          FunSpec.constructorBuilder()
-            .addModifiers(PRIVATE)
+      TypeSpec.objectBuilder(type)
+        .addSuperinterface(ProtocolGuest.ProtocolWidgetSystemFactory)
+        .addFunction(
+          FunSpec.builder("create")
+            .optIn(Redwood.RedwoodCodegenApi)
+            .addModifiers(OVERRIDE)
             .addParameter("state", ProtocolGuest.ProtocolState)
             .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
-            .addParameter("root", RedwoodWidget.WidgetChildren.parameterizedBy(protocolViewType))
-            .addParameter("widgetSystem", widgetSystemType)
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("state", ProtocolGuest.ProtocolState, PRIVATE)
-            .initializer("state")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler, PRIVATE)
-            .initializer("mismatchHandler")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("root", RedwoodWidget.WidgetChildren.parameterizedBy(protocolViewType), OVERRIDE)
-            .initializer("root")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("widgetSystem", widgetSystemType, OVERRIDE)
-            .initializer("widgetSystem")
-            .build(),
-        )
-        .addFunction(
-          FunSpec.builder("sendEvent")
-            .addModifiers(OVERRIDE)
-            .returns(UNIT)
-            .addParameter("event", Protocol.Event)
-            .addStatement("val node = state.getWidget(event.id)")
-            .beginControlFlow("if (node != null)")
-            .addStatement("node.sendEvent(event)")
-            .nextControlFlow("else")
-            .addStatement("mismatchHandler.onUnknownEventNode(event.id, event.tag)")
-            .endControlFlow()
-            .build(),
-        )
-        .addType(
-          TypeSpec.companionObjectBuilder()
-            .addSuperinterface(ProtocolGuest.ProtocolBridgeFactory)
-            .addFunction(
-              FunSpec.builder("create")
-                .addModifiers(OVERRIDE)
-                .addParameter("state", ProtocolGuest.ProtocolState)
-                .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
-                .returns(type)
-                .addStatement("val root = %T(%T.Root, %T.Root, state)", ProtocolGuest.ProtocolWidgetChildren, Protocol.Id, Protocol.ChildrenTag)
-                .apply {
-                  val arguments = buildList {
-                    for (dependency in schemaSet.all) {
-                      add(CodeBlock.of("%N = %T(state, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
-                    }
-                  }
-                  addStatement("val widgetSystem = %T(\n%L)", schema.getWidgetSystemType(), arguments.joinToCode(separator = ",\n"))
+            .returns(widgetSystemType)
+            .apply {
+              val arguments = buildList {
+                for (dependency in schemaSet.all) {
+                  add(CodeBlock.of("%N = %T(state, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
                 }
-                .addStatement("return %T(state, mismatchHandler, root, widgetSystem)", type)
-                .build(),
-            )
+              }
+              addStatement("return %T(\n%L)", schema.getWidgetSystemType(), arguments.joinToCode(separator = ",\n"))
+            }
             .build(),
         )
         .build(),

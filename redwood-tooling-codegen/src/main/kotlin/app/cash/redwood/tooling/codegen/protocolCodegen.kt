@@ -36,7 +36,7 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
   return buildList {
     when (type) {
       Guest -> {
-        add(generateProtocolBridge(this@generateFileSpecs))
+        add(generateProtocolWidgetSystemFactory(this@generateFileSpecs))
         add(generateComposeProtocolModifierSerialization(this@generateFileSpecs))
         for (dependency in all) {
           add(generateProtocolWidgetFactory(dependency, host = schema))

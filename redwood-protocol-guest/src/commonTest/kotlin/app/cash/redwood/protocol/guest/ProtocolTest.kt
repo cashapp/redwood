@@ -55,7 +55,7 @@ import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Button2
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import kotlin.test.Test
 import kotlin.test.fail
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,9 +74,13 @@ class ProtocolTest {
     val state = DefaultProtocolState(
       hostVersion = latestVersion,
     )
+    val bridge = ProtocolBridge(
+      state = state,
+      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+    )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = TestSchemaProtocolBridge.create(state),
+      bridge = bridge,
       widgetVersion = 22U,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -394,7 +398,10 @@ class ProtocolTest {
     val state = DefaultProtocolState(
       hostVersion = hostVersion,
     )
-    val bridge = TestSchemaProtocolBridge.create(state)
+    val bridge = ProtocolBridge(
+      state = state,
+      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+    )
     val composition = TestRedwoodComposition(
       scope = backgroundScope,
       widgetSystem = bridge.widgetSystem,

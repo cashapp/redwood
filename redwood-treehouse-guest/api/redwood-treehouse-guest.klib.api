@@ -7,7 +7,7 @@
 
 // Library unique name: <app.cash.redwood:redwood-treehouse-guest>
 final class app.cash.redwood.treehouse/StandardAppLifecycle : app.cash.redwood.treehouse/AppLifecycle { // app.cash.redwood.treehouse/StandardAppLifecycle|null[0]
-    constructor <init>(app.cash.redwood.protocol.guest/ProtocolBridge.Factory, kotlinx.serialization.json/Json, kotlin/UInt) // app.cash.redwood.treehouse/StandardAppLifecycle.<init>|<init>(app.cash.redwood.protocol.guest.ProtocolBridge.Factory;kotlinx.serialization.json.Json;kotlin.UInt){}[0]
+    constructor <init>(app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory, kotlinx.serialization.json/Json, kotlin/UInt) // app.cash.redwood.treehouse/StandardAppLifecycle.<init>|<init>(app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory;kotlinx.serialization.json.Json;kotlin.UInt){}[0]
     final fun sendFrame(kotlin/Long) // app.cash.redwood.treehouse/StandardAppLifecycle.sendFrame|sendFrame(kotlin.Long){}[0]
     final fun start(app.cash.redwood.treehouse/AppLifecycle.Host) // app.cash.redwood.treehouse/StandardAppLifecycle.start|start(app.cash.redwood.treehouse.AppLifecycle.Host){}[0]
     final val frameClock // app.cash.redwood.treehouse/StandardAppLifecycle.frameClock|{}frameClock[0]

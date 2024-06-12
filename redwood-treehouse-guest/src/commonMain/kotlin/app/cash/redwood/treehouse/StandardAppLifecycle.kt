@@ -21,8 +21,8 @@ import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.treehouse.AppLifecycle.Host
 import app.cash.zipline.ZiplineApiMismatchException
@@ -32,7 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 
 public class StandardAppLifecycle(
-  internal val protocolBridgeFactory: ProtocolBridge.Factory,
+  internal val protocolWidgetSystemFactory: ProtocolWidgetSystemFactory,
   internal val json: Json,
   internal val widgetVersion: UInt,
 ) : AppLifecycle {
