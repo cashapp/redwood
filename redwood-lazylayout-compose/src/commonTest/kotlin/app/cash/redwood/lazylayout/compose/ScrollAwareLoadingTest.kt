@@ -20,7 +20,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.testing.TestSchemaTester
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -127,10 +126,7 @@ class ScrollAwareLoadingTest {
     }
   }
 
-  // TODO(dylan+jwilson): We haven't implemented this behavior yet.
-  // The idea here is to prevent evicting items if the old range and new range are contiguous.
   @Test
-  @Ignore
   fun dontUnloadTheExistingLoadedWindow() = runTest {
     TestSchemaTester {
       setContent {
@@ -157,7 +153,13 @@ class ScrollAwareLoadingTest {
       // But when we need to evict, we evict it all.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(16, 26 + 5)
+        lazyList.assertLoadedWindow(15, 26 + 5)
+      }
+
+      // Once "at rest", we can grow the window in both directions.
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        lazyList.assertLoadedWindow(6, 26 + 20)
       }
     }
   }

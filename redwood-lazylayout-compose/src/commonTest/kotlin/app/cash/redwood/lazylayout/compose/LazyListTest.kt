@@ -154,7 +154,16 @@ class LazyListTest {
       awaitSnapshot()
       assertThat(index5ComposeCount).isEqualTo(1)
 
-      // But it's recomposed again when scrolled back on screen.
+      // The item at index 5 remains composed because (6, 10) is contiguous with (4, 8).
+      lazyList.onViewportChanged(4, 8)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
+      // Scrolling to a non-contiguous range causes a recomposition.
+      lazyList.onViewportChanged(9, 13)
+      awaitSnapshot()
+      assertThat(index5ComposeCount).isEqualTo(1)
+
       lazyList.onViewportChanged(4, 8)
       awaitSnapshot()
       assertThat(index5ComposeCount).isEqualTo(2)

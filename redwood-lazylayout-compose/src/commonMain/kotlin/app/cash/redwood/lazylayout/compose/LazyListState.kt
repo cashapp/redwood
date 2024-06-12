@@ -82,6 +82,7 @@ public open class LazyListState {
 
   private var firstIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
   private var firstIndexFromPrevious2: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+  private var lastIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(
@@ -115,54 +116,77 @@ public open class LazyListState {
   }
 
   public fun loadRange(itemCount: Int): IntRange {
-    val preloadBeforeItemCount: Int
-    val preloadAfterItemCount: Int
+    // Ensure that the range includes `firstIndex` through `lastIndex`.
+    var begin = firstIndex
+    var end = lastIndex
 
+    val isScrollingDown = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 < firstIndex
+    val isScrollingUp = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 > firstIndex
+    val hasStoppedScrolling = firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndex == firstIndexFromPrevious1
+    val wasScrollingDown = firstIndexFromPrevious1 > firstIndexFromPrevious2
+    val wasScrollingUp = firstIndexFromPrevious1 < firstIndexFromPrevious2
+
+    // Expand the range depending on scroll direction.
     when {
       // Ignore preloads.
       !preloadItems -> {
-        preloadBeforeItemCount = 0
-        preloadAfterItemCount = 0
+        // No-op
       }
 
-      // Scrolling down.
-      firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 < firstIndex -> {
-        preloadBeforeItemCount = 0
-        preloadAfterItemCount = scrollInProgressPreloadItemCount
+      isScrollingDown -> {
+        end += scrollInProgressPreloadItemCount
       }
 
-      // Scrolling up.
-      firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 > firstIndex -> {
-        preloadBeforeItemCount = scrollInProgressPreloadItemCount
-        preloadAfterItemCount = 0
+      isScrollingUp -> {
+        begin -= scrollInProgressPreloadItemCount
       }
 
-      // Stopped scrolling down.
-      firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious2 < firstIndex -> {
-        preloadBeforeItemCount = secondaryPreloadItemCount
-        preloadAfterItemCount = primaryPreloadItemCount
+      hasStoppedScrolling && wasScrollingDown -> {
+        begin -= secondaryPreloadItemCount
+        end += primaryPreloadItemCount
       }
 
-      // Stopped scrolling up.
-      firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious2 > firstIndex -> {
-        preloadBeforeItemCount = primaryPreloadItemCount
-        preloadAfterItemCount = secondaryPreloadItemCount
+      hasStoppedScrolling && wasScrollingUp -> {
+        begin -= primaryPreloadItemCount
+        end += secondaryPreloadItemCount
       }
 
       // New.
       else -> {
-        preloadBeforeItemCount = defaultPreloadItemCount
-        preloadAfterItemCount = defaultPreloadItemCount
+        end += defaultPreloadItemCount
       }
     }
 
-    // TODO(dylan+jwilson): If we're contiguous with our previous loaded range,
-    //  don't rush to remove things from the previous range.
-    val begin = (firstIndex - preloadBeforeItemCount).coerceAtLeast(0)
-    val end = (lastIndex + preloadAfterItemCount).coerceAtMost(itemCount).coerceAtLeast(0)
+    // On initial load, set lastIndex to the end of the loaded window.
+    if (lastIndex == 0) {
+      lastIndex = end
+    }
+
+    // If we're contiguous with the previous loaded range,
+    // don't rush to remove things from the previous range.
+    if (firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX &&
+      lastIndexFromPrevious1 != DEFAULT_SCROLL_INDEX
+    ) {
+      // Case one: Contiguous scroll down
+      // Previous: [firstIndexFromPrevious1...lastIndexFromPrevious1]
+      // Current requested range:           [begin.....................end]
+      // Solution: [firstIndexFromPrevious1............................end]
+      if (begin in firstIndexFromPrevious1..lastIndexFromPrevious1) {
+        begin = firstIndexFromPrevious1
+      }
+
+      // Case two: Contiguous scroll up
+      if (end in firstIndexFromPrevious1..lastIndexFromPrevious1) {
+        end = lastIndexFromPrevious1
+      }
+    }
+
+    begin = begin.coerceAtLeast(0)
+    end = end.coerceAtMost(itemCount).coerceAtLeast(0)
 
     this.firstIndexFromPrevious2 = firstIndexFromPrevious1
     this.firstIndexFromPrevious1 = firstIndex
+    this.lastIndexFromPrevious1 = lastIndex
 
     return begin until end
   }
