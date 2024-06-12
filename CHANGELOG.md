@@ -4,11 +4,13 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.11.0...HEAD
 
 New:
-- Added a basic DOM-based LazyList implementation.
+- Upgrade to Kotlin 2.0!
+- Added a basic DOM-based `LazyList` implementation.
 -`TreehouseApp.close()` stops the app and prevents it from being started again later.
 - Added `UiConfiguration.layoutDirection` to support reading the host's layout direction.
 
 Changed:
+- The `app.cash.redwood` Gradle plugin has been removed. This plugin did two things: apply the Compose compiler and add a dependency on the `redwood-compose` artifact. The Compose compiler can now be added by applying the `org.jetbrains.kotlin.plugin.compose` Gradle plugin. Dependencies on Redwood artifacts can be added manually.
 - Removed deprecated `typealias`es for generated `-WidgetFactories` type which was renamed to `-WidgetSystem` in 0.10.0.
 - Removed deprecated `Modifier.flex` extension function which is now supported natively by `Row` and `Column` since 0.8.0.
 - Removed deprecated `TreehouseWidgetView` and `TreehouseUIKitView` type aliases for `TreehouseLayout` and `TreehouseUIView` which were renamed in 0.7.0.
@@ -25,6 +27,11 @@ Breaking:
 -`Content.awaitContent()` now accepts an optional `Int` parameter for the number of updates to
  observe before the function returns.
 - MacOS targets have been (temporarily) removed from all modules.
+
+Upgraded:
+- Kotlin 2.0.0
+- Zipline 1.11.0
+- kotlinx.serialization 1.7.0
 
 
 ## [0.11.0] - 2024-05-15
