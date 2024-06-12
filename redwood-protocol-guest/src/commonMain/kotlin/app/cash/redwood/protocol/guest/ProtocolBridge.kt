@@ -16,44 +16,101 @@
 package app.cash.redwood.protocol.guest
 
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.protocol.Change
+import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.ModifierElement
+import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
 
 /**
- * Exposes a [Widget.Children] and [WidgetSystem] whose changes can be captured as a list
- * of [Change]s to send to a remote frontend. Incoming [Event]s can also be sent to this instance
- * and will be routed to the appropriate handler.
+ * Connects the guest (composition) of a Redwood UI to the host of that UI.
+ *
+ * Guest widgets use this to send view tree updates to the host, and to receive user events from the
+ * host.
+ *
+ * This interface is for generated code use only.
  */
-@OptIn(RedwoodCodegenApi::class)
-public class ProtocolBridge(
-  private val state: ProtocolState,
-  widgetSystemFactory: ProtocolWidgetSystemFactory,
-  private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : EventSink {
+@RedwoodCodegenApi
+public interface ProtocolBridge : EventSink {
+  public val json: Json
+
+  /**
+   * Host versions prior to 0.10.0 contained a bug where they did not recursively remove widgets
+   * from the protocol map which leaked any child views of a removed node. We can work around this
+   * on the guest side by synthesizing removes for every node in the subtree.
+   */
+  public val synthesizeSubtreeRemoval: Boolean
+
   /**
    * The provider of factories of widgets which record property changes and whose children changes
    * are also recorded. You **must** attach returned widgets to [root] or the children of a widget
    * in the tree beneath [root] in order for it to be tracked.
    */
-  public val widgetSystem: WidgetSystem<Unit> = widgetSystemFactory.create(state, mismatchHandler)
+  public val widgetSystem: WidgetSystem<Unit>
 
   /**
    * The root of the widget tree onto which [widgetSystem]-produced widgets can be added. Changes to
    * this instance are recorded as changes to [Id.Root] and [ChildrenTag.Root].
    */
-  public val root: Widget.Children<Unit> = ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, state)
+  public val root: Widget.Children<Unit>
 
-  override fun sendEvent(event: Event) {
-    val node = state.getWidget(event.id)
-    if (node != null) {
-      node.sendEvent(event)
-    } else {
-      mismatchHandler.onUnknownEventNode(event.id, event.tag)
-    }
-  }
+  public fun initChangesSink(changesSink: ChangesSink)
+
+  public fun emitChanges()
+
+  public fun nextId(): Id
+
+  public fun appendCreate(
+    id: Id,
+    tag: WidgetTag,
+  )
+
+  public fun <T> appendPropertyChange(
+    id: Id,
+    tag: PropertyTag,
+    serializer: KSerializer<T>,
+    value: T,
+  )
+
+  public fun appendPropertyChange(
+    id: Id,
+    tag: PropertyTag,
+    value: Boolean,
+  )
+
+  public fun appendModifierChange(
+    id: Id,
+    elements: List<ModifierElement>,
+  )
+
+  public fun appendAdd(
+    id: Id,
+    tag: ChildrenTag,
+    index: Int,
+    child: ProtocolWidget,
+  )
+
+  public fun appendMove(
+    id: Id,
+    tag: ChildrenTag,
+    fromIndex: Int,
+    toIndex: Int,
+    count: Int,
+  )
+
+  public fun appendRemove(
+    id: Id,
+    tag: ChildrenTag,
+    index: Int,
+    count: Int,
+    removedIds: List<Id> = listOf(),
+  )
+
+  public fun removeWidget(id: Id)
 }

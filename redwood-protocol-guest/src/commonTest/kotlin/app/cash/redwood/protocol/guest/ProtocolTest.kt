@@ -71,11 +71,8 @@ class ProtocolTest {
   private val latestVersion = guestRedwoodVersion
 
   @Test fun widgetVersionPropagated() = runTest {
-    val state = DefaultProtocolState(
+    val bridge = DefaultProtocolBridge(
       hostVersion = latestVersion,
-    )
-    val bridge = ProtocolBridge(
-      state = state,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = ProtocolRedwoodComposition(
@@ -92,7 +89,7 @@ class ProtocolTest {
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
       onEndChanges = {
-        assertThat(state.takeChanges()).isEmpty()
+        assertThat(bridge.takeChanges()).isEmpty()
       },
     )
 
@@ -395,11 +392,8 @@ class ProtocolTest {
   private fun TestScope.testProtocolComposition(
     hostVersion: RedwoodVersion = latestVersion,
   ): Pair<TestRedwoodComposition<List<Change>>, ProtocolBridge> {
-    val state = DefaultProtocolState(
+    val bridge = DefaultProtocolBridge(
       hostVersion = hostVersion,
-    )
-    val bridge = ProtocolBridge(
-      state = state,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = TestRedwoodComposition(
@@ -407,7 +401,7 @@ class ProtocolTest {
       widgetSystem = bridge.widgetSystem,
       container = bridge.root,
     ) {
-      state.takeChanges()
+      bridge.takeChanges()
     }
     backgroundScope.coroutineContext.job.invokeOnCompletion {
       composition.cancel()

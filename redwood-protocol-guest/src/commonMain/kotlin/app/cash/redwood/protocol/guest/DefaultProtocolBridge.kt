@@ -21,6 +21,7 @@ import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Create
+import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.ModifierElement
@@ -28,22 +29,40 @@ import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.widget.WidgetSystem
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 
 /** @suppress For generated code use only. */
 @RedwoodCodegenApi
-public class DefaultProtocolState(
+public class DefaultProtocolBridge(
   public override val json: Json = Json.Default,
   hostVersion: RedwoodVersion,
-) : ProtocolState {
+  widgetSystemFactory: ProtocolWidgetSystemFactory,
+  private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
+) : ProtocolBridge {
   private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Int, ProtocolWidget>()
-  private var changes = mutableListOf<Change>()
+  private val changes = mutableListOf<Change>()
   private lateinit var changesSink: ChangesSink
 
+  public override val widgetSystem: WidgetSystem<Unit> =
+    widgetSystemFactory.create(this, mismatchHandler)
+
+  public override val root: ProtocolWidgetChildren =
+    ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, this)
+
   public override val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
+
+  override fun sendEvent(event: Event) {
+    val node = widgets[event.id.value]
+    if (node != null) {
+      node.sendEvent(event)
+    } else {
+      mismatchHandler.onUnknownEventNode(event.id, event.tag)
+    }
+  }
 
   override fun initChangesSink(changesSink: ChangesSink) {
     this.changesSink = changesSink
@@ -91,10 +110,14 @@ public class DefaultProtocolState(
   public override fun appendAdd(
     id: Id,
     tag: ChildrenTag,
-    childId: Id,
     index: Int,
+    child: ProtocolWidget,
   ) {
-    changes.add(ChildrenChange.Add(id, tag, childId, index))
+    val replaced = widgets.put(child.id.value, child)
+    check(replaced == null) {
+      "Attempted to add widget with ID ${child.id} but one already exists"
+    }
+    changes.add(ChildrenChange.Add(id, tag, child.id, index))
   }
 
   public override fun appendMove(
@@ -128,17 +151,7 @@ public class DefaultProtocolState(
     changesSink.sendChanges(takeChanges())
   }
 
-  public override fun addWidget(widget: ProtocolWidget) {
-    val idValue = widget.id.value
-    check(idValue !in widgets) {
-      "Attempted to add widget with ID $idValue but one already exists"
-    }
-    widgets[idValue] = widget
-  }
-
   public override fun removeWidget(id: Id) {
     widgets.remove(id.value)
   }
-
-  public override fun getWidget(id: Id): ProtocolWidget? = widgets[id.value]
 }
