@@ -22,6 +22,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.protocol.guest.DefaultProtocolState
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.protocol.host.hostRedwoodVersion
@@ -53,23 +54,24 @@ class DirectChangeListenerTest : AbstractChangeListenerTest() {
 }
 
 class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
+  @OptIn(RedwoodCodegenApi::class)
   override fun <T> CoroutineScope.launchComposition(
     widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T> {
-    val composeBridge = TestSchemaProtocolBridge.create(
+    val state = DefaultProtocolState(
       hostVersion = hostRedwoodVersion,
     )
+    val composeBridge = TestSchemaProtocolBridge.create(state)
     val widgetBridge = ProtocolBridge(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(widgetSystem),
       eventSink = { throw AssertionError() },
     )
+    state.initChangesSink(widgetBridge)
     return TestRedwoodComposition(this, composeBridge.widgetSystem, composeBridge.root) {
-      composeBridge.getChangesOrNull()?.let { changes ->
-        widgetBridge.sendChanges(changes)
-      }
+      state.emitChanges()
       snapshot()
     }
   }

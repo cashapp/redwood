@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
@@ -46,6 +47,7 @@ import app.cash.redwood.ui.UiConfiguration
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.message
@@ -63,15 +65,18 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 
+@OptIn(RedwoodCodegenApi::class)
 class ProtocolTest {
   // Use latest guest version as the host version to avoid any compatibility behavior.
   private val latestVersion = guestRedwoodVersion
 
   @Test fun widgetVersionPropagated() = runTest {
+    val state = DefaultProtocolState(
+      hostVersion = latestVersion,
+    )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = TestSchemaProtocolBridge.create(latestVersion),
-      changesSink = ::error,
+      bridge = TestSchemaProtocolBridge.create(state),
       widgetVersion = 22U,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -82,6 +87,9 @@ class ProtocolTest {
       },
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
+      onEndChanges = {
+        assertThat(state.takeChanges()).isEmpty()
+      },
     )
 
     var actualDisplayVersion = 0U
@@ -383,13 +391,16 @@ class ProtocolTest {
   private fun TestScope.testProtocolComposition(
     hostVersion: RedwoodVersion = latestVersion,
   ): Pair<TestRedwoodComposition<List<Change>>, ProtocolBridge> {
-    val bridge = TestSchemaProtocolBridge.create(hostVersion)
+    val state = DefaultProtocolState(
+      hostVersion = hostVersion,
+    )
+    val bridge = TestSchemaProtocolBridge.create(state)
     val composition = TestRedwoodComposition(
       scope = backgroundScope,
       widgetSystem = bridge.widgetSystem,
       container = bridge.root,
     ) {
-      bridge.getChangesOrNull() ?: emptyList()
+      state.takeChanges()
     }
     backgroundScope.coroutineContext.job.invokeOnCompletion {
       composition.cancel()
