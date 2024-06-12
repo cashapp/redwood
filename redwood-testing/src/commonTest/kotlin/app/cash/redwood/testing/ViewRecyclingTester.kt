@@ -32,7 +32,7 @@ import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
@@ -52,7 +52,10 @@ class ViewRecyclingTester(
     hostVersion = hostRedwoodVersion,
   )
 
-  private val compositionProtocolBridge = TestSchemaProtocolBridge.create(state)
+  private val compositionProtocolBridge = app.cash.redwood.protocol.guest.ProtocolBridge(
+    state = state,
+    widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+  )
 
   internal val composition = TestRedwoodComposition(
     scope = coroutineScope,

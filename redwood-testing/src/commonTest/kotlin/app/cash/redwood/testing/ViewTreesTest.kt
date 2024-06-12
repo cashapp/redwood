@@ -46,7 +46,7 @@ import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Split
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
@@ -108,9 +108,9 @@ class ViewTreesTest {
     )
 
     // Ensure the normal view tree APIs produce the expected list of changes.
-    assertThat(snapshot.toChangeList(TestSchemaProtocolBridge).changes)
+    assertThat(snapshot.toChangeList(TestSchemaProtocolWidgetSystemFactory).changes)
       .isEqualTo(expected)
-    assertThat(snapshot.single().toChangeList(TestSchemaProtocolBridge).changes)
+    assertThat(snapshot.single().toChangeList(TestSchemaProtocolWidgetSystemFactory).changes)
       .isEqualTo(expected)
 
     // Validate that the normal Compose protocol backend produces the same list of changes.
@@ -118,9 +118,13 @@ class ViewTreesTest {
     val state = DefaultProtocolState(
       hostVersion = hostRedwoodVersion,
     )
+    val bridge = app.cash.redwood.protocol.guest.ProtocolBridge(
+      state = state,
+      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+    )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = TestSchemaProtocolBridge.create(state),
+      bridge = bridge,
       onEndChanges = { protocolChanges += state.takeChanges() },
       widgetVersion = UInt.MAX_VALUE,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {

@@ -48,8 +48,9 @@ public fun TreehouseUi.asZiplineTreehouseUi(
     hostVersion = appLifecycle.hostProtocolVersion,
     json = appLifecycle.json,
   )
-  val bridge = appLifecycle.protocolBridgeFactory.create(
+  val bridge = ProtocolBridge(
     state = state,
+    widgetSystemFactory = appLifecycle.protocolWidgetSystemFactory,
     mismatchHandler = appLifecycle.mismatchHandler,
   )
   return RedwoodZiplineTreehouseUi(appLifecycle, this, state, bridge)

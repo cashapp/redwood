@@ -37,7 +37,7 @@ import com.example.redwood.testapp.compose.ScopedTestRow
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.compose.TestScope
 import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolBridge
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetFactory
@@ -62,7 +62,10 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
     val state = DefaultProtocolState(
       hostVersion = hostRedwoodVersion,
     )
-    val composeBridge = TestSchemaProtocolBridge.create(state)
+    val compositionBridge = app.cash.redwood.protocol.guest.ProtocolBridge(
+      state = state,
+      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+    )
     val widgetBridge = ProtocolBridge(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
@@ -70,7 +73,7 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
       eventSink = { throw AssertionError() },
     )
     state.initChangesSink(widgetBridge)
-    return TestRedwoodComposition(this, composeBridge.widgetSystem, composeBridge.root) {
+    return TestRedwoodComposition(this, compositionBridge.widgetSystem, compositionBridge.root) {
       state.emitChanges()
       snapshot()
     }

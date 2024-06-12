@@ -19,6 +19,7 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.guest.DefaultProtocolState
 import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import kotlinx.serialization.json.Json
 
@@ -28,7 +29,7 @@ import kotlinx.serialization.json.Json
  */
 @OptIn(RedwoodCodegenApi::class)
 public fun List<WidgetValue>.toChangeList(
-  factory: ProtocolBridge.Factory,
+  factory: ProtocolWidgetSystemFactory,
   json: Json = Json.Default,
 ): SnapshotChangeList {
   val state = DefaultProtocolState(
@@ -36,7 +37,10 @@ public fun List<WidgetValue>.toChangeList(
     hostVersion = guestRedwoodVersion,
     json = json,
   )
-  val bridge = factory.create(state)
+  val bridge = ProtocolBridge(
+    state = state,
+    widgetSystemFactory = factory,
+  )
   for ((index, child) in withIndex()) {
     bridge.root.insert(index, child.toWidget(bridge.widgetSystem))
   }
@@ -48,7 +52,7 @@ public fun List<WidgetValue>.toChangeList(
  * later applied to the UI to recreate the structure and state.
  */
 public fun WidgetValue.toChangeList(
-  factory: ProtocolBridge.Factory,
+  factory: ProtocolWidgetSystemFactory,
   json: Json = Json.Default,
 ): SnapshotChangeList {
   return listOf(this).toChangeList(factory, json)

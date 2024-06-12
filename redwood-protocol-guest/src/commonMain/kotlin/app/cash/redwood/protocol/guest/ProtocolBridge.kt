@@ -29,26 +29,31 @@ import app.cash.redwood.widget.WidgetSystem
  * of [Change]s to send to a remote frontend. Incoming [Event]s can also be sent to this instance
  * and will be routed to the appropriate handler.
  */
-public interface ProtocolBridge : EventSink {
-  /**
-   * The root of the widget tree onto which [widgetSystem]-produced widgets can be added. Changes to
-   * this instance are recorded as changes to [Id.Root] and [ChildrenTag.Root].
-   */
-  public val root: Widget.Children<Unit>
-
+@OptIn(RedwoodCodegenApi::class)
+public class ProtocolBridge(
+  private val state: ProtocolState,
+  widgetSystemFactory: ProtocolWidgetSystemFactory,
+  private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
+) : EventSink {
   /**
    * The provider of factories of widgets which record property changes and whose children changes
    * are also recorded. You **must** attach returned widgets to [root] or the children of a widget
    * in the tree beneath [root] in order for it to be tracked.
    */
-  public val widgetSystem: WidgetSystem<Unit>
+  public val widgetSystem: WidgetSystem<Unit> = widgetSystemFactory.create(state, mismatchHandler)
 
-  public interface Factory {
-    /** Create a new [ProtocolBridge] with its own protocol state and set of tracked widgets. */
-    @OptIn(RedwoodCodegenApi::class)
-    public fun create(
-      state: ProtocolState,
-      mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-    ): ProtocolBridge
+  /**
+   * The root of the widget tree onto which [widgetSystem]-produced widgets can be added. Changes to
+   * this instance are recorded as changes to [Id.Root] and [ChildrenTag.Root].
+   */
+  public val root: Widget.Children<Unit> = ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, state)
+
+  override fun sendEvent(event: Event) {
+    val node = state.getWidget(event.id)
+    if (node != null) {
+      node.sendEvent(event)
+    } else {
+      mismatchHandler.onUnknownEventNode(event.id, event.tag)
+    }
   }
 }
