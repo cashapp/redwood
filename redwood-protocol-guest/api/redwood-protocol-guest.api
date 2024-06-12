@@ -1,12 +1,33 @@
+public final class app/cash/redwood/protocol/guest/DefaultProtocolState : app/cash/redwood/protocol/guest/ProtocolState {
+	public static final field $stable I
+	public synthetic fun <init> (Lkotlinx/serialization/json/Json;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlinx/serialization/json/Json;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun addWidget (Lapp/cash/redwood/protocol/guest/ProtocolWidget;)V
+	public fun appendAdd-11bgaWM (IIII)V
+	public fun appendCreate-kyz2zXs (II)V
+	public fun appendModifierChange-z3jyS0k (ILjava/util/List;)V
+	public fun appendMove-HpxY78w (IIIII)V
+	public fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
+	public fun appendPropertyChange-e3iP1vo (IIZ)V
+	public fun appendRemove-HpxY78w (IIIILjava/util/List;)V
+	public fun emitChanges ()V
+	public fun getJson ()Lkotlinx/serialization/json/Json;
+	public fun getSynthesizeSubtreeRemoval ()Z
+	public fun getWidget-ou3jOuA (I)Lapp/cash/redwood/protocol/guest/ProtocolWidget;
+	public fun initChangesSink (Lapp/cash/redwood/protocol/ChangesSink;)V
+	public fun nextId-0HhLjSo ()I
+	public fun removeWidget-ou3jOuA (I)V
+	public final fun takeChanges ()Ljava/util/List;
+}
+
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge : app/cash/redwood/protocol/EventSink {
-	public abstract fun getChangesOrNull ()Ljava/util/List;
 	public abstract fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge$Factory {
-	public abstract fun create-Bvskwvs (Ljava/lang/String;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
-	public static synthetic fun create-Bvskwvs$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Ljava/lang/String;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+	public abstract fun create (Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
+	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge$Factory;Lapp/cash/redwood/protocol/guest/ProtocolState;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/guest/ProtocolBridge;
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolMismatchHandler {
@@ -20,19 +41,27 @@ public final class app/cash/redwood/protocol/guest/ProtocolMismatchHandler$Compa
 }
 
 public final class app/cash/redwood/protocol/guest/ProtocolRedwoodCompositionKt {
-	public static final fun ProtocolRedwoodComposition-7J1iaxU (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/protocol/guest/ProtocolBridge;Lapp/cash/redwood/protocol/ChangesSink;ILapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static final fun ProtocolRedwoodComposition-C-DY9sE (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/protocol/guest/ProtocolBridge;ILapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static synthetic fun ProtocolRedwoodComposition-C-DY9sE$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/protocol/guest/ProtocolBridge;ILapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/compose/RedwoodComposition;
 }
 
-public final class app/cash/redwood/protocol/guest/ProtocolState {
-	public static final field $stable I
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun addWidget (Lapp/cash/redwood/protocol/guest/ProtocolWidget;)V
-	public final fun append (Lapp/cash/redwood/protocol/Change;)V
-	public final fun getChangesOrNull ()Ljava/util/List;
-	public final fun getSynthesizeSubtreeRemoval ()Z
-	public final fun getWidget-ou3jOuA (I)Lapp/cash/redwood/protocol/guest/ProtocolWidget;
-	public final fun nextId-0HhLjSo ()I
-	public final fun removeWidget-ou3jOuA (I)V
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolState {
+	public abstract fun addWidget (Lapp/cash/redwood/protocol/guest/ProtocolWidget;)V
+	public abstract fun appendAdd-11bgaWM (IIII)V
+	public abstract fun appendCreate-kyz2zXs (II)V
+	public abstract fun appendModifierChange-z3jyS0k (ILjava/util/List;)V
+	public abstract fun appendMove-HpxY78w (IIIII)V
+	public abstract fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
+	public abstract fun appendPropertyChange-e3iP1vo (IIZ)V
+	public abstract fun appendRemove-HpxY78w (IIIILjava/util/List;)V
+	public static synthetic fun appendRemove-HpxY78w$default (Lapp/cash/redwood/protocol/guest/ProtocolState;IIIILjava/util/List;ILjava/lang/Object;)V
+	public abstract fun emitChanges ()V
+	public abstract fun getJson ()Lkotlinx/serialization/json/Json;
+	public abstract fun getSynthesizeSubtreeRemoval ()Z
+	public abstract fun getWidget-ou3jOuA (I)Lapp/cash/redwood/protocol/guest/ProtocolWidget;
+	public abstract fun initChangesSink (Lapp/cash/redwood/protocol/ChangesSink;)V
+	public abstract fun nextId-0HhLjSo ()I
+	public abstract fun removeWidget-ou3jOuA (I)V
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget : app/cash/redwood/widget/Widget {
