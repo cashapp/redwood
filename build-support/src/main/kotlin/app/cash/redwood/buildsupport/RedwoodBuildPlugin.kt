@@ -358,8 +358,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
   }
 
   override fun publishing() {
+    val isBom = project.path == ":redwood-bom"
+
     project.plugins.apply("com.vanniktech.maven.publish")
-    project.plugins.apply("org.jetbrains.dokka")
 
     val publishing = project.extensions.getByName("publishing") as PublishingExtension
     publishing.apply {
@@ -434,42 +435,46 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       }
     }
 
-    // DokkaTaskPartial configures subprojects for multimodule docs
-    // All options: https://kotlinlang.org/docs/dokka-gradle.html#configuration-options
-    project.tasks.withType(DokkaTaskPartial::class.java) { task ->
-      task.dokkaSourceSets.configureEach {
-        it.suppressGeneratedFiles.set(false) // document generated code
+    if (!isBom) {
+      project.plugins.apply("org.jetbrains.dokka")
+
+      // DokkaTaskPartial configures subprojects for multimodule docs
+      // All options: https://kotlinlang.org/docs/dokka-gradle.html#configuration-options
+      project.tasks.withType(DokkaTaskPartial::class.java) { task ->
+        task.dokkaSourceSets.configureEach {
+          it.suppressGeneratedFiles.set(false) // document generated code
+        }
       }
-    }
 
-    // Published modules should be explicit about their API visibility.
-    var explicit = false
-    project.withKotlinPlugins {
-      explicitApi()
-      explicit = true
-    }
-    project.afterEvaluate {
-      check(explicit) {
-        """Project "${project.path}" has unknown Kotlin plugin which needs explicit API tracking"""
+      // Published modules should be explicit about their API visibility.
+      var explicit = false
+      project.withKotlinPlugins {
+        explicitApi()
+        explicit = true
       }
-    }
+      project.afterEvaluate {
+        check(explicit) {
+          """Project "${project.path}" has unknown Kotlin plugin which needs explicit API tracking"""
+        }
+      }
 
-    // Published modules should track their public API.
-    project.plugins.apply("org.jetbrains.kotlinx.binary-compatibility-validator")
-    val apiValidation = project.extensions.getByName("apiValidation") as ApiValidationExtension
+      // Published modules should track their public API.
+      project.plugins.apply("org.jetbrains.kotlinx.binary-compatibility-validator")
+      val apiValidation = project.extensions.getByName("apiValidation") as ApiValidationExtension
 
-    @OptIn(ExperimentalBCVApi::class)
-    apiValidation.apply {
-      klib.enabled = true
+      @OptIn(ExperimentalBCVApi::class)
+      apiValidation.apply {
+        klib.enabled = true
 
-      // We run API checks on a Mac where all possible Kotlin targets are available.
-      // Setting this to true will allow us to catch when targets are removed.
-      klib.strictValidation = isCiEnvironment
+        // We run API checks on a Mac where all possible Kotlin targets are available.
+        // Setting this to true will allow us to catch when targets are removed.
+        klib.strictValidation = isCiEnvironment
 
-      nonPublicMarkers += listOf(
-        // The yoga module is an implementation detail of our layouts.
-        "app.cash.redwood.yoga.RedwoodYogaApi",
-      )
+        nonPublicMarkers += listOf(
+          // The yoga module is an implementation detail of our layouts.
+          "app.cash.redwood.yoga.RedwoodYogaApi",
+        )
+      }
     }
   }
 
