@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.testing
 
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.guest.DefaultProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
@@ -26,7 +25,6 @@ import kotlinx.serialization.json.Json
  * Encode this snapshot of widget values into a list of changes which can be serialized and
  * later applied to the UI to recreate the structure and state.
  */
-@OptIn(RedwoodCodegenApi::class)
 public fun List<WidgetValue>.toChangeList(
   factory: ProtocolWidgetSystemFactory,
   json: Json = Json.Default,

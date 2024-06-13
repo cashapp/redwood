@@ -30,15 +30,6 @@ kotlin {
         implementation projects.testApp.schema.protocolGuest
       }
     }
-    nonJsMain {
-      dependsOn(commonMain)
-    }
-    jvmMain {
-      dependsOn(nonJsMain)
-    }
-    nativeMain {
-      dependsOn(nonJsMain)
-    }
   }
 }
 

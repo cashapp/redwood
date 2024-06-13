@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
@@ -65,7 +64,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 
-@OptIn(RedwoodCodegenApi::class)
 class ProtocolTest {
   // Use latest guest version as the host version to avoid any compatibility behavior.
   private val latestVersion = guestRedwoodVersion

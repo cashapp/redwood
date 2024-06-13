@@ -54,7 +54,6 @@ class DirectChangeListenerTest : AbstractChangeListenerTest() {
 }
 
 class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
-  @OptIn(RedwoodCodegenApi::class)
   override fun <T> CoroutineScope.launchComposition(
     widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
