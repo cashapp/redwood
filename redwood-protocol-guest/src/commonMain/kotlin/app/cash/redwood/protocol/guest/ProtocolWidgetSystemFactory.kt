@@ -20,9 +20,9 @@ import app.cash.redwood.widget.WidgetSystem
 
 @OptIn(RedwoodCodegenApi::class)
 public interface ProtocolWidgetSystemFactory {
-  /** Create a new [WidgetSystem] that performs its updates on [state]. */
+  /** Create a new [WidgetSystem] connected to a host via [bridge]. */
   public fun create(
-    state: ProtocolState,
+    bridge: ProtocolBridge,
     mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
   ): WidgetSystem<Unit>
 }

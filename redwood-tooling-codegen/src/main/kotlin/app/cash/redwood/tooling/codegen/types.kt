@@ -26,24 +26,20 @@ import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 
 internal object Protocol {
-  val Create = ClassName("app.cash.redwood.protocol", "Create")
-  val Change = ClassName("app.cash.redwood.protocol", "Change")
   val ChildrenTag = ClassName("app.cash.redwood.protocol", "ChildrenTag")
   val Event = ClassName("app.cash.redwood.protocol", "Event")
   val EventTag = ClassName("app.cash.redwood.protocol", "EventTag")
   val EventSink = ClassName("app.cash.redwood.protocol", "EventSink")
   val Id = ClassName("app.cash.redwood.protocol", "Id")
-  val ModifierChange = ClassName("app.cash.redwood.protocol", "ModifierChange")
   val ModifierElement = ClassName("app.cash.redwood.protocol", "ModifierElement")
   val ModifierTag = ClassName("app.cash.redwood.protocol", "ModifierTag")
   val PropertyChange = ClassName("app.cash.redwood.protocol", "PropertyChange")
   val PropertyTag = ClassName("app.cash.redwood.protocol", "PropertyTag")
-  val RedwoodVersion = ClassName("app.cash.redwood.protocol", "RedwoodVersion")
   val WidgetTag = ClassName("app.cash.redwood.protocol", "WidgetTag")
 }
 
 internal object ProtocolGuest {
-  val ProtocolState = ClassName("app.cash.redwood.protocol.guest", "ProtocolState")
+  val ProtocolBridge = ClassName("app.cash.redwood.protocol.guest", "ProtocolBridge")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.guest", "ProtocolMismatchHandler")
   val ProtocolWidget = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidget")

@@ -20,7 +20,7 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.guest.DefaultProtocolState
+import app.cash.redwood.protocol.guest.DefaultProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
@@ -44,23 +44,19 @@ import kotlinx.coroutines.plus
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val state = DefaultProtocolState(
+  val bridge = DefaultProtocolBridge(
     hostVersion = appLifecycle.hostProtocolVersion,
     json = appLifecycle.json,
-  )
-  val bridge = ProtocolBridge(
-    state = state,
     widgetSystemFactory = appLifecycle.protocolWidgetSystemFactory,
     mismatchHandler = appLifecycle.mismatchHandler,
   )
-  return RedwoodZiplineTreehouseUi(appLifecycle, this, state, bridge)
+  return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
 }
 
 @OptIn(RedwoodCodegenApi::class)
 private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
-  private val state: DefaultProtocolState,
   private val bridge: ProtocolBridge,
 ) : ZiplineTreehouseUi,
   ZiplineScoped,
@@ -131,13 +127,13 @@ private class RedwoodZiplineTreehouseUi(
       canBeSaved = { true },
     )
 
-    state.initChangesSink(changesSink)
+    bridge.initChangesSink(changesSink)
 
     val composition = ProtocolRedwoodComposition(
       scope = coroutineScope + appLifecycle.frameClock,
       bridge = bridge,
       widgetVersion = appLifecycle.widgetVersion,
-      onEndChanges = { state.emitChanges() },
+      onEndChanges = { bridge.emitChanges() },
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = host.uiConfigurations,

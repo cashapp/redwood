@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.guest.DefaultProtocolState
+import app.cash.redwood.protocol.guest.DefaultProtocolBridge
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.protocol.host.hostRedwoodVersion
@@ -48,22 +48,6 @@ import kotlinx.coroutines.coroutineScope
 class ViewRecyclingTester(
   coroutineScope: CoroutineScope,
 ) {
-  private val state = DefaultProtocolState(
-    hostVersion = hostRedwoodVersion,
-  )
-
-  private val compositionProtocolBridge = app.cash.redwood.protocol.guest.ProtocolBridge(
-    state = state,
-    widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
-  )
-
-  internal val composition = TestRedwoodComposition(
-    scope = coroutineScope,
-    widgetSystem = compositionProtocolBridge.widgetSystem,
-    container = compositionProtocolBridge.root,
-    createSnapshot = { }, // The snapshot's value is a sentinel 'Unit'.
-  )
-
   private val widgetProtocolFactory = TestSchemaProtocolFactory(
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
@@ -81,6 +65,20 @@ class ViewRecyclingTester(
     eventSink = { throw AssertionError() },
   )
 
+  private val compositionProtocolBridge = DefaultProtocolBridge(
+    hostVersion = hostRedwoodVersion,
+    widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+  ).apply {
+    initChangesSink(widgetBridge)
+  }
+
+  internal val composition = TestRedwoodComposition(
+    scope = coroutineScope,
+    widgetSystem = compositionProtocolBridge.widgetSystem,
+    container = compositionProtocolBridge.root,
+    createSnapshot = { }, // The snapshot's value is a sentinel 'Unit'.
+  )
+
   fun setContent(content: @Composable () -> Unit) {
     composition.setContent(content)
   }
@@ -92,7 +90,7 @@ class ViewRecyclingTester(
   /** Returns the a list of value objects. */
   suspend fun awaitSnapshot(): List<WidgetValue> {
     composition.awaitSnapshot()
-    widgetBridge.sendChanges(state.takeChanges())
+    compositionProtocolBridge.emitChanges()
     return widgetContainer.map { it.value }
   }
 }

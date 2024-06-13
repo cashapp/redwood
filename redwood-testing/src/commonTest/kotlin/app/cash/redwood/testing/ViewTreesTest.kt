@@ -30,7 +30,7 @@ import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.guest.DefaultProtocolState
+import app.cash.redwood.protocol.guest.DefaultProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.ProtocolBridge
@@ -115,17 +115,14 @@ class ViewTreesTest {
 
     // Validate that the normal Compose protocol backend produces the same list of changes.
     val protocolChanges = mutableListOf<Change>()
-    val state = DefaultProtocolState(
+    val bridge = DefaultProtocolBridge(
       hostVersion = hostRedwoodVersion,
-    )
-    val bridge = app.cash.redwood.protocol.guest.ProtocolBridge(
-      state = state,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
       bridge = bridge,
-      onEndChanges = { protocolChanges += state.takeChanges() },
+      onEndChanges = { protocolChanges += bridge.takeChanges() },
       widgetVersion = UInt.MAX_VALUE,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
