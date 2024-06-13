@@ -85,6 +85,13 @@ jobs:
 
       - run: xcodebuild -project redwood-layout-uiview/RedwoodLayoutUIViewTests.xcodeproj -scheme RedwoodLayoutUIViewTests -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
 
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: screenshot-test-results
+          path: '/Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/**'
+          retention-days: 1
+
   treehouse-host-check:
     runs-on: macos-latest
     steps:
