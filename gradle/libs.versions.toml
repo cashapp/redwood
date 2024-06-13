@@ -30,7 +30,7 @@ kotlinx-binaryCompatibilityValidator = "org.jetbrains.kotlinx:binary-compatibili
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
-xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.86.3'
+xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.90.0'
 
 atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.24.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.20"
