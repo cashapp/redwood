@@ -7,12 +7,12 @@ public final class app/cash/redwood/protocol/guest/DefaultProtocolBridge : app/c
 	public fun appendModifierChange-z3jyS0k (ILjava/util/List;)V
 	public fun appendMove-HpxY78w (IIIII)V
 	public fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
+	public fun appendPropertyChange-M7EZMwg (III)V
 	public fun appendPropertyChange-e3iP1vo (IIZ)V
 	public fun appendRemove-HpxY78w (IIIILjava/util/List;)V
 	public fun emitChanges ()V
 	public fun getJson ()Lkotlinx/serialization/json/Json;
-	public fun getRoot ()Lapp/cash/redwood/protocol/guest/ProtocolWidgetChildren;
-	public synthetic fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
+	public fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
 	public fun getSynthesizeSubtreeRemoval ()Z
 	public fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 	public fun initChangesSink (Lapp/cash/redwood/protocol/ChangesSink;)V
@@ -28,6 +28,7 @@ public abstract interface class app/cash/redwood/protocol/guest/ProtocolBridge :
 	public abstract fun appendModifierChange-z3jyS0k (ILjava/util/List;)V
 	public abstract fun appendMove-HpxY78w (IIIII)V
 	public abstract fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
+	public abstract fun appendPropertyChange-M7EZMwg (III)V
 	public abstract fun appendPropertyChange-e3iP1vo (IIZ)V
 	public abstract fun appendRemove-HpxY78w (IIIILjava/util/List;)V
 	public static synthetic fun appendRemove-HpxY78w$default (Lapp/cash/redwood/protocol/guest/ProtocolBridge;IIIILjava/util/List;ILjava/lang/Object;)V
