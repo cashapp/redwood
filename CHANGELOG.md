@@ -16,6 +16,7 @@ Changed:
 - Removed deprecated `Modifier.flex` extension function which is now supported natively by `Row` and `Column` since 0.8.0.
 - Removed deprecated `TreehouseWidgetView` and `TreehouseUIKitView` type aliases for `TreehouseLayout` and `TreehouseUIView` which were renamed in 0.7.0.
 - Removed deprecated `TreehouseAppFactory` functions with the old `FileSystem` and `Path` order which were changed in 0.11.0.
+- Rename the two types named `ProtocolBridge` to `ProtocolHost` and `ProtocolGuest`.
 
 Fixed:
 - Fix memory leaks caused by reference cycles on iOS. We got into trouble mixing garbage-collected Kotlin objects with reference-counted Swift objects.
