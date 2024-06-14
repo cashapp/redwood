@@ -89,6 +89,20 @@ public interface ProtocolBridge : EventSink {
     value: Boolean,
   )
 
+  /**
+   * There's a bug in kotlinx.serialization where decodeFromDynamic() is broken for UInt values
+   * larger than MAX_INT. For example, 4294967295 is incorrectly encoded as -1. We work around that
+   * here by special casing that type.
+   *
+   * https://github.com/Kotlin/kotlinx.serialization/issues/2713
+   */
+  @RedwoodCodegenApi
+  public fun appendPropertyChange(
+    id: Id,
+    tag: PropertyTag,
+    value: UInt,
+  )
+
   @RedwoodCodegenApi
   public fun appendModifierChange(
     id: Id,

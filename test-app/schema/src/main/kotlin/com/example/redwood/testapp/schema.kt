@@ -81,6 +81,7 @@ public data class Text(
 public data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: (() -> Unit)?,
+  @Property(3) val color: UInt,
 )
 
 /** Like [Button] but with a required lambda. */

@@ -131,6 +131,13 @@ internal class FastProtocolBridge(
     changes.push(js("""["property",{"id":id,"tag":tag,"value":value}]"""))
   }
 
+  override fun appendPropertyChange(id: Id, tag: PropertyTag, value: UInt) {
+    val id = id
+    val tag = tag
+    val value = value.toDouble()
+    changes.push(js("""["property",{"id":id,"tag":tag,"value":value}]"""))
+  }
+
   override fun appendModifierChange(
     id: Id,
     elements: List<ModifierElement>,

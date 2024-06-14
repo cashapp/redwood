@@ -62,6 +62,14 @@ class FastProtocolBridgeTest {
     }
   }
 
+  /** Test our special case for https://github.com/Kotlin/kotlinx.serialization/issues/2713 */
+  @Test fun consistentWithDefaultProtocolBridgeForUint() {
+    assertChangesEqual { root, widgetSystem ->
+      val button = widgetSystem.TestSchema.Button()
+      button.color(0xffeeddccu)
+    }
+  }
+
   private fun assertChangesEqual(
     block: (Widget.Children<Unit>, TestSchemaWidgetSystem<Unit>) -> Unit,
   ) {
@@ -72,8 +80,10 @@ class FastProtocolBridgeTest {
         contextual(UInt::class, UInt.serializer())
       }
     }
-    assertThat(collectChangesFromFastProtocolBridge(json, block))
-      .isEqualTo(collectChangesFromDefaultProtocolBridge(json, block))
+
+    val fastUpdates = collectChangesFromFastProtocolBridge(json, block)
+    val defaultUpdates = collectChangesFromDefaultProtocolBridge(json, block)
+    assertThat(fastUpdates).isEqualTo(defaultUpdates)
   }
 
   private fun collectChangesFromDefaultProtocolBridge(

@@ -31,6 +31,7 @@ import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
@@ -97,6 +98,15 @@ public class DefaultProtocolBridge(
     id: Id,
     tag: PropertyTag,
     value: Boolean,
+  ) {
+    changes.add(PropertyChange(id, tag, JsonPrimitive(value)))
+  }
+
+  @OptIn(ExperimentalSerializationApi::class)
+  override fun appendPropertyChange(
+    id: Id,
+    tag: PropertyTag,
+    value: UInt,
   ) {
     changes.add(PropertyChange(id, tag, JsonPrimitive(value)))
   }
