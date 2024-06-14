@@ -156,6 +156,8 @@ class ProtocolTest {
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
         PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)),
+        // color
+        PropertyChange(Id(1), PropertyTag(3), JsonPrimitive(0u)),
         ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
         // Button
@@ -164,6 +166,8 @@ class ProtocolTest {
         PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
         PropertyChange(Id(2), PropertyTag(2), JsonPrimitive(true)),
+        // color
+        PropertyChange(Id(2), PropertyTag(3), JsonPrimitive(0u)),
         ModifierChange(Id(2)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
         // Button2
@@ -215,6 +219,8 @@ class ProtocolTest {
         PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
         // onClick
         PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
+        // color
+        PropertyChange(Id(1), PropertyTag(3), JsonPrimitive(0u)),
         ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),

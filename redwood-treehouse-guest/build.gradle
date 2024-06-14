@@ -22,5 +22,12 @@ kotlin {
         api projects.redwoodTreehouseGuestCompose
       }
     }
+    commonTest {
+      dependencies {
+        implementation libs.assertk
+        implementation libs.kotlin.test
+        implementation projects.testApp.schema.protocolGuest
+      }
+    }
   }
 }

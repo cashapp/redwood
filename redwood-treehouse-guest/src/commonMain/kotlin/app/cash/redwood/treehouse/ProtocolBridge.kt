@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.guest
+package app.cash.redwood.treehouse
 
-internal expect class PlatformMap<K, V>() {
-  operator fun get(key: K): V?
-}
+import app.cash.redwood.protocol.RedwoodVersion
+import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
+import kotlinx.serialization.json.Json
 
-internal expect inline operator fun <K, V> PlatformMap<K, V>.set(key: K, value: V)
-
-internal expect inline operator fun <K, V> PlatformMap<K, V>.contains(key: K): Boolean
-
-internal expect inline fun <K, V> PlatformMap<K, V>.remove(key: K)
+internal expect fun ProtocolBridge(
+  json: Json,
+  hostVersion: RedwoodVersion,
+  widgetSystemFactory: ProtocolWidgetSystemFactory,
+  mismatchHandler: ProtocolMismatchHandler,
+): ProtocolBridge

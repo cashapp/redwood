@@ -50,6 +50,7 @@ import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.U_INT
 import com.squareup.kotlinpoet.joinToCode
 
 private val protocolViewType = UNIT
@@ -278,21 +279,32 @@ internal fun generateProtocolWidget(
             when (trait) {
               is ProtocolProperty -> {
                 val traitTypeName = trait.type.asTypeName()
-                val serializerId = serializerIds.computeIfAbsent(traitTypeName) {
-                  nextSerializerId++
-                }
-
                 addFunction(
                   FunSpec.builder(trait.name)
                     .addModifiers(OVERRIDE)
                     .addParameter(trait.name, traitTypeName)
-                    .addStatement(
-                      "this.bridge.appendPropertyChange(this.id, %T(%L), serializer_%L, %N)",
-                      Protocol.PropertyTag,
-                      trait.tag,
-                      serializerId,
-                      trait.name,
-                    )
+                    .apply {
+                      // Work around https://github.com/Kotlin/kotlinx.serialization/issues/2713.
+                      if (traitTypeName == U_INT) {
+                        addStatement(
+                          "this.bridge.appendPropertyChange(this.id, %T(%L), %N)",
+                          Protocol.PropertyTag,
+                          trait.tag,
+                          trait.name,
+                        )
+                      } else {
+                        val serializerId = serializerIds.computeIfAbsent(traitTypeName) {
+                          nextSerializerId++
+                        }
+                        addStatement(
+                          "this.bridge.appendPropertyChange(this.id, %T(%L), serializer_%L, %N)",
+                          Protocol.PropertyTag,
+                          trait.tag,
+                          serializerId,
+                          trait.name,
+                        )
+                      }
+                    }
                     .build(),
                 )
               }

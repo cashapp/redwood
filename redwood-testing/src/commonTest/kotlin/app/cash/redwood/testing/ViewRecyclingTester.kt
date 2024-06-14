@@ -44,10 +44,10 @@ import kotlinx.coroutines.coroutineScope
  * Like [TestSchemaTester], but this also hooks up Redwood's protocol mechanism. That's necessary
  * because view recycling is only implemented as a part of the host-side protocol.
  */
-@OptIn(RedwoodCodegenApi::class)
 class ViewRecyclingTester(
   coroutineScope: CoroutineScope,
 ) {
+  @OptIn(RedwoodCodegenApi::class)
   private val widgetProtocolFactory = TestSchemaProtocolFactory(
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),

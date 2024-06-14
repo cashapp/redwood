@@ -36,8 +36,8 @@ import kotlinx.serialization.json.Json
  *
  * This interface is for generated code use only.
  */
-@RedwoodCodegenApi
 public interface ProtocolBridge : EventSink {
+  @RedwoodCodegenApi
   public val json: Json
 
   /**
@@ -45,6 +45,7 @@ public interface ProtocolBridge : EventSink {
    * from the protocol map which leaked any child views of a removed node. We can work around this
    * on the guest side by synthesizing removes for every node in the subtree.
    */
+  @RedwoodCodegenApi
   public val synthesizeSubtreeRemoval: Boolean
 
   /**
@@ -64,13 +65,16 @@ public interface ProtocolBridge : EventSink {
 
   public fun emitChanges()
 
+  @RedwoodCodegenApi
   public fun nextId(): Id
 
+  @RedwoodCodegenApi
   public fun appendCreate(
     id: Id,
     tag: WidgetTag,
   )
 
+  @RedwoodCodegenApi
   public fun <T> appendPropertyChange(
     id: Id,
     tag: PropertyTag,
@@ -78,17 +82,34 @@ public interface ProtocolBridge : EventSink {
     value: T,
   )
 
+  @RedwoodCodegenApi
   public fun appendPropertyChange(
     id: Id,
     tag: PropertyTag,
     value: Boolean,
   )
 
+  /**
+   * There's a bug in kotlinx.serialization where decodeFromDynamic() is broken for UInt values
+   * larger than MAX_INT. For example, 4294967295 is incorrectly encoded as -1. We work around that
+   * here by special casing that type.
+   *
+   * https://github.com/Kotlin/kotlinx.serialization/issues/2713
+   */
+  @RedwoodCodegenApi
+  public fun appendPropertyChange(
+    id: Id,
+    tag: PropertyTag,
+    value: UInt,
+  )
+
+  @RedwoodCodegenApi
   public fun appendModifierChange(
     id: Id,
     elements: List<ModifierElement>,
   )
 
+  @RedwoodCodegenApi
   public fun appendAdd(
     id: Id,
     tag: ChildrenTag,
@@ -96,6 +117,7 @@ public interface ProtocolBridge : EventSink {
     child: ProtocolWidget,
   )
 
+  @RedwoodCodegenApi
   public fun appendMove(
     id: Id,
     tag: ChildrenTag,
@@ -104,6 +126,7 @@ public interface ProtocolBridge : EventSink {
     count: Int,
   )
 
+  @RedwoodCodegenApi
   public fun appendRemove(
     id: Id,
     tag: ChildrenTag,
@@ -112,5 +135,6 @@ public interface ProtocolBridge : EventSink {
     removedIds: List<Id> = listOf(),
   )
 
+  @RedwoodCodegenApi
   public fun removeWidget(id: Id)
 }

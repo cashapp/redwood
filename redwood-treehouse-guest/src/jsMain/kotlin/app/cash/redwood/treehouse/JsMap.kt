@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.guest
+package app.cash.redwood.treehouse
 
 @JsName("Map")
 internal external class JsMap<K, V> {
@@ -21,18 +21,4 @@ internal external class JsMap<K, V> {
   fun set(key: K, value: V)
   fun has(key: K): Boolean
   fun delete(key: K)
-}
-
-internal actual typealias PlatformMap<K, V> = JsMap<K, V>
-
-internal actual inline operator fun <K, V> PlatformMap<K, V>.set(key: K, value: V) {
-  set(key, value)
-}
-
-internal actual inline operator fun <K, V> PlatformMap<K, V>.contains(key: K): Boolean {
-  return has(key)
-}
-
-internal actual inline fun <K, V> PlatformMap<K, V>.remove(key: K) {
-  delete(key)
 }

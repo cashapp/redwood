@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.ui.OnBackPressedDispatcher
@@ -31,7 +30,6 @@ import kotlinx.coroutines.flow.StateFlow
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
  */
-@OptIn(RedwoodCodegenApi::class)
 @Suppress("FunctionName")
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,

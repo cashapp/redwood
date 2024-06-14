@@ -15,10 +15,8 @@
  */
 package app.cash.redwood.protocol.guest
 
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.widget.WidgetSystem
 
-@OptIn(RedwoodCodegenApi::class)
 public interface ProtocolWidgetSystemFactory {
   /** Create a new [WidgetSystem] connected to a host via [bridge]. */
   public fun create(

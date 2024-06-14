@@ -16,11 +16,9 @@
 package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.guest.DefaultProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolBridge
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
@@ -40,11 +38,10 @@ import kotlinx.coroutines.plus
 /**
  * The Kotlin/JS side of a treehouse UI.
  */
-@OptIn(RedwoodCodegenApi::class)
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val bridge = DefaultProtocolBridge(
+  val bridge = ProtocolBridge(
     hostVersion = appLifecycle.hostProtocolVersion,
     json = appLifecycle.json,
     widgetSystemFactory = appLifecycle.protocolWidgetSystemFactory,
@@ -53,7 +50,6 @@ public fun TreehouseUi.asZiplineTreehouseUi(
   return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
 }
 
-@OptIn(RedwoodCodegenApi::class)
 private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,

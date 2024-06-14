@@ -48,4 +48,7 @@ class HtmlButton(
       null
     }
   }
+
+  override fun color(color: UInt) {
+  }
 }

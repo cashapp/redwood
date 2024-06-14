@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.protocol.guest
+package app.cash.redwood.treehouse
 
-@Suppress("unused") // Type parameter used by extensions.
-internal expect class PlatformList<E>() {
-  val size: Int
+@JsName("Array")
+internal external class JsArray<E> {
+  @JsName("length")
+  val length: Int
+
+  fun push(element: E)
 }
 
-internal expect inline fun <E> PlatformList<E>.add(element: E)
+internal operator fun <E> JsArray<E>.get(index: Int): E {
+  return asDynamic()[index].unsafeCast<E>()
+}
 
-internal expect inline fun <E> PlatformList<E>.asList(): List<E>
+internal fun <E> JsArray<E>.clear() {
+  asDynamic().splice(0, length)
+}

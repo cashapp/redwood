@@ -38,4 +38,7 @@ internal class ViewButton(
       },
     )
   }
+
+  override fun color(color: UInt) {
+  }
 }
