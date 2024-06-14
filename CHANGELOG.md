@@ -30,7 +30,7 @@ Breaking:
 
 Upgraded:
 - Kotlin 2.0.0
-- Zipline 1.11.0
+- Zipline 1.12.0
 - kotlinx.serialization 1.7.0
 
 
