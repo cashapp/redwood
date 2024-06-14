@@ -43,6 +43,7 @@ enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
 rootProject.name = 'redwood'
 
+include ':redwood-bom'
 include ':redwood-compose'
 include ':redwood-composeui'
 include ':redwood-gradle-plugin'
