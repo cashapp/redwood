@@ -54,6 +54,7 @@ class FakeZiplineTreehouseUi(
         Create(widgetId, WidgetTag(4)), // Button.
         PropertyChange(widgetId, PropertyTag(1), JsonPrimitive(label)), // text.
         PropertyChange(widgetId, PropertyTag(2), JsonPrimitive(true)), // onClick.
+        PropertyChange(widgetId, PropertyTag(3), JsonPrimitive(0u)), // color.
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, widgetId, 0),
       ),
     )
