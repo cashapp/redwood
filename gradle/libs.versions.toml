@@ -6,7 +6,7 @@ androidx-activity = "1.9.0"
 androidx-compose-ui = "1.6.8"
 jbCompose = "1.6.11"
 lint = "31.5.0"
-zipline = "1.12.0"
+zipline = "1.13.0"
 coil = "3.0.0-alpha06"
 okio = "3.9.0"
 

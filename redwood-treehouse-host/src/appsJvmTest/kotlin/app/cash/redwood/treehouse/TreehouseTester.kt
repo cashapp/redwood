@@ -53,7 +53,7 @@ internal class TreehouseTester(
 
   private val manifestUrl = MutableStateFlow("http://example.com/manifest.zipline.json")
 
-  private val kotlinZiplineDir = "../test-app/presenter-treehouse/build/compileSync/js/main/developmentExecutable/kotlinZipline".toPath()
+  private val kotlinZiplineDir = "../test-app/presenter-treehouse/build/zipline/Development".toPath()
 
   private val httpClient = object : ZiplineHttpClient() {
     override suspend fun download(
