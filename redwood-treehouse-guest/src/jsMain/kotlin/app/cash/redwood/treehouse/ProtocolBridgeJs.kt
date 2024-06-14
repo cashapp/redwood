@@ -33,6 +33,7 @@ import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
 import app.cash.redwood.widget.WidgetSystem
 import app.cash.zipline.asDynamicFunction
 import app.cash.zipline.sourceType
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToDynamic
@@ -44,8 +45,8 @@ internal actual fun ProtocolBridge(
   mismatchHandler: ProtocolMismatchHandler,
 ): ProtocolBridge = FastProtocolBridge(json, hostVersion, widgetSystemFactory, mismatchHandler)
 
-@OptIn(RedwoodCodegenApi::class)
-private class FastProtocolBridge(
+@OptIn(ExperimentalSerializationApi::class, RedwoodCodegenApi::class)
+internal class FastProtocolBridge(
   override val json: Json = Json.Default,
   hostVersion: RedwoodVersion,
   widgetSystemFactory: ProtocolWidgetSystemFactory,
@@ -55,7 +56,7 @@ private class FastProtocolBridge(
   private val widgets = JsMap<Int, ProtocolWidget>()
   private val changes = JsArray<Change>()
   private lateinit var changesSinkService: ChangesSinkService
-  private lateinit var sendChanges: (service: ChangesSinkService, args: List<*>) -> Any?
+  private lateinit var sendChanges: (service: ChangesSinkService, args: Array<*>) -> Any?
 
   override val widgetSystem: WidgetSystem<Unit> =
     widgetSystemFactory.create(this, mismatchHandler)
@@ -76,10 +77,20 @@ private class FastProtocolBridge(
 
   override fun initChangesSink(changesSink: ChangesSink) {
     val changesSinkService = changesSink as ChangesSinkService
+    initChangesSink(
+      changesSinkService = changesSinkService,
+      sendChanges = changesSinkService.sourceType!!.functions
+        .single { "sendChanges" in it.signature }
+        .asDynamicFunction(),
+    )
+  }
+
+  internal fun initChangesSink(
+    changesSinkService: ChangesSinkService,
+    sendChanges: (service: ChangesSinkService, args: Array<*>) -> Any?,
+  ) {
     this.changesSinkService = changesSinkService
-    this.sendChanges = changesSinkService.sourceType!!.functions
-      .single { "sendChanges" in it.signature }
-      .asDynamicFunction()
+    this.sendChanges = sendChanges
   }
 
   override fun nextId(): Id {
@@ -178,7 +189,7 @@ private class FastProtocolBridge(
   }
 
   override fun emitChanges() {
-    sendChanges(changesSinkService, listOf(changes))
+    sendChanges(changesSinkService, arrayOf(changes))
     changes.clear()
   }
 
