@@ -100,7 +100,7 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button(text, onClick = null)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "color 0", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     assertThat(c.awaitSnapshot()).containsExactly("text hello", "onEndChanges")
@@ -123,7 +123,7 @@ abstract class AbstractChangeListenerTest {
       Button("hi", onClick = null)
       Text(text)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "color 0", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     assertThat(c.awaitSnapshot()).isEmpty()
@@ -145,7 +145,7 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button("hi", onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "color 0", "modifier Modifier", "onEndChanges")
 
     modifier = with(object : TestScope {}) {
       Modifier.accessibilityDescription("hey")
@@ -170,7 +170,7 @@ abstract class AbstractChangeListenerTest {
     c.setContent {
       Button(text, onClick = null, modifier = modifier)
     }
-    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "modifier Modifier", "onEndChanges")
+    assertThat(c.awaitSnapshot()).containsExactly("text hi", "onClick false", "color 0", "modifier Modifier", "onEndChanges")
 
     text = "hello"
     modifier = with(object : TestScope {}) {

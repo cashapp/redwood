@@ -36,7 +36,7 @@ class ButtonBinding: Button {
         // this function will update the bounds and trigger relayout in the parent.
         root.sizeToFit()
     }
-    
+
     func onClick(onClick: (() -> Void)? = nil) {
         self.onClick = onClick
         if (onClick != nil) {
@@ -45,7 +45,10 @@ class ButtonBinding: Button {
             root.removeTarget(self, action: #selector(clicked), for: .touchUpInside)
         }
     }
-    
+
+    func color(color: UInt32) {
+    }
+
     @objc func clicked() {
         self.onClick?()
     }

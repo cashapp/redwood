@@ -39,6 +39,10 @@ class ListeningButton :
     changes += "onClick ${onClick != null}"
   }
 
+  override fun color(color: UInt) {
+    changes += "color $color"
+  }
+
   override fun onEndChanges() {
     changes += "onEndChanges"
   }
