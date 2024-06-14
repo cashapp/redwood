@@ -523,7 +523,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         // Note: This makes assumptions about our setup having a JS target with the default name.
         it.files.from(project.tasks.named("compileProductionExecutableKotlinJsZipline"))
         it.appName.set(name)
-        it.outputDirectory.set(project.layout.buildDirectory.dir("zipline"))
+        it.outputDirectory.set(project.layout.buildDirectory.dir("treehouse"))
       }
 
       // Only a single file can be used as an artifact so zip up the compiled contents.
