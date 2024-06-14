@@ -19,7 +19,7 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolGuest
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -41,22 +41,22 @@ import kotlinx.coroutines.plus
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val bridge = ProtocolBridge(
+  val guest = ProtocolGuest(
     hostVersion = appLifecycle.hostProtocolVersion,
     json = appLifecycle.json,
     widgetSystemFactory = appLifecycle.protocolWidgetSystemFactory,
     mismatchHandler = appLifecycle.mismatchHandler,
   )
-  return RedwoodZiplineTreehouseUi(appLifecycle, this, bridge)
+  return RedwoodZiplineTreehouseUi(appLifecycle, this, guest)
 }
 
 private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
-  private val bridge: ProtocolBridge,
+  private val guest: ProtocolGuest,
 ) : ZiplineTreehouseUi,
   ZiplineScoped,
-  EventSink by bridge {
+  EventSink by guest {
 
   /**
    * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,
@@ -123,13 +123,13 @@ private class RedwoodZiplineTreehouseUi(
       canBeSaved = { true },
     )
 
-    bridge.initChangesSink(changesSink)
+    guest.initChangesSink(changesSink)
 
     val composition = ProtocolRedwoodComposition(
       scope = coroutineScope + appLifecycle.frameClock,
-      bridge = bridge,
+      guest = guest,
       widgetVersion = appLifecycle.widgetVersion,
-      onEndChanges = { bridge.emitChanges() },
+      onEndChanges = { guest.emitChanges() },
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = host.uiConfigurations,

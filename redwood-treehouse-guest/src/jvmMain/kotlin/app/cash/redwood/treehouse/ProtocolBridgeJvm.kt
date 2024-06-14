@@ -16,15 +16,15 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.RedwoodVersion
-import app.cash.redwood.protocol.guest.DefaultProtocolBridge
-import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.DefaultProtocolGuest
+import app.cash.redwood.protocol.guest.ProtocolGuest
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
 import kotlinx.serialization.json.Json
 
-internal actual fun ProtocolBridge(
+internal actual fun ProtocolGuest(
   json: Json,
   hostVersion: RedwoodVersion,
   widgetSystemFactory: ProtocolWidgetSystemFactory,
   mismatchHandler: ProtocolMismatchHandler,
-): ProtocolBridge = DefaultProtocolBridge(json, hostVersion, widgetSystemFactory, mismatchHandler)
+): ProtocolGuest = DefaultProtocolGuest(json, hostVersion, widgetSystemFactory, mismatchHandler)

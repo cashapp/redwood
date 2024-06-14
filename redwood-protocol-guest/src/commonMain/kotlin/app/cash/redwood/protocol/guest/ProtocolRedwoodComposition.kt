@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Suppress("FunctionName")
 public fun ProtocolRedwoodComposition(
   scope: CoroutineScope,
-  bridge: ProtocolBridge,
+  guest: ProtocolGuest,
   widgetVersion: UInt,
   onBackPressedDispatcher: OnBackPressedDispatcher,
   saveableStateRegistry: SaveableStateRegistry?,
@@ -42,11 +42,11 @@ public fun ProtocolRedwoodComposition(
 ): RedwoodComposition {
   val composition = RedwoodComposition(
     scope = scope,
-    container = bridge.root,
+    container = guest.root,
     onBackPressedDispatcher = onBackPressedDispatcher,
     saveableStateRegistry = saveableStateRegistry,
     uiConfigurations = uiConfigurations,
-    widgetSystem = bridge.widgetSystem,
+    widgetSystem = guest.widgetSystem,
     onEndChanges = onEndChanges,
   )
   return ProtocolRedwoodComposition(composition, widgetVersion)

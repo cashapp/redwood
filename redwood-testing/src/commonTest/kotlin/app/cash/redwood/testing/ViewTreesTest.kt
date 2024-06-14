@@ -30,10 +30,10 @@ import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.guest.DefaultProtocolBridge
+import app.cash.redwood.protocol.guest.DefaultProtocolGuest
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
-import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolHost
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -115,14 +115,14 @@ class ViewTreesTest {
 
     // Validate that the normal Compose protocol backend produces the same list of changes.
     val protocolChanges = mutableListOf<Change>()
-    val bridge = DefaultProtocolBridge(
+    val guest = DefaultProtocolGuest(
       hostVersion = hostRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = bridge,
-      onEndChanges = { protocolChanges += bridge.takeChanges() },
+      guest = guest,
+      onEndChanges = { protocolChanges += guest.takeChanges() },
       widgetVersion = UInt.MAX_VALUE,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -147,13 +147,13 @@ class ViewTreesTest {
     )
     val protocolNodes = TestSchemaProtocolFactory(widgetSystem)
     val widgetContainer = MutableListChildren<WidgetValue>()
-    val widgetBridge = ProtocolBridge(
+    val host = ProtocolHost(
       guestVersion = guestRedwoodVersion,
       container = widgetContainer,
       factory = protocolNodes,
       eventSink = { throw AssertionError() },
     )
-    widgetBridge.sendChanges(expected)
+    host.sendChanges(expected)
 
     assertThat(widgetContainer.map { it.value }).isEqualTo(snapshot)
   }

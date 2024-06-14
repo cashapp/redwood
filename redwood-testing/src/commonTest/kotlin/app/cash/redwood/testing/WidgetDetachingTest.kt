@@ -23,7 +23,7 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.ProtocolHost
 import app.cash.redwood.protocol.host.ProtocolNode
 import assertk.assertThat
 import assertk.assertions.hasMessage
@@ -52,7 +52,7 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
       step++
@@ -78,7 +78,7 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
       step++
@@ -91,7 +91,7 @@ class WidgetDetachingTest {
   }
 
   @Test
-  fun widgetIsDetachedWhenWidgetBridgeIsClosed() = runTest {
+  fun widgetIsDetachedWhenProtocolHostIsClosed() = runTest {
     viewRecyclingTest {
       setContent {
         TestRow {
@@ -100,10 +100,10 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
-      widgetBridge.close()
+      host.close()
       val thrown = assertFailsWith<IllegalStateException> {
         protocolText.widget
       }
@@ -128,7 +128,7 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolTextStep1 = widgetBridge.extractProtocolText()
+      val protocolTextStep1 = host.extractProtocolText()
       assertThat(protocolTextStep1.widget).isNotNull()
 
       step++
@@ -137,7 +137,7 @@ class WidgetDetachingTest {
 
       step++
       awaitSnapshot()
-      assertThat(widgetBridge.extractProtocolText()).isSameInstanceAs(protocolTextStep1)
+      assertThat(host.extractProtocolText()).isSameInstanceAs(protocolTextStep1)
     }
   }
 
@@ -169,7 +169,7 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
       step++
@@ -212,7 +212,7 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
       // protocolText is not detached when its parent is pooled.
@@ -231,7 +231,7 @@ class WidgetDetachingTest {
   }
 
   @Test
-  fun pooledWidgetIsDetachedWhenWidgetBridgeIsClosed() = runTest {
+  fun pooledWidgetIsDetachedWhenProtocolHostIsClosed() = runTest {
     viewRecyclingTest {
       var step by mutableIntStateOf(1)
 
@@ -247,14 +247,14 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
       step++
       awaitSnapshot()
       assertThat(protocolText.widget).isNotNull()
 
-      widgetBridge.close()
+      host.close()
       val thrown = assertFailsWith<IllegalStateException> {
         protocolText.widget
       }
@@ -263,7 +263,7 @@ class WidgetDetachingTest {
   }
 
   @Test
-  fun childOfPooledWidgetIsDetachedWhenBridgeIsClosed() = runTest {
+  fun childOfPooledWidgetIsDetachedWhenProtocolHostIsClosed() = runTest {
     viewRecyclingTest {
       var step by mutableIntStateOf(1)
 
@@ -278,14 +278,14 @@ class WidgetDetachingTest {
       }
 
       awaitSnapshot()
-      val protocolText = widgetBridge.extractProtocolText()
+      val protocolText = host.extractProtocolText()
       assertThat(protocolText.widget).isNotNull()
 
       step++
       awaitSnapshot()
       assertThat(protocolText.widget).isNotNull()
 
-      widgetBridge.close()
+      host.close()
       val thrown = assertFailsWith<IllegalStateException> {
         protocolText.widget
       }
@@ -294,7 +294,7 @@ class WidgetDetachingTest {
   }
 
   @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
-  private fun ProtocolBridge<WidgetValue>.extractProtocolText(): ProtocolNode<WidgetValue> {
+  private fun ProtocolHost<WidgetValue>.extractProtocolText(): ProtocolNode<WidgetValue> {
     val root = node(Id.Root)
     val testRow = root.children(ChildrenTag.Root)!!.nodes.single()
     return testRow.children(ChildrenTag(1))!!.nodes.single()

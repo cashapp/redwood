@@ -18,8 +18,8 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.host.ProtocolBridge
 import app.cash.redwood.protocol.host.ProtocolFactory
+import app.cash.redwood.protocol.host.ProtocolHost
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
@@ -321,7 +321,7 @@ private class ViewContentCodeBinding<A : AppService>(
    * Only accessed on [TreehouseDispatchers.ui].
    * Null before [initView]+[receiveChangesOnUiDispatcher] and after [cancel].
    */
-  private var bridgeOrNull: ProtocolBridge<*>? = null
+  private var hostOrNull: ProtocolHost<*>? = null
 
   /** Only accessed on [TreehouseDispatchers.zipline]. */
   private val serviceScope = codeSession.newServiceScope()
@@ -391,10 +391,10 @@ private class ViewContentCodeBinding<A : AppService>(
       return
     }
 
-    var bridge = bridgeOrNull
-    if (bridge == null) {
+    var host = hostOrNull
+    if (host == null) {
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
-      bridge = ProtocolBridge(
+      host = ProtocolHost(
         guestVersion = codeSession.guestProtocolVersion,
         container = view.children as Widget.Children<Any>,
         factory = view.widgetSystem.widgetFactory(
@@ -403,7 +403,7 @@ private class ViewContentCodeBinding<A : AppService>(
         ) as ProtocolFactory<Any>,
         eventSink = eventBridge,
       )
-      bridgeOrNull = bridge
+      hostOrNull = host
     }
 
     if (deliveredChangeCount++ == 0) {
@@ -412,7 +412,7 @@ private class ViewContentCodeBinding<A : AppService>(
     }
     updateChangeCount()
 
-    bridge.sendChanges(changes)
+    host.sendChanges(changes)
   }
 
   /** Unblock coroutines suspended on TreehouseAppContent.awaitContent(). */
@@ -507,8 +507,8 @@ private class ViewContentCodeBinding<A : AppService>(
     viewOrNull?.let { codeEventPublisher.onCodeDetached(it, exception) }
     viewOrNull?.saveCallback = null
     viewOrNull = null
-    bridgeOrNull?.close()
-    bridgeOrNull = null
+    hostOrNull?.close()
+    hostOrNull = null
     eventBridge.bindingScope = null
     eventBridge.ziplineDispatcher = null
     bindingScope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {

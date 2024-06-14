@@ -25,7 +25,7 @@ import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.guest.ProtocolBridge
+import app.cash.redwood.protocol.guest.ProtocolGuest
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.protocol.guest.ProtocolWidget
 import app.cash.redwood.protocol.guest.ProtocolWidgetChildren
@@ -38,20 +38,20 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToDynamic
 
-internal actual fun ProtocolBridge(
+internal actual fun ProtocolGuest(
   json: Json,
   hostVersion: RedwoodVersion,
   widgetSystemFactory: ProtocolWidgetSystemFactory,
   mismatchHandler: ProtocolMismatchHandler,
-): ProtocolBridge = FastProtocolBridge(json, hostVersion, widgetSystemFactory, mismatchHandler)
+): ProtocolGuest = FastProtocolGuest(json, hostVersion, widgetSystemFactory, mismatchHandler)
 
 @OptIn(ExperimentalSerializationApi::class, RedwoodCodegenApi::class)
-internal class FastProtocolBridge(
+internal class FastProtocolGuest(
   override val json: Json = Json.Default,
   hostVersion: RedwoodVersion,
   widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : ProtocolBridge {
+) : ProtocolGuest {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
   private val changes = JsArray<Change>()

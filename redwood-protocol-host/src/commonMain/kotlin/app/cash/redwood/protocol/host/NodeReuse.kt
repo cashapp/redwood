@@ -18,7 +18,7 @@ package app.cash.redwood.protocol.host
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.host.ProtocolBridge.ReuseNode
+import app.cash.redwood.protocol.host.ProtocolHost.ReuseNode
 
 /**
  * Returns true if [a] and [b] have the same shape. The shapes match if:

@@ -18,9 +18,9 @@ package app.cash.redwood.protocol.guest
 import app.cash.redwood.widget.WidgetSystem
 
 public interface ProtocolWidgetSystemFactory {
-  /** Create a new [WidgetSystem] connected to a host via [bridge]. */
+  /** Create a new [WidgetSystem] connected to a host via [guest]. */
   public fun create(
-    bridge: ProtocolBridge,
+    guest: ProtocolGuest,
     mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
   ): WidgetSystem<Unit>
 }

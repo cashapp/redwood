@@ -27,7 +27,7 @@ import kotlin.native.ObjCName
 /**
  * A marker interface for the widget-side factory of the protocol.
  *
- * @see ProtocolBridge
+ * @see ProtocolHost
  */
 @ObjCName("ProtocolFactory", exact = true)
 public interface ProtocolFactory<W : Any> {
