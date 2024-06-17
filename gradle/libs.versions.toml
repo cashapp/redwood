@@ -77,7 +77,7 @@ paging-compose-common = { module = "app.cash.paging:paging-compose-common", vers
 zipline = { module = "app.cash.zipline:zipline", version.ref = "zipline" }
 zipline-gradlePlugin = { module = "app.cash.zipline:zipline-gradle-plugin", version.ref = "zipline" }
 zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "zipline" }
-paparazzi-gradlePlugin = "app.cash.paparazzi:paparazzi-gradle-plugin:1.3.2"
+paparazzi-gradlePlugin = "app.cash.paparazzi:paparazzi-gradle-plugin:1.3.4"
 jimfs = "com.google.jimfs:jimfs:1.3.0"
 coil-compose = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil" }
 coil-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
