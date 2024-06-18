@@ -70,8 +70,10 @@ public open class LazyListState {
   private var userScrolled = false
 
   /** Bounds of what the user is looking at. Everything else is placeholders! */
-  internal var firstIndex: Int by mutableIntStateOf(0)
-  private var lastIndex: Int by mutableIntStateOf(0)
+  public var firstIndex: Int by mutableIntStateOf(0)
+    private set
+  public var lastIndex: Int by mutableIntStateOf(0)
+    private set
 
   internal var preloadItems: Boolean = true
 
