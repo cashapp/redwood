@@ -46,7 +46,7 @@ class ProtocolGuestGenerationTest {
     assertThat(fileSpec.toString()).contains(
       """
       |  override fun id(id: String) {
-      |    this.guest.appendPropertyChange(this.id,
+      |    this.guestAdapter.appendPropertyChange(this.id,
       """.trimMargin(),
     )
   }
