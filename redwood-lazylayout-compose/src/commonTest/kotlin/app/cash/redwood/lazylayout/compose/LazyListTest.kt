@@ -101,12 +101,12 @@ class LazyListTest {
 
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        assertThat(lazyList.itemsBefore).isEqualTo(50)
-        assertThat(lazyList.itemsAfter).isEqualTo(35)
+        assertThat(lazyList.itemsBefore).isEqualTo(50 - 5)
+        assertThat(lazyList.itemsAfter).isEqualTo(100 - (60 + 20))
         assertThat(lazyList.placeholder)
           .isEqualTo(List(20) { TextValue(Modifier, "Placeholder") })
         assertThat(lazyList.items)
-          .isEqualTo(List(15) { TextValue(Modifier, (it + 50).toString()) })
+          .isEqualTo(List(35) { TextValue(Modifier, (it + 45).toString()) })
       }
     }
   }

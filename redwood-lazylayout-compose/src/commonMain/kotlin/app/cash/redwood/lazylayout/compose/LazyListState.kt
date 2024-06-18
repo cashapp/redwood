@@ -86,6 +86,9 @@ public open class LazyListState {
   private var firstIndexFromPrevious2: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
   private var lastIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
 
+  private var beginFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+  private var endFromPrevious1: Int by mutableStateOf(DEFAULT_SCROLL_INDEX)
+
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(
     firstIndex: Int,
@@ -136,11 +139,13 @@ public open class LazyListState {
       }
 
       isScrollingDown -> {
-        end += scrollInProgressPreloadItemCount
+        begin -= scrollInProgressPreloadItemCount
+        end += primaryPreloadItemCount
       }
 
       isScrollingUp -> {
-        begin -= scrollInProgressPreloadItemCount
+        begin -= primaryPreloadItemCount
+        end += scrollInProgressPreloadItemCount
       }
 
       hasStoppedScrolling && wasScrollingDown -> {
@@ -164,22 +169,19 @@ public open class LazyListState {
       lastIndex = end
     }
 
-    // If we're contiguous with the previous loaded range,
+    // If we're contiguous with the previous visible window,
     // don't rush to remove things from the previous range.
-    if (firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX &&
-      lastIndexFromPrevious1 != DEFAULT_SCROLL_INDEX
+    if (beginFromPrevious1 != DEFAULT_SCROLL_INDEX &&
+      endFromPrevious1 != DEFAULT_SCROLL_INDEX
     ) {
       // Case one: Contiguous scroll down
-      // Previous: [firstIndexFromPrevious1...lastIndexFromPrevious1]
-      // Current requested range:           [begin.....................end]
-      // Solution: [firstIndexFromPrevious1............................end]
       if (begin in firstIndexFromPrevious1..lastIndexFromPrevious1) {
-        begin = firstIndexFromPrevious1
+        begin = beginFromPrevious1
       }
 
       // Case two: Contiguous scroll up
       if (end in firstIndexFromPrevious1..lastIndexFromPrevious1) {
-        end = lastIndexFromPrevious1
+        end = endFromPrevious1
       }
     }
 
@@ -189,6 +191,9 @@ public open class LazyListState {
     this.firstIndexFromPrevious2 = firstIndexFromPrevious1
     this.firstIndexFromPrevious1 = firstIndex
     this.lastIndexFromPrevious1 = lastIndex
+
+    this.beginFromPrevious1 = begin
+    this.endFromPrevious1 = end
 
     return begin until end
   }

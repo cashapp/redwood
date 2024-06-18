@@ -42,14 +42,14 @@ class ScrollAwareLoadingTest {
         lazyList.onViewportChanged(50, 60)
       }
 
-      // We get an update with just what's on screen, plus a tiny bit in the direction of scroll.
+      // We get an update with what's on screen,
+      // plus 20 in the direction of the scroll and 5 in the opposite direction.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(50, 60 + 5)
+        lazyList.assertLoadedWindow(50 - 5, 60 + 20)
       }
 
-      // When we stop scrolling, we grow the loaded window, slightly favoring the last scroll
-      // direction.
+      // When we stop scrolling, we grow the loaded window.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
         lazyList.assertLoadedWindow(50 - 10, 60 + 20)
@@ -68,7 +68,7 @@ class ScrollAwareLoadingTest {
         }
       }
 
-      // Scroll to position 50...
+      // Scroll down to position 50...
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
         lazyList.onViewportChanged(50, 60)
@@ -77,20 +77,21 @@ class ScrollAwareLoadingTest {
       // Confirm we got that.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(50, 60 + 5)
+        lazyList.assertLoadedWindow(50 - 5, 60 + 20)
         lazyList.onViewportChanged(6, 16)
       }
 
-      // Scroll up again. We should get 5 more elements in the direction of scroll.
+      // Scroll back up. We should get up to 20 more elements in the direction of scroll,
+      // and 5 in the opposite direction.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(1, 16)
+        lazyList.assertLoadedWindow(0, 16 + 5)
       }
 
-      // When we stop scrolling we should get 10 elements before and 20 after.
+      // When we stop scrolling we should get up to 20 elements before and 10 after.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(0, 26)
+        lazyList.assertLoadedWindow(0, 16 + 10)
       }
     }
   }
@@ -106,22 +107,22 @@ class ScrollAwareLoadingTest {
         }
       }
 
-      // Scroll to position 89...
+      // Scroll down to position 89...
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
         lazyList.onViewportChanged(89, 99)
       }
 
-      // We get an update with what's on screen, but nothing beyond that.
+      // We get an update with what's on screen, plus 5 elements before.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(89, 100)
+        lazyList.assertLoadedWindow(89 - 5, 100)
       }
 
       // When we stop scrolling, we grow the loaded window.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(79, 100)
+        lazyList.assertLoadedWindow(89 - 10, 100)
       }
     }
   }
@@ -137,7 +138,7 @@ class ScrollAwareLoadingTest {
         }
       }
 
-      // Scroll to position 15...
+      // Scroll down to position 15...
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
         lazyList.onViewportChanged(15, 25)
@@ -146,20 +147,20 @@ class ScrollAwareLoadingTest {
       // We don't evict anything at the front until we have to...
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(0, 25 + 5)
+        lazyList.assertLoadedWindow(0, 25 + 20)
         lazyList.onViewportChanged(16, 26)
       }
 
-      // But when we need to evict, we evict it all.
+      // But when we need to evict, we evict to fit the current loaded window.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(15, 26 + 5)
+        lazyList.assertLoadedWindow(16 - 5, 26 + 20)
       }
 
-      // Once "at rest", we can grow the window in both directions.
+      // Once "at rest", we can grow the window.
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
-        lazyList.assertLoadedWindow(6, 26 + 20)
+        lazyList.assertLoadedWindow(16 - 10, 26 + 20)
       }
     }
   }
