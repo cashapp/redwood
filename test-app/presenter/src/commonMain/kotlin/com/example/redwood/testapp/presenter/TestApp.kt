@@ -37,6 +37,8 @@ private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
   put("UI Configuration") { UiConfigurationValues() }
   put("Box Sandbox") { BoxSandbox() }
   put("Unscoped Modifiers") { UnscopedModifiers() }
+  put("Broken Row/Column") { BrokenRowColumn() }
+  put("Broken Size Update") { BrokenSizeUpdate() }
 }
 
 @Stable
