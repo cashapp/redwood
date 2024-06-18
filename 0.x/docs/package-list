@@ -33,6 +33,8 @@ module:redwood-lazylayout-compose
 app.cash.redwood.lazylayout.compose
 module:redwood-lazylayout-composeui
 app.cash.redwood.lazylayout.composeui
+module:redwood-lazylayout-dom
+app.cash.redwood.lazylayout.dom
 module:redwood-lazylayout-schema
 app.cash.redwood.lazylayout
 module:redwood-lazylayout-testing
