@@ -1,7 +1,20 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.12.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.12.0] - 2024-06-18
+[0.12.0]: https://github.com/cashapp/redwood/releases/tag/0.12.0
 
 New:
 - Upgrade to Kotlin 2.0!
@@ -32,8 +45,63 @@ Breaking:
 
 Upgraded:
 - Kotlin 2.0.0
-- Zipline 1.12.0
+- Zipline 1.13.0
 - kotlinx.serialization 1.7.0
+
+
+### Gradle plugin removed
+
+This version of Redwood removes the custom Gradle plugin in favor of [the official JetBrains Compose compiler plugin](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-compiler.html) which ships as part of Kotlin itself.
+Each module in which you had previously applied the `app.cash.redwood` plugin should be changed to apply `org.jetbrains.kotlin.plugin.compose` instead.
+The Redwood dependencies will no longer be added as a result of the plugin change, and so any module which references Redwoods APIs should add those dependencies explicitly.
+
+For posterity, the Kotlin version compatibility table and compiler version customization for our old Redwood Gradle plugin will be archived here:
+
+<details>
+<summary>Redwood 0.12.0 Gradle plugin Kotlin compatibility table</summary>
+<p>
+
+Since Kotlin compiler plugins are an unstable API, certain versions of Redwood only work with
+certain versions of Kotlin.
+
+| Kotlin | Redwood       |
+|--------|---------------|
+| 1.9.24 | 0.11.0        |
+| 1.9.23 | 0.10.0        |
+| 1.9.22 | 0.8.0 - 0.9.0 |
+| 1.9.10 | 0.7.0         |
+| 1.9.0  | 0.6.0         |
+| 1.8.22 | 0.5.0         |
+| 1.8.20 | 0.3.0 - 0.4.0 |
+| 1.7.20 | 0.1.0 - 0.2.1 |
+
+</p>
+</details>
+
+<details>
+<summary>Redwood 0.12.0 Gradle plugin Compose compiler customization instructions</summary>
+<p>
+
+Each version of Redwood ships with a specific JetBrains Compose compiler version which works with
+a single version of Kotlin (see [version table](#version-compatibility) above). Newer versions of
+the Compose compiler or alternate Compose compilers can be specified using the Gradle extension.
+
+To use a new version of the JetBrains Compose compiler version:
+```kotlin
+redwood {
+  kotlinCompilerPlugin.set("1.4.8")
+}
+```
+
+To use an alternate Compose compiler dependency:
+```kotlin
+redwood {
+  kotlinCompilerPlugin.set("com.example:custom-compose-compiler:1.0.0")
+}
+```
+
+</p>
+</details>
 
 
 ## [0.11.0] - 2024-05-15
