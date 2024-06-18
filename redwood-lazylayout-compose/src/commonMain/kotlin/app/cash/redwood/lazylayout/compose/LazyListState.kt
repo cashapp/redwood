@@ -25,6 +25,11 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 
 private const val DEFAULT_PRELOAD_ITEM_COUNT = 15
+private const val SCROLL_IN_PROGRESS_PRELOAD_ITEM_COUNT = 5
+private const val PRIMARY_PRELOAD_ITEM_COUNT = 20
+private const val SECONDARY_PRELOAD_ITEM_COUNT = 10
+
+private const val DEFAULT_SCROLL_INDEX = -1
 
 /**
  * Creates a [LazyListState] that is remembered across compositions.
@@ -70,11 +75,19 @@ public open class LazyListState {
   public var lastIndex: Int by mutableIntStateOf(0)
     private set
 
-  /** How many items to load in anticipation of scrolling up. */
-  public var preloadBeforeItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+  internal var preloadItems: Boolean = true
 
-  /** How many items to load in anticipation of scrolling down. */
-  public var preloadAfterItemCount: Int by mutableIntStateOf(DEFAULT_PRELOAD_ITEM_COUNT)
+  public var defaultPreloadItemCount: Int = DEFAULT_PRELOAD_ITEM_COUNT
+  public var scrollInProgressPreloadItemCount: Int = SCROLL_IN_PROGRESS_PRELOAD_ITEM_COUNT
+  public var primaryPreloadItemCount: Int = PRIMARY_PRELOAD_ITEM_COUNT
+  public var secondaryPreloadItemCount: Int = SECONDARY_PRELOAD_ITEM_COUNT
+
+  private var firstIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+  private var firstIndexFromPrevious2: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+  private var lastIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+
+  private var beginFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
+  private var endFromPrevious1: Int by mutableStateOf(DEFAULT_SCROLL_INDEX)
 
   /** Perform a programmatic scroll. */
   public fun programmaticScroll(
@@ -105,5 +118,83 @@ public open class LazyListState {
 
     this.firstIndex = firstIndex
     this.lastIndex = lastIndex
+  }
+
+  public fun loadRange(itemCount: Int): IntRange {
+    // Ensure that the range includes `firstIndex` through `lastIndex`.
+    var begin = firstIndex
+    var end = lastIndex
+
+    val isScrollingDown = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 < firstIndex
+    val isScrollingUp = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 > firstIndex
+    val hasStoppedScrolling = firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndex == firstIndexFromPrevious1
+    val wasScrollingDown = firstIndexFromPrevious1 > firstIndexFromPrevious2
+    val wasScrollingUp = firstIndexFromPrevious1 < firstIndexFromPrevious2
+
+    // Expand the range depending on scroll direction.
+    when {
+      // Ignore preloads.
+      !preloadItems -> {
+        // No-op
+      }
+
+      isScrollingDown -> {
+        begin -= scrollInProgressPreloadItemCount
+        end += primaryPreloadItemCount
+      }
+
+      isScrollingUp -> {
+        begin -= primaryPreloadItemCount
+        end += scrollInProgressPreloadItemCount
+      }
+
+      hasStoppedScrolling && wasScrollingDown -> {
+        begin -= secondaryPreloadItemCount
+        end += primaryPreloadItemCount
+      }
+
+      hasStoppedScrolling && wasScrollingUp -> {
+        begin -= primaryPreloadItemCount
+        end += secondaryPreloadItemCount
+      }
+
+      // New.
+      else -> {
+        end += defaultPreloadItemCount
+      }
+    }
+
+    // On initial load, set lastIndex to the end of the loaded window.
+    if (lastIndex == 0) {
+      lastIndex = end
+    }
+
+    // If we're contiguous with the previous visible window,
+    // don't rush to remove things from the previous range.
+    if (beginFromPrevious1 != DEFAULT_SCROLL_INDEX &&
+      endFromPrevious1 != DEFAULT_SCROLL_INDEX
+    ) {
+      // Case one: Contiguous scroll down
+      if (begin in firstIndexFromPrevious1..lastIndexFromPrevious1) {
+        begin = beginFromPrevious1
+      }
+
+      // Case two: Contiguous scroll up
+      if (end in firstIndexFromPrevious1..lastIndexFromPrevious1) {
+        end = endFromPrevious1
+      }
+    }
+
+    begin = begin.coerceAtLeast(0)
+    end = end.coerceAtMost(itemCount).coerceAtLeast(0)
+
+    this.firstIndexFromPrevious2 = firstIndexFromPrevious1
+    this.firstIndexFromPrevious1 = firstIndex
+    this.lastIndexFromPrevious1 = lastIndex
+
+    this.beginFromPrevious1 = begin
+    this.endFromPrevious1 = end
+
+    return begin until end
   }
 }
