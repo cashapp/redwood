@@ -22,9 +22,9 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.guest.DefaultProtocolBridge
+import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
-import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
@@ -58,24 +58,24 @@ class ViewRecyclingTester(
 
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
-  val widgetBridge = ProtocolBridge(
+  val hostAdapter = HostProtocolAdapter(
     guestVersion = guestRedwoodVersion,
     container = widgetContainer,
     factory = widgetProtocolFactory,
     eventSink = { throw AssertionError() },
   )
 
-  private val compositionProtocolBridge = DefaultProtocolBridge(
+  private val guestAdapter = DefaultGuestProtocolAdapter(
     hostVersion = hostRedwoodVersion,
     widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
   ).apply {
-    initChangesSink(widgetBridge)
+    initChangesSink(hostAdapter)
   }
 
   internal val composition = TestRedwoodComposition(
     scope = coroutineScope,
-    widgetSystem = compositionProtocolBridge.widgetSystem,
-    container = compositionProtocolBridge.root,
+    widgetSystem = guestAdapter.widgetSystem,
+    container = guestAdapter.root,
     createSnapshot = { }, // The snapshot's value is a sentinel 'Unit'.
   )
 
@@ -90,7 +90,7 @@ class ViewRecyclingTester(
   /** Returns the a list of value objects. */
   suspend fun awaitSnapshot(): List<WidgetValue> {
     composition.awaitSnapshot()
-    compositionProtocolBridge.emitChanges()
+    guestAdapter.emitChanges()
     return widgetContainer.map { it.value }
   }
 }

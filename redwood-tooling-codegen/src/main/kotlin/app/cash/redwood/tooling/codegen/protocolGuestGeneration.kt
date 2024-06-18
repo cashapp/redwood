@@ -58,12 +58,12 @@ private val protocolViewType = UNIT
 /*
 object ExampleProtocolWidgetSystemFactory : ProtocolWidgetSystemFactory {
   override fun create(
-    bridge: ProtocolBridge,
+    guestAdapter: GuestProtocolAdapter,
     mismatchHandler: ProtocolMismatchHandler,
-  ): ExampleProtocolBridge {
+  ): ExampleWidgetSystem {
     return ExampleWidgetSystem(
-      Example = ProtocolExampleWidgetFactory(bridge, mismatchHandler),
-      RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(bridge, mismatchHandler),
+      Example = ProtocolExampleWidgetFactory(guestAdapter, mismatchHandler),
+      RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(guestAdapter, mismatchHandler),
     )
   }
 }
@@ -83,13 +83,13 @@ internal fun generateProtocolWidgetSystemFactory(
           FunSpec.builder("create")
             .optIn(Redwood.RedwoodCodegenApi)
             .addModifiers(OVERRIDE)
-            .addParameter("bridge", ProtocolGuest.ProtocolBridge)
+            .addParameter("guestAdapter", ProtocolGuest.GuestProtocolAdapter)
             .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .returns(widgetSystemType)
             .apply {
               val arguments = buildList {
                 for (dependency in schemaSet.all) {
-                  add(CodeBlock.of("%N = %T(bridge, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
+                  add(CodeBlock.of("%N = %T(guestAdapter, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
                 }
               }
               addStatement("return %T(\n%L)", schema.getWidgetSystemType(), arguments.joinToCode(separator = ",\n"))
@@ -103,22 +103,22 @@ internal fun generateProtocolWidgetSystemFactory(
 
 /*
 internal class ProtocolExampleWidgetFactory(
-  private val bridge: ProtocolBridge,
+  private val guestAdapter: GuestProtocolAdapter,
   private val mismatchHandler: ProtocolMismatchHandler,
 ) : ExampleWidgetFactory<Unit> {
   override fun Box(): Box<Unit> {
-    val widget = ProtocolExampleBox(bridge, json, mismatchHandler)
-    bridge.appendCreate(widget.id, widget.tag)
+    val widget = ProtocolExampleBox(guestAdapter, json, mismatchHandler)
+    guestAdapter.appendCreate(widget.id, widget.tag)
     return widget
   }
   override fun Text(): Text<Unit> {
-    return ProtocolExampleText(bridge, json, mismatchHandler)
-    bridge.appendCreate(widget.id, widget.tag)
+    return ProtocolExampleText(guestAdapter, json, mismatchHandler)
+    guestAdapter.appendCreate(widget.id, widget.tag)
     return widget
   }
   override fun Button(): Button<Unit> {
-    val widget = ProtocolExampleButton(bridge, json, mismatchHandler)
-    bridge.appendCreate(widget.id, widget.tag)
+    val widget = ProtocolExampleButton(guestAdapter, json, mismatchHandler)
+    guestAdapter.appendCreate(widget.id, widget.tag)
     return widget
   }
 }
@@ -137,13 +137,13 @@ internal fun generateProtocolWidgetFactory(
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("bridge", ProtocolGuest.ProtocolBridge)
+            .addParameter("guestAdapter", ProtocolGuest.GuestProtocolAdapter)
             .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("bridge", ProtocolGuest.ProtocolBridge, PRIVATE)
-            .initializer("bridge")
+          PropertySpec.builder("guestAdapter", ProtocolGuest.GuestProtocolAdapter, PRIVATE)
+            .initializer("guestAdapter")
             .build(),
         )
         .addProperty(
@@ -158,10 +158,10 @@ internal fun generateProtocolWidgetFactory(
                 .addModifiers(OVERRIDE)
                 .returns(schema.widgetType(widget).parameterizedBy(protocolViewType))
                 .addStatement(
-                  "val widget = %T(bridge, mismatchHandler)",
+                  "val widget = %T(guestAdapter, mismatchHandler)",
                   schema.protocolWidgetType(widget, host),
                 )
-                .addStatement("bridge.appendCreate(widget.id, widget.tag)")
+                .addStatement("guestAdapter.appendCreate(widget.id, widget.tag)")
                 .addStatement("return widget")
                 .build(),
             )
@@ -183,34 +183,34 @@ internal fun generateProtocolWidgetFactory(
 
 /*
 internal class ProtocolButton(
-  private val bridge: ProtocolBridge,
+  private val guestAdapter: GuestProtocolAdapter,
   private val mismatchHandler: ProtocolMismatchHandler,
 ) : ProtocolWidget, Button<Unit> {
-  public override val id: Id = bridge.nextId()
+  public override val id: Id = guestAdapter.nextId()
   public override val tag: WidgetTag get() = WidgetTag(3)
 
   private var onClick: (() -> Unit)? = null
 
-  private val serializer_0: KSerializer<String?> = bridge.json.serializersModule.serializer()
-  private val serializer_1: KSerializer<Boolean> = bridge.json.serializersModule.serializer()
+  private val serializer_0: KSerializer<String?> = guestAdapter.json.serializersModule.serializer()
+  private val serializer_1: KSerializer<Boolean> = guestAdapter.json.serializersModule.serializer()
 
   override var modifier: Modifier
     get() = throw AssertionError()
     set(value) {
       val json = buildJsonArray {
-        value.forEach { element -> add(element.toJsonElement(bridge.json))
+        value.forEach { element -> add(element.toJsonElement(guestAdapter.json))
       }
-      bridge.appendModifierChange(id, bridge.json))
+      guestAdapter.appendModifierChange(id, guestAdapter.json))
     }
 
   override fun text(text: String?) {
-    bridge.appendPropertyChange(this.id, PropertyTag(1), bridge.json.encodeToJsonElement(serializer_0, text))
+    guestAdapter.appendPropertyChange(this.id, PropertyTag(1), guestAdapter.json.encodeToJsonElement(serializer_0, text))
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
     val onClickSet = onClick != null
     if (onClickSet != (this.onClick != null)) {
-      bridge.appendPropertyChange(this.id, PropertyTag(3), onClickSet)
+      guestAdapter.appendPropertyChange(this.id, PropertyTag(3), onClickSet)
     }
     this.onClick = onClick
   }
@@ -243,13 +243,13 @@ internal fun generateProtocolWidget(
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("bridge", ProtocolGuest.ProtocolBridge)
+            .addParameter("guestAdapter", ProtocolGuest.GuestProtocolAdapter)
             .addParameter("mismatchHandler", ProtocolGuest.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("bridge", ProtocolGuest.ProtocolBridge, PRIVATE)
-            .initializer("bridge")
+          PropertySpec.builder("guestAdapter", ProtocolGuest.GuestProtocolAdapter, PRIVATE)
+            .initializer("guestAdapter")
             .build(),
         )
         .addProperty(
@@ -259,7 +259,7 @@ internal fun generateProtocolWidget(
         )
         .addProperty(
           PropertySpec.builder("id", Protocol.Id, OVERRIDE)
-            .initializer("bridge.nextId()")
+            .initializer("guestAdapter.nextId()")
             .build(),
         )
         .addProperty(
@@ -287,7 +287,7 @@ internal fun generateProtocolWidget(
                       // Work around https://github.com/Kotlin/kotlinx.serialization/issues/2713.
                       if (traitTypeName == U_INT) {
                         addStatement(
-                          "this.bridge.appendPropertyChange(this.id, %T(%L), %N)",
+                          "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %N)",
                           Protocol.PropertyTag,
                           trait.tag,
                           trait.name,
@@ -297,7 +297,7 @@ internal fun generateProtocolWidget(
                           nextSerializerId++
                         }
                         addStatement(
-                          "this.bridge.appendPropertyChange(this.id, %T(%L), serializer_%L, %N)",
+                          "this.guestAdapter.appendPropertyChange(this.id, %T(%L), serializer_%L, %N)",
                           Protocol.PropertyTag,
                           trait.tag,
                           serializerId,
@@ -339,7 +339,7 @@ internal fun generateProtocolWidget(
                         "true"
                       }
                       addStatement(
-                        "this.bridge.appendPropertyChange(this.id, %T(%L), %L)",
+                        "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %L)",
                         Protocol.PropertyTag,
                         trait.tag,
                         newValue,
@@ -355,7 +355,7 @@ internal fun generateProtocolWidget(
                 addProperty(
                   PropertySpec.builder(trait.name, ProtocolGuest.ProtocolWidgetChildren)
                     .addModifiers(OVERRIDE)
-                    .initializer("%T(id, %T(%L), bridge)", ProtocolGuest.ProtocolWidgetChildren, Protocol.ChildrenTag, trait.tag)
+                    .initializer("%T(id, %T(%L), guestAdapter)", ProtocolGuest.ProtocolWidgetChildren, Protocol.ChildrenTag, trait.tag)
                     .build(),
                 )
               }
@@ -376,7 +376,7 @@ internal fun generateProtocolWidget(
                       nextSerializerId++
                     }
                     arguments += CodeBlock.of(
-                      "bridge.json.decodeFromJsonElement(serializer_%L, event.args[%L])",
+                      "guestAdapter.json.decodeFromJsonElement(serializer_%L, event.args[%L])",
                       serializerId,
                       index,
                     )
@@ -401,7 +401,7 @@ internal fun generateProtocolWidget(
                 KotlinxSerialization.KSerializer.parameterizedBy(typeName),
               )
                 .addModifiers(PRIVATE)
-                .initializer("bridge.json.serializersModule.%M()", KotlinxSerialization.serializer)
+                .initializer("guestAdapter.json.serializersModule.%M()", KotlinxSerialization.serializer)
                 .build(),
             )
           }
@@ -417,7 +417,7 @@ internal fun generateProtocolWidget(
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.Modifier)
-                .addStatement("bridge.appendModifierChange(id, value.%M(bridge.json))", host.modifierToProtocol)
+                .addStatement("guestAdapter.appendModifierChange(id, value.%M(guestAdapter.json))", host.modifierToProtocol)
                 .build(),
             )
             .build(),
@@ -440,7 +440,7 @@ internal fun generateProtocolWidget(
                 if (trait is ProtocolChildren) {
                   if (workAroundLazyListPlaceholderRemoveCrash(widget, trait)) {
                     addComment("Work around the LazyList.placeholder remove crash.")
-                    beginControlFlow("if (!bridge.synthesizeSubtreeRemoval)")
+                    beginControlFlow("if (!guestAdapter.synthesizeSubtreeRemoval)")
                     addStatement("%N.depthFirstWalk(this, block)", trait.name)
                     endControlFlow()
                   } else {

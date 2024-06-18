@@ -4,7 +4,7 @@ public abstract interface class app/cash/redwood/protocol/host/GeneratedProtocol
 	public abstract fun widgetChildren-WCEpcRY (I)Ljava/util/List;
 }
 
-public final class app/cash/redwood/protocol/host/ProtocolBridge : app/cash/redwood/protocol/ChangesSink {
+public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash/redwood/protocol/ChangesSink {
 	public synthetic fun <init> (Ljava/lang/String;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/ProtocolFactory;Lapp/cash/redwood/protocol/EventSink;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun close ()V
 	public fun sendChanges (Ljava/util/List;)V

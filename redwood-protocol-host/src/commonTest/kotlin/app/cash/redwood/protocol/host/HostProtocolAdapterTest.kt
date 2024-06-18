@@ -43,9 +43,9 @@ import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive
 
 @OptIn(RedwoodCodegenApi::class)
-class ProtocolBridgeTest {
+class HostProtocolAdapterTest {
   @Test fun createRootIdThrows() {
-    val bridge = ProtocolBridge(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -65,13 +65,13 @@ class ProtocolBridgeTest {
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
-      bridge.sendChanges(changes)
+      hostAdapter.sendChanges(changes)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 0")
   }
 
   @Test fun duplicateIdThrows() {
-    val bridge = ProtocolBridge(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -90,15 +90,15 @@ class ProtocolBridgeTest {
         tag = WidgetTag(4),
       ),
     )
-    bridge.sendChanges(changes)
+    hostAdapter.sendChanges(changes)
     val t = assertFailsWith<IllegalArgumentException> {
-      bridge.sendChanges(changes)
+      hostAdapter.sendChanges(changes)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 1")
   }
 
   @Test fun removeRemoves() {
-    val bridge = ProtocolBridge(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -112,7 +112,7 @@ class ProtocolBridgeTest {
     )
 
     // Add a button.
-    bridge.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         Create(
           id = Id(1),
@@ -129,7 +129,7 @@ class ProtocolBridgeTest {
     )
 
     // Remove the button.
-    bridge.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         Remove(
           id = Id.Root,
@@ -151,14 +151,14 @@ class ProtocolBridgeTest {
       ),
     )
     val t = assertFailsWith<IllegalStateException> {
-      bridge.sendChanges(updateButtonText)
+      hostAdapter.sendChanges(updateButtonText)
     }
     assertThat(t).hasMessage("Unknown widget ID 1")
   }
 
   @Test fun modifierChangeNotifiesContainer() {
     var modifierUpdateCount = 0
-    val bridge = ProtocolBridge(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
       factory = TestSchemaProtocolFactory(
@@ -172,7 +172,7 @@ class ProtocolBridgeTest {
     )
 
     // Initial Button add does not trigger update callback (it's implicit because of insert).
-    bridge.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         // Button
         Create(Id(1), WidgetTag(4)),
@@ -183,7 +183,7 @@ class ProtocolBridgeTest {
     assertThat(modifierUpdateCount).isEqualTo(0)
 
     // Future modifier changes trigger the callback.
-    bridge.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         ModifierChange(Id(1)),
       ),
@@ -192,7 +192,7 @@ class ProtocolBridgeTest {
   }
 
   @Test fun entireSubtreeRemoved() {
-    val bridge = ProtocolBridge(
+    val host = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -208,7 +208,7 @@ class ProtocolBridgeTest {
     // TestRow {
     //   TestRow {
     //     Text("hello")
-    bridge.sendChanges(
+    host.sendChanges(
       listOf(
         // TestRow
         Create(Id(1), WidgetTag(1)),
@@ -227,21 +227,21 @@ class ProtocolBridgeTest {
     )
 
     // Validate we're tracking ID=3.
-    bridge.sendChanges(
+    host.sendChanges(
       listOf(
         PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hey")),
       ),
     )
 
     // Remove root TestRow.
-    bridge.sendChanges(
+    host.sendChanges(
       listOf(
         Remove(Id.Root, ChildrenTag.Root, 0, 1, listOf(Id(1))),
       ),
     )
 
     assertFailure {
-      bridge.sendChanges(
+      host.sendChanges(
         listOf(
           PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("sup")),
         ),

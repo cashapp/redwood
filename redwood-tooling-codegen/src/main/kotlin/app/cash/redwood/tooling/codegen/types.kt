@@ -39,7 +39,7 @@ internal object Protocol {
 }
 
 internal object ProtocolGuest {
-  val ProtocolBridge = ClassName("app.cash.redwood.protocol.guest", "ProtocolBridge")
+  val GuestProtocolAdapter = ClassName("app.cash.redwood.protocol.guest", "GuestProtocolAdapter")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.guest", "ProtocolMismatchHandler")
   val ProtocolWidget = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidget")

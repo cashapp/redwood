@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
@@ -65,19 +64,18 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
 
-@OptIn(RedwoodCodegenApi::class)
 class ProtocolTest {
   // Use latest guest version as the host version to avoid any compatibility behavior.
   private val latestVersion = guestRedwoodVersion
 
   @Test fun widgetVersionPropagated() = runTest {
-    val bridge = DefaultProtocolBridge(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       hostVersion = latestVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      bridge = bridge,
+      guestAdapter = guestAdapter,
       widgetVersion = 22U,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -89,7 +87,7 @@ class ProtocolTest {
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
       onEndChanges = {
-        assertThat(bridge.takeChanges()).isEmpty()
+        assertThat(guestAdapter.takeChanges()).isEmpty()
       },
     )
 
@@ -183,7 +181,7 @@ class ProtocolTest {
   }
 
   @Test fun protocolSkipsNullableLambdaChangeOfSamePresence() = runTest {
-    val (composition, bridge) = testProtocolComposition()
+    val (composition, guest) = testProtocolComposition()
 
     var state by mutableIntStateOf(0)
     composition.setContent {
@@ -227,7 +225,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    bridge.sendEvent(Event(Id(1), EventTag(2)))
+    guest.sendEvent(Event(Id(1), EventTag(2)))
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
@@ -237,7 +235,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 1 to 2.
-    bridge.sendEvent(Event(Id(1), EventTag(2)))
+    guest.sendEvent(Event(Id(1), EventTag(2)))
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
@@ -260,7 +258,7 @@ class ProtocolTest {
   }
 
   @Test fun protocolSkipsNonNullLambdaChange() = runTest {
-    val (composition, bridge) = testProtocolComposition()
+    val (composition, guest) = testProtocolComposition()
 
     var state by mutableIntStateOf(0)
     composition.setContent {
@@ -294,7 +292,7 @@ class ProtocolTest {
     )
 
     // Invoke the onClick lambda to move the state from 0 to 1.
-    bridge.sendEvent(Event(Id(1), EventTag(2)))
+    guest.sendEvent(Event(Id(1), EventTag(2)))
 
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
@@ -361,7 +359,7 @@ class ProtocolTest {
     hostVersion: RedwoodVersion,
     parent: SubtreeParent = ColumnParent,
   ): List<Change> {
-    val (composition, bridge) = testProtocolComposition(hostVersion)
+    val (composition, guest) = testProtocolComposition(hostVersion)
 
     var clicks = 0
     var remove by mutableStateOf(false)
@@ -379,14 +377,14 @@ class ProtocolTest {
     assertThat(clicks).isEqualTo(0)
 
     // Ensure the button is present and receiving clicks.
-    bridge.sendEvent(Event(button.id, EventTag(2)))
+    guest.sendEvent(Event(button.id, EventTag(2)))
     assertThat(clicks).isEqualTo(1)
 
     remove = true
     val removeChanges = composition.awaitSnapshot()
 
     // If the whole tree was removed, we cannot target the button anymore.
-    assertFailure { bridge.sendEvent(Event(button.id, EventTag(2))) }
+    assertFailure { guest.sendEvent(Event(button.id, EventTag(2))) }
       .isInstanceOf<IllegalArgumentException>()
       .message()
       .isEqualTo("Unknown node ID ${button.id.value} for event with tag 2")
@@ -397,22 +395,22 @@ class ProtocolTest {
 
   private fun TestScope.testProtocolComposition(
     hostVersion: RedwoodVersion = latestVersion,
-  ): Pair<TestRedwoodComposition<List<Change>>, ProtocolBridge> {
-    val bridge = DefaultProtocolBridge(
+  ): Pair<TestRedwoodComposition<List<Change>>, GuestProtocolAdapter> {
+    val guestAdapter = DefaultGuestProtocolAdapter(
       hostVersion = hostVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = TestRedwoodComposition(
       scope = backgroundScope,
-      widgetSystem = bridge.widgetSystem,
-      container = bridge.root,
+      widgetSystem = guestAdapter.widgetSystem,
+      container = guestAdapter.root,
     ) {
-      bridge.takeChanges()
+      guestAdapter.takeChanges()
     }
     backgroundScope.coroutineContext.job.invokeOnCompletion {
       composition.cancel()
     }
-    return composition to bridge
+    return composition to guestAdapter
   }
 
   interface SubtreeParent {

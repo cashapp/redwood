@@ -17,7 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.SnapshotChangeList
-import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import kotlinx.serialization.json.Json
@@ -40,7 +40,7 @@ public class ChangeListRenderer<W : Any>(
     changeList: SnapshotChangeList,
   ) {
     view.reset()
-    val bridge = ProtocolBridge(
+    val hostAdapter = HostProtocolAdapter(
       // Use latest host version as the guest version to avoid any compatibility behavior.
       guestVersion = hostRedwoodVersion,
       container = view.children,
@@ -50,6 +50,6 @@ public class ChangeListRenderer<W : Any>(
       ),
       eventSink = refuseAllEvents,
     )
-    bridge.sendChanges(changeList.changes)
+    hostAdapter.sendChanges(changeList.changes)
   }
 }

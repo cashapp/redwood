@@ -36,15 +36,16 @@ import app.cash.redwood.widget.Widget
 import kotlin.native.ObjCName
 
 /**
- * Bridges the serialized Redwood protocol back to widgets on the display side.
+ * Runs the host side of the protocol.
  *
- * This type will consume [Change]s and apply their [ChildrenChange] operations to the widget tree.
- * [PropertyChange]s and [ModifierChange]s are forwarded to their respective widgets.
- * Events from widgets are forwarded to [eventSink].
+ * This type receives [Change]s from the guest and applies them to the widget tree as children of
+ * the provided container.
+ *
+ * It sends events from widgets to the guest via [eventSink].
  */
 @OptIn(RedwoodCodegenApi::class)
-@ObjCName("ProtocolBridge", exact = true)
-public class ProtocolBridge<W : Any>(
+@ObjCName("HostProtocolAdapter", exact = true)
+public class HostProtocolAdapter<W : Any>(
   @Suppress("UNUSED_PARAMETER")
   guestVersion: RedwoodVersion,
   container: Widget.Children<W>,

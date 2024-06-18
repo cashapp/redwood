@@ -22,9 +22,9 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
-import app.cash.redwood.protocol.guest.DefaultProtocolBridge
+import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
-import app.cash.redwood.protocol.host.ProtocolBridge
+import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
@@ -58,19 +58,19 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
     widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T> {
-    val compositionBridge = DefaultProtocolBridge(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       hostVersion = hostRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
-    val widgetBridge = ProtocolBridge(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(widgetSystem),
       eventSink = { throw AssertionError() },
     )
-    compositionBridge.initChangesSink(widgetBridge)
-    return TestRedwoodComposition(this, compositionBridge.widgetSystem, compositionBridge.root) {
-      compositionBridge.emitChanges()
+    guestAdapter.initChangesSink(hostAdapter)
+    return TestRedwoodComposition(this, guestAdapter.widgetSystem, guestAdapter.root) {
+      guestAdapter.emitChanges()
       snapshot()
     }
   }
