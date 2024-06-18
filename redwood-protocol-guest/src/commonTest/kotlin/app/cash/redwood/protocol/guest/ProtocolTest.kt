@@ -69,13 +69,13 @@ class ProtocolTest {
   private val latestVersion = guestRedwoodVersion
 
   @Test fun widgetVersionPropagated() = runTest {
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       hostVersion = latestVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
-      guest = guest,
+      guestAdapter = guestAdapter,
       widgetVersion = 22U,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -87,7 +87,7 @@ class ProtocolTest {
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
       onEndChanges = {
-        assertThat(guest.takeChanges()).isEmpty()
+        assertThat(guestAdapter.takeChanges()).isEmpty()
       },
     )
 
@@ -395,22 +395,22 @@ class ProtocolTest {
 
   private fun TestScope.testProtocolComposition(
     hostVersion: RedwoodVersion = latestVersion,
-  ): Pair<TestRedwoodComposition<List<Change>>, ProtocolGuest> {
-    val guest = DefaultProtocolGuest(
+  ): Pair<TestRedwoodComposition<List<Change>>, GuestProtocolAdapter> {
+    val guestAdapter = DefaultGuestProtocolAdapter(
       hostVersion = hostVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val composition = TestRedwoodComposition(
       scope = backgroundScope,
-      widgetSystem = guest.widgetSystem,
-      container = guest.root,
+      widgetSystem = guestAdapter.widgetSystem,
+      container = guestAdapter.root,
     ) {
-      guest.takeChanges()
+      guestAdapter.takeChanges()
     }
     backgroundScope.coroutineContext.job.invokeOnCompletion {
       composition.cancel()
     }
-    return composition to guest
+    return composition to guestAdapter
   }
 
   interface SubtreeParent {

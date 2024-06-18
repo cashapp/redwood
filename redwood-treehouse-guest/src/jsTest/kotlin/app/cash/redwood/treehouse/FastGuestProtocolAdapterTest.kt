@@ -18,7 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
-import app.cash.redwood.protocol.guest.DefaultProtocolGuest
+import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.widget.Widget
@@ -41,11 +41,11 @@ import kotlinx.serialization.json.decodeFromDynamic
 import kotlinx.serialization.modules.SerializersModule
 
 /**
- * Confirm that [FastProtocolGuest] behaves the same as [DefaultProtocolGuest].
+ * Confirm that [FastGuestProtocolAdapter] behaves the same as [DefaultGuestProtocolAdapter].
  */
 @OptIn(ExperimentalSerializationApi::class, RedwoodCodegenApi::class)
-class FastProtocolGuestTest {
-  @Test fun consistentWithDefaultProtocolGuest() {
+class FastGuestProtocolAdapterTest {
+  @Test fun consistentWithDefaultGuestProtocolAdapter() {
     assertChangesEqual { root, widgetSystem ->
       val button = widgetSystem.TestSchema.Button()
       button.onClick { error("unexpected call") }
@@ -63,7 +63,7 @@ class FastProtocolGuestTest {
   }
 
   /** Test our special case for https://github.com/Kotlin/kotlinx.serialization/issues/2713 */
-  @Test fun consistentWithDefaultProtocolGuestForUint() {
+  @Test fun consistentWithDefaultGuestProtocolAdapterForUint() {
     assertChangesEqual { root, widgetSystem ->
       val button = widgetSystem.TestSchema.Button()
       button.color(0xffeeddccu)
@@ -81,16 +81,16 @@ class FastProtocolGuestTest {
       }
     }
 
-    val fastUpdates = collectChangesFromFastProtocolGuest(json, block)
-    val defaultUpdates = collectChangesFromDefaultProtocolGuest(json, block)
+    val fastUpdates = collectChangesFromFastGuestProtocolAdapter(json, block)
+    val defaultUpdates = collectChangesFromDefaultGuestProtocolAdapter(json, block)
     assertThat(fastUpdates).isEqualTo(defaultUpdates)
   }
 
-  private fun collectChangesFromDefaultProtocolGuest(
+  private fun collectChangesFromDefaultGuestProtocolAdapter(
     json: Json,
     block: (Widget.Children<Unit>, TestSchemaWidgetSystem<Unit>) -> Unit,
   ): List<Change> {
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
@@ -99,7 +99,7 @@ class FastProtocolGuestTest {
     )
 
     val result = mutableListOf<Change>()
-    guest.initChangesSink(
+    guestAdapter.initChangesSink(
       object : ChangesSinkService {
         override fun sendChanges(changes: List<Change>) {
           result += changes
@@ -108,19 +108,19 @@ class FastProtocolGuestTest {
     )
 
     block(
-      guest.root,
-      guest.widgetSystem as TestSchemaWidgetSystem<Unit>,
+      guestAdapter.root,
+      guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>,
     )
-    guest.emitChanges()
+    guestAdapter.emitChanges()
 
     return result
   }
 
-  private fun collectChangesFromFastProtocolGuest(
+  private fun collectChangesFromFastGuestProtocolAdapter(
     json: Json,
     block: (Widget.Children<Unit>, TestSchemaWidgetSystem<Unit>) -> Unit,
   ): List<Change> {
-    val guest = FastProtocolGuest(
+    val guest = FastGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,

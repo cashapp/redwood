@@ -19,7 +19,7 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.guest.ProtocolGuest
+import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -41,22 +41,22 @@ import kotlinx.coroutines.plus
 public fun TreehouseUi.asZiplineTreehouseUi(
   appLifecycle: StandardAppLifecycle,
 ): ZiplineTreehouseUi {
-  val guest = ProtocolGuest(
+  val guestAdapter = GuestProtocolAdapter(
     hostVersion = appLifecycle.hostProtocolVersion,
     json = appLifecycle.json,
     widgetSystemFactory = appLifecycle.protocolWidgetSystemFactory,
     mismatchHandler = appLifecycle.mismatchHandler,
   )
-  return RedwoodZiplineTreehouseUi(appLifecycle, this, guest)
+  return RedwoodZiplineTreehouseUi(appLifecycle, this, guestAdapter)
 }
 
 private class RedwoodZiplineTreehouseUi(
   private val appLifecycle: StandardAppLifecycle,
   private val treehouseUi: TreehouseUi,
-  private val guest: ProtocolGuest,
+  private val guestAdapter: GuestProtocolAdapter,
 ) : ZiplineTreehouseUi,
   ZiplineScoped,
-  EventSink by guest {
+  EventSink by guestAdapter {
 
   /**
    * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,
@@ -123,13 +123,13 @@ private class RedwoodZiplineTreehouseUi(
       canBeSaved = { true },
     )
 
-    guest.initChangesSink(changesSink)
+    guestAdapter.initChangesSink(changesSink)
 
     val composition = ProtocolRedwoodComposition(
       scope = coroutineScope + appLifecycle.frameClock,
-      guest = guest,
+      guestAdapter = guestAdapter,
       widgetVersion = appLifecycle.widgetVersion,
-      onEndChanges = { guest.emitChanges() },
+      onEndChanges = { guestAdapter.emitChanges() },
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = host.uiConfigurations,

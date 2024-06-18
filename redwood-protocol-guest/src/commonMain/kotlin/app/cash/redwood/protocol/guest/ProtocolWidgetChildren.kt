@@ -25,7 +25,7 @@ import app.cash.redwood.widget.Widget
 public class ProtocolWidgetChildren(
   private val id: Id,
   private val tag: ChildrenTag,
-  private val guest: ProtocolGuest,
+  private val guestAdapter: GuestProtocolAdapter,
 ) : Widget.Children<Unit> {
   private val _widgets = mutableListOf<ProtocolWidget>()
   override val widgets: List<ProtocolWidget> get() = _widgets
@@ -33,37 +33,37 @@ public class ProtocolWidgetChildren(
   override fun insert(index: Int, widget: Widget<Unit>) {
     widget as ProtocolWidget
     _widgets.add(index, widget)
-    guest.appendAdd(id, tag, index, widget)
+    guestAdapter.appendAdd(id, tag, index, widget)
   }
 
   override fun remove(index: Int, count: Int) {
-    if (guest.synthesizeSubtreeRemoval) {
+    if (guestAdapter.synthesizeSubtreeRemoval) {
       val removedIds = ArrayList<Id>(count)
       for (i in index until index + count) {
         val widget = _widgets[i]
         removedIds += widget.id
-        guest.removeWidget(widget.id)
+        guestAdapter.removeWidget(widget.id)
 
         widget.depthFirstWalk { parent, childrenTag, children ->
           val childIds = children.widgets.map(ProtocolWidget::id)
           for (childId in childIds) {
-            guest.removeWidget(childId)
+            guestAdapter.removeWidget(childId)
           }
-          guest.appendRemove(parent.id, childrenTag, 0, childIds.size, childIds)
+          guestAdapter.appendRemove(parent.id, childrenTag, 0, childIds.size, childIds)
         }
       }
-      guest.appendRemove(id, tag, index, count, removedIds)
+      guestAdapter.appendRemove(id, tag, index, count, removedIds)
     } else {
       for (i in index until index + count) {
         val widget = _widgets[i]
-        guest.removeWidget(widget.id)
+        guestAdapter.removeWidget(widget.id)
         widget.depthFirstWalk { _, _, children ->
           for (childWidget in children.widgets) {
-            guest.removeWidget(childWidget.id)
+            guestAdapter.removeWidget(childWidget.id)
           }
         }
       }
-      guest.appendRemove(id, tag, index, count)
+      guestAdapter.appendRemove(id, tag, index, count)
     }
 
     _widgets.remove(index, count)
@@ -71,7 +71,7 @@ public class ProtocolWidgetChildren(
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
-    guest.appendMove(id, tag, fromIndex, toIndex, count)
+    guestAdapter.appendMove(id, tag, fromIndex, toIndex, count)
   }
 
   override fun onModifierUpdated(index: Int, widget: Widget<Unit>) {

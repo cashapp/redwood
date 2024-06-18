@@ -44,8 +44,8 @@ import kotlin.native.ObjCName
  * It sends events from widgets to the guest via [eventSink].
  */
 @OptIn(RedwoodCodegenApi::class)
-@ObjCName("ProtocolHost", exact = true)
-public class ProtocolHost<W : Any>(
+@ObjCName("HostProtocolAdapter", exact = true)
+public class HostProtocolAdapter<W : Any>(
   @Suppress("UNUSED_PARAMETER")
   guestVersion: RedwoodVersion,
   container: Widget.Children<W>,

@@ -16,7 +16,7 @@
 package app.cash.redwood.testing
 
 import app.cash.redwood.protocol.SnapshotChangeList
-import app.cash.redwood.protocol.guest.DefaultProtocolGuest
+import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import kotlinx.serialization.json.Json
@@ -29,16 +29,16 @@ public fun List<WidgetValue>.toChangeList(
   factory: ProtocolWidgetSystemFactory,
   json: Json = Json.Default,
 ): SnapshotChangeList {
-  val guest = DefaultProtocolGuest(
+  val guestAdapter = DefaultGuestProtocolAdapter(
     // Use latest guest version as the host version to avoid any compatibility behavior.
     hostVersion = guestRedwoodVersion,
     json = json,
     widgetSystemFactory = factory,
   )
   for ((index, child) in withIndex()) {
-    guest.root.insert(index, child.toWidget(guest.widgetSystem))
+    guestAdapter.root.insert(index, child.toWidget(guestAdapter.widgetSystem))
   }
-  return SnapshotChangeList(guest.takeChanges())
+  return SnapshotChangeList(guestAdapter.takeChanges())
 }
 
 /**

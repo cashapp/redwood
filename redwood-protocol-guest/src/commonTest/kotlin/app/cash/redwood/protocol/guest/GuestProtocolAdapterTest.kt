@@ -43,20 +43,20 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(RedwoodCodegenApi::class)
-class ProtocolGuestTest {
+class GuestProtocolAdapterTest {
   @Test fun propertyUsesSerializersModule() {
     val json = Json {
       serializersModule = SerializersModule {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       json = json,
     )
-    val widgetSystem = guest.widgetSystem as TestSchemaWidgetSystem<Unit>
+    val widgetSystem = guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>
     val textInput = widgetSystem.TestSchema.TextInput()
 
     textInput.customType(10.seconds)
@@ -65,7 +65,7 @@ class ProtocolGuestTest {
       Create(Id(1), WidgetTag(5)),
       PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
     )
-    assertThat(guest.takeChanges()).isEqualTo(expected)
+    assertThat(guestAdapter.takeChanges()).isEqualTo(expected)
   }
 
   @Test fun modifierUsesSerializersModule() {
@@ -74,13 +74,13 @@ class ProtocolGuestTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       json = json,
     )
-    val widgetSystem = guest.widgetSystem as TestSchemaWidgetSystem<Unit>
+    val widgetSystem = guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>
     val button = widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
@@ -101,7 +101,7 @@ class ProtocolGuestTest {
         ),
       ),
     )
-    assertThat(guest.takeChanges()).isEqualTo(expected)
+    assertThat(guestAdapter.takeChanges()).isEqualTo(expected)
   }
 
   @Test fun modifierDefaultValueNotSerialized() {
@@ -110,13 +110,13 @@ class ProtocolGuestTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       json = json,
     )
-    val widgetSystem = guest.widgetSystem as TestSchemaWidgetSystem<Unit>
+    val widgetSystem = guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>
     val button = widgetSystem.TestSchema.Button()
 
     button.modifier = with(object : TestScope {}) {
@@ -137,7 +137,7 @@ class ProtocolGuestTest {
         ),
       ),
     )
-    assertThat(guest.takeChanges()).isEqualTo(expected)
+    assertThat(guestAdapter.takeChanges()).isEqualTo(expected)
   }
 
   @Test fun eventUsesSerializersModule() {
@@ -146,13 +146,13 @@ class ProtocolGuestTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       json = json,
     )
-    val widgetSystem = guest.widgetSystem as TestSchemaWidgetSystem<Unit>
+    val widgetSystem = guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>
     val textInput = widgetSystem.TestSchema.TextInput()
 
     val protocolWidget = textInput as ProtocolWidget
@@ -168,12 +168,12 @@ class ProtocolGuestTest {
   }
 
   @Test fun unknownEventThrowsDefault() {
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
-    val widgetSystem = guest.widgetSystem as TestSchemaWidgetSystem<Unit>
+    val widgetSystem = guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>
     val button = widgetSystem.TestSchema.Button() as ProtocolWidget
 
     val t = assertFailsWith<IllegalArgumentException> {
@@ -185,13 +185,13 @@ class ProtocolGuestTest {
 
   @Test fun unknownEventCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       mismatchHandler = handler,
     )
-    val widgetSystem = guest.widgetSystem as TestSchemaWidgetSystem<Unit>
+    val widgetSystem = guestAdapter.widgetSystem as TestSchemaWidgetSystem<Unit>
     val button = widgetSystem.TestSchema.Button() as ProtocolWidget
 
     button.sendEvent(Event(Id(1), EventTag(3456543)))
@@ -200,27 +200,27 @@ class ProtocolGuestTest {
   }
 
   @Test fun unknownEventNodeThrowsDefault() {
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
     )
     val t = assertFailsWith<IllegalArgumentException> {
-      guest.sendEvent(Event(Id(3456543), EventTag(1)))
+      guestAdapter.sendEvent(Event(Id(3456543), EventTag(1)))
     }
     assertThat(t).hasMessage("Unknown node ID 3456543 for event with tag 1")
   }
 
   @Test fun unknownEventNodeCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val guest = DefaultProtocolGuest(
+    val guestAdapter = DefaultGuestProtocolAdapter(
       // Use latest guest version as the host version to avoid any compatibility behavior.
       hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       mismatchHandler = handler,
     )
 
-    guest.sendEvent(Event(Id(3456543), EventTag(1)))
+    guestAdapter.sendEvent(Event(Id(3456543), EventTag(1)))
 
     assertThat(handler.events.single()).isEqualTo("Unknown ID 3456543 for event tag 1")
   }

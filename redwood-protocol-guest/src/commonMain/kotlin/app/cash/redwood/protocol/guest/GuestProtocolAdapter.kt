@@ -36,7 +36,7 @@ import kotlinx.serialization.json.Json
  *
  * This interface is for generated code use only.
  */
-public interface ProtocolGuest : EventSink {
+public interface GuestProtocolAdapter : EventSink {
   @RedwoodCodegenApi
   public val json: Json
 

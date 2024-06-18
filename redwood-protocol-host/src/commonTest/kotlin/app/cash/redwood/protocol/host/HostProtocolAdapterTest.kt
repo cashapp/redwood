@@ -43,9 +43,9 @@ import kotlin.test.assertFailsWith
 import kotlinx.serialization.json.JsonPrimitive
 
 @OptIn(RedwoodCodegenApi::class)
-class ProtocolHostTest {
+class HostProtocolAdapterTest {
   @Test fun createRootIdThrows() {
-    val host = ProtocolHost(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -65,13 +65,13 @@ class ProtocolHostTest {
       ),
     )
     val t = assertFailsWith<IllegalArgumentException> {
-      host.sendChanges(changes)
+      hostAdapter.sendChanges(changes)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 0")
   }
 
   @Test fun duplicateIdThrows() {
-    val host = ProtocolHost(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -90,15 +90,15 @@ class ProtocolHostTest {
         tag = WidgetTag(4),
       ),
     )
-    host.sendChanges(changes)
+    hostAdapter.sendChanges(changes)
     val t = assertFailsWith<IllegalArgumentException> {
-      host.sendChanges(changes)
+      hostAdapter.sendChanges(changes)
     }
     assertThat(t).hasMessage("Insert attempted to replace existing widget with ID 1")
   }
 
   @Test fun removeRemoves() {
-    val host = ProtocolHost(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
@@ -112,7 +112,7 @@ class ProtocolHostTest {
     )
 
     // Add a button.
-    host.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         Create(
           id = Id(1),
@@ -129,7 +129,7 @@ class ProtocolHostTest {
     )
 
     // Remove the button.
-    host.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         Remove(
           id = Id.Root,
@@ -151,14 +151,14 @@ class ProtocolHostTest {
       ),
     )
     val t = assertFailsWith<IllegalStateException> {
-      host.sendChanges(updateButtonText)
+      hostAdapter.sendChanges(updateButtonText)
     }
     assertThat(t).hasMessage("Unknown widget ID 1")
   }
 
   @Test fun modifierChangeNotifiesContainer() {
     var modifierUpdateCount = 0
-    val host = ProtocolHost(
+    val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
       factory = TestSchemaProtocolFactory(
@@ -172,7 +172,7 @@ class ProtocolHostTest {
     )
 
     // Initial Button add does not trigger update callback (it's implicit because of insert).
-    host.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         // Button
         Create(Id(1), WidgetTag(4)),
@@ -183,7 +183,7 @@ class ProtocolHostTest {
     assertThat(modifierUpdateCount).isEqualTo(0)
 
     // Future modifier changes trigger the callback.
-    host.sendChanges(
+    hostAdapter.sendChanges(
       listOf(
         ModifierChange(Id(1)),
       ),
@@ -192,7 +192,7 @@ class ProtocolHostTest {
   }
 
   @Test fun entireSubtreeRemoved() {
-    val host = ProtocolHost(
+    val host = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(
