@@ -579,10 +579,9 @@ private fun FirContext.findSchemaAnnotation(
           }
         } ?: emptyMap()
 
-      @Suppress("UNCHECKED_CAST")
-      val tagExpression = mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
+      val tagExpression = mapping[Name.identifier("tag")] as? FirLiteralExpression
         ?: throw AssertionError(annotation.source?.text)
-      val tag = tagExpression.value
+      val tag = tagExpression.value as Int
 
       val getClassCall = mapping[Name.identifier("schema")] as? FirGetClassCall
         ?: throw AssertionError(annotation.source?.text)
@@ -614,12 +613,11 @@ private fun FirContext.findWidgetAnnotation(
   val annotation = annotations.find { it.fqName(firSession) == FqNames.Widget }
     ?: return null
 
-  @Suppress("UNCHECKED_CAST")
   val tagExpression = annotation.argumentMapping
-    .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
+    .mapping[Name.identifier("tag")] as? FirLiteralExpression
     ?: throw AssertionError(annotation.source?.text)
 
-  return WidgetAnnotation(tagExpression.value)
+  return WidgetAnnotation(tagExpression.value as Int)
 }
 
 private data class WidgetAnnotation(
@@ -632,12 +630,11 @@ private fun FirContext.findPropertyAnnotation(
   val annotation = annotations.find { it.fqName(firSession) == FqNames.Property }
     ?: return null
 
-  @Suppress("UNCHECKED_CAST")
   val tagExpression = annotation.argumentMapping
-    .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
+    .mapping[Name.identifier("tag")] as? FirLiteralExpression
     ?: throw AssertionError(annotation.source?.text)
 
-  return PropertyAnnotation(tagExpression.value)
+  return PropertyAnnotation(tagExpression.value as Int)
 }
 
 private data class PropertyAnnotation(
@@ -650,19 +647,17 @@ private fun FirContext.findChildrenAnnotation(
   val annotation = annotations.find { it.fqName(firSession) == FqNames.Children }
     ?: return null
 
-  @Suppress("UNCHECKED_CAST")
   val tagExpression = annotation.argumentMapping
-    .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
+    .mapping[Name.identifier("tag")] as? FirLiteralExpression
     ?: throw AssertionError(annotation.source?.text)
 
-  return ChildrenAnnotation(tagExpression.value)
+  return ChildrenAnnotation(tagExpression.value as Int)
 }
 
 private data class ChildrenAnnotation(
   val tag: Int,
 )
 
-@Suppress("UNCHECKED_CAST")
 private fun FirContext.findDefaultAnnotation(
   annotations: List<FirAnnotation>,
 ): DefaultAnnotation? {
@@ -670,25 +665,23 @@ private fun FirContext.findDefaultAnnotation(
     ?: return null
 
   val expression = annotation.argumentMapping
-    .mapping[Name.identifier("expression")] as? FirLiteralExpression<String>
+    .mapping[Name.identifier("expression")] as? FirLiteralExpression
     ?: throw AssertionError(annotation.source?.text)
 
-  return DefaultAnnotation(expression.value)
+  return DefaultAnnotation(expression.value as String)
 }
 
 private data class DefaultAnnotation(
   val expression: String,
 )
 
-@Suppress("UNCHECKED_CAST")
 private fun FirContext.findModifierAnnotation(
   annotations: List<FirAnnotation>,
 ): ModifierAnnotation? {
   val annotation = annotations.find { it.fqName(firSession) == FqNames.Modifier }
     ?: return null
 
-  @Suppress("UNCHECKED_CAST")
-  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
+  val tagExpression = annotation.argumentMapping.mapping[Name.identifier("tag")] as? FirLiteralExpression
     ?: throw AssertionError(annotation.source?.text)
 
   val scopesExpression = annotation.argumentMapping.mapping[Name.identifier("scopes")] as? FirVarargArgumentsExpression
@@ -703,7 +696,7 @@ private fun FirContext.findModifierAnnotation(
       classId.asSingleFqName().toFqType()
     }
 
-  return ModifierAnnotation(tagExpression.value, scopes)
+  return ModifierAnnotation(tagExpression.value as Int, scopes)
 }
 
 private data class ModifierAnnotation(
@@ -717,9 +710,8 @@ private fun FirContext.findDeprecationAnnotation(
   val annotation = annotations.find { it.fqName(firSession) == FqNames.Deprecated }
     ?: return null
 
-  @Suppress("UNCHECKED_CAST")
   val messageExpression = annotation.argumentMapping
-    .mapping[Name.identifier("message")] as? FirLiteralExpression<String>
+    .mapping[Name.identifier("message")] as? FirLiteralExpression
     ?: throw AssertionError(annotation.source?.text)
 
   val levelExpression = annotation.argumentMapping
@@ -729,7 +721,7 @@ private fun FirContext.findDeprecationAnnotation(
 
   val hasReplaceWith = Name.identifier("replaceWith") in annotation.argumentMapping.mapping
 
-  return DeprecationAnnotation(messageExpression.value, level, hasReplaceWith)
+  return DeprecationAnnotation(messageExpression.value as String, level, hasReplaceWith)
 }
 
 private data class DeprecationAnnotation(
