@@ -40,4 +40,7 @@ kotlin {
 
 zipline {
   mainFunction = 'com.example.redwood.testapp.treehouse.preparePresenters'
+
+  // Private, test-only module. It does not need to be stable.
+  apiTracking = false
 }
