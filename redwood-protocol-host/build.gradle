@@ -1,5 +1,3 @@
-import app.cash.redwood.buildsupport.ComposeHelpers
-
 import static app.cash.redwood.buildsupport.TargetGroup.Common
 
 redwoodBuild {
@@ -12,7 +10,7 @@ apply plugin: 'com.github.gmazzo.buildconfig'
 kotlin {
   sourceSets {
     commonMain {
-      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.protocol.host'))
+      kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.protocol.host'))
       dependencies {
         api projects.redwoodProtocol
         api projects.redwoodWidget

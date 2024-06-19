@@ -1,5 +1,3 @@
-import app.cash.redwood.buildsupport.FlexboxHelpers
-
 import static app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
 
 redwoodBuild {
@@ -14,7 +12,7 @@ apply plugin: 'app.cash.paparazzi'
 kotlin {
   sourceSets {
     commonMain {
-      kotlin.srcDir(FlexboxHelpers.get(tasks, 'app.cash.redwood.layout.composeui').get())
+      kotlin.srcDir(redwoodBuild.generateFlexboxHelpers(tasks, 'app.cash.redwood.layout.composeui'))
       dependencies {
         api projects.redwoodLayoutWidget
         implementation projects.redwoodWidgetCompose

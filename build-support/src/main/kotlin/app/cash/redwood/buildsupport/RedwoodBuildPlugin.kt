@@ -43,6 +43,8 @@ import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.JavaApplication
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.AbstractTestTask
@@ -577,6 +579,21 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         }
         assets.addGeneratedSourceDirectory(extractTask, ZiplineAppExtractTask::outputDirectory)
       }
+    }
+  }
+
+  override fun TaskContainer.generateComposeHelpers(packageName: String): TaskProvider<CopyPastaTask> {
+    return create("composeHelpers", packageName)
+  }
+
+  override fun TaskContainer.generateFlexboxHelpers(packageName: String): TaskProvider<CopyPastaTask> {
+    return create("flexboxHelpers", packageName)
+  }
+
+  private fun TaskContainer.create(fileName: String, packageName: String): TaskProvider<CopyPastaTask> {
+    return register(fileName, CopyPastaTask::class.java) {
+      it.fileName.set(fileName)
+      it.packageName.set(packageName)
     }
   }
 }

@@ -24,23 +24,6 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskContainer
-import org.gradle.api.tasks.TaskProvider
-
-object ComposeHelpers {
-  @JvmStatic fun TaskContainer.get(packageName: String) = create("composeHelpers", packageName)
-}
-
-object FlexboxHelpers {
-  @JvmStatic fun TaskContainer.get(packageName: String) = create("flexboxHelpers", packageName)
-}
-
-private fun TaskContainer.create(fileName: String, packageName: String): TaskProvider<CopyPastaTask> {
-  return register(fileName, CopyPastaTask::class.java) {
-    it.fileName.set(fileName)
-    it.packageName.set(packageName)
-  }
-}
 
 abstract class CopyPastaTask @Inject constructor(layout: ProjectLayout) : DefaultTask() {
   @get:Input

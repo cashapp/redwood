@@ -1,5 +1,3 @@
-import app.cash.redwood.buildsupport.ComposeHelpers
-
 import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
 
 redwoodBuild {
@@ -12,7 +10,7 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 kotlin {
   sourceSets {
     commonMain {
-      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.compose'))
+      kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.compose'))
       dependencies {
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
