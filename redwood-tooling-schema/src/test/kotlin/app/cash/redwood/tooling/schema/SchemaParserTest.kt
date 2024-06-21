@@ -50,7 +50,6 @@ import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
 import kotlinx.serialization.Serializable
 import org.junit.Assume.assumeTrue
-import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,10 +61,6 @@ class SchemaParserTest(
   object TestScope
 
   interface NonAnnotationSchema
-
-  @Before fun before() {
-    assumeTrue(parser != SchemaParser.Fir) // Kotlin 1.9 broke FIR.
-  }
 
   @Test fun nonAnnotatedSchemaThrows() {
     assertFailure { parser.parse(NonAnnotationSchema::class) }
@@ -1154,6 +1149,7 @@ Property
     },
     Fir {
       override fun parse(type: KClass<*>): ProtocolSchemaSet {
+        val jdkHome = System.getProperty("java.home").let(::File)
         val sources = System.getProperty("redwood.internal.sources")
           .split(File.pathSeparator)
           .map(::File)
@@ -1162,7 +1158,7 @@ Property
           .split(File.pathSeparator)
           .map(::File)
           .filter(File::exists) // Entries that don't exist produce warnings.
-        return parseProtocolSchema(sources, classpath, type.toFqType())
+        return parseProtocolSchema(jdkHome, sources, classpath, type.toFqType())
       }
     },
     ;

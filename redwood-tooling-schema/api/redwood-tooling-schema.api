@@ -142,8 +142,8 @@ public abstract interface class app/cash/redwood/tooling/schema/Schema {
 }
 
 public final class app/cash/redwood/tooling/schema/SchemaParserFirKt {
-	public static final fun parseProtocolSchema (Ljava/util/Collection;Ljava/util/Collection;Lapp/cash/redwood/tooling/schema/FqType;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
-	public static final fun parseSchema (Ljava/util/Collection;Ljava/util/Collection;Lapp/cash/redwood/tooling/schema/FqType;)Lapp/cash/redwood/tooling/schema/SchemaSet;
+	public static final fun parseProtocolSchema (Ljava/io/File;Ljava/util/Collection;Ljava/util/Collection;Lapp/cash/redwood/tooling/schema/FqType;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
+	public static final fun parseSchema (Ljava/io/File;Ljava/util/Collection;Ljava/util/Collection;Lapp/cash/redwood/tooling/schema/FqType;)Lapp/cash/redwood/tooling/schema/SchemaSet;
 }
 
 public abstract interface class app/cash/redwood/tooling/schema/SchemaSet {

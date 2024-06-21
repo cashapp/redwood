@@ -36,4 +36,7 @@ tasks.named(TEST_TASK_NAME, Test).configure {
 
   def classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName).files
   it.systemProperty('redwood.internal.classpath', classpath.join(File.pathSeparator))
+
+  // FIR is heap hungry.
+  it.maxHeapSize = "2g"
 }
