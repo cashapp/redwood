@@ -45,9 +45,9 @@ import kotlinx.serialization.modules.SerializersModule
  * [createContent] will trigger a start automatically. Use [close] to permanently stop the Zipline.
  */
 @ObjCName("TreehouseApp", exact = true)
-public interface TreehouseApp<A : AppService> : AutoCloseable {
-  public val spec: Spec<A>
-  public val dispatchers: TreehouseDispatchers
+public abstract class TreehouseApp<A : AppService> : AutoCloseable {
+  public abstract val spec: Spec<A>
+  public abstract val dispatchers: TreehouseDispatchers
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -56,14 +56,14 @@ public interface TreehouseApp<A : AppService> : AutoCloseable {
    * It is unwise to use this instance for anything beyond measurement and monitoring, because the
    * instance may be replaced if new code is loaded.
    */
-  public val zipline: StateFlow<Zipline?>
+  public abstract val zipline: StateFlow<Zipline?>
 
   /**
    * Create content for [source].
    *
    * Calls to this function will [start] this app if it isn't already started.
    */
-  public fun createContent(
+  public abstract fun createContent(
     source: TreehouseContentSource<A>,
     codeListener: CodeListener = CodeListener(),
   ): Content
@@ -76,24 +76,24 @@ public interface TreehouseApp<A : AppService> : AutoCloseable {
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun start()
+  public abstract fun start()
 
   /**
    * Stop any currently-running code and stop receiving new code.
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun stop()
+  public abstract fun stop()
 
   /**
    * Stop the currently-running application (if any) and start it again.
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun restart()
+  public abstract fun restart()
 
   /** Permanently stop the app and release any resources necessary to start it again. */
-  public override fun close()
+  public abstract override fun close()
 
   /**
    * Creates new instances of [TreehouseApp].

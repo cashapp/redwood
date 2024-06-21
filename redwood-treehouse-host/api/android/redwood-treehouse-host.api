@@ -79,7 +79,8 @@ public abstract interface class app/cash/redwood/treehouse/StateStore {
 	public abstract fun put (Ljava/lang/String;Lapp/cash/redwood/treehouse/StateSnapshot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class app/cash/redwood/treehouse/TreehouseApp : java/lang/AutoCloseable {
+public abstract class app/cash/redwood/treehouse/TreehouseApp : java/lang/AutoCloseable {
+	public fun <init> ()V
 	public abstract fun close ()V
 	public abstract fun createContent (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;)Lapp/cash/redwood/treehouse/Content;
 	public static synthetic fun createContent$default (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/Content;

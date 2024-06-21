@@ -32,9 +32,9 @@ import okio.Path
 internal class RealTreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   private val appScope: CoroutineScope,
-  override val spec: TreehouseApp.Spec<A>,
+  override val spec: Spec<A>,
   eventListenerFactory: EventListener.Factory,
-) : TreehouseApp<A> {
+) : TreehouseApp<A>() {
   /** This property is confined to [TreehouseDispatchers.ui]. */
   private var closed = false
 
@@ -187,7 +187,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
 
     override fun <A : AppService> create(
       appScope: CoroutineScope,
-      spec: TreehouseApp.Spec<A>,
+      spec: Spec<A>,
       eventListenerFactory: EventListener.Factory,
     ): TreehouseApp<A> = RealTreehouseApp(this, appScope, spec, eventListenerFactory)
 

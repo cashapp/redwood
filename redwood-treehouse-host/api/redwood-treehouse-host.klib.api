@@ -6,10 +6,7 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-treehouse-host>
-abstract fun interface <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse/TreehouseContentSource { // app.cash.redwood.treehouse/TreehouseContentSource|null[0]
-    abstract fun get(#A): app.cash.redwood.treehouse/ZiplineTreehouseUi // app.cash.redwood.treehouse/TreehouseContentSource.get|get(1:0){}[0]
-}
-abstract interface <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse/TreehouseApp : kotlin/AutoCloseable { // app.cash.redwood.treehouse/TreehouseApp|null[0]
+abstract class <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse/TreehouseApp : kotlin/AutoCloseable { // app.cash.redwood.treehouse/TreehouseApp|null[0]
     abstract class <#A1: app.cash.redwood.treehouse/AppService> Spec { // app.cash.redwood.treehouse/TreehouseApp.Spec|null[0]
         abstract fun bindServices(app.cash.zipline/Zipline) // app.cash.redwood.treehouse/TreehouseApp.Spec.bindServices|bindServices(app.cash.zipline.Zipline){}[0]
         abstract fun create(app.cash.zipline/Zipline): #A1 // app.cash.redwood.treehouse/TreehouseApp.Spec.create|create(app.cash.zipline.Zipline){}[0]
@@ -41,6 +38,10 @@ abstract interface <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.
         abstract fun <get-spec>(): app.cash.redwood.treehouse/TreehouseApp.Spec<#A> // app.cash.redwood.treehouse/TreehouseApp.spec.<get-spec>|<get-spec>(){}[0]
     abstract val zipline // app.cash.redwood.treehouse/TreehouseApp.zipline|{}zipline[0]
         abstract fun <get-zipline>(): kotlinx.coroutines.flow/StateFlow<app.cash.zipline/Zipline?> // app.cash.redwood.treehouse/TreehouseApp.zipline.<get-zipline>|<get-zipline>(){}[0]
+    constructor <init>() // app.cash.redwood.treehouse/TreehouseApp.<init>|<init>(){}[0]
+}
+abstract fun interface <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse/TreehouseContentSource { // app.cash.redwood.treehouse/TreehouseContentSource|null[0]
+    abstract fun get(#A): app.cash.redwood.treehouse/ZiplineTreehouseUi // app.cash.redwood.treehouse/TreehouseContentSource.get|get(1:0){}[0]
 }
 abstract interface <#A: kotlin/Any> app.cash.redwood.treehouse/TreehouseView : app.cash.redwood.widget/RedwoodView<#A> { // app.cash.redwood.treehouse/TreehouseView|null[0]
     abstract fun interface <#A1: kotlin/Any> ReadyForContentChangeListener { // app.cash.redwood.treehouse/TreehouseView.ReadyForContentChangeListener|null[0]
