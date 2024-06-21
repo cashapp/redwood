@@ -45,11 +45,13 @@ import org.jetbrains.kotlin.com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.kotlin.config.CommonConfigurationKeys.MODULE_NAME
 import org.jetbrains.kotlin.config.CommonConfigurationKeys.USE_FIR
 import org.jetbrains.kotlin.config.CompilerConfiguration
+import org.jetbrains.kotlin.config.JVMConfigurationKeys.JDK_HOME
 import org.jetbrains.kotlin.descriptors.ClassKind.OBJECT
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporterFactory
 import org.jetbrains.kotlin.diagnostics.getChildrenArray
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
+import org.jetbrains.kotlin.fir.declarations.FirProperty
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
 import org.jetbrains.kotlin.fir.declarations.primaryConstructorIfAny
 import org.jetbrains.kotlin.fir.declarations.utils.classId
@@ -83,14 +85,16 @@ import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.text
 
 public fun parseSchema(
+  javaHome: File,
   sources: Collection<File>,
   dependencies: Collection<File>,
   type: FqType,
 ): SchemaSet {
-  return parseProtocolSchema(sources, dependencies, type)
+  return parseProtocolSchema(javaHome, sources, dependencies, type)
 }
 
 public fun parseProtocolSchema(
+  javaHome: File,
   sources: Collection<File>,
   dependencies: Collection<File>,
   type: FqType,
@@ -117,10 +121,9 @@ public fun parseProtocolSchema(
   configuration.put(MODULE_NAME, "schema")
   configuration.put(MESSAGE_COLLECTOR_KEY, messageCollector)
   configuration.put(USE_FIR, true)
+  configuration.put(JDK_HOME, javaHome)
   configuration.addKotlinSourceRoots(sources.map { it.absolutePath })
-  // TODO Figure out how to add the JDK modules to the classpath. Currently importing the stdlib
-  //  allows a typealias to resolve to a JDK type which doesn't exist and thus breaks analysis.
-  configuration.addJvmClasspathRoots(dependencies.filter { "kotlin-stdlib-" !in it.path })
+  configuration.addJvmClasspathRoots(dependencies.toList())
 
   val disposable = Disposer.newDisposable()
   val environment = KotlinCoreEnvironment.createForProduction(
@@ -259,7 +262,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
   }
 
   val widgets = mutableListOf<ParsedProtocolWidget>()
-  val modifier = mutableListOf<ParsedProtocolModifier>()
+  val modifiers = mutableListOf<ParsedProtocolModifier>()
   for (memberType in schemaAnnotation.members) {
     val memberClass = firClassByName[memberType]
       ?: throw IllegalArgumentException("Unable to locate schema type $memberType")
@@ -274,7 +277,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     } else if (widgetAnnotation != null) {
       widgets += parseWidget(memberType, memberClass, widgetAnnotation)
     } else if (modifierAnnotation != null) {
-      modifier += parseModifier(memberType, memberClass, modifierAnnotation)
+      modifiers += parseModifier(memberType, memberClass, modifierAnnotation)
     } else {
       throw AssertionError()
     }
@@ -293,7 +296,26 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     )
   }
 
-  val badModifiers = modifier.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
+  val badReservedWidgets = schemaAnnotation.reservedWidgets
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedWidgets.isEmpty()) {
+    "Schema reserved widgets contains duplicates $badReservedWidgets"
+  }
+
+  val reservedWidgets = widgets.filter { it.tag in schemaAnnotation.reservedWidgets }
+  if (reservedWidgets.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema @Widget tags must not be included in reserved set ")
+        appendLine(schemaAnnotation.reservedWidgets.toString())
+        for (widget in reservedWidgets) {
+          append("\n- @Widget(${widget.tag}) ${widget.type}")
+        }
+      },
+    )
+  }
+
+  val badModifiers = modifiers.groupBy(ProtocolModifier::tag).filterValues { it.size > 1 }
   if (badModifiers.isNotEmpty()) {
     throw IllegalArgumentException(
       buildString {
@@ -306,11 +328,30 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     )
   }
 
+  val badReservedModifiers = schemaAnnotation.reservedModifiers
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedModifiers.isEmpty()) {
+    "Schema reserved modifiers contains duplicates $badReservedModifiers"
+  }
+
+  val reservedModifiers = modifiers.filter { it.tag in schemaAnnotation.reservedModifiers }
+  if (reservedModifiers.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Schema @Modifier tags must not be included in reserved set ")
+        appendLine(schemaAnnotation.reservedModifiers.toString())
+        for (widget in reservedModifiers) {
+          append("\n- @Modifier(${widget.tag}, …) ${widget.type}")
+        }
+      },
+    )
+  }
+
   val widgetScopes = widgets
     .flatMap { it.traits }
     .filterIsInstance<Widget.Children>()
     .mapNotNull { it.scope }
-  val modifierScopes = modifier
+  val modifierScopes = modifiers
     .flatMap { it.scopes }
   val scopes = buildSet {
     addAll(widgetScopes)
@@ -353,7 +394,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
     documentation = documentation,
     scopes = scopes.toList(),
     widgets = widgets,
-    modifiers = modifier,
+    modifiers = modifiers,
     taggedDependencies = schemaAnnotation.dependencies.associate { it.tag to it.schema },
   )
 }
@@ -372,11 +413,12 @@ private fun FirContext.parseWidget(
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
       val type = parameter.resolvedReturnType
+      val property = firClass.declarations.filterIsInstance<FirProperty>().single { it.name == parameter.name }
 
-      val propertyAnnotation = findPropertyAnnotation(parameter.annotations)
-      val childrenAnnotation = findChildrenAnnotation(parameter.annotations)
-      val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
-      val deprecation = findDeprecationAnnotation(parameter.annotations)
+      val propertyAnnotation = findPropertyAnnotation(property.annotations)
+      val childrenAnnotation = findChildrenAnnotation(property.annotations)
+      val defaultAnnotation = findDefaultAnnotation(property.annotations)
+      val deprecation = findDeprecationAnnotation(property.annotations)
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
 
@@ -455,6 +497,26 @@ private fun FirContext.parseWidget(
     )
   }
 
+  val badReservedChildren = annotation.reservedChildren
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedChildren.isEmpty()) {
+    "Widget $memberType reserved children contains duplicates $badReservedChildren"
+  }
+
+  val reservedChildren = traits.filterIsInstance<ProtocolChildren>()
+    .filter { it.tag in annotation.reservedChildren }
+  if (reservedChildren.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Widget $memberType @Children tags must not be included in reserved set ")
+        appendLine(annotation.reservedChildren.toString())
+        for (children in reservedChildren) {
+          append("\n- @Children(${children.tag}) ${children.name}")
+        }
+      },
+    )
+  }
+
   val badProperties = traits.filterIsInstance<ProtocolProperty>()
     .groupBy(ProtocolProperty::tag)
     .filterValues { it.size > 1 }
@@ -465,6 +527,26 @@ private fun FirContext.parseWidget(
         for ((propertyTag, group) in badProperties) {
           append("\n- @Property($propertyTag): ")
           group.joinTo(this) { it.name }
+        }
+      },
+    )
+  }
+
+  val badReservedProperties = annotation.reservedProperties
+    .filterNotTo(HashSet(), HashSet<Int>()::add)
+  require(badReservedProperties.isEmpty()) {
+    "Widget $memberType reserved properties contains duplicates $badReservedProperties"
+  }
+
+  val reservedProperties = traits.filterIsInstance<ProtocolProperty>()
+    .filter { it.tag in annotation.reservedProperties }
+  if (reservedProperties.isNotEmpty()) {
+    throw IllegalArgumentException(
+      buildString {
+        append("Widget $memberType @Property tags must not be included in reserved set ")
+        appendLine(annotation.reservedProperties.toString())
+        for (children in reservedProperties) {
+          append("\n- @Property(${children.tag}) ${children.name}")
         }
       },
     )
@@ -595,12 +677,30 @@ private fun FirContext.findSchemaAnnotation(
       DependencyAnnotation(tag, fqType)
     }
 
-  return SchemaAnnotation(members, dependencies)
+  val reservedWidgetsArray = annotation.argumentMapping
+    .mapping[Name.identifier("reservedWidgets")] as FirArrayLiteral?
+  val reservedWidgets = reservedWidgetsArray?.arguments.orEmpty()
+    .map {
+      @Suppress("UNCHECKED_CAST")
+      (it as FirLiteralExpression<Long>).value.toInt()
+    }
+
+  val reservedModifiersArray = annotation.argumentMapping
+    .mapping[Name.identifier("reservedModifiers")] as FirArrayLiteral?
+  val reservedModifiers = reservedModifiersArray?.arguments.orEmpty()
+    .map {
+      @Suppress("UNCHECKED_CAST")
+      (it as FirLiteralExpression<Long>).value.toInt()
+    }
+
+  return SchemaAnnotation(members, dependencies, reservedWidgets, reservedModifiers)
 }
 
 private data class SchemaAnnotation(
   val members: List<FqType>,
   val dependencies: List<DependencyAnnotation>,
+  val reservedWidgets: List<Int>,
+  val reservedModifiers: List<Int>,
 ) {
   data class DependencyAnnotation(
     val tag: Int,
@@ -619,11 +719,29 @@ private fun FirContext.findWidgetAnnotation(
     .mapping[Name.identifier("tag")] as? FirLiteralExpression<Int>
     ?: throw AssertionError(annotation.source?.text)
 
-  return WidgetAnnotation(tagExpression.value)
+  val reservedPropertiesArray = annotation.argumentMapping
+    .mapping[Name.identifier("reservedProperties")] as FirArrayLiteral?
+  val reservedProperties = reservedPropertiesArray?.arguments.orEmpty()
+    .map {
+      @Suppress("UNCHECKED_CAST")
+      (it as FirLiteralExpression<Long>).value.toInt()
+    }
+
+  val reservedChildrenArray = annotation.argumentMapping
+    .mapping[Name.identifier("reservedChildren")] as FirArrayLiteral?
+  val reservedChildren = reservedChildrenArray?.arguments.orEmpty()
+    .map {
+      @Suppress("UNCHECKED_CAST")
+      (it as FirLiteralExpression<Long>).value.toInt()
+    }
+
+  return WidgetAnnotation(tagExpression.value, reservedProperties, reservedChildren)
 }
 
 private data class WidgetAnnotation(
   val tag: Int,
+  val reservedProperties: List<Int>,
+  val reservedChildren: List<Int>,
 )
 
 private fun FirContext.findPropertyAnnotation(
