@@ -409,7 +409,9 @@ private fun FirContext.parseWidget(
     "@Widget $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 
-  val traits = if (firClass.isData) {
+  val traits = if (firClass.classKind == OBJECT) {
+    emptyList()
+  } else if (firClass.isData) {
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
       val type = parameter.resolvedReturnType
@@ -474,11 +476,9 @@ private fun FirContext.parseWidget(
         throw IllegalArgumentException("Unannotated parameter \"$name\" on $memberType")
       }
     }
-  } else if (firClass.classKind == OBJECT) {
-    emptyList()
   } else {
     throw IllegalArgumentException(
-      "@Widget $memberType must be 'data' class or 'object'",
+      "@Widget $memberType must be 'data' class or object",
     )
   }
 
@@ -574,11 +574,10 @@ private fun FirContext.parseModifier(
   require(tag in 1 until MAX_MEMBER_TAG) {
     "@Modifier $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
-  require(annotation.scopes.isNotEmpty()) {
-    "@Modifier $memberType must have at least one scope."
-  }
 
-  val properties = if (firClass.isData) {
+  val properties = if (firClass.classKind == OBJECT) {
+    emptyList()
+  } else if (firClass.isData) {
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
       val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName().toFqType()
@@ -598,11 +597,9 @@ private fun FirContext.parseModifier(
         deprecation = deprecation,
       )
     }
-  } else if (firClass.classKind == OBJECT) {
-    emptyList()
   } else {
     throw IllegalArgumentException(
-      "@Modifier $memberType must be 'data' class or 'object'",
+      "@Modifier $memberType must be 'data' class or object",
     )
   }
 

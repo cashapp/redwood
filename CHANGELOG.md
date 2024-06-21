@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Using a `data object` for a widget of modifier no longer causes schema parsing to crash.
 
 
 ## [0.12.0] - 2024-06-18
