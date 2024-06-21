@@ -15,66 +15,39 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.DefaultFreshnessCheckerNotFresh
 import app.cash.zipline.loader.FreshnessChecker
-import app.cash.zipline.loader.LoadResult
-import app.cash.zipline.loader.ManifestVerifier
-import app.cash.zipline.loader.ZiplineCache
-import app.cash.zipline.loader.ZiplineHttpClient
-import app.cash.zipline.loader.ZiplineLoader
 import kotlin.native.ObjCName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import okio.Closeable
-import okio.FileSystem
-import okio.Path
 
 /**
- * This class binds downloaded code to on-screen views.
+ * Manages the [Zipline] runtimes that run the code to power on-screen views.
+ *
+ * This takes care to launch a [Zipline] when it is requested and available.
+ *
+ *  * **Requested:** The runtime is started either explicitly via a call to [start], or implicitly
+ *    by calling binding creating content to a UI.
+ *
+ *  * **Available:** The runtime is available when its code is ready, either via a download,
+ *    embedded in the host application, or through the cache from an earlier execution.
+ *
+ * If new code is available during execution (typically during development), this will perform a
+ * hot reload: gracefully stopping the current Zipline and starting its successor. It also
+ * implements restarting the Zipline after an uncaught exception (in both development and
+ * production).
+ *
+ * It is rarely necessary to call the [start], [stop], and [restart] methods directly. Calling
+ * [createContent] will trigger a start automatically. Use [close] to permanently stop the Zipline.
  */
 @ObjCName("TreehouseApp", exact = true)
-public class TreehouseApp<A : AppService> private constructor(
-  private val factory: Factory,
-  private val appScope: CoroutineScope,
-  public val spec: Spec<A>,
-  eventListenerFactory: EventListener.Factory,
-) {
-  /** This property is confined to [TreehouseDispatchers.ui]. */
-  private var closed = false
-
-  /** Non-null until this app is closed. This property is confined to [TreehouseDispatchers.ui]. */
-  private var eventListenerFactory: EventListener.Factory? = eventListenerFactory
-
-  public val dispatchers: TreehouseDispatchers = factory.dispatchers
-
-  private val codeHost = object : CodeHost<A>(
-    dispatchers = dispatchers,
-    appScope = appScope,
-    frameClockFactory = factory.frameClockFactory,
-    stateStore = factory.stateStore,
-  ) {
-    override fun codeUpdatesFlow(
-      eventListenerFactory: EventListener.Factory,
-    ): Flow<CodeSession<A>> {
-      return ziplineFlow(eventListenerFactory).mapNotNull { loadResult ->
-        when (loadResult) {
-          is LoadResult.Failure -> {
-            null // EventListener already notified.
-          }
-
-          is LoadResult.Success -> {
-            createCodeSession(loadResult.zipline)
-          }
-        }
-      }
-    }
-  }
+public interface TreehouseApp<A : AppService> : AutoCloseable {
+  public val spec: Spec<A>
+  public val dispatchers: TreehouseDispatchers
 
   /**
    * Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The
@@ -84,7 +57,6 @@ public class TreehouseApp<A : AppService> private constructor(
    * instance may be replaced if new code is loaded.
    */
   public val zipline: StateFlow<Zipline?>
-    get() = codeHost.zipline
 
   /**
    * Create content for [source].
@@ -94,16 +66,7 @@ public class TreehouseApp<A : AppService> private constructor(
   public fun createContent(
     source: TreehouseContentSource<A>,
     codeListener: CodeListener = CodeListener(),
-  ): Content {
-    start()
-
-    return TreehouseAppContent(
-      codeHost = codeHost,
-      dispatchers = dispatchers,
-      codeEventPublisher = RealCodeEventPublisher(codeListener, this),
-      source = source,
-    )
-  }
+  ): Content
 
   /**
    * Initiate the initial code download and load, and start driving the views that are rendered by
@@ -113,135 +76,41 @@ public class TreehouseApp<A : AppService> private constructor(
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun start() {
-    val eventListenerFactory = eventListenerFactory ?: error("closed")
-    codeHost.start(eventListenerFactory)
-  }
+  public fun start()
 
   /**
    * Stop any currently-running code and stop receiving new code.
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun stop() {
-    codeHost.stop()
-  }
+  public fun stop()
 
   /**
    * Stop the currently-running application (if any) and start it again.
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
-  public fun restart() {
-    val eventListenerFactory = eventListenerFactory ?: error("closed")
-    codeHost.restart(eventListenerFactory)
-  }
-
-  /**
-   * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
-   * found.
-   */
-  private fun ziplineFlow(
-    eventListenerFactory: EventListener.Factory,
-  ): Flow<LoadResult> {
-    var loader = ZiplineLoader(
-      dispatcher = dispatchers.zipline,
-      manifestVerifier = factory.manifestVerifier,
-      httpClient = factory.httpClient,
-    )
-
-    loader.concurrentDownloads = factory.concurrentDownloads
-
-    // Adapt [EventListener.Factory] to a [ZiplineEventListener.Factory]
-    val ziplineEventListenerFactory = ZiplineEventListener.Factory { _, manifestUrl ->
-      val eventListener = eventListenerFactory.create(this@TreehouseApp, manifestUrl)
-      RealEventPublisher(eventListener).ziplineEventListener
-    }
-    loader = loader.withEventListenerFactory(ziplineEventListenerFactory)
-
-    if (!spec.loadCodeFromNetworkOnly) {
-      loader = loader.withCache(
-        cache = factory.cache,
-      )
-
-      if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
-        loader = loader.withEmbedded(
-          embeddedFileSystem = factory.embeddedFileSystem,
-          embeddedDir = factory.embeddedDir,
-        )
-      }
-    }
-
-    return loader.load(
-      applicationName = spec.name,
-      manifestUrlFlow = spec.manifestUrl,
-      serializersModule = spec.serializersModule,
-      freshnessChecker = spec.freshnessChecker,
-    ) { zipline ->
-      spec.bindServices(zipline)
-    }
-  }
-
-  private fun createCodeSession(zipline: Zipline): ZiplineCodeSession<A> {
-    val appService = spec.create(zipline)
-
-    // Extract the RealEventPublisher() created in ziplineFlow().
-    val eventListener = zipline.eventListener as RealEventPublisher.ZiplineEventListener
-    val eventPublisher = eventListener.eventPublisher
-
-    return ZiplineCodeSession(
-      dispatchers = dispatchers,
-      eventPublisher = eventPublisher,
-      frameClockFactory = factory.frameClockFactory,
-      appService = appService,
-      zipline = zipline,
-      appScope = appScope,
-    )
-  }
+  public fun restart()
 
   /** Permanently stop the app and release any resources necessary to start it again. */
-  public fun close() {
-    dispatchers.checkUi()
-
-    closed = true
-    eventListenerFactory = null
-    stop()
-  }
+  public override fun close()
 
   /**
-   * This manages a cache that should be shared by all launched applications.
+   * Creates new instances of [TreehouseApp].
    *
-   * This class holds a stateful disk cache. At most one instance with each [cacheName] should be
-   * open at any time. Most callers should use a single [Factory] for best caching.
+   * This manages a cache that should be shared by all launched applications. This object holds a
+   * stateful disk cache. At most one instance with each cache name should be open at any time. Most
+   * applications should share a single [Factory] across all applications for best caching.
    */
   @ObjCName("TreehouseAppFactory", exact = true)
-  public class Factory internal constructor(
-    private val platform: TreehousePlatform,
-    public val dispatchers: TreehouseDispatchers,
-    internal val httpClient: ZiplineHttpClient,
-    internal val frameClockFactory: FrameClock.Factory,
-    internal val manifestVerifier: ManifestVerifier,
-    internal val embeddedFileSystem: FileSystem?,
-    internal val embeddedDir: Path?,
-    private val cacheName: String,
-    private val cacheMaxSizeInBytes: Long,
-    internal val concurrentDownloads: Int,
-    internal val stateStore: StateStore,
-  ) : Closeable {
-    /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
-    internal val cache: ZiplineCache by lazy {
-      platform.newCache(name = cacheName, maxSizeInBytes = cacheMaxSizeInBytes)
-    }
+  public interface Factory : AutoCloseable {
+    public val dispatchers: TreehouseDispatchers
 
     public fun <A : AppService> create(
       appScope: CoroutineScope,
       spec: Spec<A>,
       eventListenerFactory: EventListener.Factory = EventListener.NONE,
-    ): TreehouseApp<A> = TreehouseApp(this, appScope, spec, eventListenerFactory)
-
-    override fun close() {
-      cache.close()
-    }
+    ): TreehouseApp<A>
   }
 
   /**

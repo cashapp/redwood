@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
  */
 @ObjCName("TreehouseDispatchers", exact = true)
-public interface TreehouseDispatchers {
+public interface TreehouseDispatchers : AutoCloseable {
   public val ui: CoroutineDispatcher
 
   public val zipline: CoroutineDispatcher
@@ -53,7 +53,7 @@ public interface TreehouseDispatchers {
    * Most applications should not to call this; instead they should allow these dispatchers to
    * run until the process exits. This may be useful in tests.
    */
-  public fun close()
+  public override fun close()
 }
 
 /**

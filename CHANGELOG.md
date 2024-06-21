@@ -7,7 +7,7 @@ New:
 - Nothing yet!
 
 Changed:
-- Nothing yet!
+- The `TreehouseApp` type is now an interface. This should make it easier to write unit tests for code that integrates Treehouse.
 
 Fixed:
 - Nothing yet!

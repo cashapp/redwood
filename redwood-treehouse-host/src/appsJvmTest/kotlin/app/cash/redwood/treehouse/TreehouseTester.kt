@@ -99,7 +99,7 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
-  private val treehouseAppFactory = TreehouseApp.Factory(
+  private val treehouseAppFactory = RealTreehouseApp.Factory(
     platform = platform,
     dispatchers = dispatchers,
     httpClient = httpClient,
