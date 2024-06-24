@@ -22,6 +22,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.example.redwood.testapp.testing.TextInputValue
 import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -184,6 +186,23 @@ class LeaksTest {
     codeListenerLeakWatcher.assertNotLeaked()
 
     treehouseApp.stop()
+  }
+
+  @Test
+  fun dispatchersNotClosedByApp() = runTest {
+    val dispatchers = FakeDispatchers(this)
+    val app = TreehouseTester(this, dispatchers).loadApp()
+    app.close()
+    assertFalse(dispatchers.isClosed)
+  }
+
+  @Test
+  fun dispatchersNotLeakedByAppFactory() = runTest {
+    val dispatchers = FakeDispatchers(this)
+    val factory = TreehouseTester(this, dispatchers).loadAppFactory()
+    assertFalse(dispatchers.isClosed)
+    factory.close()
+    assertTrue(dispatchers.isClosed)
   }
 
   /**

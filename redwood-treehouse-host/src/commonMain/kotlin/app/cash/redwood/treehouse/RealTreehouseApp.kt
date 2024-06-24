@@ -19,7 +19,6 @@ import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.LoadResult
 import app.cash.zipline.loader.ManifestVerifier
-import app.cash.zipline.loader.ZiplineCache
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import kotlinx.coroutines.CoroutineScope
@@ -121,7 +120,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
 
     if (!spec.loadCodeFromNetworkOnly) {
       loader = loader.withCache(
-        cache = factory.cache,
+        cache = factory.cache.value,
       )
 
       if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
@@ -181,7 +180,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     internal val stateStore: StateStore,
   ) : TreehouseApp.Factory {
     /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
-    internal val cache: ZiplineCache by lazy {
+    internal val cache = lazy {
       platform.newCache(name = cacheName, maxSizeInBytes = cacheMaxSizeInBytes)
     }
 
@@ -192,7 +191,11 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     ): TreehouseApp<A> = RealTreehouseApp(this, appScope, spec, eventListenerFactory)
 
     override fun close() {
-      cache.close()
+      if (cache.isInitialized()) {
+        cache.value.close()
+      }
+
+      dispatchers.close()
     }
   }
 }
