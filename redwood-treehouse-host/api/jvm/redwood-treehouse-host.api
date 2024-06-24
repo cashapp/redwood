@@ -79,24 +79,23 @@ public abstract interface class app/cash/redwood/treehouse/StateStore {
 	public abstract fun put (Ljava/lang/String;Lapp/cash/redwood/treehouse/StateSnapshot;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class app/cash/redwood/treehouse/TreehouseApp {
-	public synthetic fun <init> (Lapp/cash/redwood/treehouse/TreehouseApp$Factory;Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/treehouse/TreehouseApp$Spec;Lapp/cash/redwood/treehouse/EventListener$Factory;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun close ()V
-	public final fun createContent (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;)Lapp/cash/redwood/treehouse/Content;
+public abstract class app/cash/redwood/treehouse/TreehouseApp : java/lang/AutoCloseable {
+	public fun <init> ()V
+	public abstract fun close ()V
+	public abstract fun createContent (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;)Lapp/cash/redwood/treehouse/Content;
 	public static synthetic fun createContent$default (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/Content;
-	public final fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
-	public final fun getSpec ()Lapp/cash/redwood/treehouse/TreehouseApp$Spec;
-	public final fun getZipline ()Lkotlinx/coroutines/flow/StateFlow;
-	public final fun restart ()V
-	public final fun start ()V
-	public final fun stop ()V
+	public abstract fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
+	public abstract fun getSpec ()Lapp/cash/redwood/treehouse/TreehouseApp$Spec;
+	public abstract fun getZipline ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun restart ()V
+	public abstract fun start ()V
+	public abstract fun stop ()V
 }
 
-public final class app/cash/redwood/treehouse/TreehouseApp$Factory : java/io/Closeable {
-	public fun close ()V
-	public final fun create (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/treehouse/TreehouseApp$Spec;Lapp/cash/redwood/treehouse/EventListener$Factory;)Lapp/cash/redwood/treehouse/TreehouseApp;
+public abstract interface class app/cash/redwood/treehouse/TreehouseApp$Factory : java/lang/AutoCloseable {
+	public abstract fun create (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/treehouse/TreehouseApp$Spec;Lapp/cash/redwood/treehouse/EventListener$Factory;)Lapp/cash/redwood/treehouse/TreehouseApp;
 	public static synthetic fun create$default (Lapp/cash/redwood/treehouse/TreehouseApp$Factory;Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/treehouse/TreehouseApp$Spec;Lapp/cash/redwood/treehouse/EventListener$Factory;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp;
-	public final fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
+	public abstract fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
 }
 
 public abstract class app/cash/redwood/treehouse/TreehouseApp$Spec {
@@ -114,7 +113,7 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseContentSourc
 	public abstract fun get (Lapp/cash/redwood/treehouse/AppService;)Lapp/cash/redwood/treehouse/ZiplineTreehouseUi;
 }
 
-public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers {
+public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers : java/lang/AutoCloseable {
 	public abstract fun checkUi ()V
 	public abstract fun checkZipline ()V
 	public abstract fun close ()V
