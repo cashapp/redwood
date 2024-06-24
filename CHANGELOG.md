@@ -10,7 +10,7 @@ Changed:
 - The `TreehouseApp` type is now an abstract class. This should make it easier to write unit tests for code that integrates Treehouse.
 
 Fixed:
-- Nothing yet!
+- Using a `data object` for a widget of modifier no longer causes schema parsing to crash.
 
 
 ## [0.12.0] - 2024-06-18

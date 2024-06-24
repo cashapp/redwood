@@ -286,7 +286,9 @@ private fun parseWidget(
     "@Widget $memberFqType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 
-  val traits = if (memberType.isData) {
+  val traits = if (memberType.objectInstance != null) {
+    emptyList()
+  } else if (memberType.isData) {
     memberType.primaryConstructor!!.parameters.map { parameter ->
       val kProperty = memberType.memberProperties.single { it.name == parameter.name }
       val name = kProperty.name
@@ -346,11 +348,9 @@ private fun parseWidget(
         throw IllegalArgumentException("Unannotated parameter \"$name\" on ${memberType.qualifiedName}")
       }
     }
-  } else if (memberType.objectInstance != null) {
-    emptyList()
   } else {
     throw IllegalArgumentException(
-      "@Widget ${memberType.qualifiedName} must be 'data' class or 'object'",
+      "@Widget ${memberType.qualifiedName} must be 'data' class or object",
     )
   }
 
@@ -469,7 +469,7 @@ private fun parseModifier(
     }
   } else {
     throw IllegalArgumentException(
-      "@Modifier ${memberType.qualifiedName} must be 'data' class or 'object'",
+      "@Modifier ${memberType.qualifiedName} must be 'data' class or object",
     )
   }
 

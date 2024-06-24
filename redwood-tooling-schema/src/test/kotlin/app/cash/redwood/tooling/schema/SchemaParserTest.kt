@@ -296,7 +296,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(NonDataClassWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassWidget must be 'data' class or 'object'",
+        "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassWidget must be 'data' class or object",
       )
   }
 
@@ -316,7 +316,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(NonDataClassModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassModifier must be 'data' class or 'object'",
+        "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassModifier must be 'data' class or object",
       )
   }
 
@@ -503,15 +503,63 @@ class SchemaParserTest(
       ObjectWidget::class,
     ],
   )
-  interface ObjectSchema
+  interface ObjectWidgetSchema
 
   @Widget(1)
   object ObjectWidget
 
   @Test fun objectWidget() {
-    val schema = parser.parse(ObjectSchema::class).schema
+    val schema = parser.parse(ObjectWidgetSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
+  }
+
+  @Schema(
+    [
+      DataObjectWidget::class,
+    ],
+  )
+  interface DataObjectWidgetSchema
+
+  @Widget(1)
+  data object DataObjectWidget
+
+  @Test fun dataObjectWidget() {
+    val schema = parser.parse(DataObjectWidgetSchema::class).schema
+    val widget = schema.widgets.single()
+    assertThat(widget.traits).isEmpty()
+  }
+
+  @Schema(
+    [
+      ObjectModifier::class,
+    ],
+  )
+  interface ObjectModifierSchema
+
+  @Modifier(1)
+  object ObjectModifier
+
+  @Test fun objectModifier() {
+    val schema = parser.parse(ObjectModifierSchema::class).schema
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.properties).isEmpty()
+  }
+
+  @Schema(
+    [
+      DataObjectModifier::class,
+    ],
+  )
+  interface DataObjectModifierSchema
+
+  @Modifier(1)
+  data object DataObjectModifier
+
+  @Test fun dataObjectModifier() {
+    val schema = parser.parse(DataObjectModifierSchema::class).schema
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.properties).isEmpty()
   }
 
   @Schema(
