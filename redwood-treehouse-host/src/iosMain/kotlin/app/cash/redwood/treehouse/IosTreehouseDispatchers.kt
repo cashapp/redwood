@@ -26,10 +26,12 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.runBlocking
 import platform.Foundation.NSThread
 
-internal class IosTreehouseDispatchers : TreehouseDispatchers {
+internal class IosTreehouseDispatchers(
+  ziplineDispatcher: SingleThreadCoroutineDispatcher = SingleThreadCoroutineDispatcher(),
+) : TreehouseDispatchers {
   override val ui: CoroutineDispatcher get() = Dispatchers.Main
 
-  private val _zipline = SingleThreadCoroutineDispatcher().also {
+  private val _zipline = ziplineDispatcher.also {
     it.thread.start()
   }
 
@@ -49,7 +51,7 @@ internal class IosTreehouseDispatchers : TreehouseDispatchers {
 }
 
 /** A CoroutineDispatcher that's confined to a single thread, appropriate for executing QuickJS. */
-private class SingleThreadCoroutineDispatcher : CloseableCoroutineDispatcher() {
+internal class SingleThreadCoroutineDispatcher : CloseableCoroutineDispatcher() {
   /**
    * On Apple platforms we need to explicitly set the stack size for background threads; otherwise
    * we get the default of 512 KiB which isn't sufficient for our QuickJS programs.
