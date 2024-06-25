@@ -302,7 +302,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   private fun maybeShiftLoadedWindow(splitIndex: Int) {
     if (loadedItems.size != 0) return
 
-    if (splitIndex < itemsBefore.size) {
+    if (splitIndex < itemsBefore.size && itemsAfter.size > 0) {
       val count = itemsBefore.size - splitIndex
       itemsAfter.addRange(0, itemsBefore, splitIndex, count)
       itemsBefore.removeRange(splitIndex, splitIndex + count)
