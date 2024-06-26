@@ -47,7 +47,7 @@ internal fun LazyList(
       state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
     },
     itemsBefore = loadRange.first,
-    itemsAfter = itemCount - loadRange.count() - loadRange.first,
+    itemsAfter = (itemCount - loadRange.count() - loadRange.first).coerceIn(0, itemCount),
     width = width,
     height = height,
     margin = margin,
@@ -87,7 +87,7 @@ internal fun RefreshableLazyList(
   RefreshableLazyList(
     isVertical,
     itemsBefore = loadRange.first,
-    itemsAfter = itemCount - loadRange.count() - loadRange.first,
+    itemsAfter = (itemCount - loadRange.count() - loadRange.first).coerceIn(0, itemCount),
     onViewportChanged = { localFirstVisibleItemIndex, localLastVisibleItemIndex ->
       state.onUserScroll(localFirstVisibleItemIndex, localLastVisibleItemIndex)
     },
