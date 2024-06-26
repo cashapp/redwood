@@ -185,8 +185,8 @@ public open class LazyListState {
       }
     }
 
-    begin = begin.coerceAtLeast(0)
-    end = end.coerceAtMost(itemCount).coerceAtLeast(0)
+    begin = begin.coerceIn(0, itemCount)
+    end = end.coerceIn(0, itemCount)
 
     this.firstIndexFromPrevious2 = firstIndexFromPrevious1
     this.firstIndexFromPrevious1 = firstIndex

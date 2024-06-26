@@ -11,6 +11,7 @@ Changed:
 
 Fixed:
 - Using a `data object` for a widget of modifier no longer causes schema parsing to crash.
+- Ensuring `LazyList`'s `itemsBefore` and `itemsAfter` properties are always within `[0, itemCount]`, to prevent `IndexOutOfBoundsException` crashes.
 
 
 ## [0.12.0] - 2024-06-18
