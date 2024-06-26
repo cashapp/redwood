@@ -16,7 +16,6 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import app.cash.redwood.lazylayout.testing.LazyListValue
 import assertk.assertThat
 import assertk.assertions.hasSize
