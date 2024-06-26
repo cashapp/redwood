@@ -15,8 +15,10 @@
  */
 package app.cash.redwood.lazylayout.compose
 
+import androidx.compose.runtime.mutableIntStateOf
 import app.cash.redwood.lazylayout.testing.LazyListValue
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.testing.TestSchemaTester
@@ -161,6 +163,128 @@ class ScrollAwareLoadingTest {
       with(awaitSnapshot()) {
         val lazyList = single() as LazyListValue
         lazyList.assertLoadedWindow(16 - 10, 26 + 20)
+      }
+    }
+  }
+
+  @Test
+  fun itemCountIsConsistentDuringScroll() = runTest {
+    TestSchemaTester {
+      setContent {
+        LazyColumn(placeholder = { Text("Placeholder") }) {
+          items(100) {
+            Text(it.toString())
+          }
+        }
+      }
+
+      // Initial load.
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(15)
+        assertThat(lazyList.itemsAfter).isEqualTo(85)
+
+        // Scroll down to position 15...
+        lazyList.onViewportChanged(15, 25)
+      }
+
+      // First load at position 15 has 45 elements!
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(45)
+        assertThat(lazyList.itemsAfter).isEqualTo(55)
+      }
+
+      // Subsequent load has only 40 elements.
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(5)
+        assertThat(lazyList.items).hasSize(40)
+        assertThat(lazyList.itemsAfter).isEqualTo(55)
+
+        // Scroll down to position 89...
+        lazyList.onViewportChanged(89, 99)
+      }
+
+      // First load at position 89 has 16 elements!
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(84)
+        assertThat(lazyList.items).hasSize(16)
+        assertThat(lazyList.itemsAfter).isEqualTo(0)
+      }
+
+      // Subsequent load has 21 elements.
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(79)
+        assertThat(lazyList.items).hasSize(21)
+        assertThat(lazyList.itemsAfter).isEqualTo(0)
+
+        // Scroll up to position 0...
+        lazyList.onViewportChanged(0, 10)
+      }
+
+      // First load at position 0 has 15 elements!
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(15)
+        assertThat(lazyList.itemsAfter).isEqualTo(85)
+      }
+
+      // Subsequent load at position 0 has 20 elements!
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(20)
+        assertThat(lazyList.itemsAfter).isEqualTo(80)
+      }
+    }
+  }
+
+  @Test
+  fun itemCountChanges() = runTest {
+    TestSchemaTester {
+      val itemCount = mutableIntStateOf(100)
+      setContent {
+        LazyColumn(placeholder = { Text("Placeholder") }) {
+          items(itemCount.value) {
+            Text(it.toString())
+          }
+        }
+      }
+
+      // On the initial load there's 15 elements.
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(15)
+        assertThat(lazyList.itemsAfter).isEqualTo(85)
+
+        // Scroll down to position 15...
+        lazyList.onViewportChanged(15, 25)
+      }
+
+      // First load at position 15 has 45 elements!
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(45)
+        assertThat(lazyList.itemsAfter).isEqualTo(55)
+      }
+
+      // Drop the item count to zero.
+      itemCount.value = 0
+
+      // We should see 0 items.
+      with(awaitSnapshot()) {
+        val lazyList = single() as LazyListValue
+        assertThat(lazyList.itemsBefore).isEqualTo(0)
+        assertThat(lazyList.items).hasSize(0)
+        assertThat(lazyList.itemsAfter).isEqualTo(0)
       }
     }
   }
