@@ -208,7 +208,6 @@ internal open class UIViewLazyList :
       delegate = tableViewDelegate
       rowHeight = UITableViewAutomaticDimension
       separatorStyle = UITableViewCellSeparatorStyleNone
-      backgroundColor = UIColor.clearColor
 
       registerClass(
         cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, REUSE_IDENTIFIER)
@@ -294,8 +293,6 @@ internal class LazyListContainerCell(
 
   override fun willMoveToSuperview(newSuperview: UIView?) {
     super.willMoveToSuperview(newSuperview)
-
-    backgroundColor = UIColor.clearColor
 
     // Confirm the cell is bound when it's about to be displayed.
     if (superview == null && newSuperview != null) {
