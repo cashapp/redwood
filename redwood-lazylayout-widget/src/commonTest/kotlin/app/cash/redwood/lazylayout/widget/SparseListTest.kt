@@ -20,6 +20,7 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 
 class SparseListTest {
   @Test
@@ -481,5 +482,239 @@ class SparseListTest {
     }
 
     assertThat(target.toList()).isEqualTo(expected)
+  }
+
+  @Test
+  fun addOutOfBounds() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.add(1, "A")
+    }
+  }
+
+  @Test
+  fun addNegativeIndex() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.add(-1, "A")
+    }
+  }
+
+  @Test
+  fun addNullOutOfBounds() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.add(1, null)
+    }
+  }
+
+  @Test
+  fun addNullNegativeIndex() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.add(-1, null)
+    }
+  }
+
+  @Test
+  fun addRangeOfValuesWithTargetIndexOutOfBounds() {
+    val source = SparseList<String?>()
+    source.add("A")
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(1, source, 0, 1)
+    }
+  }
+
+  @Test
+  fun addRangeOfValuesWithTargetIndexNegative() {
+    val source = SparseList<String?>()
+    source.add("A")
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(-1, source, 0, 1)
+    }
+  }
+
+  @Test
+  fun addRangeOfNullsWithTargetIndexOutOfBounds() {
+    val source = SparseList<String?>()
+    source.add(null)
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(1, source, 0, 1)
+    }
+  }
+
+  @Test
+  fun addRangeOfNullsWithTargetIndexNegative() {
+    val source = SparseList<String?>()
+    source.add(null)
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(-1, source, 0, 1)
+    }
+  }
+
+  @Test
+  fun addRangeWithSourceCountOutOfBounds() {
+    val source = SparseList<String?>()
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(0, source, 0, 1)
+    }
+  }
+
+  @Test
+  fun addRangeWithSourceCountNegative() {
+    val source = SparseList<String?>()
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(0, source, 0, -1)
+    }
+  }
+
+  @Test
+  fun addRangeOfNullsWithSourceIndexOutOfBounds() {
+    val source = SparseList<String?>()
+    source.add(null)
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(0, source, 1, 1)
+    }
+  }
+
+  @Test
+  fun addRangeOfNullsWithSourceIndexNegative() {
+    val source = SparseList<String?>()
+    source.add(null)
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(0, source, 1, -1)
+    }
+  }
+
+  @Test
+  fun addRangeOfNullsWithSourceCountOutOfBounds() {
+    val source = SparseList<String?>()
+    source.add(null)
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(0, source, 0, 2)
+    }
+  }
+
+  @Test
+  fun addRangeOfNullsWithSourceCountNegative() {
+    val source = SparseList<String?>()
+    source.add(null)
+
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addRange(0, source, 0, -1)
+    }
+  }
+
+  @Test
+  fun addNullsIndexOutOfBounds() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addNulls(1, 1)
+    }
+  }
+
+  @Test
+  fun addNullsIndexNegative() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addNulls(-1, 1)
+    }
+  }
+
+  @Test
+  fun addNullsCountNegative() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.addNulls(0, -1)
+    }
+  }
+
+  @Test
+  fun removeAtOutOfBounds() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.removeAt(1)
+    }
+  }
+
+  @Test
+  fun removeAtNegativeIndex() {
+    val list = SparseList<String?>()
+    assertFailsWith<IllegalArgumentException> {
+      list.removeAt(-1)
+    }
+  }
+
+  @Test
+  fun removeRangeOutOfBounds() {
+    val list = SparseList<String?>()
+    list.add("A")
+    assertFailsWith<IllegalArgumentException> {
+      list.removeRange(1, 2)
+    }
+  }
+
+  @Test
+  fun removeRangeNegativeIndex() {
+    val list = SparseList<String?>()
+    list.add("A")
+    assertFailsWith<IllegalArgumentException> {
+      list.removeRange(-1, 2)
+    }
+  }
+
+  @Test
+  fun removeRangeNegativeCount() {
+    val list = SparseList<String?>()
+    list.add("A")
+    assertFailsWith<IllegalArgumentException> {
+      list.removeRange(0, -1)
+    }
+  }
+
+  @Test
+  fun removeRangeWithNullOutOfBounds() {
+    val list = SparseList<String?>()
+    list.add(null)
+    assertFailsWith<IllegalArgumentException> {
+      list.removeRange(1, 2)
+    }
+  }
+
+  @Test
+  fun removeRangeWithNullNegativeIndex() {
+    val list = SparseList<String?>()
+    list.add(null)
+    assertFailsWith<IllegalArgumentException> {
+      list.removeRange(-1, 1)
+    }
+  }
+
+  @Test
+  fun removeRangeWithNullNegativeCount() {
+    val list = SparseList<String?>()
+    list.add(null)
+    assertFailsWith<IllegalArgumentException> {
+      list.removeRange(0, -1)
+    }
   }
 }
