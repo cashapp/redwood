@@ -95,8 +95,9 @@ internal class SparseList<T> : AbstractList<T?>() {
   }
 
   fun add(index: Int, value: T?) {
-    val insertIndex = insertIndex(index)
+    require(index in 0..size)
 
+    val insertIndex = insertIndex(index)
     val shiftFrom = when {
       value != null -> {
         elements.add(insertIndex, value)
@@ -118,6 +119,10 @@ internal class SparseList<T> : AbstractList<T?>() {
    * This function is equivalent to repeated calls to [add], but more efficient.
    */
   fun addRange(index: Int, source: SparseList<T>, sourceIndex: Int, count: Int) {
+    require(index in 0..size)
+    require(sourceIndex in 0..source.size)
+    require(count in 0..source.size - sourceIndex)
+
     val internalIndex = insertIndex(index)
     val sourceFromIndex = source.insertIndex(sourceIndex)
     val sourceToIndex = source.insertIndex(sourceIndex + count)
@@ -144,6 +149,9 @@ internal class SparseList<T> : AbstractList<T?>() {
   }
 
   fun removeRange(fromIndex: Int, toIndex: Int) {
+    require(fromIndex in 0..size)
+    require(toIndex in fromIndex..size)
+
     val delta = toIndex - fromIndex
     val fromInternalIndex = insertIndex(fromIndex)
     val toInternalIndex = insertIndex(toIndex)
@@ -156,6 +164,9 @@ internal class SparseList<T> : AbstractList<T?>() {
   }
 
   fun addNulls(index: Int, count: Int) {
+    require(index in 0..size)
+    require(count >= 0)
+
     for (i in insertIndex(index) until externalIndexes.size) {
       externalIndexes[i] += count
     }
