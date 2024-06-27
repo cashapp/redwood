@@ -6,50 +6,62 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-protocol-host>
-abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { // app.cash.redwood.protocol.host/ProtocolNode|null[0]
-    abstract fun apply(app.cash.redwood.protocol/PropertyChange, app.cash.redwood.protocol/EventSink) // app.cash.redwood.protocol.host/ProtocolNode.apply|apply(app.cash.redwood.protocol.PropertyChange;app.cash.redwood.protocol.EventSink){}[0]
-    abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
-    abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
-    abstract fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
-    abstract val widget // app.cash.redwood.protocol.host/ProtocolNode.widget|{}widget[0]
-        abstract fun <get-widget>(): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.protocol.host/ProtocolNode.widget.<get-widget>|<get-widget>(){}[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag) // app.cash.redwood.protocol.host/ProtocolNode.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
-    final fun updateModifier(app.cash.redwood/Modifier) // app.cash.redwood.protocol.host/ProtocolNode.updateModifier|updateModifier(app.cash.redwood.Modifier){}[0]
-    final val id // app.cash.redwood.protocol.host/ProtocolNode.id|{}id[0]
-        final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/ProtocolNode.id.<get-id>|<get-id>(){}[0]
-    final val widgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag|{}widgetTag[0]
-        final fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
-}
 abstract interface <#A: kotlin/Any> app.cash.redwood.protocol.host/GeneratedProtocolFactory : app.cash.redwood.protocol.host/ProtocolFactory<#A> { // app.cash.redwood.protocol.host/GeneratedProtocolFactory|null[0]
     abstract fun createModifier(app.cash.redwood.protocol/ModifierElement): app.cash.redwood/Modifier // app.cash.redwood.protocol.host/GeneratedProtocolFactory.createModifier|createModifier(app.cash.redwood.protocol.ModifierElement){}[0]
     abstract fun createNode(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag): app.cash.redwood.protocol.host/ProtocolNode<#A>? // app.cash.redwood.protocol.host/GeneratedProtocolFactory.createNode|createNode(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
     abstract fun widgetChildren(app.cash.redwood.protocol/WidgetTag): kotlin.collections/List<app.cash.redwood.protocol/ChildrenTag> // app.cash.redwood.protocol.host/GeneratedProtocolFactory.widgetChildren|widgetChildren(app.cash.redwood.protocol.WidgetTag){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolFactory { // app.cash.redwood.protocol.host/ProtocolFactory|null[0]
     abstract val widgetSystem // app.cash.redwood.protocol.host/ProtocolFactory.widgetSystem|{}widgetSystem[0]
         abstract fun <get-widgetSystem>(): app.cash.redwood.widget/WidgetSystem<#A> // app.cash.redwood.protocol.host/ProtocolFactory.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
 }
+
 abstract interface app.cash.redwood.protocol.host/ProtocolMismatchHandler { // app.cash.redwood.protocol.host/ProtocolMismatchHandler|null[0]
     abstract fun onUnknownChildren(app.cash.redwood.protocol/WidgetTag, app.cash.redwood.protocol/ChildrenTag) // app.cash.redwood.protocol.host/ProtocolMismatchHandler.onUnknownChildren|onUnknownChildren(app.cash.redwood.protocol.WidgetTag;app.cash.redwood.protocol.ChildrenTag){}[0]
     abstract fun onUnknownModifier(app.cash.redwood.protocol/ModifierTag) // app.cash.redwood.protocol.host/ProtocolMismatchHandler.onUnknownModifier|onUnknownModifier(app.cash.redwood.protocol.ModifierTag){}[0]
     abstract fun onUnknownProperty(app.cash.redwood.protocol/WidgetTag, app.cash.redwood.protocol/PropertyTag) // app.cash.redwood.protocol.host/ProtocolMismatchHandler.onUnknownProperty|onUnknownProperty(app.cash.redwood.protocol.WidgetTag;app.cash.redwood.protocol.PropertyTag){}[0]
     abstract fun onUnknownWidget(app.cash.redwood.protocol/WidgetTag) // app.cash.redwood.protocol.host/ProtocolMismatchHandler.onUnknownWidget|onUnknownWidget(app.cash.redwood.protocol.WidgetTag){}[0]
+
     final object Companion { // app.cash.redwood.protocol.host/ProtocolMismatchHandler.Companion|null[0]
         final val Throwing // app.cash.redwood.protocol.host/ProtocolMismatchHandler.Companion.Throwing|{}Throwing[0]
             final fun <get-Throwing>(): app.cash.redwood.protocol.host/ProtocolMismatchHandler // app.cash.redwood.protocol.host/ProtocolMismatchHandler.Companion.Throwing.<get-Throwing>|<get-Throwing>(){}[0]
     }
 }
+
+abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { // app.cash.redwood.protocol.host/ProtocolNode|null[0]
+    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag) // app.cash.redwood.protocol.host/ProtocolNode.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
+
+    abstract val widget // app.cash.redwood.protocol.host/ProtocolNode.widget|{}widget[0]
+        abstract fun <get-widget>(): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.protocol.host/ProtocolNode.widget.<get-widget>|<get-widget>(){}[0]
+    final val id // app.cash.redwood.protocol.host/ProtocolNode.id|{}id[0]
+        final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/ProtocolNode.id.<get-id>|<get-id>(){}[0]
+    final val widgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag|{}widgetTag[0]
+        final fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
+
+    abstract fun apply(app.cash.redwood.protocol/PropertyChange, app.cash.redwood.protocol/EventSink) // app.cash.redwood.protocol.host/ProtocolNode.apply|apply(app.cash.redwood.protocol.PropertyChange;app.cash.redwood.protocol.EventSink){}[0]
+    abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
+    abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
+    abstract fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
+    final fun updateModifier(app.cash.redwood/Modifier) // app.cash.redwood.protocol.host/ProtocolNode.updateModifier|updateModifier(app.cash.redwood.Modifier){}[0]
+}
+
 final class <#A: kotlin/Any> app.cash.redwood.protocol.host/HostProtocolAdapter : app.cash.redwood.protocol/ChangesSink { // app.cash.redwood.protocol.host/HostProtocolAdapter|null[0]
     constructor <init>(app.cash.redwood.protocol/RedwoodVersion, app.cash.redwood.widget/Widget.Children<#A>, app.cash.redwood.protocol.host/ProtocolFactory<#A>, app.cash.redwood.protocol/EventSink) // app.cash.redwood.protocol.host/HostProtocolAdapter.<init>|<init>(app.cash.redwood.protocol.RedwoodVersion;app.cash.redwood.widget.Widget.Children<1:0>;app.cash.redwood.protocol.host.ProtocolFactory<1:0>;app.cash.redwood.protocol.EventSink){}[0]
+
     final fun close() // app.cash.redwood.protocol.host/HostProtocolAdapter.close|close(){}[0]
     final fun sendChanges(kotlin.collections/List<app.cash.redwood.protocol/Change>) // app.cash.redwood.protocol.host/HostProtocolAdapter.sendChanges|sendChanges(kotlin.collections.List<app.cash.redwood.protocol.Change>){}[0]
 }
+
 final class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolChildren { // app.cash.redwood.protocol.host/ProtocolChildren|null[0]
     constructor <init>(app.cash.redwood.widget/Widget.Children<#A>) // app.cash.redwood.protocol.host/ProtocolChildren.<init>|<init>(app.cash.redwood.widget.Widget.Children<1:0>){}[0]
-    final fun detach() // app.cash.redwood.protocol.host/ProtocolChildren.detach|detach(){}[0]
-    final fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
+
     final val children // app.cash.redwood.protocol.host/ProtocolChildren.children|{}children[0]
         final fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.protocol.host/ProtocolChildren.children.<get-children>|<get-children>(){}[0]
+
+    final fun detach() // app.cash.redwood.protocol.host/ProtocolChildren.detach|detach(){}[0]
+    final fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
 }
+
 final val app.cash.redwood.protocol.host/hostRedwoodVersion // app.cash.redwood.protocol.host/hostRedwoodVersion|{}hostRedwoodVersion[0]
     final fun <get-hostRedwoodVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.protocol.host/hostRedwoodVersion.<get-hostRedwoodVersion>|<get-hostRedwoodVersion>(){}[0]

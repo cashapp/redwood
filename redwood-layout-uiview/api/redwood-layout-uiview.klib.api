@@ -8,6 +8,7 @@
 // Library unique name: <app.cash.redwood:redwood-layout-uiview>
 final class app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory : app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<platform.UIKit/UIView> { // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory|null[0]
     constructor <init>() // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.<init>|<init>(){}[0]
+
     final fun Box(): app.cash.redwood.layout.widget/Box<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Box|Box(){}[0]
     final fun Column(): app.cash.redwood.layout.widget/Column<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Column|Column(){}[0]
     final fun Row(): app.cash.redwood.layout.widget/Row<platform.UIKit/UIView> // app.cash.redwood.layout.uiview/UIViewRedwoodLayoutWidgetFactory.Row|Row(){}[0]

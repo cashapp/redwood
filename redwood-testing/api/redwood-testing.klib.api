@@ -7,29 +7,36 @@
 
 // Library unique name: <app.cash.redwood:redwood-testing>
 abstract interface <#A: kotlin/Any?> app.cash.redwood.testing/TestRedwoodComposition : app.cash.redwood.compose/RedwoodComposition { // app.cash.redwood.testing/TestRedwoodComposition|null[0]
-    abstract fun saveState(): app.cash.redwood.testing/TestSavedState // app.cash.redwood.testing/TestRedwoodComposition.saveState|saveState(){}[0]
-    abstract suspend fun awaitSnapshot(kotlin.time/Duration = ...): #A // app.cash.redwood.testing/TestRedwoodComposition.awaitSnapshot|awaitSnapshot(kotlin.time.Duration){}[0]
     abstract val uiConfigurations // app.cash.redwood.testing/TestRedwoodComposition.uiConfigurations|{}uiConfigurations[0]
         abstract fun <get-uiConfigurations>(): kotlinx.coroutines.flow/MutableStateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.testing/TestRedwoodComposition.uiConfigurations.<get-uiConfigurations>|<get-uiConfigurations>(){}[0]
+
+    abstract fun saveState(): app.cash.redwood.testing/TestSavedState // app.cash.redwood.testing/TestRedwoodComposition.saveState|saveState(){}[0]
+    abstract suspend fun awaitSnapshot(kotlin.time/Duration = ...): #A // app.cash.redwood.testing/TestRedwoodComposition.awaitSnapshot|awaitSnapshot(kotlin.time.Duration){}[0]
 }
+
 abstract interface app.cash.redwood.testing/WidgetValue { // app.cash.redwood.testing/WidgetValue|null[0]
-    abstract fun <#A1: kotlin/Any> toWidget(app.cash.redwood.widget/WidgetSystem<#A1>): app.cash.redwood.widget/Widget<#A1> // app.cash.redwood.testing/WidgetValue.toWidget|toWidget(app.cash.redwood.widget.WidgetSystem<0:0>){0§<kotlin.Any>}[0]
-    abstract fun toDebugString(): kotlin/String // app.cash.redwood.testing/WidgetValue.toDebugString|toDebugString(){}[0]
     abstract val modifier // app.cash.redwood.testing/WidgetValue.modifier|{}modifier[0]
         abstract fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.testing/WidgetValue.modifier.<get-modifier>|<get-modifier>(){}[0]
     open val childrenLists // app.cash.redwood.testing/WidgetValue.childrenLists|{}childrenLists[0]
         open fun <get-childrenLists>(): kotlin.collections/List<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>> // app.cash.redwood.testing/WidgetValue.childrenLists.<get-childrenLists>|<get-childrenLists>(){}[0]
+
+    abstract fun <#A1: kotlin/Any> toWidget(app.cash.redwood.widget/WidgetSystem<#A1>): app.cash.redwood.widget/Widget<#A1> // app.cash.redwood.testing/WidgetValue.toWidget|toWidget(app.cash.redwood.widget.WidgetSystem<0:0>){0§<kotlin.Any>}[0]
+    abstract fun toDebugString(): kotlin/String // app.cash.redwood.testing/WidgetValue.toDebugString|toDebugString(){}[0]
 }
+
+sealed class app.cash.redwood.testing/TestSavedState { // app.cash.redwood.testing/TestSavedState|null[0]
+    constructor <init>() // app.cash.redwood.testing/TestSavedState.<init>|<init>(){}[0]
+}
+
+final object app.cash.redwood.testing/NoOpOnBackPressedDispatcher : app.cash.redwood.ui/OnBackPressedDispatcher { // app.cash.redwood.testing/NoOpOnBackPressedDispatcher|null[0]
+    final fun addCallback(app.cash.redwood.ui/OnBackPressedCallback): app.cash.redwood.ui/Cancellable // app.cash.redwood.testing/NoOpOnBackPressedDispatcher.addCallback|addCallback(app.cash.redwood.ui.OnBackPressedCallback){}[0]
+}
+
+final val app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop|#static{}app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop[0]
+final val app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop|#static{}app_cash_redwood_testing_TestSavedState$stableprop[0]
+
 final fun (app.cash.redwood.testing/WidgetValue).app.cash.redwood.testing/toChangeList(app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory, kotlinx.serialization.json/Json = ...): app.cash.redwood.protocol/SnapshotChangeList // app.cash.redwood.testing/toChangeList|toChangeList@app.cash.redwood.testing.WidgetValue(app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory;kotlinx.serialization.json.Json){}[0]
 final fun (kotlin.collections/List<app.cash.redwood.testing/WidgetValue>).app.cash.redwood.testing/flatten(): kotlin.sequences/Sequence<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.testing/flatten|flatten@kotlin.collections.List<app.cash.redwood.testing.WidgetValue>(){}[0]
 final fun (kotlin.collections/List<app.cash.redwood.testing/WidgetValue>).app.cash.redwood.testing/toChangeList(app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory, kotlinx.serialization.json/Json = ...): app.cash.redwood.protocol/SnapshotChangeList // app.cash.redwood.testing/toChangeList|toChangeList@kotlin.collections.List<app.cash.redwood.testing.WidgetValue>(app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory;kotlinx.serialization.json.Json){}[0]
 final fun (kotlin.collections/List<app.cash.redwood.testing/WidgetValue>).app.cash.redwood.testing/toDebugString(): kotlin/String // app.cash.redwood.testing/toDebugString|toDebugString@kotlin.collections.List<app.cash.redwood.testing.WidgetValue>(){}[0]
 final fun <#A: kotlin/Any, #B: kotlin/Any?> app.cash.redwood.testing/TestRedwoodComposition(kotlinx.coroutines/CoroutineScope, app.cash.redwood.widget/WidgetSystem<#A>, app.cash.redwood.widget/Widget.Children<#A>, app.cash.redwood.ui/OnBackPressedDispatcher = ..., app.cash.redwood.testing/TestSavedState? = ..., app.cash.redwood.ui/UiConfiguration = ..., kotlin/Function0<#B>): app.cash.redwood.testing/TestRedwoodComposition<#B> // app.cash.redwood.testing/TestRedwoodComposition|TestRedwoodComposition(kotlinx.coroutines.CoroutineScope;app.cash.redwood.widget.WidgetSystem<0:0>;app.cash.redwood.widget.Widget.Children<0:0>;app.cash.redwood.ui.OnBackPressedDispatcher;app.cash.redwood.testing.TestSavedState?;app.cash.redwood.ui.UiConfiguration;kotlin.Function0<0:1>){0§<kotlin.Any>;1§<kotlin.Any?>}[0]
-final object app.cash.redwood.testing/NoOpOnBackPressedDispatcher : app.cash.redwood.ui/OnBackPressedDispatcher { // app.cash.redwood.testing/NoOpOnBackPressedDispatcher|null[0]
-    final fun addCallback(app.cash.redwood.ui/OnBackPressedCallback): app.cash.redwood.ui/Cancellable // app.cash.redwood.testing/NoOpOnBackPressedDispatcher.addCallback|addCallback(app.cash.redwood.ui.OnBackPressedCallback){}[0]
-}
-final val app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop|#static{}app_cash_redwood_testing_NoOpOnBackPressedDispatcher$stableprop[0]
-final val app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop // app.cash.redwood.testing/app_cash_redwood_testing_TestSavedState$stableprop|#static{}app_cash_redwood_testing_TestSavedState$stableprop[0]
-sealed class app.cash.redwood.testing/TestSavedState { // app.cash.redwood.testing/TestSavedState|null[0]
-    constructor <init>() // app.cash.redwood.testing/TestSavedState.<init>|<init>(){}[0]
-}

@@ -8,6 +8,7 @@
 // Library unique name: <app.cash.redwood:redwood-layout-dom>
 final class app.cash.redwood.layout.dom/HTMLElementRedwoodLayoutWidgetFactory : app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<org.w3c.dom/HTMLElement> { // app.cash.redwood.layout.dom/HTMLElementRedwoodLayoutWidgetFactory|null[0]
     constructor <init>(org.w3c.dom/Document) // app.cash.redwood.layout.dom/HTMLElementRedwoodLayoutWidgetFactory.<init>|<init>(org.w3c.dom.Document){}[0]
+
     final fun Box(): app.cash.redwood.layout.widget/Box<org.w3c.dom/HTMLElement> // app.cash.redwood.layout.dom/HTMLElementRedwoodLayoutWidgetFactory.Box|Box(){}[0]
     final fun Column(): app.cash.redwood.layout.widget/Column<org.w3c.dom/HTMLElement> // app.cash.redwood.layout.dom/HTMLElementRedwoodLayoutWidgetFactory.Column|Column(){}[0]
     final fun Row(): app.cash.redwood.layout.widget/Row<org.w3c.dom/HTMLElement> // app.cash.redwood.layout.dom/HTMLElementRedwoodLayoutWidgetFactory.Row|Row(){}[0]
