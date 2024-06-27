@@ -10,36 +10,44 @@ abstract interface app.cash.redwood.layout.modifier/Flex : app.cash.redwood/Modi
     abstract val value // app.cash.redwood.layout.modifier/Flex.value|{}value[0]
         abstract fun <get-value>(): kotlin/Double // app.cash.redwood.layout.modifier/Flex.value.<get-value>|<get-value>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/Grow : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/Grow|null[0]
     abstract val value // app.cash.redwood.layout.modifier/Grow.value|{}value[0]
         abstract fun <get-value>(): kotlin/Double // app.cash.redwood.layout.modifier/Grow.value.<get-value>|<get-value>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/Height : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/Height|null[0]
     abstract val height // app.cash.redwood.layout.modifier/Height.height|{}height[0]
         abstract fun <get-height>(): app.cash.redwood.ui/Dp // app.cash.redwood.layout.modifier/Height.height.<get-height>|<get-height>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/HorizontalAlignment : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/HorizontalAlignment|null[0]
     abstract val alignment // app.cash.redwood.layout.modifier/HorizontalAlignment.alignment|{}alignment[0]
         abstract fun <get-alignment>(): app.cash.redwood.layout.api/CrossAxisAlignment // app.cash.redwood.layout.modifier/HorizontalAlignment.alignment.<get-alignment>|<get-alignment>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/Margin : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/Margin|null[0]
     abstract val margin // app.cash.redwood.layout.modifier/Margin.margin|{}margin[0]
         abstract fun <get-margin>(): app.cash.redwood.ui/Margin // app.cash.redwood.layout.modifier/Margin.margin.<get-margin>|<get-margin>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/Shrink : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/Shrink|null[0]
     abstract val value // app.cash.redwood.layout.modifier/Shrink.value|{}value[0]
         abstract fun <get-value>(): kotlin/Double // app.cash.redwood.layout.modifier/Shrink.value.<get-value>|<get-value>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/Size : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/Size|null[0]
     abstract val height // app.cash.redwood.layout.modifier/Size.height|{}height[0]
         abstract fun <get-height>(): app.cash.redwood.ui/Dp // app.cash.redwood.layout.modifier/Size.height.<get-height>|<get-height>(){}[0]
     abstract val width // app.cash.redwood.layout.modifier/Size.width|{}width[0]
         abstract fun <get-width>(): app.cash.redwood.ui/Dp // app.cash.redwood.layout.modifier/Size.width.<get-width>|<get-width>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/VerticalAlignment : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/VerticalAlignment|null[0]
     abstract val alignment // app.cash.redwood.layout.modifier/VerticalAlignment.alignment|{}alignment[0]
         abstract fun <get-alignment>(): app.cash.redwood.layout.api/CrossAxisAlignment // app.cash.redwood.layout.modifier/VerticalAlignment.alignment.<get-alignment>|<get-alignment>(){}[0]
 }
+
 abstract interface app.cash.redwood.layout.modifier/Width : app.cash.redwood/Modifier.ScopedElement { // app.cash.redwood.layout.modifier/Width|null[0]
     abstract val width // app.cash.redwood.layout.modifier/Width.width|{}width[0]
         abstract fun <get-width>(): app.cash.redwood.ui/Dp // app.cash.redwood.layout.modifier/Width.width.<get-width>|<get-width>(){}[0]

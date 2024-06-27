@@ -7,11 +7,13 @@
 
 // Library unique name: <app.cash.redwood:redwood-widget-testing>
 abstract class <#A: kotlin/Any> app.cash.redwood.widget.testing/AbstractWidgetChildrenTest { // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest|null[0]
-    abstract fun names(): kotlin.collections/List<kotlin/String> // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.names|names(){}[0]
-    abstract fun widget(kotlin/String): #A // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.widget|widget(kotlin.String){}[0]
+    constructor <init>() // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.<init>|<init>(){}[0]
+
     abstract val children // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.children.<get-children>|<get-children>(){}[0]
-    constructor <init>() // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.<init>|<init>(){}[0]
+
+    abstract fun names(): kotlin.collections/List<kotlin/String> // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.names|names(){}[0]
+    abstract fun widget(kotlin/String): #A // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.widget|widget(kotlin.String){}[0]
     final fun childrenInstanceDoesNotChange() // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.childrenInstanceDoesNotChange|childrenInstanceDoesNotChange(){}[0]
     final fun insertAppend() // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.insertAppend|insertAppend(){}[0]
     final fun insertPrepend() // app.cash.redwood.widget.testing/AbstractWidgetChildrenTest.insertPrepend|insertPrepend(){}[0]

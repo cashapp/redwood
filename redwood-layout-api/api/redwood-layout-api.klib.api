@@ -6,42 +6,45 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-layout-api>
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Constraint_$serializer$stableprop[0]
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop[0]
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop[0]
-final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Overflow_$serializer$stableprop[0]
 final value class app.cash.redwood.layout.api/Constraint { // app.cash.redwood.layout.api/Constraint|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.layout.api/Constraint.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.layout.api/Constraint.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.layout.api/Constraint.toString|toString(){}[0]
+
     final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.layout.api/Constraint> { // app.cash.redwood.layout.api/Constraint.$serializer|null[0]
+        final val descriptor // app.cash.redwood.layout.api/Constraint.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/Constraint.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
         final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.layout.api/Constraint.$serializer.childSerializers|childSerializers(){}[0]
         final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.layout.api/Constraint // app.cash.redwood.layout.api/Constraint.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
         final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.api/Constraint.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.layout.api.Constraint){}[0]
-        final val descriptor // app.cash.redwood.layout.api/Constraint.$serializer.descriptor|{}descriptor[0]
-            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/Constraint.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
     }
+
     final object Companion { // app.cash.redwood.layout.api/Constraint.Companion|null[0]
-        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/Constraint> // app.cash.redwood.layout.api/Constraint.Companion.serializer|serializer(){}[0]
         final val Fill // app.cash.redwood.layout.api/Constraint.Companion.Fill|{}Fill[0]
             final fun <get-Fill>(): app.cash.redwood.layout.api/Constraint // app.cash.redwood.layout.api/Constraint.Companion.Fill.<get-Fill>|<get-Fill>(){}[0]
         final val Wrap // app.cash.redwood.layout.api/Constraint.Companion.Wrap|{}Wrap[0]
             final fun <get-Wrap>(): app.cash.redwood.layout.api/Constraint // app.cash.redwood.layout.api/Constraint.Companion.Wrap.<get-Wrap>|<get-Wrap>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/Constraint> // app.cash.redwood.layout.api/Constraint.Companion.serializer|serializer(){}[0]
     }
 }
+
 final value class app.cash.redwood.layout.api/CrossAxisAlignment { // app.cash.redwood.layout.api/CrossAxisAlignment|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.layout.api/CrossAxisAlignment.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.layout.api/CrossAxisAlignment.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.layout.api/CrossAxisAlignment.toString|toString(){}[0]
+
     final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.layout.api/CrossAxisAlignment> { // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer|null[0]
+        final val descriptor // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
         final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.childSerializers|childSerializers(){}[0]
         final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.layout.api/CrossAxisAlignment // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
         final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
-        final val descriptor // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.descriptor|{}descriptor[0]
-            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/CrossAxisAlignment.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
     }
+
     final object Companion { // app.cash.redwood.layout.api/CrossAxisAlignment.Companion|null[0]
-        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/CrossAxisAlignment> // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.serializer|serializer(){}[0]
         final val Center // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.Center|{}Center[0]
             final fun <get-Center>(): app.cash.redwood.layout.api/CrossAxisAlignment // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.Center.<get-Center>|<get-Center>(){}[0]
         final val End // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.End|{}End[0]
@@ -50,21 +53,26 @@ final value class app.cash.redwood.layout.api/CrossAxisAlignment { // app.cash.r
             final fun <get-Start>(): app.cash.redwood.layout.api/CrossAxisAlignment // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.Start.<get-Start>|<get-Start>(){}[0]
         final val Stretch // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.Stretch|{}Stretch[0]
             final fun <get-Stretch>(): app.cash.redwood.layout.api/CrossAxisAlignment // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.Stretch.<get-Stretch>|<get-Stretch>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/CrossAxisAlignment> // app.cash.redwood.layout.api/CrossAxisAlignment.Companion.serializer|serializer(){}[0]
     }
 }
+
 final value class app.cash.redwood.layout.api/MainAxisAlignment { // app.cash.redwood.layout.api/MainAxisAlignment|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.layout.api/MainAxisAlignment.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.layout.api/MainAxisAlignment.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.layout.api/MainAxisAlignment.toString|toString(){}[0]
+
     final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.layout.api/MainAxisAlignment> { // app.cash.redwood.layout.api/MainAxisAlignment.$serializer|null[0]
+        final val descriptor // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
         final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.childSerializers|childSerializers(){}[0]
         final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.layout.api/MainAxisAlignment // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
         final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.layout.api.MainAxisAlignment){}[0]
-        final val descriptor // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.descriptor|{}descriptor[0]
-            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/MainAxisAlignment.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
     }
+
     final object Companion { // app.cash.redwood.layout.api/MainAxisAlignment.Companion|null[0]
-        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/MainAxisAlignment> // app.cash.redwood.layout.api/MainAxisAlignment.Companion.serializer|serializer(){}[0]
         final val Center // app.cash.redwood.layout.api/MainAxisAlignment.Companion.Center|{}Center[0]
             final fun <get-Center>(): app.cash.redwood.layout.api/MainAxisAlignment // app.cash.redwood.layout.api/MainAxisAlignment.Companion.Center.<get-Center>|<get-Center>(){}[0]
         final val End // app.cash.redwood.layout.api/MainAxisAlignment.Companion.End|{}End[0]
@@ -77,24 +85,36 @@ final value class app.cash.redwood.layout.api/MainAxisAlignment { // app.cash.re
             final fun <get-SpaceEvenly>(): app.cash.redwood.layout.api/MainAxisAlignment // app.cash.redwood.layout.api/MainAxisAlignment.Companion.SpaceEvenly.<get-SpaceEvenly>|<get-SpaceEvenly>(){}[0]
         final val Start // app.cash.redwood.layout.api/MainAxisAlignment.Companion.Start|{}Start[0]
             final fun <get-Start>(): app.cash.redwood.layout.api/MainAxisAlignment // app.cash.redwood.layout.api/MainAxisAlignment.Companion.Start.<get-Start>|<get-Start>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/MainAxisAlignment> // app.cash.redwood.layout.api/MainAxisAlignment.Companion.serializer|serializer(){}[0]
     }
 }
+
 final value class app.cash.redwood.layout.api/Overflow { // app.cash.redwood.layout.api/Overflow|null[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.layout.api/Overflow.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.layout.api/Overflow.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.layout.api/Overflow.toString|toString(){}[0]
+
     final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.layout.api/Overflow> { // app.cash.redwood.layout.api/Overflow.$serializer|null[0]
+        final val descriptor // app.cash.redwood.layout.api/Overflow.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/Overflow.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
         final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.layout.api/Overflow.$serializer.childSerializers|childSerializers(){}[0]
         final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.layout.api/Overflow // app.cash.redwood.layout.api/Overflow.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
         final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.layout.api/Overflow) // app.cash.redwood.layout.api/Overflow.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.layout.api.Overflow){}[0]
-        final val descriptor // app.cash.redwood.layout.api/Overflow.$serializer.descriptor|{}descriptor[0]
-            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.layout.api/Overflow.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
     }
+
     final object Companion { // app.cash.redwood.layout.api/Overflow.Companion|null[0]
-        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/Overflow> // app.cash.redwood.layout.api/Overflow.Companion.serializer|serializer(){}[0]
         final val Clip // app.cash.redwood.layout.api/Overflow.Companion.Clip|{}Clip[0]
             final fun <get-Clip>(): app.cash.redwood.layout.api/Overflow // app.cash.redwood.layout.api/Overflow.Companion.Clip.<get-Clip>|<get-Clip>(){}[0]
         final val Scroll // app.cash.redwood.layout.api/Overflow.Companion.Scroll|{}Scroll[0]
             final fun <get-Scroll>(): app.cash.redwood.layout.api/Overflow // app.cash.redwood.layout.api/Overflow.Companion.Scroll.<get-Scroll>|<get-Scroll>(){}[0]
+
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.layout.api/Overflow> // app.cash.redwood.layout.api/Overflow.Companion.serializer|serializer(){}[0]
     }
 }
+
+final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Constraint_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Constraint_$serializer$stableprop[0]
+final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_CrossAxisAlignment_$serializer$stableprop[0]
+final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop|#static{}app_cash_redwood_layout_api_MainAxisAlignment_$serializer$stableprop[0]
+final val app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop // app.cash.redwood.layout.api/app_cash_redwood_layout_api_Overflow_$serializer$stableprop|#static{}app_cash_redwood_layout_api_Overflow_$serializer$stableprop[0]

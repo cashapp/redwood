@@ -8,7 +8,6 @@
 
 // Library unique name: <app.cash.redwood:redwood-widget>
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/RedwoodView { // app.cash.redwood.widget/RedwoodView|null[0]
-    abstract fun reset() // app.cash.redwood.widget/RedwoodView.reset|reset(){}[0]
     abstract val children // app.cash.redwood.widget/RedwoodView.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.widget/RedwoodView.children.<get-children>|<get-children>(){}[0]
     abstract val onBackPressedDispatcher // app.cash.redwood.widget/RedwoodView.onBackPressedDispatcher|{}onBackPressedDispatcher[0]
@@ -17,38 +16,55 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/RedwoodView { // app
         abstract fun <get-savedStateRegistry>(): app.cash.redwood.widget/SavedStateRegistry? // app.cash.redwood.widget/RedwoodView.savedStateRegistry.<get-savedStateRegistry>|<get-savedStateRegistry>(){}[0]
     abstract val uiConfiguration // app.cash.redwood.widget/RedwoodView.uiConfiguration|{}uiConfiguration[0]
         abstract fun <get-uiConfiguration>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.widget/RedwoodView.uiConfiguration.<get-uiConfiguration>|<get-uiConfiguration>(){}[0]
+
+    abstract fun reset() // app.cash.redwood.widget/RedwoodView.reset|reset(){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/Widget { // app.cash.redwood.widget/Widget|null[0]
+    abstract val value // app.cash.redwood.widget/Widget.value|{}value[0]
+        abstract fun <get-value>(): #A // app.cash.redwood.widget/Widget.value.<get-value>|<get-value>(){}[0]
+
+    abstract var modifier // app.cash.redwood.widget/Widget.modifier|{}modifier[0]
+        abstract fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.widget/Widget.modifier.<get-modifier>|<get-modifier>(){}[0]
+        abstract fun <set-modifier>(app.cash.redwood/Modifier) // app.cash.redwood.widget/Widget.modifier.<set-modifier>|<set-modifier>(app.cash.redwood.Modifier){}[0]
+
     abstract interface <#A1: kotlin/Any> Children { // app.cash.redwood.widget/Widget.Children|null[0]
+        abstract val widgets // app.cash.redwood.widget/Widget.Children.widgets|{}widgets[0]
+            abstract fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<#A1>> // app.cash.redwood.widget/Widget.Children.widgets.<get-widgets>|<get-widgets>(){}[0]
+
         abstract fun detach() // app.cash.redwood.widget/Widget.Children.detach|detach(){}[0]
         abstract fun insert(kotlin/Int, app.cash.redwood.widget/Widget<#A1>) // app.cash.redwood.widget/Widget.Children.insert|insert(kotlin.Int;app.cash.redwood.widget.Widget<1:0>){}[0]
         abstract fun move(kotlin/Int, kotlin/Int, kotlin/Int) // app.cash.redwood.widget/Widget.Children.move|move(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
         abstract fun onModifierUpdated(kotlin/Int, app.cash.redwood.widget/Widget<#A1>) // app.cash.redwood.widget/Widget.Children.onModifierUpdated|onModifierUpdated(kotlin.Int;app.cash.redwood.widget.Widget<1:0>){}[0]
         abstract fun remove(kotlin/Int, kotlin/Int) // app.cash.redwood.widget/Widget.Children.remove|remove(kotlin.Int;kotlin.Int){}[0]
-        abstract val widgets // app.cash.redwood.widget/Widget.Children.widgets|{}widgets[0]
-            abstract fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<#A1>> // app.cash.redwood.widget/Widget.Children.widgets.<get-widgets>|<get-widgets>(){}[0]
     }
-    abstract val value // app.cash.redwood.widget/Widget.value|{}value[0]
-        abstract fun <get-value>(): #A // app.cash.redwood.widget/Widget.value.<get-value>|<get-value>(){}[0]
-    abstract var modifier // app.cash.redwood.widget/Widget.modifier|{}modifier[0]
-        abstract fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.widget/Widget.modifier.<get-modifier>|<get-modifier>(){}[0]
-        abstract fun <set-modifier>(app.cash.redwood/Modifier) // app.cash.redwood.widget/Widget.modifier.<set-modifier>|<set-modifier>(app.cash.redwood.Modifier){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/WidgetFactoryOwner // app.cash.redwood.widget/WidgetFactoryOwner|null[0]
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/WidgetSystem { // app.cash.redwood.widget/WidgetSystem|null[0]
     abstract fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.widget/WidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
 }
+
 abstract interface app.cash.redwood.widget/ChangeListener { // app.cash.redwood.widget/ChangeListener|null[0]
     abstract fun onEndChanges() // app.cash.redwood.widget/ChangeListener.onEndChanges|onEndChanges(){}[0]
 }
+
 abstract interface app.cash.redwood.widget/SavedStateRegistry { // app.cash.redwood.widget/SavedStateRegistry|null[0]
     abstract fun canBeSaved(kotlin/Any): kotlin/Boolean // app.cash.redwood.widget/SavedStateRegistry.canBeSaved|canBeSaved(kotlin.Any){}[0]
     abstract fun consumeRestoredState(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/Any?>>? // app.cash.redwood.widget/SavedStateRegistry.consumeRestoredState|consumeRestoredState(){}[0]
     abstract fun registerSavedStateProvider(kotlin/Function0<kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/Any?>>>) // app.cash.redwood.widget/SavedStateRegistry.registerSavedStateProvider|registerSavedStateProvider(kotlin.Function0<kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.Any?>>>){}[0]
     abstract fun unregisterSavedStateProvider() // app.cash.redwood.widget/SavedStateRegistry.unregisterSavedStateProvider|unregisterSavedStateProvider(){}[0]
 }
+
 final class <#A: kotlin/Any> app.cash.redwood.widget/MutableListChildren : app.cash.redwood.widget/Widget.Children<#A>, kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> { // app.cash.redwood.widget/MutableListChildren|null[0]
     constructor <init>(kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> = ..., kotlin/Function0<kotlin/Unit> = ...) // app.cash.redwood.widget/MutableListChildren.<init>|<init>(kotlin.collections.MutableList<app.cash.redwood.widget.Widget<1:0>>;kotlin.Function0<kotlin.Unit>){}[0]
+
+    final val size // app.cash.redwood.widget/MutableListChildren.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // app.cash.redwood.widget/MutableListChildren.size.<get-size>|<get-size>(){}[0]
+    final val widgets // app.cash.redwood.widget/MutableListChildren.widgets|{}widgets[0]
+        final fun <get-widgets>(): kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> // app.cash.redwood.widget/MutableListChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
+
     final fun add(app.cash.redwood.widget/Widget<#A>): kotlin/Boolean // app.cash.redwood.widget/MutableListChildren.add|add(app.cash.redwood.widget.Widget<1:0>){}[0]
     final fun add(kotlin/Int, app.cash.redwood.widget/Widget<#A>) // app.cash.redwood.widget/MutableListChildren.add|add(kotlin.Int;app.cash.redwood.widget.Widget<1:0>){}[0]
     final fun addAll(kotlin.collections/Collection<app.cash.redwood.widget/Widget<#A>>): kotlin/Boolean // app.cash.redwood.widget/MutableListChildren.addAll|addAll(kotlin.collections.Collection<app.cash.redwood.widget.Widget<1:0>>){}[0]
@@ -74,33 +90,34 @@ final class <#A: kotlin/Any> app.cash.redwood.widget/MutableListChildren : app.c
     final fun retainAll(kotlin.collections/Collection<app.cash.redwood.widget/Widget<#A>>): kotlin/Boolean // app.cash.redwood.widget/MutableListChildren.retainAll|retainAll(kotlin.collections.Collection<app.cash.redwood.widget.Widget<1:0>>){}[0]
     final fun set(kotlin/Int, app.cash.redwood.widget/Widget<#A>): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.widget/MutableListChildren.set|set(kotlin.Int;app.cash.redwood.widget.Widget<1:0>){}[0]
     final fun subList(kotlin/Int, kotlin/Int): kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> // app.cash.redwood.widget/MutableListChildren.subList|subList(kotlin.Int;kotlin.Int){}[0]
-    final val size // app.cash.redwood.widget/MutableListChildren.size|{}size[0]
-        final fun <get-size>(): kotlin/Int // app.cash.redwood.widget/MutableListChildren.size.<get-size>|<get-size>(){}[0]
-    final val widgets // app.cash.redwood.widget/MutableListChildren.widgets|{}widgets[0]
-        final fun <get-widgets>(): kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> // app.cash.redwood.widget/MutableListChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
+
     // Targets: [js]
     final fun asJsArrayView(): kotlin.js.collections/JsArray<app.cash.redwood.widget/Widget<#A>> // app.cash.redwood.widget/MutableListChildren.asJsArrayView|asJsArrayView(){}[0]
+
     // Targets: [js]
     final fun asJsReadonlyArrayView(): kotlin.js.collections/JsReadonlyArray<app.cash.redwood.widget/Widget<#A>> // app.cash.redwood.widget/MutableListChildren.asJsReadonlyArrayView|asJsReadonlyArrayView(){}[0]
 }
+
 // Targets: [ios]
 final class app.cash.redwood.widget/UIViewChildren : app.cash.redwood.widget/Widget.Children<platform.UIKit/UIView> { // app.cash.redwood.widget/UIViewChildren|null[0]
     constructor <init>(platform.UIKit/UIView, kotlin/Function3<platform.UIKit/UIView, app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> = ..., kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Array<platform.UIKit/UIView>> = ..., kotlin/Function2<app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> = ...) // app.cash.redwood.widget/UIViewChildren.<init>|<init>(platform.UIKit.UIView;kotlin.Function3<platform.UIKit.UIView,app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>;kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Array<platform.UIKit.UIView>>;kotlin.Function2<app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>){}[0]
+
+    final val widgets // app.cash.redwood.widget/UIViewChildren.widgets|{}widgets[0]
+        final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<platform.UIKit/UIView>> // app.cash.redwood.widget/UIViewChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
+
     final fun detach() // app.cash.redwood.widget/UIViewChildren.detach|detach(){}[0]
     final fun insert(kotlin/Int, app.cash.redwood.widget/Widget<platform.UIKit/UIView>) // app.cash.redwood.widget/UIViewChildren.insert|insert(kotlin.Int;app.cash.redwood.widget.Widget<platform.UIKit.UIView>){}[0]
     final fun move(kotlin/Int, kotlin/Int, kotlin/Int) // app.cash.redwood.widget/UIViewChildren.move|move(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun onModifierUpdated(kotlin/Int, app.cash.redwood.widget/Widget<platform.UIKit/UIView>) // app.cash.redwood.widget/UIViewChildren.onModifierUpdated|onModifierUpdated(kotlin.Int;app.cash.redwood.widget.Widget<platform.UIKit.UIView>){}[0]
     final fun remove(kotlin/Int, kotlin/Int) // app.cash.redwood.widget/UIViewChildren.remove|remove(kotlin.Int;kotlin.Int){}[0]
-    final val widgets // app.cash.redwood.widget/UIViewChildren.widgets|{}widgets[0]
-        final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<platform.UIKit/UIView>> // app.cash.redwood.widget/UIViewChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
 }
+
 // Targets: [ios]
 open class app.cash.redwood.widget/RedwoodUIView : app.cash.redwood.widget/RedwoodView<platform.UIKit/UIView> { // app.cash.redwood.widget/RedwoodUIView|null[0]
     constructor <init>(platform.UIKit/UIView) // app.cash.redwood.widget/RedwoodUIView.<init>|<init>(platform.UIKit.UIView){}[0]
-    final fun updateUiConfiguration() // app.cash.redwood.widget/RedwoodUIView.updateUiConfiguration|updateUiConfiguration(){}[0]
+
     final val view // app.cash.redwood.widget/RedwoodUIView.view|{}view[0]
         final fun <get-view>(): platform.UIKit/UIView // app.cash.redwood.widget/RedwoodUIView.view.<get-view>|<get-view>(){}[0]
-    open fun reset() // app.cash.redwood.widget/RedwoodUIView.reset|reset(){}[0]
     open val children // app.cash.redwood.widget/RedwoodUIView.children|{}children[0]
         open fun <get-children>(): app.cash.redwood.widget/Widget.Children<platform.UIKit/UIView> // app.cash.redwood.widget/RedwoodUIView.children.<get-children>|<get-children>(){}[0]
     open val onBackPressedDispatcher // app.cash.redwood.widget/RedwoodUIView.onBackPressedDispatcher|{}onBackPressedDispatcher[0]
@@ -109,17 +126,24 @@ open class app.cash.redwood.widget/RedwoodUIView : app.cash.redwood.widget/Redwo
         open fun <get-savedStateRegistry>(): app.cash.redwood.widget/SavedStateRegistry? // app.cash.redwood.widget/RedwoodUIView.savedStateRegistry.<get-savedStateRegistry>|<get-savedStateRegistry>(){}[0]
     open val uiConfiguration // app.cash.redwood.widget/RedwoodUIView.uiConfiguration|{}uiConfiguration[0]
         open fun <get-uiConfiguration>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.widget/RedwoodUIView.uiConfiguration.<get-uiConfiguration>|<get-uiConfiguration>(){}[0]
+
+    final fun updateUiConfiguration() // app.cash.redwood.widget/RedwoodUIView.updateUiConfiguration|updateUiConfiguration(){}[0]
+    open fun reset() // app.cash.redwood.widget/RedwoodUIView.reset|reset(){}[0]
 }
+
 // Targets: [js]
 final class app.cash.redwood.widget/HTMLElementChildren : app.cash.redwood.widget/Widget.Children<org.w3c.dom/HTMLElement> { // app.cash.redwood.widget/HTMLElementChildren|null[0]
     constructor <init>(org.w3c.dom/HTMLElement) // app.cash.redwood.widget/HTMLElementChildren.<init>|<init>(org.w3c.dom.HTMLElement){}[0]
+
+    final val widgets // app.cash.redwood.widget/HTMLElementChildren.widgets|{}widgets[0]
+        final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<org.w3c.dom/HTMLElement>> // app.cash.redwood.widget/HTMLElementChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
+
     final fun detach() // app.cash.redwood.widget/HTMLElementChildren.detach|detach(){}[0]
     final fun insert(kotlin/Int, app.cash.redwood.widget/Widget<org.w3c.dom/HTMLElement>) // app.cash.redwood.widget/HTMLElementChildren.insert|insert(kotlin.Int;app.cash.redwood.widget.Widget<org.w3c.dom.HTMLElement>){}[0]
     final fun move(kotlin/Int, kotlin/Int, kotlin/Int) // app.cash.redwood.widget/HTMLElementChildren.move|move(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
     final fun onModifierUpdated(kotlin/Int, app.cash.redwood.widget/Widget<org.w3c.dom/HTMLElement>) // app.cash.redwood.widget/HTMLElementChildren.onModifierUpdated|onModifierUpdated(kotlin.Int;app.cash.redwood.widget.Widget<org.w3c.dom.HTMLElement>){}[0]
     final fun remove(kotlin/Int, kotlin/Int) // app.cash.redwood.widget/HTMLElementChildren.remove|remove(kotlin.Int;kotlin.Int){}[0]
-    final val widgets // app.cash.redwood.widget/HTMLElementChildren.widgets|{}widgets[0]
-        final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<org.w3c.dom/HTMLElement>> // app.cash.redwood.widget/HTMLElementChildren.widgets.<get-widgets>|<get-widgets>(){}[0]
 }
+
 // Targets: [js]
 final fun (org.w3c.dom/HTMLElement).app.cash.redwood.widget/asRedwoodView(): app.cash.redwood.widget/RedwoodView<org.w3c.dom/HTMLElement> // app.cash.redwood.widget/asRedwoodView|asRedwoodView@org.w3c.dom.HTMLElement(){}[0]

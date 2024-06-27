@@ -8,8 +8,10 @@
 // Library unique name: <app.cash.redwood:redwood-lazylayout-composeui>
 final class app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory : app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> { // app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory|null[0]
     constructor <init>() // app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory.<init>|<init>(){}[0]
+
     final fun LazyList(): app.cash.redwood.lazylayout.widget/LazyList<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory.LazyList|LazyList(){}[0]
     final fun RefreshableLazyList(): app.cash.redwood.lazylayout.widget/RefreshableLazyList<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory.RefreshableLazyList|RefreshableLazyList(){}[0]
 }
+
 final val app.cash.redwood.lazylayout.composeui/app_cash_redwood_lazylayout_composeui_ComposeUiLazyList$stableprop // app.cash.redwood.lazylayout.composeui/app_cash_redwood_lazylayout_composeui_ComposeUiLazyList$stableprop|#static{}app_cash_redwood_lazylayout_composeui_ComposeUiLazyList$stableprop[0]
 final val app.cash.redwood.lazylayout.composeui/app_cash_redwood_lazylayout_composeui_ComposeUiRedwoodLazyLayoutWidgetFactory$stableprop // app.cash.redwood.lazylayout.composeui/app_cash_redwood_lazylayout_composeui_ComposeUiRedwoodLazyLayoutWidgetFactory$stableprop|#static{}app_cash_redwood_lazylayout_composeui_ComposeUiRedwoodLazyLayoutWidgetFactory$stableprop[0]

@@ -7,24 +7,28 @@
 
 // Library unique name: <app.cash.redwood:redwood-layout-widget>
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Box : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Box|null[0]
+    abstract val children // app.cash.redwood.layout.widget/Box.children|{}children[0]
+        abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Box.children.<get-children>|<get-children>(){}[0]
+
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Box.height|height(app.cash.redwood.layout.api.Constraint){}[0]
     abstract fun horizontalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/Box.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.layout.widget/Box.margin|margin(app.cash.redwood.ui.Margin){}[0]
     abstract fun verticalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/Box.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Box.width|width(app.cash.redwood.layout.api.Constraint){}[0]
-    abstract val children // app.cash.redwood.layout.widget/Box.children|{}children[0]
-        abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Box.children.<get-children>|<get-children>(){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Column : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Column|null[0]
+    abstract val children // app.cash.redwood.layout.widget/Column.children|{}children[0]
+        abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Column.children.<get-children>|<get-children>(){}[0]
+
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Column.height|height(app.cash.redwood.layout.api.Constraint){}[0]
     abstract fun horizontalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/Column.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.layout.widget/Column.margin|margin(app.cash.redwood.ui.Margin){}[0]
     abstract fun overflow(app.cash.redwood.layout.api/Overflow) // app.cash.redwood.layout.widget/Column.overflow|overflow(app.cash.redwood.layout.api.Overflow){}[0]
     abstract fun verticalAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/Column.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Column.width|width(app.cash.redwood.layout.api.Constraint){}[0]
-    abstract val children // app.cash.redwood.layout.widget/Column.children|{}children[0]
-        abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Column.children.<get-children>|<get-children>(){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/FlexContainer : app.cash.redwood.layout.widget/Column<#A>, app.cash.redwood.layout.widget/Row<#A> { // app.cash.redwood.layout.widget/FlexContainer|null[0]
     abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun mainAxisAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.mainAxisAlignment|mainAxisAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
@@ -33,36 +37,45 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/FlexContainer
     open fun verticalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     open fun verticalAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory|null[0]
     abstract fun Box(): app.cash.redwood.layout.widget/Box<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Box|Box(){}[0]
     abstract fun Column(): app.cash.redwood.layout.widget/Column<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Column|Column(){}[0]
     abstract fun Row(): app.cash.redwood.layout.widget/Row<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Row|Row(){}[0]
     abstract fun Spacer(): app.cash.redwood.layout.widget/Spacer<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Spacer|Spacer(){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner : app.cash.redwood.widget/WidgetFactoryOwner<#A> { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner|null[0]
     abstract val RedwoodLayout // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.RedwoodLayout|{}RedwoodLayout[0]
         abstract fun <get-RedwoodLayout>(): app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.RedwoodLayout.<get-RedwoodLayout>|<get-RedwoodLayout>(){}[0]
+
     final object Companion { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.Companion|null[0]
         final fun <#A2: kotlin/Any> apply(app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A2>, #A2, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.Companion.apply|apply(app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory<0:0>;0:0;app.cash.redwood.Modifier.UnscopedElement){0§<kotlin.Any>}[0]
     }
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Row|null[0]
+    abstract val children // app.cash.redwood.layout.widget/Row.children|{}children[0]
+        abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Row.children.<get-children>|<get-children>(){}[0]
+
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Row.height|height(app.cash.redwood.layout.api.Constraint){}[0]
     abstract fun horizontalAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/Row.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
     abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.layout.widget/Row.margin|margin(app.cash.redwood.ui.Margin){}[0]
     abstract fun overflow(app.cash.redwood.layout.api/Overflow) // app.cash.redwood.layout.widget/Row.overflow|overflow(app.cash.redwood.layout.api.Overflow){}[0]
     abstract fun verticalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/Row.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Row.width|width(app.cash.redwood.layout.api.Constraint){}[0]
-    abstract val children // app.cash.redwood.layout.widget/Row.children|{}children[0]
-        abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Row.children.<get-children>|<get-children>(){}[0]
 }
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Spacer : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Spacer|null[0]
     abstract fun height(app.cash.redwood.ui/Dp) // app.cash.redwood.layout.widget/Spacer.height|height(app.cash.redwood.ui.Dp){}[0]
     abstract fun width(app.cash.redwood.ui/Dp) // app.cash.redwood.layout.widget/Spacer.width|width(app.cash.redwood.ui.Dp){}[0]
 }
+
 final class <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem : app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner<#A>, app.cash.redwood.widget/WidgetSystem<#A> { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem|null[0]
     constructor <init>(app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A>) // app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem.<init>|<init>(app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory<1:0>){}[0]
-    final fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
+
     final val RedwoodLayout // app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem.RedwoodLayout|{}RedwoodLayout[0]
         final fun <get-RedwoodLayout>(): app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem.RedwoodLayout.<get-RedwoodLayout>|<get-RedwoodLayout>(){}[0]
+
+    final fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.layout.widget/RedwoodLayoutWidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
 }

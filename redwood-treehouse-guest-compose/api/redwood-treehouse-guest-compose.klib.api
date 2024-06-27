@@ -10,4 +10,5 @@ abstract interface app.cash.redwood.treehouse/TreehouseUi { // app.cash.redwood.
     abstract fun Show(androidx.compose.runtime/Composer?, kotlin/Int) // app.cash.redwood.treehouse/TreehouseUi.Show|Show(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
     open fun close() // app.cash.redwood.treehouse/TreehouseUi.close|close(){}[0]
 }
+
 final fun (app.cash.redwood.compose/RedwoodComposition).app.cash.redwood.treehouse/bind(app.cash.redwood.treehouse/TreehouseUi) // app.cash.redwood.treehouse/bind|bind@app.cash.redwood.compose.RedwoodComposition(app.cash.redwood.treehouse.TreehouseUi){}[0]
