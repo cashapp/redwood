@@ -97,7 +97,7 @@ internal class CompactValue {
     }
 
     fun equalsTo(a: CompactValue, b: CompactValue): Boolean {
-      return a.payload_.unit == b.payload_.unit
+      return a.payload_.unit == b.payload_.unit && a.payload_.value == b.payload_.value
     }
   }
 }
