@@ -208,6 +208,7 @@ internal open class UIViewLazyList :
       delegate = tableViewDelegate
       rowHeight = UITableViewAutomaticDimension
       separatorStyle = UITableViewCellSeparatorStyleNone
+      backgroundColor = UIColor.clearColor
 
       registerClass(
         cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, REUSE_IDENTIFIER)
