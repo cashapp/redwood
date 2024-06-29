@@ -32,7 +32,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.90.1'
 
-atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.24.0"
+atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.25.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.20"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:6.25.0"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.29.0"
