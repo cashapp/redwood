@@ -298,6 +298,8 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           js().browser()
           jvm()
         }
+        // Needed for lint in downstream Android projects to analyze this dependency.
+        project.plugins.apply("com.android.lint")
       }
       CommonWithAndroid -> {
         project.plugins.apply("com.android.library")
@@ -310,6 +312,8 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       }
       Tooling -> {
         project.plugins.apply("org.jetbrains.kotlin.jvm")
+        // Needed for lint in downstream Android projects to analyze this dependency.
+        project.plugins.apply("com.android.lint")
       }
       ToolkitAllWithoutAndroid -> {
         project.applyKotlinMultiplatform {
@@ -317,6 +321,8 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           js().browser()
           jvm()
         }
+        // Needed for lint in downstream Android projects to analyze this dependency.
+        project.plugins.apply("com.android.lint")
       }
       ToolkitAndroid -> {
         project.plugins.apply("com.android.library")
