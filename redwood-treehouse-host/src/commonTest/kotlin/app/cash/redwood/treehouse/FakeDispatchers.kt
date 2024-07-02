@@ -23,8 +23,8 @@ class FakeDispatchers(
   override val zipline: CoroutineDispatcher,
 ) : TreehouseDispatchers {
 
-  val isClosed get() = closed
-  private var closed = false
+  var isClosed = false
+    private set
 
   constructor(testScope: TestScope) : this(ui = testScope.dispatcher(), zipline = testScope.dispatcher())
 
@@ -35,6 +35,6 @@ class FakeDispatchers(
   }
 
   override fun close() {
-    closed = true
+    isClosed = true
   }
 }
