@@ -20,12 +20,10 @@ import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
 import com.example.redwood.testapp.treehouse.HostApi
 import com.example.redwood.testapp.treehouse.TestAppPresenter
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 import okio.ByteString
 import okio.FileSystem
@@ -41,15 +39,13 @@ import okio.Path.Companion.toPath
  */
 internal class TreehouseTester(
   private val testScope: TestScope,
+  dispatchers: FakeDispatchers = FakeDispatchers(testScope),
 ) {
   val eventLog = EventLog()
 
   var hostApi: HostApi = FakeHostApi()
 
   var eventListenerFactory: EventListener.Factory = FakeEventListener.Factory(eventLog)
-
-  @OptIn(ExperimentalStdlibApi::class)
-  private val testDispatcher = testScope.coroutineContext[CoroutineDispatcher.Key] as TestDispatcher
 
   private val manifestUrl = MutableStateFlow("http://example.com/manifest.zipline.json")
 
@@ -73,20 +69,6 @@ internal class TreehouseTester(
     override fun newCache(name: String, maxSizeInBytes: Long) = error("unexpected call")
   }
 
-  private val dispatchers = object : TreehouseDispatchers {
-    override val ui = testDispatcher
-    override val zipline = testDispatcher
-
-    override fun checkUi() {
-    }
-
-    override fun checkZipline() {
-    }
-
-    override fun close() {
-    }
-  }
-
   private var appLifecycleAwaitingAFrame = MutableStateFlow<AppLifecycle?>(null)
 
   private val frameClock = object : FrameClock {
@@ -99,7 +81,7 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
-  private val treehouseAppFactory = RealTreehouseApp.Factory(
+  val treehouseAppFactory = RealTreehouseApp.Factory(
     platform = platform,
     dispatchers = dispatchers,
     httpClient = httpClient,

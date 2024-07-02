@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,8 @@
 package app.cash.redwood.treehouse
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
 
-class FakeDispatchers(
-  override val ui: CoroutineDispatcher,
-  override val zipline: CoroutineDispatcher,
-) : TreehouseDispatchers {
-
-  var isClosed = false
-    private set
-
-  constructor(testScope: TestScope) : this(ui = testScope.dispatcher(), zipline = testScope.dispatcher())
-
-  override fun checkUi() {
-  }
-
-  override fun checkZipline() {
-  }
-
-  override fun close() {
-    isClosed = true
-  }
-}
+@OptIn(ExperimentalStdlibApi::class)
+fun TestScope.dispatcher(): TestDispatcher = coroutineContext[CoroutineDispatcher.Key] as TestDispatcher
