@@ -15,10 +15,45 @@
  */
 package app.cash.redwood.treehouse
 
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
+
 class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
-  override val treehouseDispatchers: TreehouseDispatchers = IosTreehouseDispatchers()
+  private val iosTreehouseDispatchers = IosTreehouseDispatchers()
+  override val treehouseDispatchers: TreehouseDispatchers get() = iosTreehouseDispatchers
 
   /** We haven't set done the work to dispatch to the UI thread on iOS tests. */
   override val ignoreTestsThatExecuteOnUiThread: Boolean
     get() = true
+
+  @Test
+  fun closeFinishesZiplineThreadWithoutExecutingSubsequentRunnable() = runBlocking {
+    val loggedRunnableIds = mutableListOf<Char>()
+    fun runnable(id: Char) = Runnable { loggedRunnableIds.add(id) }
+
+    awaitZiplineThread(isExecuting = true)
+    treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('a'))
+    treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('b'))
+    treehouseDispatchers.close()
+    treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('c'))
+    awaitZiplineThread(isExecuting = false)
+
+    assertTrue(iosTreehouseDispatchers.ziplineThread.isFinished())
+    assertEquals(listOf('a', 'b'), loggedRunnableIds)
+  }
+
+  private suspend fun awaitZiplineThread(isExecuting: Boolean) {
+    withTimeout(1.seconds) {
+      while (iosTreehouseDispatchers.ziplineThread.isExecuting() != isExecuting) {
+        delay(5.milliseconds)
+      }
+    }
+  }
 }
