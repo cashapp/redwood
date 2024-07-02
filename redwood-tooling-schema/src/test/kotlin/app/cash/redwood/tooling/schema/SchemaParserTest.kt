@@ -1043,12 +1043,27 @@ class SchemaParserTest(
       )
   }
 
+  @Test fun schemaTypeMustBeInSource() {
+    assumeTrue(parser == SchemaParser.Fir)
+
+    assertFailure { parser.parse(RedwoodLayout::class) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage("Unable to locate schema type app.cash.redwood.layout.RedwoodLayout in compilation unit")
+  }
+
+  @Schema(
+    members = [
+      Row::class,
+    ],
+  )
+  object SchemaMemberNotInCompilationUnit
+
   @Test fun schemaMembersMustBeInSource() {
     assumeTrue(parser == SchemaParser.Fir)
 
-    assertFailure { parser.parse(SchemaWidgetDuplicateInDependency::class) }
+    assertFailure { parser.parse(SchemaMemberNotInCompilationUnit::class) }
       .isInstanceOf<IllegalArgumentException>()
-      .hasMessage("Unable to locate schema type app.cash.redwood.layout.Row")
+      .hasMessage("Unable to locate schema member app.cash.redwood.layout.Row in compilation unit")
   }
 
   @Schema(
@@ -1070,8 +1085,6 @@ class SchemaParserTest(
   )
 
   @Test fun serializableModifierProperties() {
-    assumeTrue(parser != SchemaParser.Fir)
-
     val schema = parser.parse(SerializationSchema::class).schema
     val modifier = schema.modifiers.single()
 
