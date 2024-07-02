@@ -47,11 +47,13 @@ internal class IosTreehouseDispatchers :
       }
     }
   }.apply {
-    this.name = "Treehouse"
+    name = "Treehouse"
 
     // On Apple platforms we need to explicitly set the stack size for background threads; otherwise
     // we get the default of 512 KiB which isn't sufficient for our QuickJS programs.
-    this.stackSize = ZIPLINE_THREAD_STACK_SIZE.convert()
+    stackSize = ZIPLINE_THREAD_STACK_SIZE.convert()
+
+    start()
   }
 
   override val zipline: CoroutineDispatcher get() = this
