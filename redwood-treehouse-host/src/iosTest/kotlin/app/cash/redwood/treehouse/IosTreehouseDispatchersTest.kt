@@ -15,28 +15,28 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.turbine.withTurbineTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.time.DurationUnit.SECONDS
-import kotlin.time.toDuration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.test.runTest
-import platform.Foundation.NSThread
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 
 class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
-  private val ziplineDispatcher = SingleThreadCoroutineDispatcher()
-  override val treehouseDispatchers: TreehouseDispatchers = IosTreehouseDispatchers(ziplineDispatcher = ziplineDispatcher)
+  private val iosTreehouseDispatchers = IosTreehouseDispatchers()
+  override val treehouseDispatchers: TreehouseDispatchers get() = iosTreehouseDispatchers
 
   /** We haven't set done the work to dispatch to the UI thread on iOS tests. */
   override val ignoreTestsThatExecuteOnUiThread: Boolean
     get() = true
 
   @Test
-  fun closeFinishesZiplineThreadWithoutExecutingSubsequentRunnable() = runTest {
+  fun closeFinishesZiplineThreadWithoutExecutingSubsequentRunnable() = runBlocking {
     val loggedRunnableIds = mutableListOf<Char>()
-    val runnable = { id: Char -> Runnable { loggedRunnableIds.add(id) } }
+    fun runnable(id: Char) = Runnable { loggedRunnableIds.add(id) }
 
     awaitZiplineThread(isExecuting = true)
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('a'))
@@ -45,14 +45,14 @@ class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('c'))
     awaitZiplineThread(isExecuting = false)
 
-    assertTrue(ziplineDispatcher.thread.isFinished())
+    assertTrue(iosTreehouseDispatchers.ziplineThread.isFinished())
     assertEquals(listOf('a', 'b'), loggedRunnableIds)
   }
 
   private suspend fun awaitZiplineThread(isExecuting: Boolean) {
-    withTurbineTimeout(1.toDuration(SECONDS)) {
-      while (ziplineDispatcher.thread.isExecuting() != isExecuting) {
-        NSThread.sleepForTimeInterval(0.005)
+    withTimeout(1.seconds) {
+      while (iosTreehouseDispatchers.ziplineThread.isExecuting() != isExecuting) {
+        delay(5.milliseconds)
       }
     }
   }
