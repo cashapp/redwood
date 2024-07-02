@@ -199,7 +199,7 @@ class LeaksTest {
   @Test
   fun dispatchersNotLeakedByAppFactory() = runTest {
     val dispatchers = FakeDispatchers(this)
-    val factory = TreehouseTester(this, dispatchers).loadAppFactory()
+    val factory = TreehouseTester(this, dispatchers).treehouseAppFactory
     assertThat(dispatchers.isClosed).isFalse()
     factory.close()
     assertThat(dispatchers.isClosed).isTrue()

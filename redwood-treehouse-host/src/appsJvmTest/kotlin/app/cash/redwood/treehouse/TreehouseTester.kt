@@ -39,7 +39,7 @@ import okio.Path.Companion.toPath
  */
 internal class TreehouseTester(
   private val testScope: TestScope,
-  private val dispatchers: FakeDispatchers = FakeDispatchers(testScope),
+  dispatchers: FakeDispatchers = FakeDispatchers(testScope),
 ) {
   val eventLog = EventLog()
 
@@ -81,6 +81,20 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
+  val treehouseAppFactory = RealTreehouseApp.Factory(
+    platform = platform,
+    dispatchers = dispatchers,
+    httpClient = httpClient,
+    frameClockFactory = frameClockFactory,
+    manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
+    embeddedFileSystem = null,
+    embeddedDir = null,
+    cacheName = "cache",
+    cacheMaxSizeInBytes = 0L,
+    concurrentDownloads = 1,
+    stateStore = MemoryStateStore(),
+  )
+
   private val appSpec = object : TreehouseApp.Spec<TestAppPresenter>() {
     override val name: String
       get() = "test_app"
@@ -99,27 +113,12 @@ internal class TreehouseTester(
   }
 
   fun loadApp(): TreehouseApp<TestAppPresenter> {
-    return loadAppFactory().create(
+    return treehouseAppFactory.create(
       appScope = testScope,
       spec = appSpec,
       eventListenerFactory = eventListenerFactory,
     )
   }
-
-  fun loadAppFactory(): TreehouseApp.Factory =
-    RealTreehouseApp.Factory(
-      platform = platform,
-      dispatchers = dispatchers,
-      httpClient = httpClient,
-      frameClockFactory = frameClockFactory,
-      manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
-      embeddedFileSystem = null,
-      embeddedDir = null,
-      cacheName = "cache",
-      cacheMaxSizeInBytes = 0L,
-      concurrentDownloads = 1,
-      stateStore = MemoryStateStore(),
-    )
 
   fun content(treehouseApp: TreehouseApp<TestAppPresenter>): Content {
     return treehouseApp.createContent(
