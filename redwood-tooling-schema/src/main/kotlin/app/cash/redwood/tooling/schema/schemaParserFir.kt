@@ -74,6 +74,7 @@ import org.jetbrains.kotlin.fir.types.isBasicFunctionType
 import org.jetbrains.kotlin.fir.types.isNullable
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
+import org.jetbrains.kotlin.fir.types.toSymbol
 import org.jetbrains.kotlin.fir.types.type
 import org.jetbrains.kotlin.kdoc.lexer.KDocTokens
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
@@ -240,7 +241,7 @@ private class FirContext(
 
 private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
   val firClass = firClassByName[type]
-    ?: throw IllegalArgumentException("Unable to locate schema type $type")
+    ?: throw IllegalArgumentException("Unable to locate schema type $type in compilation unit")
 
   val schemaAnnotation = findSchemaAnnotation(firClass.annotations)
     ?: throw IllegalArgumentException("Schema $type missing @Schema annotation")
@@ -265,7 +266,7 @@ private fun FirContext.parseSchema(type: FqType): ParsedProtocolSchema {
   val modifiers = mutableListOf<ParsedProtocolModifier>()
   for (memberType in schemaAnnotation.members) {
     val memberClass = firClassByName[memberType]
-      ?: throw IllegalArgumentException("Unable to locate schema type $memberType")
+      ?: throw IllegalArgumentException("Unable to locate schema member $memberType in compilation unit")
 
     val widgetAnnotation = findWidgetAnnotation(memberClass.annotations)
     val modifierAnnotation = findModifierAnnotation(memberClass.annotations)
@@ -587,12 +588,16 @@ private fun FirContext.parseModifier(
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
 
+      val isSerializable = parameter.resolvedReturnType
+        .toSymbol(firSession)
+        ?.annotations.orEmpty()
+        .any { it.fqName(firSession) == FqNames.Serializable }
+
       ParsedProtocolModifierProperty(
         name = name,
         documentation = documentation,
         type = parameterType,
-        // TODO Parse @Serializable on parameter type.
-        isSerializable = false,
+        isSerializable = isSerializable,
         defaultExpression = defaultAnnotation?.expression,
         deprecation = deprecation,
       )
@@ -882,6 +887,7 @@ private object FqNames {
   val Modifier = FqName("app.cash.redwood.schema.Modifier")
   val Property = FqName("app.cash.redwood.schema.Property")
   val Schema = FqName("app.cash.redwood.schema.Schema")
+  val Serializable = FqName("kotlinx.serialization.Serializable")
   val Widget = FqName("app.cash.redwood.schema.Widget")
   val Unit = FqName("kotlin.Unit")
 }
