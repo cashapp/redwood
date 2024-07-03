@@ -10,6 +10,10 @@ kotlin {
     moduleName = 'emoji-search-browser'
     browser()
     binaries.executable()
+
+    compilerOptions {
+      target = 'es2015'
+    }
   }
 
   sourceSets {
