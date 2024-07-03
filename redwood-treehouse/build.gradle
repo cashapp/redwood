@@ -1,7 +1,7 @@
-import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
+import static app.cash.redwood.buildsupport.TargetGroup.TreehouseCommon
 
 redwoodBuild {
-  targets(CommonWithAndroid)
+  targets(TreehouseCommon)
   publishing()
 }
 

@@ -56,6 +56,9 @@ enum class TargetGroup {
   ToolkitHtml,
   ToolkitComposeUi,
 
+  /** [TreehouseHost] + [TreehouseGuest] */
+  TreehouseCommon,
+
   /** Guest code which runs inside Treehouse. This also includes the JVM for easier testing. */
   TreehouseGuest,
 
