@@ -10,6 +10,10 @@ kotlin {
     moduleName = 'test-app'
     browser()
     binaries.executable()
+
+    compilerOptions {
+      target = 'es2015'
+    }
   }
 
   sourceSets {
