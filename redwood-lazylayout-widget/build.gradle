@@ -1,5 +1,3 @@
-import app.cash.redwood.buildsupport.ComposeHelpers
-
 import static app.cash.redwood.buildsupport.TargetGroup.Common
 
 redwoodBuild {
@@ -12,7 +10,7 @@ apply plugin: 'app.cash.redwood.generator.widget'
 kotlin {
   sourceSets {
     commonMain {
-      kotlin.srcDir(ComposeHelpers.get(tasks, 'app.cash.redwood.lazylayout.widget'))
+      kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.lazylayout.widget'))
       dependencies {
         api projects.redwoodLayoutModifiers
         api projects.redwoodLazylayoutApi

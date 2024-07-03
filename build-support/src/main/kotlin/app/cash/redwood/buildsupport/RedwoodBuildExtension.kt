@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.buildsupport
 
+import org.gradle.api.tasks.TaskContainer
+import org.gradle.api.tasks.TaskProvider
+
 interface RedwoodBuildExtension {
   fun targets(group: TargetGroup)
 
@@ -37,6 +40,10 @@ interface RedwoodBuildExtension {
 
   /** Consume a Zipline application in an Android application and embed it within assets. */
   fun embedZiplineApplication(dependencyNotation: Any)
+
+  fun TaskContainer.generateComposeHelpers(packageName: String): TaskProvider<CopyPastaTask>
+
+  fun TaskContainer.generateFlexboxHelpers(packageName: String): TaskProvider<CopyPastaTask>
 }
 
 enum class TargetGroup {
