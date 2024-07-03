@@ -94,9 +94,9 @@ internal fun generateProtocolFactory(
   val schema = schemaSet.schema
   val widgetSystem = schema.getWidgetSystemType().parameterizedBy(typeVariableW)
   val type = ClassName(schema.hostProtocolPackage(), "${schema.type.flatName}ProtocolFactory")
-  return FileSpec.builder(type)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(type) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(WidgetProtocol.GeneratedProtocolFactory.parameterizedBy(typeVariableW))
@@ -241,7 +241,7 @@ internal fun generateProtocolFactory(
         )
         .build(),
     )
-    .build()
+  }
 }
 
 /*
@@ -297,9 +297,9 @@ internal fun generateProtocolNode(
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
   val protocolType = WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
   val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
-  return FileSpec.builder(type)
-    .addAnnotation(suppressDeprecations)
-    .addType(
+  return buildFileSpec(type) {
+    addAnnotation(suppressDeprecations)
+    addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
@@ -511,7 +511,7 @@ internal fun generateProtocolNode(
         )
         .build(),
     )
-    .build()
+  }
 }
 
 /** Returns a class name like "OnClick". */
@@ -628,50 +628,49 @@ internal fun generateProtocolModifierImpls(
   if (schema.modifiers.isEmpty()) {
     return null
   }
-  return FileSpec.builder(schema.hostProtocolPackage(host), "modifierImpls")
-    .addAnnotation(suppressDeprecations)
-    .apply {
-      for (modifier in schema.modifiers) {
-        val typeName = ClassName(schema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
-        val typeBuilder = if (modifier.properties.isEmpty()) {
-          TypeSpec.objectBuilder(typeName)
-        } else {
-          TypeSpec.classBuilder(typeName)
-            .addAnnotation(KotlinxSerialization.Serializable)
-            .apply {
-              val primaryConstructor = FunSpec.constructorBuilder()
-              for (property in modifier.properties) {
-                val propertyType = property.type.asTypeName()
+  return buildFileSpec(schema.hostProtocolPackage(host), "modifierImpls") {
+    addAnnotation(suppressDeprecations)
 
-                primaryConstructor.addParameter(
-                  ParameterSpec.builder(property.name, propertyType)
-                    .maybeDefaultValue(property.defaultExpression)
-                    .build(),
-                )
+    for (modifier in schema.modifiers) {
+      val typeName = ClassName(schema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
+      val typeBuilder = if (modifier.properties.isEmpty()) {
+        TypeSpec.objectBuilder(typeName)
+      } else {
+        TypeSpec.classBuilder(typeName)
+          .addAnnotation(KotlinxSerialization.Serializable)
+          .apply {
+            val primaryConstructor = FunSpec.constructorBuilder()
+            for (property in modifier.properties) {
+              val propertyType = property.type.asTypeName()
 
-                addProperty(
-                  PropertySpec.builder(property.name, propertyType)
-                    .addModifiers(OVERRIDE)
-                    .addAnnotation(KotlinxSerialization.Contextual)
-                    .initializer("%N", property.name)
-                    .build(),
-                )
-              }
-              primaryConstructor(primaryConstructor.build())
+              primaryConstructor.addParameter(
+                ParameterSpec.builder(property.name, propertyType)
+                  .maybeDefaultValue(property.defaultExpression)
+                  .build(),
+              )
+
+              addProperty(
+                PropertySpec.builder(property.name, propertyType)
+                  .addModifiers(OVERRIDE)
+                  .addAnnotation(KotlinxSerialization.Contextual)
+                  .initializer("%N", property.name)
+                  .build(),
+              )
             }
-        }
-        addType(
-          typeBuilder
-            .addModifiers(INTERNAL)
-            .addSuperinterface(schema.modifierType(modifier))
-            .addFunction(modifierEquals(schema, modifier))
-            .addFunction(modifierHashCode(modifier))
-            .addFunction(modifierToString(modifier))
-            .build(),
-        )
+            primaryConstructor(primaryConstructor.build())
+          }
       }
+      addType(
+        typeBuilder
+          .addModifiers(INTERNAL)
+          .addSuperinterface(schema.modifierType(modifier))
+          .addFunction(modifierEquals(schema, modifier))
+          .addFunction(modifierHashCode(modifier))
+          .addFunction(modifierToString(modifier))
+          .build(),
+      )
     }
-    .build()
+  }
 }
 
 private fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
