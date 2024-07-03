@@ -23,6 +23,7 @@ import app.cash.redwood.buildsupport.TargetGroup.ToolkitAndroid
 import app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
 import app.cash.redwood.buildsupport.TargetGroup.ToolkitHtml
 import app.cash.redwood.buildsupport.TargetGroup.ToolkitIos
+import app.cash.redwood.buildsupport.TargetGroup.TreehouseCommon
 import app.cash.redwood.buildsupport.TargetGroup.TreehouseGuest
 import app.cash.redwood.buildsupport.TargetGroup.TreehouseHost
 import com.android.build.api.variant.AndroidComponentsExtension
@@ -337,6 +338,15 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         project.applyKotlinMultiplatform {
           androidTarget().publishLibraryVariants("release")
           iosTargets()
+          jvm()
+        }
+      }
+      TreehouseCommon -> {
+        project.plugins.apply("com.android.library")
+        project.applyKotlinMultiplatform {
+          androidTarget().publishLibraryVariants("release")
+          iosTargets()
+          js().nodejs()
           jvm()
         }
       }
