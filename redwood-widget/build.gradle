@@ -1,7 +1,9 @@
+import app.cash.redwood.buildsupport.JsTests
+
 import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
 
 redwoodBuild {
-  targets(CommonWithAndroid)
+  targets(CommonWithAndroid + JsTests.Browser)
   publishing()
 }
 

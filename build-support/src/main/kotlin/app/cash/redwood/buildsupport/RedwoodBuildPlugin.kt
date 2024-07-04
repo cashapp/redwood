@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.buildsupport
 
+import app.cash.redwood.buildsupport.JsTests.NodeJs
 import app.cash.redwood.buildsupport.TargetGroup.Common
 import app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
 import app.cash.redwood.buildsupport.TargetGroup.Tooling
@@ -293,12 +294,12 @@ class RedwoodBuildPlugin : Plugin<Project> {
 }
 
 private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodBuildExtension {
-  override fun targets(group: TargetGroup) {
-    when (group) {
+  override fun targets(modifiedGroup: ModifiedTargetGroup) {
+    when (modifiedGroup.group) {
       Common -> {
         project.applyKotlinMultiplatform {
           iosTargets()
-          js().browser()
+          modifiedGroup[JsTests, NodeJs].applyTo(js())
           jvm()
         }
         // Needed for lint in downstream Android projects to analyze this dependency.
@@ -309,7 +310,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         project.applyKotlinMultiplatform {
           androidTarget().publishLibraryVariants("release")
           iosTargets()
-          js().browser()
+          modifiedGroup[JsTests, NodeJs].applyTo(js())
           jvm()
         }
       }
@@ -373,6 +374,10 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         }
       }
     }
+  }
+
+  override fun targets(group: TargetGroup) {
+    targets(ModifiedTargetGroup(group, emptyMap()))
   }
 
   override fun publishing() {

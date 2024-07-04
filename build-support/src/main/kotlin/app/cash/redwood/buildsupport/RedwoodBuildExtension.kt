@@ -17,9 +17,11 @@ package app.cash.redwood.buildsupport
 
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
 
 interface RedwoodBuildExtension {
   fun targets(group: TargetGroup)
+  fun targets(modifiedGroup: ModifiedTargetGroup)
 
   /**
    * Enable artifact publishing and Dokka documentation generation.
@@ -71,4 +73,53 @@ enum class TargetGroup {
 
   /** Host code which supports loading Treehouse guest code. */
   TreehouseHost,
+  ;
+
+  fun plus(modifier: TargetModifier): ModifiedTargetGroup {
+    return ModifiedTargetGroup(this, mapOf(modifier.key to modifier))
+  }
+}
+
+sealed interface TargetModifier {
+  val key: Key<*>
+  interface Key<V : Any>
+}
+
+enum class JsTests : TargetModifier {
+  Browser,
+  NodeJs,
+  Both,
+  ;
+
+  fun applyTo(dsl: KotlinJsTargetDsl) {
+    when (this) {
+      Browser -> dsl.browser()
+      NodeJs -> dsl.nodejs()
+      Both -> dsl.apply {
+        browser()
+        nodejs()
+      }
+    }
+  }
+
+  override val key get() = Companion
+  companion object : TargetModifier.Key<JsTests>
+}
+
+class ModifiedTargetGroup(
+  val group: TargetGroup,
+  private val modifiers: Map<TargetModifier.Key<*>, TargetModifier>,
+) {
+  operator fun <V : Any> get(key: TargetModifier.Key<V>): V? {
+    @Suppress("UNCHECKED_CAST")
+    return modifiers[key] as V?
+  }
+
+  operator fun <V : Any> get(key: TargetModifier.Key<V>, default: V): V {
+    return get(key) ?: default
+  }
+
+  operator fun plus(modifier: TargetModifier): ModifiedTargetGroup {
+    return ModifiedTargetGroup(group, modifiers + (modifier.key to modifier))
+  }
 }
