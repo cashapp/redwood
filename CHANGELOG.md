@@ -44,7 +44,7 @@ Breaking:
  non-null if it's detached due to exception.
 -`Content.awaitContent()` now accepts an optional `Int` parameter for the number of updates to
  observe before the function returns.
-- MacOS targets have been (temporarily) removed from all modules.
+- MacOS targets have been removed from all modules.
 
 Upgraded:
 - Kotlin 2.0.0
