@@ -295,6 +295,8 @@ internal class LazyListContainerCell(
   override fun willMoveToSuperview(newSuperview: UIView?) {
     super.willMoveToSuperview(newSuperview)
 
+    backgroundColor = UIColor.clearColor
+
     // Confirm the cell is bound when it's about to be displayed.
     if (superview == null && newSuperview != null) {
       require(binding!!.isBound) { "about to display a cell that isn't bound!" }
