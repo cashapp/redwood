@@ -301,6 +301,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           iosTargets()
           modifiedGroup[JsTests, NodeJs].applyTo(js())
           jvm()
+          wasmJs().nodejs()
         }
         // Needed for lint in downstream Android projects to analyze this dependency.
         project.plugins.apply("com.android.lint")
@@ -312,6 +313,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           iosTargets()
           modifiedGroup[JsTests, NodeJs].applyTo(js())
           jvm()
+          wasmJs().nodejs()
         }
       }
       Tooling -> {
