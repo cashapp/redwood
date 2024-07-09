@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.zipline.Zipline
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
 import com.example.redwood.testapp.treehouse.HostApi
@@ -66,7 +67,11 @@ internal class TreehouseTester(
   }
 
   private val platform = object : TreehousePlatform {
-    override fun newCache(name: String, maxSizeInBytes: Long) = error("unexpected call")
+    override fun newCache(
+      name: String,
+      maxSizeInBytes: Long,
+      loaderEventListener: LoaderEventListener,
+    ) = error("unexpected call")
   }
 
   private var appLifecycleAwaitingAFrame = MutableStateFlow<AppLifecycle?>(null)
@@ -92,6 +97,7 @@ internal class TreehouseTester(
     cacheName = "cache",
     cacheMaxSizeInBytes = 0L,
     concurrentDownloads = 1,
+    loaderEventListener = LoaderEventListener.None,
     stateStore = MemoryStateStore(),
   )
 
