@@ -148,7 +148,8 @@ public abstract class TreehouseApp<A : AppService> : AutoCloseable {
     public open val loadCodeFromNetworkOnly: Boolean
       get() = false
 
-    public abstract fun bindServices(zipline: Zipline)
+    public abstract suspend fun bindServices(zipline: Zipline)
+
     public abstract fun create(zipline: Zipline): A
   }
 }
