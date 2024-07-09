@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
 import okio.FileSystem
@@ -29,6 +30,7 @@ public fun TreehouseAppFactory(
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
   concurrentDownloads: Int = 8,
+  loaderEventListener: LoaderEventListener = LoaderEventListener.None,
   stateStore: StateStore = MemoryStateStore(),
 ): TreehouseApp.Factory = RealTreehouseApp.Factory(
   platform = IosTreehousePlatform(),
@@ -40,6 +42,7 @@ public fun TreehouseAppFactory(
   embeddedDir = embeddedDir,
   cacheName = cacheName,
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
+  loaderEventListener = loaderEventListener,
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,
 )

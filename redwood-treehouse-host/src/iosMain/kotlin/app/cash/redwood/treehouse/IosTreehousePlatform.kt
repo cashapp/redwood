@@ -15,15 +15,21 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ZiplineCache
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import platform.Foundation.NSHomeDirectory
 
 internal class IosTreehousePlatform : TreehousePlatform {
-  override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
+  override fun newCache(
+    name: String,
+    maxSizeInBytes: Long,
+    loaderEventListener: LoaderEventListener,
+  ): ZiplineCache = ZiplineCache(
     fileSystem = FileSystem.SYSTEM,
     directory = NSHomeDirectory().toPath() / name,
     maxSizeInBytes = maxSizeInBytes,
+    loaderEventListener = loaderEventListener,
   )
 }

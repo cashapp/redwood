@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.LoadResult
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
@@ -176,12 +177,17 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     internal val embeddedDir: Path?,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
+    private val loaderEventListener: LoaderEventListener,
     internal val concurrentDownloads: Int,
     internal val stateStore: StateStore,
   ) : TreehouseApp.Factory {
     /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
     internal val cache = lazy {
-      platform.newCache(name = cacheName, maxSizeInBytes = cacheMaxSizeInBytes)
+      platform.newCache(
+        name = cacheName,
+        maxSizeInBytes = cacheMaxSizeInBytes,
+        loaderEventListener = loaderEventListener,
+      )
     }
 
     override fun <A : AppService> create(

@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ZiplineCache
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
@@ -33,10 +34,15 @@ internal class AndroidTreehousePlatform(
    *
    * This is safe because ZiplineCache automatically prunes itself to [maxSizeInBytes].
    */
-  override fun newCache(name: String, maxSizeInBytes: Long) = ZiplineCache(
+  override fun newCache(
+    name: String,
+    maxSizeInBytes: Long,
+    loaderEventListener: LoaderEventListener,
+  ) = ZiplineCache(
     context = context,
     fileSystem = FileSystem.SYSTEM,
     directory = context.getDir(name, MODE_PRIVATE).toOkioPath(),
     maxSizeInBytes = maxSizeInBytes,
+    loaderEventListener = loaderEventListener,
   )
 }

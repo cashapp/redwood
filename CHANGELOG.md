@@ -9,6 +9,7 @@ New:
 Changed:
 - The `TreehouseApp` type is now an abstract class. This should make it easier to write unit tests for code that integrates Treehouse.
 - The `TreehouseApp.Spec.bindServices()` function is now suspending.
+- The `TreehouseAppFactory` function now accepts a Zipline `LoaderEventListener` parameter.
 
 Fixed:
 - Using a `data object` for a widget of modifier no longer causes schema parsing to crash.

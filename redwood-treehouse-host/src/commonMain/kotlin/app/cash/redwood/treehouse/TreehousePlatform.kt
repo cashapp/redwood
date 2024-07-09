@@ -15,8 +15,13 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ZiplineCache
 
 internal interface TreehousePlatform {
-  fun newCache(name: String, maxSizeInBytes: Long): ZiplineCache
+  fun newCache(
+    name: String,
+    maxSizeInBytes: Long,
+    loaderEventListener: LoaderEventListener,
+  ): ZiplineCache
 }

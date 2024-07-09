@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import android.content.Context
+import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import okhttp3.OkHttpClient
@@ -31,6 +32,7 @@ public fun TreehouseAppFactory(
   embeddedDir: Path? = null,
   cacheName: String = "zipline",
   cacheMaxSizeInBytes: Long = 50L * 1024L * 1024L,
+  loaderEventListener: LoaderEventListener = LoaderEventListener.None,
   concurrentDownloads: Int = 8,
   stateStore: StateStore = MemoryStateStore(),
 ): TreehouseApp.Factory = RealTreehouseApp.Factory(
@@ -43,6 +45,7 @@ public fun TreehouseAppFactory(
   embeddedDir = embeddedDir,
   cacheName = cacheName,
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
+  loaderEventListener = loaderEventListener,
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,
 )
