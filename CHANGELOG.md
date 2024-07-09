@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.12.0...HEAD
 
 New:
-- Nothing yet!
+- Wasm JS added as a target for common Redwood modules. There is no Treehouse support today.
 
 Changed:
 - The `TreehouseApp` type is now an abstract class. This should make it easier to write unit tests for code that integrates Treehouse.
