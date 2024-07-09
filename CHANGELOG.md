@@ -14,6 +14,9 @@ Fixed:
 - Ensuring `LazyList`'s `itemsBefore` and `itemsAfter` properties are always within `[0, itemCount]`, to prevent `IndexOutOfBoundsException` crashes.
 - Updating a flex container's margin now works correctly for Yoga-based layouts.
 
+Upgraded:
+- Zipline 1.14.0
+
 
 ## [0.12.0] - 2024-06-18
 [0.12.0]: https://github.com/cashapp/redwood/releases/tag/0.12.0
