@@ -14,6 +14,7 @@ Changed:
 Fixed:
 - Using a `data object` for a widget of modifier no longer causes schema parsing to crash.
 - Ensuring `LazyList`'s `itemsBefore` and `itemsAfter` properties are always within `[0, itemCount]`, to prevent `IndexOutOfBoundsException` crashes.
+- Don't crash in `LazyList` when a scroll and content change occur in the same update.
 - Updating a flex container's margin now works correctly for Yoga-based layouts.
 
 Upgraded:

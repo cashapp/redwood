@@ -566,6 +566,89 @@ class LazyListUpdateProcessorTest {
     assertThat(processor.toString()).isEqualTo("[2...] . . . . [...13]")
   }
 
+  /**
+   * We had a bug where we attempted to move the split between `itemsBefore` and `itemsAfter` beyond
+   * the end of `itemsAfter`. This bug would occurs when the following held:
+   *
+   *  * The items before count is shrinking
+   *  * The insert size is greater than all unloaded items (itemsBefore + itemsAfter)
+   *
+   * https://github.com/cashapp/redwood/issues/2172
+   */
+  @Test
+  fun shiftItemsFromAfterToBeforeWhenThereAreNotEnoughToShift() {
+    processor.itemsBefore(3)
+    processor.itemsAfter(3)
+    processor.onEndChanges()
+    processor.scrollTo(0, 6)
+    assertThat(processor.toString()).isEqualTo(". . . . . .")
+
+    processor.itemsBefore(2)
+    processor.items.insert(0, "C")
+    processor.items.insert(1, "D")
+    processor.items.insert(2, "E")
+    processor.items.insert(3, "F")
+    processor.items.insert(4, "G")
+    processor.items.insert(5, "H")
+    processor.items.insert(6, "I")
+    processor.onEndChanges()
+    processor.scrollTo(0, 12)
+    assertThat(processor.toString()).isEqualTo(". . C D E Fv2 G H I . . .")
+  }
+
+  @Test
+  fun shiftItemsFromAfterToBeforeWhenAfterIsEmpty() {
+    processor.itemsBefore(1)
+    processor.itemsAfter(0)
+    processor.onEndChanges()
+    processor.scrollTo(0, 1)
+    assertThat(processor.toString()).isEqualTo(".")
+
+    processor.itemsBefore(0)
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.onEndChanges()
+    processor.scrollTo(0, 2)
+    assertThat(processor.toString()).isEqualTo("A B")
+  }
+
+  @Test
+  fun shiftItemsFromBeforeToAfterWhenThereAreNotEnoughToShift() {
+    processor.itemsBefore(3)
+    processor.itemsAfter(3)
+    processor.onEndChanges()
+    processor.scrollTo(0, 6)
+    assertThat(processor.toString()).isEqualTo(". . . . . .")
+
+    processor.items.insert(0, "C")
+    processor.items.insert(1, "D")
+    processor.items.insert(2, "E")
+    processor.items.insert(3, "F")
+    processor.items.insert(4, "G")
+    processor.items.insert(5, "H")
+    processor.items.insert(6, "I")
+    processor.itemsAfter(2)
+    processor.onEndChanges()
+    processor.scrollTo(0, 12)
+    assertThat(processor.toString()).isEqualTo(". . . Cv2 D E F G H I . .")
+  }
+
+  @Test
+  fun shiftItemsFromBeforeToAfterWhenBeforeIsEmpty() {
+    processor.itemsBefore(0)
+    processor.itemsAfter(1)
+    processor.onEndChanges()
+    processor.scrollTo(0, 1)
+    assertThat(processor.toString()).isEqualTo(".")
+
+    processor.itemsAfter(0)
+    processor.items.insert(0, "A")
+    processor.items.insert(1, "B")
+    processor.onEndChanges()
+    processor.scrollTo(0, 2)
+    assertThat(processor.toString()).isEqualTo("Av2 B")
+  }
+
   private fun Widget.Children<StringContent>.insert(index: Int, value: String) {
     val content = StringContent(value)
     val widget = object : Widget<StringContent> {
