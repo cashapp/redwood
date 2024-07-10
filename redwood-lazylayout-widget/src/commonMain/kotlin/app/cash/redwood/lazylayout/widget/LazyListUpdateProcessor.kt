@@ -307,7 +307,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       itemsAfter.addRange(0, itemsBefore, splitIndex, count)
       itemsBefore.removeRange(splitIndex, splitIndex + count)
     } else if (splitIndex > itemsBefore.size) {
-      val count = splitIndex - itemsBefore.size
+      val count = minOf(splitIndex - itemsBefore.size, itemsAfter.size)
       itemsBefore.addRange(itemsBefore.size, itemsAfter, 0, count)
       itemsAfter.removeRange(0, count)
     }
