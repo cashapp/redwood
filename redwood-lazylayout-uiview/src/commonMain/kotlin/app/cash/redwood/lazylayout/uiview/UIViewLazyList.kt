@@ -54,6 +54,7 @@ import platform.UIKit.UITableViewAutomaticDimension
 import platform.UIKit.UITableViewCell
 import platform.UIKit.UITableViewCellSeparatorStyle.UITableViewCellSeparatorStyleNone
 import platform.UIKit.UITableViewCellStyle
+import platform.UIKit.UITableViewController
 import platform.UIKit.UITableViewDataSourceProtocol
 import platform.UIKit.UITableViewDelegateProtocol
 import platform.UIKit.UITableViewRowAnimationNone
@@ -177,7 +178,8 @@ internal open class UIViewLazyList :
   }
 
   private val tableViewDelegate: UITableViewDelegateProtocol =
-    object : NSObject(), UITableViewDelegateProtocol {
+    object : UITableViewController(UITableViewStyle.UITableViewStylePlain),
+      UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
         if (ignoreScrollUpdates) return // Only notify of user scrolls.
 
@@ -200,6 +202,11 @@ internal open class UIViewLazyList :
       override fun scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
         ignoreScrollUpdates = false
       }
+
+      override fun viewWillAppear(animated: Boolean) {
+        super.viewWillAppear(animated)
+        tableView.separatorStyle = UITableViewCellSeparatorStyleNone
+      }
     }
 
   init {
@@ -207,7 +214,6 @@ internal open class UIViewLazyList :
       dataSource = this@UIViewLazyList.dataSource
       delegate = tableViewDelegate
       rowHeight = UITableViewAutomaticDimension
-      separatorStyle = UITableViewCellSeparatorStyleNone
       backgroundColor = UIColor.clearColor
 
       registerClass(
