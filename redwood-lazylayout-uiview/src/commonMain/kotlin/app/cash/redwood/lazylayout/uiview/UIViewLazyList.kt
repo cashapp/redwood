@@ -178,7 +178,8 @@ internal open class UIViewLazyList :
   }
 
   private val tableViewDelegate: UITableViewDelegateProtocol =
-    object : UITableViewController(UITableViewStyle.UITableViewStylePlain),
+    object :
+      UITableViewController(UITableViewStyle.UITableViewStylePlain),
       UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
         if (ignoreScrollUpdates) return // Only notify of user scrolls.
