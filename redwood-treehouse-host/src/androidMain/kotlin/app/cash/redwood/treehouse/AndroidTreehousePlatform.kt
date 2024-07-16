@@ -45,4 +45,7 @@ internal class AndroidTreehousePlatform(
     maxSizeInBytes = maxSizeInBytes,
     loaderEventListener = loaderEventListener,
   )
+
+  override fun newDispatchers(applicationName: String): TreehouseDispatchers =
+    AndroidTreehouseDispatchers(applicationName)
 }

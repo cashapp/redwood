@@ -78,9 +78,6 @@ abstract class <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.tree
     abstract fun stop() // app.cash.redwood.treehouse/TreehouseApp.stop|stop(){}[0]
 
     abstract interface Factory : kotlin/AutoCloseable { // app.cash.redwood.treehouse/TreehouseApp.Factory|null[0]
-        abstract val dispatchers // app.cash.redwood.treehouse/TreehouseApp.Factory.dispatchers|{}dispatchers[0]
-            abstract fun <get-dispatchers>(): app.cash.redwood.treehouse/TreehouseDispatchers // app.cash.redwood.treehouse/TreehouseApp.Factory.dispatchers.<get-dispatchers>|<get-dispatchers>(){}[0]
-
         abstract fun <#A2: app.cash.redwood.treehouse/AppService> create(kotlinx.coroutines/CoroutineScope, app.cash.redwood.treehouse/TreehouseApp.Spec<#A2>, app.cash.redwood.treehouse/EventListener.Factory = ...): app.cash.redwood.treehouse/TreehouseApp<#A2> // app.cash.redwood.treehouse/TreehouseApp.Factory.create|create(kotlinx.coroutines.CoroutineScope;app.cash.redwood.treehouse.TreehouseApp.Spec<0:0>;app.cash.redwood.treehouse.EventListener.Factory){0§<app.cash.redwood.treehouse.AppService>}[0]
     }
 

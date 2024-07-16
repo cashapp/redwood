@@ -95,7 +95,6 @@ public abstract class app/cash/redwood/treehouse/TreehouseApp : java/lang/AutoCl
 public abstract interface class app/cash/redwood/treehouse/TreehouseApp$Factory : java/lang/AutoCloseable {
 	public abstract fun create (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/treehouse/TreehouseApp$Spec;Lapp/cash/redwood/treehouse/EventListener$Factory;)Lapp/cash/redwood/treehouse/TreehouseApp;
 	public static synthetic fun create$default (Lapp/cash/redwood/treehouse/TreehouseApp$Factory;Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/treehouse/TreehouseApp$Spec;Lapp/cash/redwood/treehouse/EventListener$Factory;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp;
-	public abstract fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
 }
 
 public abstract class app/cash/redwood/treehouse/TreehouseApp$Spec {

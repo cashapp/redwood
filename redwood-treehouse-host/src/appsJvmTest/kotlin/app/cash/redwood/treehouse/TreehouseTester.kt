@@ -22,6 +22,7 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import com.example.redwood.testapp.treehouse.HostApi
 import com.example.redwood.testapp.treehouse.TestAppPresenter
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -40,7 +41,6 @@ import okio.Path.Companion.toPath
  */
 internal class TreehouseTester(
   private val testScope: TestScope,
-  dispatchers: FakeDispatchers = FakeDispatchers(testScope),
 ) {
   val eventLog = EventLog()
 
@@ -51,6 +51,8 @@ internal class TreehouseTester(
   private val manifestUrl = MutableStateFlow("http://example.com/manifest.zipline.json")
 
   private val kotlinZiplineDir = "../test-app/presenter-treehouse/build/zipline/Development".toPath()
+
+  private val returnedTreehouseDispatchers = mutableListOf<FakeDispatchers>()
 
   private val httpClient = object : ZiplineHttpClient() {
     override suspend fun download(
@@ -72,6 +74,13 @@ internal class TreehouseTester(
       maxSizeInBytes: Long,
       loaderEventListener: LoaderEventListener,
     ) = error("unexpected call")
+
+    override fun newDispatchers(
+      applicationName: String,
+    ): FakeDispatchers {
+      return FakeDispatchers(testScope)
+        .also { returnedTreehouseDispatchers += it }
+    }
   }
 
   private var appLifecycleAwaitingAFrame = MutableStateFlow<AppLifecycle?>(null)
@@ -86,9 +95,11 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
+  val ziplineLoaderDispatcher = FakeZiplineLoaderDispatcher(testScope)
+
+  @OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
   val treehouseAppFactory = RealTreehouseApp.Factory(
     platform = platform,
-    dispatchers = dispatchers,
     httpClient = httpClient,
     frameClockFactory = frameClockFactory,
     manifestVerifier = ManifestVerifier.NO_SIGNATURE_CHECKS,
@@ -96,10 +107,14 @@ internal class TreehouseTester(
     embeddedDir = null,
     cacheName = "cache",
     cacheMaxSizeInBytes = 0L,
+    ziplineLoaderDispatcher = ziplineLoaderDispatcher,
     concurrentDownloads = 1,
     loaderEventListener = LoaderEventListener.None,
     stateStore = MemoryStateStore(),
   )
+
+  val openTreehouseDispatchersCount: Int
+    get() = returnedTreehouseDispatchers.count { !it.isClosed }
 
   private val appSpec = object : TreehouseApp.Spec<TestAppPresenter>() {
     override val name: String

@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 
 class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
-  private val iosTreehouseDispatchers = IosTreehouseDispatchers()
+  private val iosTreehouseDispatchers = IosTreehouseDispatchers("appName")
   override val treehouseDispatchers: TreehouseDispatchers get() = iosTreehouseDispatchers
 
   /** We haven't set done the work to dispatch to the UI thread on iOS tests. */

@@ -26,15 +26,43 @@ import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.runBlocking
 import platform.Foundation.NSThread
 
-internal class IosTreehouseDispatchers :
-  CloseableCoroutineDispatcher(),
-  TreehouseDispatchers {
+internal class IosTreehouseDispatchers(applicationName: String) : TreehouseDispatchers {
+  /**
+   * On Apple platforms we need to explicitly set the stack size for background threads; otherwise
+   * we get the default of 512 KiB which isn't sufficient for our QuickJS programs.
+   */
+  private val ziplineSingleThreadDispatcher = SingleThreadDispatcher(
+    name = "Treehouse $applicationName",
+    stackSize = ZIPLINE_THREAD_STACK_SIZE,
+  )
+
+  internal val ziplineThread: NSThread
+    get() = ziplineSingleThreadDispatcher.thread
 
   override val ui: CoroutineDispatcher get() = Dispatchers.Main
 
+  override val zipline: CoroutineDispatcher get() = ziplineSingleThreadDispatcher
+
+  override fun checkUi() {
+    check(NSThread.isMainThread)
+  }
+
+  override fun checkZipline() {
+    check(NSThread.currentThread == ziplineThread)
+  }
+
+  override fun close() {
+    ziplineSingleThreadDispatcher.close()
+  }
+}
+
+internal class SingleThreadDispatcher(
+  name: String,
+  stackSize: Int? = null,
+) : CloseableCoroutineDispatcher() {
   private val channel = Channel<Runnable>(capacity = Channel.UNLIMITED)
 
-  internal val ziplineThread = NSThread {
+  internal val thread = NSThread {
     runBlocking {
       while (true) {
         try {
@@ -47,23 +75,13 @@ internal class IosTreehouseDispatchers :
       }
     }
   }.apply {
-    name = "Treehouse"
+    this.name = name
 
-    // On Apple platforms we need to explicitly set the stack size for background threads; otherwise
-    // we get the default of 512 KiB which isn't sufficient for our QuickJS programs.
-    stackSize = ZIPLINE_THREAD_STACK_SIZE.convert()
+    if (stackSize != null) {
+      this.stackSize = stackSize.convert()
+    }
 
     start()
-  }
-
-  override val zipline: CoroutineDispatcher get() = this
-
-  override fun checkUi() {
-    check(NSThread.isMainThread)
-  }
-
-  override fun checkZipline() {
-    check(NSThread.currentThread == ziplineThread)
   }
 
   override fun dispatch(context: CoroutineContext, block: Runnable) {
@@ -74,3 +92,6 @@ internal class IosTreehouseDispatchers :
     channel.close()
   }
 }
+
+internal fun ziplineLoaderDispatcher(): CloseableCoroutineDispatcher =
+  SingleThreadDispatcher("ZiplineLoader")

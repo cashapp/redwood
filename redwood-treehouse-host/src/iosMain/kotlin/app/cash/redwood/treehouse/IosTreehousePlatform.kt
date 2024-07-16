@@ -32,4 +32,7 @@ internal class IosTreehousePlatform : TreehousePlatform {
     maxSizeInBytes = maxSizeInBytes,
     loaderEventListener = loaderEventListener,
   )
+
+  override fun newDispatchers(applicationName: String): TreehouseDispatchers =
+    IosTreehouseDispatchers(applicationName)
 }

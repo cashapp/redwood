@@ -17,20 +17,22 @@ package app.cash.redwood.treehouse
 
 import android.os.Looper
 import java.util.concurrent.Executors
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 
 /**
  * Implements [TreehouseDispatchers] suitable for production Android use. This creates a background
  * thread for all Zipline work.
  */
-internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
+internal class AndroidTreehouseDispatchers(applicationName: String) : TreehouseDispatchers {
   private var ziplineThread: Thread? = null
 
   /** The single thread that runs all JavaScript. We only have one QuickJS instance at a time. */
   private val executorService = Executors.newSingleThreadExecutor { runnable ->
-    Thread(null, runnable, "Treehouse", ZIPLINE_THREAD_STACK_SIZE.toLong())
+    Thread(null, runnable, "Treehouse $applicationName", ZIPLINE_THREAD_STACK_SIZE.toLong())
       .also { ziplineThread = it }
   }
 
@@ -48,4 +50,12 @@ internal class AndroidTreehouseDispatchers : TreehouseDispatchers {
   override fun close() {
     executorService.shutdown()
   }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
+internal fun ziplineLoaderDispatcher(): CloseableCoroutineDispatcher {
+  val executorService = Executors.newSingleThreadExecutor { runnable ->
+    Thread(null, runnable, "ZiplineLoader")
+  }
+  return executorService.asCoroutineDispatcher()
 }

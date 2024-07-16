@@ -22,7 +22,9 @@ import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
+import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
@@ -33,6 +35,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   private val appScope: CoroutineScope,
   override val spec: Spec<A>,
+  override val dispatchers: TreehouseDispatchers,
   eventListenerFactory: EventListener.Factory,
 ) : TreehouseApp<A>() {
   /** This property is confined to [TreehouseDispatchers.ui]. */
@@ -40,8 +43,6 @@ internal class RealTreehouseApp<A : AppService> private constructor(
 
   /** Non-null until this app is closed. This property is confined to [TreehouseDispatchers.ui]. */
   private var eventListenerFactory: EventListener.Factory? = eventListenerFactory
-
-  override val dispatchers = factory.dispatchers
 
   private val codeHost = object : CodeHost<A>(
     dispatchers = dispatchers,
@@ -122,6 +123,8 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     if (!spec.loadCodeFromNetworkOnly) {
       loader = loader.withCache(
         cache = factory.cache.value,
+        // TODO(jwilson): use this once we update Zipline.
+        // cacheDispatcher = factory.ziplineLoaderDispatcher,
       )
 
       if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
@@ -165,11 +168,17 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     closed = true
     eventListenerFactory = null
     stop()
+    dispatchers.close()
   }
 
+  /**
+   * @param ziplineLoaderDispatcher a dispatcher backed by a single thread, that's owned by this
+   *   factory. If it's a [CloseableCoroutineDispatcher], it will be closed when this factory is
+   *   closed.
+   */
+  @OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
   class Factory internal constructor(
     private val platform: TreehousePlatform,
-    override val dispatchers: TreehouseDispatchers,
     internal val httpClient: ZiplineHttpClient,
     internal val frameClockFactory: FrameClock.Factory,
     internal val manifestVerifier: ManifestVerifier,
@@ -177,6 +186,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     internal val embeddedDir: Path?,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
+    internal val ziplineLoaderDispatcher: CloseableCoroutineDispatcher,
     private val loaderEventListener: LoaderEventListener,
     internal val concurrentDownloads: Int,
     internal val stateStore: StateStore,
@@ -194,14 +204,20 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       appScope: CoroutineScope,
       spec: Spec<A>,
       eventListenerFactory: EventListener.Factory,
-    ): TreehouseApp<A> = RealTreehouseApp(this, appScope, spec, eventListenerFactory)
+    ): TreehouseApp<A> = RealTreehouseApp(
+      factory = this,
+      appScope = appScope,
+      spec = spec,
+      dispatchers = platform.newDispatchers(spec.name),
+      eventListenerFactory = eventListenerFactory,
+    )
 
     override fun close() {
       if (cache.isInitialized()) {
         cache.value.close()
       }
 
-      dispatchers.close()
+      ziplineLoaderDispatcher.close()
     }
   }
 }

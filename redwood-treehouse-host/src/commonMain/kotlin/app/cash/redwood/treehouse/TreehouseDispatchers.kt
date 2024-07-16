@@ -25,6 +25,9 @@ import kotlinx.coroutines.CoroutineDispatcher
  *  * [zipline] executes dispatched tasks on the thread where downloaded code executes.
  *
  * This class makes it easier to specify invariants on which dispatcher is expected for which work.
+ *
+ * Each [TreehouseApp] gets its own instance of this class and has its own private Zipline thread.
+ * All apps share the same UI thread.
  */
 @ObjCName("TreehouseDispatchers", exact = true)
 public interface TreehouseDispatchers : AutoCloseable {
@@ -48,10 +51,9 @@ public interface TreehouseDispatchers : AutoCloseable {
 
   /**
    * Release the threads owned by this instance. On most platforms this will not release the UI
-   * thread, as it is not owned by this instance.
+   * thread as it is not owned by this instance.
    *
-   * Most applications should not to call this; instead they should allow these dispatchers to
-   * run until the process exits. This may be useful in tests.
+   * This is called by [TreehouseApp.close].
    */
   public override fun close()
 }

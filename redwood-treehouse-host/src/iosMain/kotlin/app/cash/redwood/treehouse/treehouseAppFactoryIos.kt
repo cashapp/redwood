@@ -18,10 +18,12 @@ package app.cash.redwood.treehouse
 import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okio.FileSystem
 import okio.Path
 
 @Suppress("FunctionName")
+@OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
 public fun TreehouseAppFactory(
   httpClient: ZiplineHttpClient,
   manifestVerifier: ManifestVerifier,
@@ -34,7 +36,6 @@ public fun TreehouseAppFactory(
   stateStore: StateStore = MemoryStateStore(),
 ): TreehouseApp.Factory = RealTreehouseApp.Factory(
   platform = IosTreehousePlatform(),
-  dispatchers = IosTreehouseDispatchers(),
   httpClient = httpClient,
   frameClockFactory = IosDisplayLinkClock,
   manifestVerifier = manifestVerifier,
@@ -42,6 +43,7 @@ public fun TreehouseAppFactory(
   embeddedDir = embeddedDir,
   cacheName = cacheName,
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
+  ziplineLoaderDispatcher = ziplineLoaderDispatcher(),
   loaderEventListener = loaderEventListener,
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,
