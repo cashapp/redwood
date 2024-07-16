@@ -18,7 +18,7 @@ Fixed:
 - Updating a flex container's margin now works correctly for Yoga-based layouts.
 
 Upgraded:
-- Zipline 1.14.0
+- Zipline 1.15.0
 
 
 ## [0.12.0] - 2024-06-18
