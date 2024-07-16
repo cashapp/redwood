@@ -104,8 +104,6 @@ public abstract class TreehouseApp<A : AppService> : AutoCloseable {
    */
   @ObjCName("TreehouseAppFactory", exact = true)
   public interface Factory : AutoCloseable {
-    public val dispatchers: TreehouseDispatchers
-
     public fun <A : AppService> create(
       appScope: CoroutineScope,
       spec: Spec<A>,

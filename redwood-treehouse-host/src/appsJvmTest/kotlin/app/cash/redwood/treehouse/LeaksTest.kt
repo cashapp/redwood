@@ -189,20 +189,21 @@ class LeaksTest {
   }
 
   @Test
-  fun dispatchersNotClosedByApp() = runTest {
-    val dispatchers = FakeDispatchers(this)
-    val app = TreehouseTester(this, dispatchers).loadApp()
+  fun treehouseDispatchersClosedByApp() = runTest {
+    val treehouseTester = TreehouseTester(this)
+    val app = treehouseTester.loadApp()
+    assertThat(treehouseTester.openTreehouseDispatchersCount).isEqualTo(1)
     app.close()
-    assertThat(dispatchers.isClosed).isFalse()
+    assertThat(treehouseTester.openTreehouseDispatchersCount).isEqualTo(0)
+    assertThat(treehouseTester.ziplineLoaderDispatcher.closed).isFalse()
   }
 
   @Test
-  fun dispatchersNotLeakedByAppFactory() = runTest {
-    val dispatchers = FakeDispatchers(this)
-    val factory = TreehouseTester(this, dispatchers).treehouseAppFactory
-    assertThat(dispatchers.isClosed).isFalse()
-    factory.close()
-    assertThat(dispatchers.isClosed).isTrue()
+  fun ziplineLoaderDispatcherClosedByAppFactory() = runTest {
+    val treehouseTester = TreehouseTester(this)
+    assertThat(treehouseTester.ziplineLoaderDispatcher.closed).isFalse()
+    treehouseTester.treehouseAppFactory.close()
+    assertThat(treehouseTester.ziplineLoaderDispatcher.closed).isTrue()
   }
 
   /**

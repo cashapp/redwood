@@ -20,7 +20,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,24 +29,25 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 
 abstract class AbstractTreehouseDispatchersTest {
-  abstract val treehouseDispatchers: TreehouseDispatchers
-
   open val ignoreTestsThatExecuteOnUiThread: Boolean get() = false
 
-  @AfterTest
-  fun tearDown() {
-    treehouseDispatchers.close()
-  }
+  abstract fun newTreehouseDispatchers(
+    applicationName: String,
+  ): TreehouseDispatchers
 
   @Test
   fun uncaughtExceptionsOnUiDispatcherCancelsJob() = runTest {
     if (ignoreTestsThatExecuteOnUiThread) return@runTest
+    val treehouseDispatchers = newTreehouseDispatchers("appName")
     uncaughtExceptionsCancelTheirJob(treehouseDispatchers.ui)
+    treehouseDispatchers.close()
   }
 
   @Test
   fun uncaughtExceptionsOnZiplineDispatcherCancelsJob() = runTest {
+    val treehouseDispatchers = newTreehouseDispatchers("appName")
     uncaughtExceptionsCancelTheirJob(treehouseDispatchers.zipline)
+    treehouseDispatchers.close()
   }
 
   private suspend fun uncaughtExceptionsCancelTheirJob(dispatcher: CoroutineContext) {
@@ -67,22 +67,63 @@ abstract class AbstractTreehouseDispatchersTest {
   @Test
   fun checkThreadFromUiDispatcher() = runTest {
     if (ignoreTestsThatExecuteOnUiThread) return@runTest
+    val treehouseDispatchers = newTreehouseDispatchers("appName")
     withContext(treehouseDispatchers.ui) {
       treehouseDispatchers.checkUi()
       assertFailsWith<IllegalStateException> {
         treehouseDispatchers.checkZipline()
       }
     }
+    treehouseDispatchers.close()
   }
 
   @Test
   fun checkThreadFromZiplineDispatcher() = runTest {
+    val treehouseDispatchers = newTreehouseDispatchers("appName")
     withContext(treehouseDispatchers.zipline) {
       treehouseDispatchers.checkZipline()
       assertFailsWith<IllegalStateException> {
         treehouseDispatchers.checkUi()
       }
     }
+    treehouseDispatchers.close()
+  }
+
+  @Test
+  fun multipleTreehouseDispatchersHaveIndependentZiplineThreads() = runTest {
+    val dispatchersA = newTreehouseDispatchers("app A")
+    val dispatchersB = newTreehouseDispatchers("app B")
+    withContext(dispatchersA.zipline) {
+      dispatchersA.checkZipline()
+      assertFailsWith<IllegalStateException> {
+        dispatchersB.checkZipline()
+      }
+    }
+    withContext(dispatchersB.zipline) {
+      dispatchersB.checkZipline()
+      assertFailsWith<IllegalStateException> {
+        dispatchersA.checkZipline()
+      }
+    }
+    dispatchersA.close()
+    dispatchersB.close()
+  }
+
+  @Test
+  fun multipleTreehouseDispatchersHaveSharedMainThread() = runTest {
+    if (ignoreTestsThatExecuteOnUiThread) return@runTest
+    val dispatchersA = newTreehouseDispatchers("app A")
+    val dispatchersB = newTreehouseDispatchers("app B")
+    withContext(dispatchersA.ui) {
+      dispatchersA.checkUi()
+      dispatchersB.checkUi()
+    }
+    withContext(dispatchersB.ui) {
+      dispatchersA.checkUi()
+      dispatchersB.checkUi()
+    }
+    dispatchersA.close()
+    dispatchersB.close()
   }
 
   private class ExceptionCollector :

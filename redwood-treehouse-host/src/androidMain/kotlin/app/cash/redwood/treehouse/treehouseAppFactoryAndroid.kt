@@ -19,11 +19,13 @@ import android.content.Context
 import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
 import okio.FileSystem
 import okio.Path
 
 @Suppress("FunctionName")
+@OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
 public fun TreehouseAppFactory(
   context: Context,
   httpClient: OkHttpClient,
@@ -37,7 +39,6 @@ public fun TreehouseAppFactory(
   stateStore: StateStore = MemoryStateStore(),
 ): TreehouseApp.Factory = RealTreehouseApp.Factory(
   platform = AndroidTreehousePlatform(context),
-  dispatchers = AndroidTreehouseDispatchers(),
   httpClient = httpClient.asZiplineHttpClient(),
   frameClockFactory = AndroidChoreographerFrameClock.Factory(),
   manifestVerifier = manifestVerifier,
@@ -45,6 +46,7 @@ public fun TreehouseAppFactory(
   embeddedDir = embeddedDir,
   cacheName = cacheName,
   cacheMaxSizeInBytes = cacheMaxSizeInBytes,
+  ziplineLoaderDispatcher = ziplineLoaderDispatcher(),
   loaderEventListener = loaderEventListener,
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,

@@ -24,4 +24,8 @@ internal interface TreehousePlatform {
     maxSizeInBytes: Long,
     loaderEventListener: LoaderEventListener,
   ): ZiplineCache
+
+  fun newDispatchers(
+    applicationName: String,
+  ): TreehouseDispatchers
 }
