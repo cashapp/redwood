@@ -102,6 +102,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
+  @OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
   private fun ziplineFlow(
     eventListenerFactory: EventListener.Factory,
   ): Flow<LoadResult> {
@@ -123,8 +124,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     if (!spec.loadCodeFromNetworkOnly) {
       loader = loader.withCache(
         cache = factory.cache.value,
-        // TODO(jwilson): use this once we update Zipline.
-        // cacheDispatcher = factory.ziplineLoaderDispatcher,
+        cacheDispatcher = factory.ziplineLoaderDispatcher,
       )
 
       if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
