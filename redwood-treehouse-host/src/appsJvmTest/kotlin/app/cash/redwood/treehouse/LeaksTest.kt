@@ -19,9 +19,7 @@ import app.cash.redwood.treehouse.leaks.LeakWatcher
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
-import assertk.assertions.isTrue
 import com.example.redwood.testapp.testing.TextInputValue
 import kotlin.test.Test
 import kotlinx.coroutines.coroutineScope
@@ -195,15 +193,6 @@ class LeaksTest {
     assertThat(treehouseTester.openTreehouseDispatchersCount).isEqualTo(1)
     app.close()
     assertThat(treehouseTester.openTreehouseDispatchersCount).isEqualTo(0)
-    assertThat(treehouseTester.ziplineLoaderDispatcher.closed).isFalse()
-  }
-
-  @Test
-  fun ziplineLoaderDispatcherClosedByAppFactory() = runTest {
-    val treehouseTester = TreehouseTester(this)
-    assertThat(treehouseTester.ziplineLoaderDispatcher.closed).isFalse()
-    treehouseTester.treehouseAppFactory.close()
-    assertThat(treehouseTester.ziplineLoaderDispatcher.closed).isTrue()
   }
 
   /**

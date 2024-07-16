@@ -17,10 +17,8 @@ package app.cash.redwood.treehouse
 
 import android.os.Looper
 import java.util.concurrent.Executors
-import kotlinx.coroutines.CloseableCoroutineDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
 
 /**
@@ -50,12 +48,4 @@ internal class AndroidTreehouseDispatchers(applicationName: String) : TreehouseD
   override fun close() {
     executorService.shutdown()
   }
-}
-
-@OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
-internal fun ziplineLoaderDispatcher(): CloseableCoroutineDispatcher {
-  val executorService = Executors.newSingleThreadExecutor { runnable ->
-    Thread(null, runnable, "ZiplineLoader")
-  }
-  return executorService.asCoroutineDispatcher()
 }

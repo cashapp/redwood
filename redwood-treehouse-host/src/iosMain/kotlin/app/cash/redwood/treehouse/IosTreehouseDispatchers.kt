@@ -92,6 +92,3 @@ internal class SingleThreadDispatcher(
     channel.close()
   }
 }
-
-internal fun ziplineLoaderDispatcher(): CloseableCoroutineDispatcher =
-  SingleThreadDispatcher("ZiplineLoader")

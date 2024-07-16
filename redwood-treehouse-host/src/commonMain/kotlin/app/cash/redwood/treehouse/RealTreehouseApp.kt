@@ -22,7 +22,7 @@ import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
-import kotlinx.coroutines.CloseableCoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -102,7 +102,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  @OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
+  @OptIn(ExperimentalCoroutinesApi::class) // limitedParallelism is experimental.
   private fun ziplineFlow(
     eventListenerFactory: EventListener.Factory,
   ): Flow<LoadResult> {
@@ -124,7 +124,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     if (!spec.loadCodeFromNetworkOnly) {
       loader = loader.withCache(
         cache = factory.cache.value,
-        cacheDispatcher = factory.ziplineLoaderDispatcher,
+        cacheDispatcher = factory.ziplineLoaderDispatcher.limitedParallelism(1),
       )
 
       if (factory.embeddedFileSystem != null && factory.embeddedDir != null) {
@@ -171,12 +171,6 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     dispatchers.close()
   }
 
-  /**
-   * @param ziplineLoaderDispatcher a dispatcher backed by a single thread, that's owned by this
-   *   factory. If it's a [CloseableCoroutineDispatcher], it will be closed when this factory is
-   *   closed.
-   */
-  @OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
   class Factory internal constructor(
     private val platform: TreehousePlatform,
     internal val httpClient: ZiplineHttpClient,
@@ -186,7 +180,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     internal val embeddedDir: Path?,
     private val cacheName: String,
     private val cacheMaxSizeInBytes: Long,
-    internal val ziplineLoaderDispatcher: CloseableCoroutineDispatcher,
+    internal val ziplineLoaderDispatcher: CoroutineDispatcher,
     private val loaderEventListener: LoaderEventListener,
     internal val concurrentDownloads: Int,
     internal val stateStore: StateStore,
@@ -216,8 +210,6 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       if (cache.isInitialized()) {
         cache.value.close()
       }
-
-      ziplineLoaderDispatcher.close()
     }
   }
 }
