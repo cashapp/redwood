@@ -23,6 +23,9 @@ Breaking:
 Upgraded:
 - Zipline 1.15.0
 
+Breaking:
+  -`TreehouseApp.Spec.bindServices()` now accepts a `TreehouseApp` parameter.
+
 
 ## [0.12.0] - 2024-06-18
 [0.12.0]: https://github.com/cashapp/redwood/releases/tag/0.12.0
