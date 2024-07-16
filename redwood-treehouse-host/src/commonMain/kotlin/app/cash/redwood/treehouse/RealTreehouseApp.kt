@@ -138,7 +138,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       serializersModule = spec.serializersModule,
       freshnessChecker = spec.freshnessChecker,
     ) { zipline ->
-      spec.bindServices(zipline)
+      spec.bindServices(this, zipline)
     }
   }
 

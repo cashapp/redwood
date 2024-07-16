@@ -109,7 +109,10 @@ internal class TreehouseTester(
     override val loadCodeFromNetworkOnly: Boolean
       get() = true
 
-    override suspend fun bindServices(zipline: Zipline) {
+    override suspend fun bindServices(
+      treehouseApp: TreehouseApp<TestAppPresenter>,
+      zipline: Zipline,
+    ) {
       zipline.bind("HostApi", hostApi)
     }
 

@@ -33,7 +33,10 @@ class TestAppSpec(
     override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
   }
 
-  override suspend fun bindServices(zipline: Zipline) {
+  override suspend fun bindServices(
+    treehouseApp: TreehouseApp<TestAppPresenter>,
+    zipline: Zipline,
+  ) {
     zipline.bind<HostApi>("HostApi", hostApi)
   }
 

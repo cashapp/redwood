@@ -100,7 +100,7 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseApp$Factory 
 
 public abstract class app/cash/redwood/treehouse/TreehouseApp$Spec {
 	public fun <init> ()V
-	public abstract fun bindServices (Lapp/cash/zipline/Zipline;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun bindServices (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/zipline/Zipline;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun create (Lapp/cash/zipline/Zipline;)Lapp/cash/redwood/treehouse/AppService;
 	public fun getFreshnessChecker ()Lapp/cash/zipline/loader/FreshnessChecker;
 	public fun getLoadCodeFromNetworkOnly ()Z

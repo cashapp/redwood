@@ -35,7 +35,10 @@ class EmojiSearchAppSpec(
     override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
   }
 
-  override suspend fun bindServices(zipline: Zipline) {
+  override suspend fun bindServices(
+    treehouseApp: TreehouseApp<EmojiSearchPresenter>,
+    zipline: Zipline,
+  ) {
     zipline.bind<HostApi>("HostApi", hostApi)
   }
 

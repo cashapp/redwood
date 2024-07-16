@@ -99,7 +99,7 @@ abstract class <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.tree
             open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // app.cash.redwood.treehouse/TreehouseApp.Spec.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
 
         abstract fun create(app.cash.zipline/Zipline): #A1 // app.cash.redwood.treehouse/TreehouseApp.Spec.create|create(app.cash.zipline.Zipline){}[0]
-        abstract suspend fun bindServices(app.cash.zipline/Zipline) // app.cash.redwood.treehouse/TreehouseApp.Spec.bindServices|bindServices(app.cash.zipline.Zipline){}[0]
+        abstract suspend fun bindServices(app.cash.redwood.treehouse/TreehouseApp<#A1>, app.cash.zipline/Zipline) // app.cash.redwood.treehouse/TreehouseApp.Spec.bindServices|bindServices(app.cash.redwood.treehouse.TreehouseApp<1:0>;app.cash.zipline.Zipline){}[0]
     }
 }
 
