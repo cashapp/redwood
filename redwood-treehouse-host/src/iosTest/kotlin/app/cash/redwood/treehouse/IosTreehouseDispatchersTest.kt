@@ -25,33 +25,35 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 
-class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
-  private val iosTreehouseDispatchers = IosTreehouseDispatchers("appName")
-  override val treehouseDispatchers: TreehouseDispatchers get() = iosTreehouseDispatchers
-
+internal class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
   /** We haven't set done the work to dispatch to the UI thread on iOS tests. */
   override val ignoreTestsThatExecuteOnUiThread: Boolean
     get() = true
 
+  override fun newTreehouseDispatchers(applicationName: String) =
+    IosTreehouseDispatchers(applicationName)
+
   @Test
   fun closeFinishesZiplineThreadWithoutExecutingSubsequentRunnable() = runBlocking {
+    val treehouseDispatchers = newTreehouseDispatchers("appName")
+
     val loggedRunnableIds = mutableListOf<Char>()
     fun runnable(id: Char) = Runnable { loggedRunnableIds.add(id) }
 
-    awaitZiplineThread(isExecuting = true)
+    treehouseDispatchers.awaitZiplineThread(isExecuting = true)
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('a'))
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('b'))
     treehouseDispatchers.close()
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('c'))
-    awaitZiplineThread(isExecuting = false)
+    treehouseDispatchers.awaitZiplineThread(isExecuting = false)
 
-    assertTrue(iosTreehouseDispatchers.ziplineThread.isFinished())
+    assertTrue(treehouseDispatchers.ziplineThread.isFinished())
     assertEquals(listOf('a', 'b'), loggedRunnableIds)
   }
 
-  private suspend fun awaitZiplineThread(isExecuting: Boolean) {
+  private suspend fun IosTreehouseDispatchers.awaitZiplineThread(isExecuting: Boolean) {
     withTimeout(1.seconds) {
-      while (iosTreehouseDispatchers.ziplineThread.isExecuting() != isExecuting) {
+      while (ziplineThread.isExecuting() != isExecuting) {
         delay(5.milliseconds)
       }
     }

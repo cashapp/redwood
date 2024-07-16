@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
-class AndroidTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
-  override val treehouseDispatchers: TreehouseDispatchers = AndroidTreehouseDispatchers()
+internal class AndroidTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
+  override fun newTreehouseDispatchers(applicationName: String) =
+    AndroidTreehouseDispatchers(applicationName)
 }
