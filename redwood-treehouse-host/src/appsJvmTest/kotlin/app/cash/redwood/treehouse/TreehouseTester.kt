@@ -22,7 +22,6 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import com.example.redwood.testapp.treehouse.HostApi
 import com.example.redwood.testapp.treehouse.TestAppPresenter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -95,9 +94,6 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
-  val ziplineLoaderDispatcher = FakeZiplineLoaderDispatcher(testScope)
-
-  @OptIn(ExperimentalCoroutinesApi::class) // CloseableCoroutineDispatcher is experimental.
   val treehouseAppFactory = RealTreehouseApp.Factory(
     platform = platform,
     httpClient = httpClient,
@@ -107,7 +103,7 @@ internal class TreehouseTester(
     embeddedDir = null,
     cacheName = "cache",
     cacheMaxSizeInBytes = 0L,
-    ziplineLoaderDispatcher = ziplineLoaderDispatcher,
+    ziplineLoaderDispatcher = testScope.dispatcher(),
     concurrentDownloads = 1,
     loaderEventListener = LoaderEventListener.None,
     stateStore = MemoryStateStore(),
