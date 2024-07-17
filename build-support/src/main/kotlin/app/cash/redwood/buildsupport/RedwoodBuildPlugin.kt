@@ -235,6 +235,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       // generated code isn't relying on them (without also generating appropriate opt-ins).
       if (!path.startsWith(":test-app:schema:")) {
         sourceSets.configureEach {
+          it.languageSettings.optIn("app.cash.redwood.leaks.RedwoodLeakApi")
           it.languageSettings.optIn("app.cash.redwood.yoga.RedwoodYogaApi")
           it.languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
           it.languageSettings.optIn("kotlinx.cinterop.BetaInteropApi")

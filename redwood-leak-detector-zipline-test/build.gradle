@@ -1,0 +1,59 @@
+import app.cash.redwood.buildsupport.ZiplineAppEmbedTask
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.zipline'
+
+zipline {
+  // This is a test-only contract.
+  apiTracking = false
+}
+
+kotlin {
+  js("guest") {
+    nodejs()
+    binaries.executable()
+  }
+  jvm("host")
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation libs.zipline
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+      }
+    }
+    guestMain {
+      dependencies {
+        implementation projects.redwoodLeakDetector
+        implementation libs.assertk
+      }
+    }
+    hostTest {
+      dependencies {
+        implementation libs.okio
+        implementation libs.zipline.loader
+      }
+    }
+  }
+}
+
+// Compile JS tests into a Zipline application so we can test inside QuickJS VM in the JVM tests.
+def ziplineAppName = 'leaks'
+def ziplineCompile = tasks.named('compileDevelopmentExecutableKotlinGuestZipline')
+def ziplineEmbed = tasks.register('ziplineEmbed', ZiplineAppEmbedTask) {
+  files.setFrom(ziplineCompile)
+  appName = ziplineAppName
+  outputDirectory = layout.buildDirectory.dir('generated/ziplineEmbed')
+}
+tasks.named('hostTest', Test) {
+  // Explicit dependsOn and input because systemProperty doesn't accept providers.
+  dependsOn(ziplineEmbed)
+  inputs.dir(ziplineEmbed.get().outputDirectory)
+
+  systemProperty('ziplineDir', ziplineEmbed.get().outputDirectory.get().asFile.absolutePath)
+  systemProperty('ziplineAppName', ziplineAppName)
+}
