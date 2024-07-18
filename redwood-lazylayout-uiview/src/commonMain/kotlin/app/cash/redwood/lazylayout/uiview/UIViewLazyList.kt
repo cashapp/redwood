@@ -296,6 +296,9 @@ internal class LazyListContainerCell(
     super.willMoveToSuperview(newSuperview)
 
     backgroundColor = UIColor.clearColor
+    if (newSuperview is UITableView) {
+      newSuperview.separatorStyle = UITableViewCellSeparatorStyleNone
+    }
 
     // Confirm the cell is bound when it's about to be displayed.
     if (superview == null && newSuperview != null) {
