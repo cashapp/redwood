@@ -21,7 +21,7 @@ Breaking:
 - The `TreehouseApp.Factory.dispatchers` property is removed, and callers should migrate to `TreehouseApp.dispatchers`. With this update each `TreehouseApp` has its own private thread so a shared `dispatchers` property no longer fits our implementation.
 
 Upgraded:
-- Zipline 1.15.0
+- Zipline 1.16.0
 
 Breaking:
   -`TreehouseApp.Spec.bindServices()` now accepts a `TreehouseApp` parameter.
