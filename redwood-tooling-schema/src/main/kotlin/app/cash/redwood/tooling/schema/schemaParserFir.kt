@@ -16,6 +16,9 @@
 package app.cash.redwood.tooling.schema
 
 import app.cash.redwood.tooling.schema.Deprecation.Level
+import app.cash.redwood.tooling.schema.FqType.Variance.In
+import app.cash.redwood.tooling.schema.FqType.Variance.Invariant
+import app.cash.redwood.tooling.schema.FqType.Variance.Out
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.SchemaAnnotation.DependencyAnnotation
@@ -68,7 +71,11 @@ import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.expressions.impl.FirResolvedArgumentList
 import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
+import org.jetbrains.kotlin.fir.types.ConeClassLikeType
+import org.jetbrains.kotlin.fir.types.ConeKotlinTypeProjection
+import org.jetbrains.kotlin.fir.types.ConeStarProjection
 import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
+import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.classId
 import org.jetbrains.kotlin.fir.types.isBasicFunctionType
 import org.jetbrains.kotlin.fir.types.isNullable
@@ -76,14 +83,19 @@ import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.toSymbol
 import org.jetbrains.kotlin.fir.types.type
+import org.jetbrains.kotlin.fir.types.variance
 import org.jetbrains.kotlin.kdoc.lexer.KDocTokens
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.CommonPlatforms
 import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.text
+import org.jetbrains.kotlin.types.Variance.INVARIANT
+import org.jetbrains.kotlin.types.Variance.IN_VARIANCE
+import org.jetbrains.kotlin.types.Variance.OUT_VARIANCE
 
 public fun parseSchema(
   javaHome: File,
@@ -181,7 +193,7 @@ public fun parseProtocolSchema(
 
   val types = firFiles
     .flatMap { it.declarations.findRegularClassesRecursive() }
-    .associateBy { it.classId.asSingleFqName().toFqType() }
+    .associateBy { it.classId.toFqType() }
 
   val firContext = FirContext(types, firSession)
 
@@ -432,7 +444,7 @@ private fun FirContext.parseWidget(
             tag = propertyAnnotation.tag,
             name = name,
             documentation = documentation,
-            parameterTypes = arguments.map { it.type!!.classId!!.asSingleFqName().toFqType() },
+            parameterTypes = arguments.map { it.toFqType() },
             isNullable = type.isNullable,
             defaultExpression = defaultAnnotation?.expression,
             deprecation = deprecation,
@@ -442,7 +454,7 @@ private fun FirContext.parseWidget(
             tag = propertyAnnotation.tag,
             name = name,
             documentation = documentation,
-            type = type.classId!!.asSingleFqName().toFqType(),
+            type = type.toFqType(),
             defaultExpression = defaultAnnotation?.expression,
             deprecation = deprecation,
           )
@@ -456,20 +468,20 @@ private fun FirContext.parseWidget(
         var arguments = typeArguments.dropLast(1) // Drop Unit return type.
         val scope = type.receiverType(firSession)
         if (scope != null) {
-          require(scope.typeArguments.isEmpty() && scope !is ConeTypeParameterType) {
-            "@Children $memberType#$name lambda receiver can only be a class. Found: ${scope.renderReadable()}"
+          require(scope.typeArguments.isEmpty() && scope !is ConeTypeParameterType && !scope.isNullable) {
+            "@Children $memberType#$name lambda receiver can only be a non-null class. Found: ${scope.renderReadable()}"
           }
           arguments = arguments.drop(1)
         }
         require(arguments.isEmpty()) {
           "@Children $memberType#$name lambda type must not have any arguments. " +
-            "Found: ${arguments.map { it.type!!.classId!!.asSingleFqName() }}"
+            "Found: ${arguments.map { it.toFqType() }}"
         }
         ParsedProtocolChildren(
           tag = childrenAnnotation.tag,
           name = name,
           documentation = documentation,
-          scope = scope?.type?.classId?.asSingleFqName()?.toFqType(),
+          scope = scope?.toFqType(),
           defaultExpression = defaultAnnotation?.expression,
           deprecation = deprecation,
         )
@@ -581,7 +593,7 @@ private fun FirContext.parseModifier(
   } else if (firClass.isData) {
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
-      val parameterType = parameter.resolvedReturnType.classId!!.asSingleFqName().toFqType()
+      val parameterType = parameter.resolvedReturnType.toFqType()
 
       val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
       val deprecation = findDeprecationAnnotation(parameter.annotations)
@@ -647,7 +659,7 @@ private fun FirContext.findSchemaAnnotation(
         ?: throw AssertionError(annotation.source?.text)
       val classId = resolvedQualifier.classId
         ?: throw AssertionError(annotation.source?.text)
-      classId.asSingleFqName().toFqType()
+      classId.toFqType()
     }
 
   val dependenciesArray = annotation.argumentMapping
@@ -674,7 +686,7 @@ private fun FirContext.findSchemaAnnotation(
         ?: throw AssertionError(annotation.source?.text)
       val classId = resolvedQualifier.classId
         ?: throw AssertionError(annotation.source?.text)
-      val fqType = classId.asSingleFqName().toFqType()
+      val fqType = classId.toFqType()
 
       DependencyAnnotation(tag, fqType)
     }
@@ -820,7 +832,7 @@ private fun FirContext.findModifierAnnotation(
         ?: throw AssertionError(annotation.source?.text)
       val classId = resolvedQualifier.classId
         ?: throw AssertionError(annotation.source?.text)
-      classId.asSingleFqName().toFqType()
+      classId.toFqType()
     }
 
   return ModifierAnnotation(tagExpression.value, scopes)
@@ -878,7 +890,37 @@ private fun DeprecationAnnotation.toDeprecation(source: () -> String): ParsedDep
   )
 }
 
-private fun FqName.toFqType() = FqType.bestGuess(asString())
+private fun ConeTypeProjection.toFqType(): FqType {
+  return when (this) {
+    ConeStarProjection -> FqType.Star
+    is ConeKotlinTypeProjection -> {
+      when (val type = type) {
+        is ConeClassLikeType -> {
+          val parameterTypes = type.typeArguments.map { it.toFqType() }
+          val variance = when (variance) {
+            INVARIANT -> Invariant
+            IN_VARIANCE -> In
+            OUT_VARIANCE -> Out
+          }
+          type.lookupTag.classId.toFqType()
+            .copy(
+              nullable = type.isNullable,
+              parameterTypes = parameterTypes,
+              variance = variance,
+            )
+        }
+        else -> throw UnsupportedOperationException()
+      }
+    }
+  }
+}
+
+private fun ClassId.toFqType() = FqType(
+  buildList {
+    add(packageFqName.asString())
+    addAll(relativeClassName.asString().split('.'))
+  },
+)
 
 private object FqNames {
   val Children = FqName("app.cash.redwood.schema.Children")

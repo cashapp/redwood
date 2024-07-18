@@ -328,8 +328,8 @@ private fun parseWidget(
         if (type.annotations.any(ExtensionFunctionType::class::isInstance)) {
           val receiverType = type.arguments.first().type
           val receiverClassifier = receiverType?.classifier
-          require(receiverClassifier is KClass<*> && receiverType.arguments.isEmpty()) {
-            "@Children ${memberType.qualifiedName}#$name lambda receiver can only be a class. Found: $receiverType"
+          require(receiverClassifier is KClass<*> && receiverType.arguments.isEmpty() && !receiverType.isMarkedNullable) {
+            "@Children ${memberType.qualifiedName}#$name lambda receiver can only be a non-null class. Found: $receiverType"
           }
           scope = receiverClassifier.toFqType()
           arguments = arguments.drop(1)
