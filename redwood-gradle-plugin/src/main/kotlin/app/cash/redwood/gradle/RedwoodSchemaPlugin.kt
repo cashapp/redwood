@@ -30,9 +30,10 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
     val extension = project.extensions.create(
       "redwoodSchema",
       RedwoodSchemaExtension::class.java,
-    )
-
-    extension.apiTracking.convention(true)
+    ).apply {
+      apiTracking.convention(true)
+      useFir.convention(false)
+    }
 
     var applied = false
     project.plugins.withId("org.jetbrains.kotlin.jvm") {
@@ -56,6 +57,7 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
     val kotlin = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
     val compilation = kotlin.target.compilations.getByName(MAIN_COMPILATION_NAME)
     val classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName)
+    val sources = compilation.defaultSourceSet.kotlin.sourceDirectories
 
     val generateJson = project.tasks.register("redwoodJsonGenerate", RedwoodSchemaJsonTask::class.java) {
       it.group = BUILD_GROUP
@@ -64,7 +66,12 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       it.toolClasspath.from(toolingConfiguration)
       it.outputDir.set(project.redwoodGeneratedDir("schema-json"))
       it.schemaType.set(extension.type)
-      it.classpath.from(classpath, compilation.output.classesDirs)
+      it.useFir.set(extension.useFir)
+      it.sources.setFrom(sources)
+      it.classpath.from(classpath)
+      if (!extension.useFir.get()) {
+        it.classpath.from(compilation.output.classesDirs)
+      }
     }
     project.tasks.named(JAR_TASK_NAME, Jar::class.java).configure {
       it.from(generateJson)
@@ -82,7 +89,12 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
           it.toolClasspath.from(toolingConfiguration)
           it.apiFile.set(apiFile)
           it.schemaType.set(extension.type)
-          it.classpath.from(classpath, compilation.output.classesDirs)
+          it.useFir.set(extension.useFir)
+          it.sources.setFrom(sources)
+          it.classpath.from(classpath)
+          if (!extension.useFir.get()) {
+            it.classpath.from(compilation.output.classesDirs)
+          }
         }
 
         val apiCheck =
@@ -93,7 +105,12 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
             it.toolClasspath.from(toolingConfiguration)
             it.apiFile.set(apiFile)
             it.schemaType.set(extension.type)
-            it.classpath.from(classpath, compilation.output.classesDirs)
+            it.useFir.set(extension.useFir)
+            it.sources.setFrom(sources)
+            it.classpath.from(classpath)
+            if (!extension.useFir.get()) {
+              it.classpath.from(compilation.output.classesDirs)
+            }
 
             // Dummy output required to skip task if no inputs have changed.
             it.dummyOutputFile.set(project.layout.buildDirectory.file("tmp/redwoodApiCheckDummy.txt"))
