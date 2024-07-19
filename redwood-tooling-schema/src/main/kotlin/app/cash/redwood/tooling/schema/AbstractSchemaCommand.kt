@@ -33,7 +33,7 @@ internal abstract class AbstractSchemaCommand(
   name: String,
   help: String,
 ) : CliktCommand(name = name, help = help) {
-  private val fir by option("--fir")
+  private val fir by option("--use-fir")
     .flag()
     .help("Use new FIR-based parser")
 
