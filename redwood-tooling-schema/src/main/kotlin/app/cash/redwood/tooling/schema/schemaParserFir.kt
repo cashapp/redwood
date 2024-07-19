@@ -190,24 +190,7 @@ public fun parseProtocolSchema(
   disposable.dispose()
 
   val dependencyClassLoader = URLClassLoader(dependencies.map { it.toURI().toURL() }.toTypedArray())
-  val dependencySchemas = schema.taggedDependencies.entries
-    .associate { (dependencyTag, dependencyType) ->
-      require(dependencyTag != 0) {
-        "Dependency $dependencyType tag must not be non-zero"
-      }
-
-      val dependency = loadProtocolSchema(
-        type = dependencyType,
-        classLoader = dependencyClassLoader,
-        tag = dependencyTag,
-      )
-      dependencyTag to dependency
-    }
-
-  val schemaSet = ParsedProtocolSchemaSet(
-    schema,
-    dependencySchemas.values.associateBy { it.type },
-  )
+  val schemaSet = loadProtocolSchemaDependencies(schema, dependencyClassLoader)
 
   val duplicatedWidgets = schemaSet.all
     .flatMap { it.widgets.map { widget -> widget to it } }
