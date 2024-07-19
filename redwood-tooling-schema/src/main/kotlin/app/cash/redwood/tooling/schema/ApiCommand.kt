@@ -19,26 +19,16 @@ import app.cash.redwood.tooling.schema.ValidationMode.Check
 import app.cash.redwood.tooling.schema.ValidationMode.Generate
 import app.cash.redwood.tooling.schema.ValidationResult.Failure
 import app.cash.redwood.tooling.schema.ValidationResult.Success
-import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.PrintMessage
-import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.defaultLazy
-import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
-import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.types.choice
-import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.path
-import java.io.File
-import java.net.URLClassLoader
 
 internal class ApiCommand :
-  CliktCommand(
+  AbstractSchemaCommand(
     name = "api",
     help = "Write schema protocol API to XML, or validate schema compatibility with existing XML",
   ) {
@@ -47,45 +37,15 @@ internal class ApiCommand :
     .required()
     .help("XML file")
 
-  private val fir by option("--fir")
-    .flag()
-    .help("Use new FIR-based parser")
-
-  private val jdkHome by option("--jdk-home")
-    .file()
-    .defaultLazy { System.getProperty("java.home").let(::File) }
-    .help("Path to the JDK installation (defaults to this JDK)")
-
-  private val sources by option("-s", "--source")
-    .file()
-    .multiple()
-    .help("Kotlin source files and folders")
-
-  private val classpath by option("-cp", "--class-path")
-    .file()
-    .split(File.pathSeparator)
-    .required()
-
   private val mode by option("-m", "--mode")
     .choice("check" to Check, "generate" to Generate)
     .default(Check)
-
-  private val schemaTypeName by argument("schema")
-    .help("Fully-qualified class name for the @Schema-annotated interface")
 
   private val fixCommand by option("--fix-with")
     .help("The command to generate an updated file (reported in failure messages)")
     .default("generate")
 
   override fun run() {
-    val schema = if (fir) {
-      parseProtocolSchema(jdkHome, sources, classpath, FqType.bestGuess(schemaTypeName)).schema
-    } else {
-      val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
-      val schemaType = classLoader.loadClass(schemaTypeName).kotlin
-      ProtocolSchemaSet.parse(schemaType).schema
-    }
-
     val currentApi = ApiSchema(schema)
 
     when (val result = currentApi.validateAgainst(file, mode, fixCommand)) {
