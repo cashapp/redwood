@@ -38,6 +38,12 @@ internal abstract class RedwoodSchemaJsonTask @Inject constructor(
   @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
 
+  @get:Input
+  abstract val useFir: Property<Boolean>
+
+  @get:Classpath
+  abstract val sources: ConfigurableFileCollection
+
   @get:Classpath
   abstract val classpath: ConfigurableFileCollection
 
@@ -52,6 +58,8 @@ internal abstract class RedwoodSchemaJsonTask @Inject constructor(
     val queue = workerExecutor.noIsolation()
     queue.submit(RedwoodSchemaJsonWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
+      it.useFir.set(useFir)
+      it.sources.setFrom(sources)
       it.classpath.setFrom(classpath)
       it.schemaType.set(schemaType)
       it.outputDir.set(outputDir)
@@ -61,6 +69,8 @@ internal abstract class RedwoodSchemaJsonTask @Inject constructor(
 
 private interface RedwoodSchemaJsonParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
+  val useFir: Property<Boolean>
+  val sources: ConfigurableFileCollection
   val classpath: ConfigurableFileCollection
   val schemaType: Property<String>
   val outputDir: DirectoryProperty
@@ -76,14 +86,21 @@ private abstract class RedwoodSchemaJsonWorker @Inject constructor(
       exec.classpath = parameters.toolClasspath
       exec.mainClass.set("app.cash.redwood.tooling.schema.Main")
 
-      exec.args = listOf(
-        "json",
-        "--out",
-        parameters.outputDir.get().asFile.absolutePath,
-        "--class-path",
-        parameters.classpath.files.joinToString(File.pathSeparator),
-        parameters.schemaType.get(),
-      )
+      exec.args = buildList {
+        add("json")
+        add("--out")
+        add(parameters.outputDir.get().asFile.absolutePath)
+        if (parameters.useFir.get()) {
+          add("--use-fir")
+        }
+        for (source in parameters.sources.files) {
+          add("--source")
+          add(source.toString())
+        }
+        add("--class-path")
+        add(parameters.classpath.files.joinToString(File.pathSeparator))
+        add(parameters.schemaType.get())
+      }
     }
   }
 }

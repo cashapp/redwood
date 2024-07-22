@@ -18,10 +18,13 @@ package app.cash.redwood.gradle
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.provider.Property
 
-public abstract class RedwoodGeneratorExtension : RedwoodSchemaExtension() {
+public abstract class RedwoodGeneratorExtension {
   /**
    * Reference to the project or dependency which contains the Redwood schema.
    * This value must be a type supported by [DependencyHandler].
    */
   public abstract val source: Property<Any>
+
+  /** The fully-qualified name of the `@Schema`-annotated interface. */
+  public abstract val type: Property<String>
 }
