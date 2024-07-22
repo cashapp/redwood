@@ -23,6 +23,8 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.tooling.schema.FqType.Variance.Out
+import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
@@ -42,6 +44,7 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.message
+import assertk.assertions.prop
 import com.example.redwood.testapp.TestSchema
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -322,6 +325,96 @@ class SchemaParserTest(
 
   @Schema(
     [
+      PropertyTypesWidget::class,
+    ],
+  )
+  interface PropertyTypesSchema
+
+  @Widget(1)
+  @Suppress("ArrayInDataClass")
+  data class PropertyTypesWidget(
+    @Property(1) val string: String,
+    @Property(2) val nullableString: String?,
+    @Property(3) val listOfString: List<String>,
+    @Property(4) val listOfNullableString: List<String?>,
+    @Property(5) val listOfStar: List<*>,
+    @Property(6) val arrayOfString: Array<String>,
+    @Property(7) val arrayOfNullableString: Array<String?>,
+    @Property(8) val arrayOfOutString: Array<out String>,
+    @Property(9) val nested: Map.Entry<String, String>,
+  )
+
+  @Test fun propertyTypes() {
+    val schema = parser.parse(PropertyTypesSchema::class).schema
+    val widget = schema.widgets.single()
+
+    val string = widget.traits.single { it.name == "string" } as ProtocolProperty
+    assertThat(string.type).isEqualTo(String::class.toFqType())
+    val nullableString = widget.traits.single { it.name == "nullableString" } as ProtocolProperty
+    assertThat(nullableString.type).isEqualTo(String::class.toFqType(nullable = true))
+    val listOfString = widget.traits.single { it.name == "listOfString" } as ProtocolProperty
+    assertThat(listOfString.type).isEqualTo(List::class.toFqType(String::class.toFqType()))
+    val listOfNullableString = widget.traits.single { it.name == "listOfNullableString" } as ProtocolProperty
+    assertThat(listOfNullableString.type).isEqualTo(List::class.toFqType(String::class.toFqType(nullable = true)))
+    val listOfStar = widget.traits.single { it.name == "listOfStar" } as ProtocolProperty
+    assertThat(listOfStar.type).isEqualTo(List::class.toFqType(FqType.Star))
+    val arrayOfString = widget.traits.single { it.name == "arrayOfString" } as ProtocolProperty
+    assertThat(arrayOfString.type).isEqualTo(Array::class.toFqType(String::class.toFqType()))
+    val arrayOfNullableString = widget.traits.single { it.name == "arrayOfNullableString" } as ProtocolProperty
+    assertThat(arrayOfNullableString.type).isEqualTo(Array::class.toFqType(String::class.toFqType(nullable = true)))
+    val arrayOfOutString = widget.traits.single { it.name == "arrayOfOutString" } as ProtocolProperty
+    assertThat(arrayOfOutString.type).isEqualTo(Array::class.toFqType(String::class.toFqType(variance = Out)))
+    val nested = widget.traits.single { it.name == "nested" } as ProtocolProperty
+    assertThat(nested.type).isEqualTo(Map.Entry::class.toFqType(String::class.toFqType(), String::class.toFqType()))
+  }
+
+  @Schema(
+    [
+      ModifierTypes::class,
+    ],
+  )
+  interface ModifierTypesSchema
+
+  @Modifier(1)
+  @Suppress("ArrayInDataClass")
+  data class ModifierTypes(
+    val string: String,
+    val nullableString: String?,
+    val listOfString: List<String>,
+    val listOfNullableString: List<String?>,
+    val listOfStar: List<*>,
+    val arrayOfString: Array<String>,
+    val arrayOfNullableString: Array<String?>,
+    val arrayOfOutString: Array<out String>,
+    val nested: Map.Entry<String, String>,
+  )
+
+  @Test fun modifierTypes() {
+    val schema = parser.parse(ModifierTypesSchema::class).schema
+    val modifier = schema.modifiers.single()
+
+    val string = modifier.properties.single { it.name == "string" }
+    assertThat(string.type).isEqualTo(String::class.toFqType())
+    val nullableString = modifier.properties.single { it.name == "nullableString" }
+    assertThat(nullableString.type).isEqualTo(String::class.toFqType(nullable = true))
+    val listOfString = modifier.properties.single { it.name == "listOfString" }
+    assertThat(listOfString.type).isEqualTo(List::class.toFqType(String::class.toFqType()))
+    val listOfNullableString = modifier.properties.single { it.name == "listOfNullableString" }
+    assertThat(listOfNullableString.type).isEqualTo(List::class.toFqType(String::class.toFqType(nullable = true)))
+    val listOfStar = modifier.properties.single { it.name == "listOfStar" }
+    assertThat(listOfStar.type).isEqualTo(List::class.toFqType(FqType.Star))
+    val arrayOfString = modifier.properties.single { it.name == "arrayOfString" }
+    assertThat(arrayOfString.type).isEqualTo(Array::class.toFqType(String::class.toFqType()))
+    val arrayOfNullableString = modifier.properties.single { it.name == "arrayOfNullableString" }
+    assertThat(arrayOfNullableString.type).isEqualTo(Array::class.toFqType(String::class.toFqType(nullable = true)))
+    val arrayOfOutString = modifier.properties.single { it.name == "arrayOfOutString" }
+    assertThat(arrayOfOutString.type).isEqualTo(Array::class.toFqType(String::class.toFqType(variance = Out)))
+    val nested = modifier.properties.single { it.name == "nested" }
+    assertThat(nested.type).isEqualTo(Map.Entry::class.toFqType(String::class.toFqType(), String::class.toFqType()))
+  }
+
+  @Schema(
+    [
       InvalidChildrenTypeWidget::class,
     ],
   )
@@ -404,24 +497,47 @@ class SchemaParserTest(
 
   @Schema(
     [
-      ScopedChildrenInvalidWidget::class,
+      ScopedChildrenGenericInvalidWidget::class,
     ],
   )
-  interface ScopedChildrenInvalidSchema
+  interface ScopedChildrenGenericInvalidSchema
 
   @Widget(1)
-  data class ScopedChildrenInvalidWidget(
+  data class ScopedChildrenGenericInvalidWidget(
     @Children(1) val children: List<Int>.() -> Unit,
   )
 
-  @Test fun scopedChildrenInvalid() {
-    assertFailure { parser.parse(ScopedChildrenInvalidSchema::class) }
+  @Test fun scopedChildrenGenericInvalid() {
+    assertFailure { parser.parse(ScopedChildrenGenericInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .message()
       .isNotNull()
       .all {
-        contains("@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenInvalidWidget#children lambda receiver can only be a class.")
+        contains("@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenGenericInvalidWidget#children lambda receiver can only be a non-null class.")
         containsMatch(Regex("""Found: (kotlin\.collections\.)?List<(kotlin\.)?Int>"""))
+      }
+  }
+
+  @Schema(
+    [
+      ScopedChildrenNullableInvalidWidget::class,
+    ],
+  )
+  interface ScopedChildrenNullableInvalidSchema
+
+  @Widget(1)
+  data class ScopedChildrenNullableInvalidWidget(
+    @Children(1) val children: String?.() -> Unit,
+  )
+
+  @Test fun scopedChildrenNullableInvalid() {
+    assertFailure { parser.parse(ScopedChildrenNullableInvalidSchema::class) }
+      .isInstanceOf<IllegalArgumentException>()
+      .message()
+      .isNotNull()
+      .all {
+        contains("@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenNullableInvalidWidget#children lambda receiver can only be a non-null class.")
+        containsMatch(Regex("""Found: (kotlin\.)?String?"""))
       }
   }
 
@@ -441,7 +557,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(ScopedChildrenTypeParameterInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a class. " +
+        "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a non-null class. " +
           "Found: T",
       )
   }
@@ -462,8 +578,18 @@ class SchemaParserTest(
   @Test fun eventTypes() {
     val schema = parser.parse(EventTypeSchema::class).schema
     val widget = schema.widgets.single()
-    assertThat(widget.traits.single { it.name == "requiredEvent" }).isInstanceOf<Event>()
-    assertThat(widget.traits.single { it.name == "optionalEvent" }).isInstanceOf<Event>()
+    assertThat(widget.traits.single { it.name == "requiredEvent" })
+      .isInstanceOf<Event>()
+      .all {
+        prop(Event::parameterTypes).isEmpty()
+        prop(Event::isNullable).isFalse()
+      }
+    assertThat(widget.traits.single { it.name == "optionalEvent" })
+      .isInstanceOf<Event>()
+      .all {
+        prop(Event::parameterTypes).isEmpty()
+        prop(Event::isNullable).isTrue()
+      }
   }
 
   @Schema(
@@ -478,8 +604,8 @@ class SchemaParserTest(
     @Property(1) val noArguments: () -> Unit,
     @Property(2) val oneArgument: (String) -> Unit,
     @Property(3) val oneArgumentOptional: ((String) -> Unit)?,
-    @Property(4) val manyArguments: (String, Boolean, Long) -> Unit,
-    @Property(5) val manyArgumentsOptional: ((String, Boolean, Long) -> Unit)?,
+    @Property(4) val manyArguments: (String, Boolean?, Long) -> Unit,
+    @Property(5) val manyArgumentsOptional: ((String, Boolean?, Long) -> Unit)?,
   )
 
   @Test fun eventArguments() {
@@ -493,9 +619,9 @@ class SchemaParserTest(
     val oneArgumentOptional = widget.traits.single { it.name == "oneArgumentOptional" } as Event
     assertThat(oneArgumentOptional.parameterTypes).containsExactly(String::class.toFqType())
     val manyArguments = widget.traits.single { it.name == "manyArguments" } as Event
-    assertThat(manyArguments.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(), Long::class.toFqType())
+    assertThat(manyArguments.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(nullable = true), Long::class.toFqType())
     val manyArgumentOptional = widget.traits.single { it.name == "manyArgumentsOptional" } as Event
-    assertThat(manyArgumentOptional.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(), Long::class.toFqType())
+    assertThat(manyArgumentOptional.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(nullable = true), Long::class.toFqType())
   }
 
   @Schema(

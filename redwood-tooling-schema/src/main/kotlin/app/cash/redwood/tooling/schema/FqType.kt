@@ -127,7 +127,11 @@ public data class FqType(
   }
 }
 
-internal fun KClass<*>.toFqType(): FqType {
+internal fun KClass<*>.toFqType(
+  vararg parameterTypes: FqType,
+  variance: FqType.Variance = Invariant,
+  nullable: Boolean = false,
+): FqType {
   // We only parse public API declarations on which it should be impossible to use
   // function-local classes or anonymous classes.
   var qualifiedName = qualifiedName ?: throw AssertionError(this)
@@ -178,7 +182,7 @@ internal fun KClass<*>.toFqType(): FqType {
     }
   }
 
-  return FqType(names)
+  return FqType(names, variance, parameterTypes.toList(), nullable)
 }
 
 internal fun KType.toFqType(): FqType {
@@ -192,10 +196,10 @@ internal fun KType.toFqType(): FqType {
 }
 
 private fun KTypeProjection.toFqType(): FqType {
-  val json = type?.toFqType() ?: FqType.Star
+  val fqType = type?.toFqType() ?: FqType.Star
   return when (variance) {
-    null, INVARIANT -> json
-    IN -> json.copy(variance = In)
-    OUT -> json.copy(variance = Out)
+    null, INVARIANT -> fqType
+    IN -> fqType.copy(variance = In)
+    OUT -> fqType.copy(variance = Out)
   }
 }
