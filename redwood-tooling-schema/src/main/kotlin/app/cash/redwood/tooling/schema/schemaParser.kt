@@ -53,13 +53,19 @@ internal fun loadProtocolSchemaSet(
   classLoader: ClassLoader,
 ): ProtocolSchemaSet {
   val schema = loadProtocolSchema(type, classLoader)
-  val dependencies = schema.taggedDependencies.map { (tag, dependency) ->
-    loadProtocolSchema(dependency, classLoader, tag)
-  }
-  return ParsedProtocolSchemaSet(
-    schema = schema,
-    dependencies = dependencies.associateBy { it.type },
-  )
+  return loadProtocolSchemaDependencies(schema, classLoader)
+}
+
+internal fun loadProtocolSchemaDependencies(
+  schema: ProtocolSchema,
+  classLoader: ClassLoader,
+): ParsedProtocolSchemaSet {
+  val dependencies = schema.taggedDependencies.entries
+    .associate { (tag, type) ->
+      require(tag != 0) { "Dependency $type tag must be non-zero" }
+      type to loadProtocolSchema(type, classLoader, tag)
+    }
+  return ParsedProtocolSchemaSet(schema, dependencies)
 }
 
 internal fun loadProtocolSchema(
@@ -228,33 +234,14 @@ internal fun parseProtocolSchemaSet(schemaType: KClass<*>): ProtocolSchemaSet {
     )
   }
 
-  val dependencies = schemaAnnotation.dependencies
-    .associate {
-      val dependencyTag = it.tag
-      val dependencyType = it.schema.toFqType()
-      require(dependencyTag != 0) {
-        "Dependency $dependencyType tag must not be non-zero"
-      }
-
-      val schema = loadProtocolSchema(
-        type = dependencyType,
-        classLoader = schemaType.java.classLoader,
-        tag = dependencyTag,
-      )
-      dependencyTag to schema
-    }
-
   val schema = ParsedProtocolSchema(
     type = schemaType.toFqType(),
     scopes = scopes.toList(),
     widgets = widgets,
     modifiers = modifiers,
-    taggedDependencies = dependencies.mapValues { (_, schema) -> schema.type },
+    taggedDependencies = schemaAnnotation.dependencies.associate { it.tag to it.schema.toFqType() },
   )
-  val schemaSet = ParsedProtocolSchemaSet(
-    schema,
-    dependencies.values.associateBy { it.type },
-  )
+  val schemaSet = loadProtocolSchemaDependencies(schema, schemaType.java.classLoader)
 
   val duplicatedWidgets = schemaSet.all
     .flatMap { it.widgets.map { widget -> widget to it } }

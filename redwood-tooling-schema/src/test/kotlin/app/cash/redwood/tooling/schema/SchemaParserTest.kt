@@ -1090,7 +1090,7 @@ class SchemaParserTest(
     assertFailure { parser.parse(SchemaDependencyTagZero::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "Dependency app.cash.redwood.layout.RedwoodLayout tag must not be non-zero",
+        "Dependency app.cash.redwood.layout.RedwoodLayout tag must be non-zero",
       )
   }
 
