@@ -1,0 +1,53 @@
+import static app.cash.redwood.buildsupport.TargetGroup.Common
+
+redwoodBuild {
+  targets(Common)
+  publishing()
+}
+
+kotlin {
+  js {
+    nodejs {
+      testTask {
+        useMocha {
+          // We use up to 10s of wall clock time to test leaks.
+          timeout = '15s'
+          // Required for access to V8 GC function.
+          nodeJsArgs.add('--expose-gc')
+        }
+      }
+    }
+  }
+  wasmJs {
+    nodejs {
+      testTask {
+        useMocha {
+          // We use up to 10s of wall clock time to test leaks.
+          timeout = '15s'
+          // Required for access to V8 GC function.
+          nodeJsArgs.add('--expose-gc')
+        }
+      }
+    }
+  }
+
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation libs.kotlinx.coroutines.core
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.kotlinx.coroutines.test
+        implementation libs.assertk
+      }
+    }
+  }
+}
+
+tasks.named('dokkaHtmlPartial') {
+  // Don't document this module as it's entirely implementation detail.
+  enabled = false
+}

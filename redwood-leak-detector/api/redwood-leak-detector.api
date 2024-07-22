@@ -1,0 +1,24 @@
+public abstract interface class app/cash/redwood/leaks/LeakDetector {
+	public static final field Companion Lapp/cash/redwood/leaks/LeakDetector$Companion;
+	public abstract fun checkLeaks (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun watchReference (Ljava/lang/Object;Ljava/lang/String;)V
+}
+
+public final class app/cash/redwood/leaks/LeakDetector$Companion {
+	public final fun timeBased-SxA4cEA (Lapp/cash/redwood/leaks/LeakListener;Lkotlin/time/TimeSource;J)Lapp/cash/redwood/leaks/LeakDetector;
+}
+
+public final class app/cash/redwood/leaks/LeakDetector$None : app/cash/redwood/leaks/LeakDetector {
+	public static final field INSTANCE Lapp/cash/redwood/leaks/LeakDetector$None;
+	public fun checkLeaks (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun watchReference (Ljava/lang/Object;Ljava/lang/String;)V
+}
+
+public abstract interface class app/cash/redwood/leaks/LeakListener {
+	public abstract fun onReferenceCollected (Ljava/lang/String;)V
+	public abstract fun onReferenceLeaked-HG0u8IE (Ljava/lang/String;J)V
+}
+
+public abstract interface annotation class app/cash/redwood/leaks/RedwoodLeakApi : java/lang/annotation/Annotation {
+}
+

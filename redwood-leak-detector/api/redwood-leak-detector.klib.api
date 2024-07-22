@@ -1,0 +1,30 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-leak-detector>
+open annotation class app.cash.redwood.leaks/RedwoodLeakApi : kotlin/Annotation { // app.cash.redwood.leaks/RedwoodLeakApi|null[0]
+    constructor <init>() // app.cash.redwood.leaks/RedwoodLeakApi.<init>|<init>(){}[0]
+}
+
+abstract interface app.cash.redwood.leaks/LeakDetector { // app.cash.redwood.leaks/LeakDetector|null[0]
+    abstract fun watchReference(kotlin/Any, kotlin/String) // app.cash.redwood.leaks/LeakDetector.watchReference|watchReference(kotlin.Any;kotlin.String){}[0]
+    abstract suspend fun checkLeaks() // app.cash.redwood.leaks/LeakDetector.checkLeaks|checkLeaks(){}[0]
+
+    final object Companion { // app.cash.redwood.leaks/LeakDetector.Companion|null[0]
+        final fun timeBased(app.cash.redwood.leaks/LeakListener, kotlin.time/TimeSource, kotlin.time/Duration): app.cash.redwood.leaks/LeakDetector // app.cash.redwood.leaks/LeakDetector.Companion.timeBased|timeBased(app.cash.redwood.leaks.LeakListener;kotlin.time.TimeSource;kotlin.time.Duration){}[0]
+    }
+
+    final object None : app.cash.redwood.leaks/LeakDetector { // app.cash.redwood.leaks/LeakDetector.None|null[0]
+        final fun watchReference(kotlin/Any, kotlin/String) // app.cash.redwood.leaks/LeakDetector.None.watchReference|watchReference(kotlin.Any;kotlin.String){}[0]
+        final suspend fun checkLeaks() // app.cash.redwood.leaks/LeakDetector.None.checkLeaks|checkLeaks(){}[0]
+    }
+}
+
+abstract interface app.cash.redwood.leaks/LeakListener { // app.cash.redwood.leaks/LeakListener|null[0]
+    abstract fun onReferenceCollected(kotlin/String) // app.cash.redwood.leaks/LeakListener.onReferenceCollected|onReferenceCollected(kotlin.String){}[0]
+    abstract fun onReferenceLeaked(kotlin/String, kotlin.time/Duration) // app.cash.redwood.leaks/LeakListener.onReferenceLeaked|onReferenceLeaked(kotlin.String;kotlin.time.Duration){}[0]
+}
