@@ -438,7 +438,7 @@ private fun parseModifier(
 ): ParsedProtocolModifier {
   val memberFqType = memberType.toFqType()
   val tag = annotation.tag
-  require(tag in 1 until MAX_MEMBER_TAG || isReservedModifier(tag, memberType)) {
+  require(tag in 1 until MAX_MEMBER_TAG || isSpecialModifier(tag, memberType.toFqType())) {
     "@Modifier $memberFqType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 
@@ -482,9 +482,9 @@ private fun parseModifier(
   )
 }
 
-/** Returns true if [memberType] is a known reserved tag name. */
-private fun isReservedModifier(tag: Int, memberType: KClass<*>): Boolean {
-  return tag == -4_543_827 && memberType.simpleName == "Reuse"
+/** Returns true if [memberType] is a known special modifier tag and name. */
+internal fun isSpecialModifier(tag: Int, memberType: FqType): Boolean {
+  return tag == -4_543_827 && memberType.names.last() == "Reuse"
 }
 
 private fun KAnnotatedElement.parseDeprecation(source: () -> String): ParsedDeprecation? {

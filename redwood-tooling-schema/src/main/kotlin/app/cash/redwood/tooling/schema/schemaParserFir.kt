@@ -572,7 +572,7 @@ private fun FirContext.parseModifier(
   annotation: ModifierAnnotation,
 ): ParsedProtocolModifier {
   val tag = annotation.tag
-  require(tag in 1 until MAX_MEMBER_TAG) {
+  require(tag in 1 until MAX_MEMBER_TAG || isSpecialModifier(tag, memberType)) {
     "@Modifier $memberType tag must be in range [1, $MAX_MEMBER_TAG): $tag"
   }
 

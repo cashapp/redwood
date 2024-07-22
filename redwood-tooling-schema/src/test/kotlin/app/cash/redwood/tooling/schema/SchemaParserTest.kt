@@ -642,6 +642,23 @@ class SchemaParserTest(
       )
   }
 
+  @Schema(
+    [
+      Reuse::class,
+    ],
+  )
+  interface SpecialModifierSchema
+
+  @Modifier(-4_543_827)
+  data object Reuse
+
+  @Test fun specialModifiersAllowed() {
+    val schema = parser.parse(SpecialModifierSchema::class).schema
+
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.tag).isEqualTo(-4_543_827)
+  }
+
   @Schema([SomeWidget::class, SomeModifier::class])
   interface SchemaTag
 
