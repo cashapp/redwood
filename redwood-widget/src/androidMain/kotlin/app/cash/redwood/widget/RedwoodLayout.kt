@@ -23,10 +23,13 @@ import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import app.cash.redwood.ui.Size
@@ -48,7 +51,11 @@ public open class RedwoodLayout(
   private val _children = ViewGroupChildren(this)
   override val children: Widget.Children<View> get() = _children
 
-  private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
+  private val mutableUiConfiguration = MutableStateFlow(
+    computeUiConfiguration(
+      windowInsets = Margin.Zero,
+    ),
+  )
 
   override val onBackPressedDispatcher: RedwoodOnBackPressedDispatcher =
     object : RedwoodOnBackPressedDispatcher {
@@ -77,6 +84,20 @@ public open class RedwoodLayout(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
+  override var windowInsets: Margin
+    get() = uiConfiguration.value.windowInsets
+    set(value) {
+      val old = uiConfiguration.value
+      mutableUiConfiguration.value = UiConfiguration(
+        darkMode = old.darkMode,
+        safeAreaInsets = old.safeAreaInsets,
+        windowInsets = value,
+        viewportSize = old.viewportSize,
+        density = old.density,
+        layoutDirection = old.layoutDirection,
+      )
+    }
+
   override fun reset() {
     _children.remove(0, _children.widgets.size)
 
@@ -86,24 +107,36 @@ public open class RedwoodLayout(
 
   init {
     setOnWindowInsetsChangeListener { insets ->
-      mutableUiConfiguration.value = computeUiConfiguration(insets = insets.safeDrawing)
+      val old = mutableUiConfiguration.value
+      mutableUiConfiguration.value = computeUiConfiguration(
+        safeAreaInsets = insets.safeDrawing,
+        windowInsets = old.windowInsets,
+      )
     }
   }
 
   @SuppressLint("DrawAllocation") // It's only on layout.
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-    mutableUiConfiguration.value = computeUiConfiguration()
+    val old = mutableUiConfiguration.value
+    mutableUiConfiguration.value = computeUiConfiguration(
+      windowInsets = old.windowInsets,
+    )
     super.onLayout(changed, left, top, right, bottom)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
-    mutableUiConfiguration.value = computeUiConfiguration(config = newConfig)
+    val old = mutableUiConfiguration.value
+    mutableUiConfiguration.value = computeUiConfiguration(
+      config = newConfig,
+      windowInsets = old.windowInsets,
+    )
   }
 
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
-    insets: Insets = rootWindowInsetsCompat.safeDrawing,
+    safeAreaInsets: Insets = rootWindowInsetsCompat.safeDrawing,
+    windowInsets: Margin,
   ): UiConfiguration {
     val viewportSize: Size
     val density: Double
@@ -113,7 +146,8 @@ public open class RedwoodLayout(
     }
     return UiConfiguration(
       darkMode = (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES,
-      safeAreaInsets = insets.toMargin(Density(resources)),
+      safeAreaInsets = safeAreaInsets.toMargin(Density(resources)),
+      windowInsets = windowInsets,
       viewportSize = viewportSize,
       density = density,
       layoutDirection = when (config.layoutDirection) {
@@ -122,6 +156,22 @@ public open class RedwoodLayout(
         else -> throw IllegalArgumentException("layoutDirection must be LTR or RTL")
       },
     )
+  }
+
+  /**
+   * Consume the identified insets from the enclosing UI in the Redwood composition.
+   *
+   * This installs a `OnApplyWindowInsetsListener` on this view that updates [windowInsets] each
+   * time the window insets are updated.
+   */
+  public fun consumeWindowInsets(
+    mask: Int = (WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()),
+  ) {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets ->
+      val insetsForMask = insets.getInsets(mask)
+      windowInsets = insetsForMask.toMargin(Density(resources))
+      WindowInsetsCompat.CONSUMED
+    }
   }
 }
 

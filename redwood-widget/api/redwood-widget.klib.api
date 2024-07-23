@@ -17,6 +17,10 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/RedwoodView { // app
     abstract val uiConfiguration // app.cash.redwood.widget/RedwoodView.uiConfiguration|{}uiConfiguration[0]
         abstract fun <get-uiConfiguration>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.widget/RedwoodView.uiConfiguration.<get-uiConfiguration>|<get-uiConfiguration>(){}[0]
 
+    abstract var windowInsets // app.cash.redwood.widget/RedwoodView.windowInsets|{}windowInsets[0]
+        abstract fun <get-windowInsets>(): app.cash.redwood.ui/Margin // app.cash.redwood.widget/RedwoodView.windowInsets.<get-windowInsets>|<get-windowInsets>(){}[0]
+        abstract fun <set-windowInsets>(app.cash.redwood.ui/Margin) // app.cash.redwood.widget/RedwoodView.windowInsets.<set-windowInsets>|<set-windowInsets>(app.cash.redwood.ui.Margin){}[0]
+
     abstract fun reset() // app.cash.redwood.widget/RedwoodView.reset|reset(){}[0]
 }
 
@@ -126,6 +130,10 @@ open class app.cash.redwood.widget/RedwoodUIView : app.cash.redwood.widget/Redwo
         open fun <get-savedStateRegistry>(): app.cash.redwood.widget/SavedStateRegistry? // app.cash.redwood.widget/RedwoodUIView.savedStateRegistry.<get-savedStateRegistry>|<get-savedStateRegistry>(){}[0]
     open val uiConfiguration // app.cash.redwood.widget/RedwoodUIView.uiConfiguration|{}uiConfiguration[0]
         open fun <get-uiConfiguration>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.widget/RedwoodUIView.uiConfiguration.<get-uiConfiguration>|<get-uiConfiguration>(){}[0]
+
+    open var windowInsets // app.cash.redwood.widget/RedwoodUIView.windowInsets|{}windowInsets[0]
+        open fun <get-windowInsets>(): app.cash.redwood.ui/Margin // app.cash.redwood.widget/RedwoodUIView.windowInsets.<get-windowInsets>|<get-windowInsets>(){}[0]
+        open fun <set-windowInsets>(app.cash.redwood.ui/Margin) // app.cash.redwood.widget/RedwoodUIView.windowInsets.<set-windowInsets>|<set-windowInsets>(app.cash.redwood.ui.Margin){}[0]
 
     final fun updateUiConfiguration() // app.cash.redwood.widget/RedwoodUIView.updateUiConfiguration|updateUiConfiguration(){}[0]
     open fun reset() // app.cash.redwood.widget/RedwoodUIView.reset|reset(){}[0]

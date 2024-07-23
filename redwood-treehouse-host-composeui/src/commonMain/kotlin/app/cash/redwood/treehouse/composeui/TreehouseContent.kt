@@ -41,6 +41,7 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection as RedwoodLayoutDirection
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
@@ -55,6 +56,7 @@ public fun <A : AppService> TreehouseContent(
   widgetSystem: WidgetSystem<@Composable () -> Unit>,
   contentSource: TreehouseContentSource<A>,
   modifier: Modifier = Modifier,
+  windowInsets: Margin = Margin.Zero,
   codeListener: CodeListener = remember { CodeListener() },
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
@@ -64,6 +66,7 @@ public fun <A : AppService> TreehouseContent(
   val uiConfiguration = UiConfiguration(
     darkMode = isSystemInDarkTheme(),
     safeAreaInsets = safeAreaInsets(),
+    windowInsets = windowInsets,
     viewportSize = viewportSize,
     density = density.density.toDouble(),
     layoutDirection = when (LocalLayoutDirection.current) {
@@ -77,6 +80,7 @@ public fun <A : AppService> TreehouseContent(
       override val children = ComposeWidgetChildren()
       override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
+      override var windowInsets: Margin = windowInsets
 
       // TODO TreehouseView is a weird type and shouldn't extend from RedwoodView. The concept
       //  of this registry shouldn't exist for Treehouse / should be auto-wired via RedwoodContent.

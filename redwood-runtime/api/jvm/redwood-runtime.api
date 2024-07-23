@@ -210,14 +210,15 @@ public final class app/cash/redwood/ui/UiConfiguration {
 	public static final field $stable I
 	public static final field Companion Lapp/cash/redwood/ui/UiConfiguration$Companion;
 	public fun <init> ()V
-	public fun <init> (ZLapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Size;DLapp/cash/redwood/ui/LayoutDirection;)V
-	public synthetic fun <init> (ZLapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Size;DLapp/cash/redwood/ui/LayoutDirection;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZLapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Size;DLapp/cash/redwood/ui/LayoutDirection;)V
+	public synthetic fun <init> (ZLapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Margin;Lapp/cash/redwood/ui/Size;DLapp/cash/redwood/ui/LayoutDirection;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDarkMode ()Z
 	public final fun getDensity ()D
 	public final fun getLayoutDirection ()Lapp/cash/redwood/ui/LayoutDirection;
 	public final fun getSafeAreaInsets ()Lapp/cash/redwood/ui/Margin;
 	public final fun getViewportSize ()Lapp/cash/redwood/ui/Size;
+	public final fun getWindowInsets ()Lapp/cash/redwood/ui/Margin;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

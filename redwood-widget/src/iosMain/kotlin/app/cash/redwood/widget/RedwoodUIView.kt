@@ -47,6 +47,7 @@ public open class RedwoodUIView(
     MutableStateFlow(
       computeUiConfiguration(
         traitCollection = view.traitCollection,
+        windowInsets = Margin.Zero,
         layoutDirection = view.effectiveUserInterfaceLayoutDirection,
         bounds = view.bounds,
       ),
@@ -63,6 +64,20 @@ public open class RedwoodUIView(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
+  override var windowInsets: Margin
+    get() = uiConfiguration.value.windowInsets
+    set(value) {
+      val old = uiConfiguration.value
+      mutableUiConfiguration.value = UiConfiguration(
+        darkMode = old.darkMode,
+        safeAreaInsets = old.safeAreaInsets,
+        windowInsets = value,
+        viewportSize = old.viewportSize,
+        density = old.density,
+        layoutDirection = old.layoutDirection,
+      )
+    }
+
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
@@ -75,8 +90,10 @@ public open class RedwoodUIView(
   }
 
   protected fun updateUiConfiguration() {
+    val old = mutableUiConfiguration.value
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = view.traitCollection,
+      windowInsets = old.windowInsets,
       layoutDirection = view.effectiveUserInterfaceLayoutDirection,
       bounds = view.bounds,
     )
@@ -85,12 +102,14 @@ public open class RedwoodUIView(
 
 internal fun computeUiConfiguration(
   traitCollection: UITraitCollection,
+  windowInsets: Margin,
   layoutDirection: UIUserInterfaceLayoutDirection,
   bounds: CValue<CGRect>,
 ): UiConfiguration {
   return UiConfiguration(
     darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark,
     safeAreaInsets = computeSafeAreaInsets(),
+    windowInsets = windowInsets,
     viewportSize = bounds.useContents {
       with(Density.Default) {
         Size(size.width.toDp(), size.height.toDp())
