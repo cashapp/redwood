@@ -12,7 +12,7 @@ public abstract interface class app/cash/redwood/layout/compose/BoxScope {
 }
 
 public final class app/cash/redwood/layout/compose/ColumnKt {
-	public static final fun Column-n_TNbJ4 (IILapp/cash/redwood/ui/Margin;IIILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Column-TKMhg4E (IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Lapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
 public abstract interface class app/cash/redwood/layout/compose/ColumnScope {
@@ -27,7 +27,7 @@ public abstract interface class app/cash/redwood/layout/compose/ColumnScope {
 }
 
 public final class app/cash/redwood/layout/compose/RowKt {
-	public static final fun Row-dhzo6EI (IILapp/cash/redwood/ui/Margin;IIILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Row-5pIFpiI (IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Lapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
 public abstract interface class app/cash/redwood/layout/compose/RowScope {

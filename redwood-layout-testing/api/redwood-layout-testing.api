@@ -17,8 +17,8 @@ public final class app/cash/redwood/layout/testing/BoxValue : app/cash/redwood/t
 }
 
 public final class app/cash/redwood/layout/testing/ColumnValue : app/cash/redwood/testing/WidgetValue {
-	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChildren ()Ljava/util/List;
 	public fun getChildrenLists ()Ljava/util/List;
@@ -26,6 +26,7 @@ public final class app/cash/redwood/layout/testing/ColumnValue : app/cash/redwoo
 	public final fun getHorizontalAlignment-eoX4IBc ()I
 	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
 	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnScroll ()Lkotlin/jvm/functions/Function1;
 	public final fun getOverflow-Andb1w4 ()I
 	public final fun getVerticalAlignment-Ng1ngeI ()I
 	public final fun getWidth-jfchsNQ ()I
@@ -49,8 +50,8 @@ public final class app/cash/redwood/layout/testing/RedwoodLayoutTestingWidgetFac
 }
 
 public final class app/cash/redwood/layout/testing/RowValue : app/cash/redwood/testing/WidgetValue {
-	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;IILapp/cash/redwood/ui/Margin;IIILkotlin/jvm/functions/Function1;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChildren ()Ljava/util/List;
 	public fun getChildrenLists ()Ljava/util/List;
@@ -58,6 +59,7 @@ public final class app/cash/redwood/layout/testing/RowValue : app/cash/redwood/t
 	public final fun getHorizontalAlignment-Ng1ngeI ()I
 	public final fun getMargin ()Lapp/cash/redwood/ui/Margin;
 	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnScroll ()Lkotlin/jvm/functions/Function1;
 	public final fun getOverflow-Andb1w4 ()I
 	public final fun getVerticalAlignment-eoX4IBc ()I
 	public final fun getWidth-jfchsNQ ()I

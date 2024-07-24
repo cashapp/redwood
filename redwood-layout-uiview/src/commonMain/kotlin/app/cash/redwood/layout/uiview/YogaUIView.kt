@@ -19,16 +19,19 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
+import platform.UIKit.UIScrollViewDelegateProtocol
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class YogaUIView(
   private val applyModifier: (Node, Int) -> Unit,
-) : UIScrollView(cValue { CGRectZero }) {
+) : UIScrollView(cValue { CGRectZero }), UIScrollViewDelegateProtocol {
   val rootNode = Node()
 
   var width = Constraint.Wrap
   var height = Constraint.Wrap
+
+  var onScroll: ((Double) -> Unit)? = null
 
   init {
     // TODO: Support scroll indicators.
@@ -62,7 +65,7 @@ internal class YogaUIView(
       // This duplicates the calculation we're doing above, and should be
       // combined into one call.
       val scrollSize = bounds.useContents {
-        if (rootNode.flexDirection == FlexDirection.Column) {
+        if (isColumn()) {
           CGSizeMake(width, Size.UNDEFINED.toDouble())
         } else {
           CGSizeMake(Size.UNDEFINED.toDouble(), height)
@@ -128,6 +131,8 @@ internal class YogaUIView(
   }
 
   override fun setScrollEnabled(scrollEnabled: Boolean) {
+    delegate = if (scrollEnabled) this else null
+
     val previousScrollEnabled = this.scrollEnabled
 
     super.setScrollEnabled(scrollEnabled)
@@ -135,6 +140,20 @@ internal class YogaUIView(
     if (scrollEnabled != previousScrollEnabled) {
       setNeedsLayout()
     }
+  }
+
+  override fun scrollViewDidScroll(scrollView: UIScrollView) {
+    val onScroll = onScroll
+    if (onScroll != null) {
+      val offset = scrollView.contentOffset.useContents {
+        if (isColumn()) y else x
+      }
+      onScroll(offset)
+    }
+  }
+
+  private fun isColumn(): Boolean {
+    return rootNode.flexDirection == FlexDirection.Column
   }
 }
 

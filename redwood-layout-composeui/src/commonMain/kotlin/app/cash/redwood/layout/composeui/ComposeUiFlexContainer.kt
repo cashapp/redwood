@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +24,12 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,9 +69,11 @@ internal class ComposeUiFlexContainer(
   private var height by mutableStateOf(Constraint.Wrap)
   private var overflow by mutableStateOf(Overflow.Clip)
   private var margin by mutableStateOf(Margin.Zero)
+  private var onScroll: ((Double) -> Unit)? by mutableStateOf(null)
   override var density = Density(1.0)
 
   internal var testOnlyModifier: Modifier? = null
+  internal var scrollState: ScrollState? = null
 
   override fun width(width: Constraint) {
     this.width = width
@@ -83,6 +89,10 @@ internal class ComposeUiFlexContainer(
 
   override fun overflow(overflow: Overflow) {
     this.overflow = overflow
+  }
+
+  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    this.onScroll = onScroll
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
@@ -136,14 +146,27 @@ internal class ComposeUiFlexContainer(
       modifier.wrapContentHeight(Alignment.Top, unbounded = true)
     }
     if (overflow == Overflow.Scroll) {
+      val scrollState = rememberScrollState().also { scrollState = it }
       if (flexDirection.isHorizontal) {
-        modifier = modifier.horizontalScroll(rememberScrollState())
+        modifier = modifier.horizontalScroll(scrollState)
       } else {
-        modifier = modifier.verticalScroll(rememberScrollState())
+        modifier = modifier.verticalScroll(scrollState)
       }
+      ObserveScrollState(scrollState)
     }
     testOnlyModifier?.let { modifier = modifier.then(it) }
     return modifier
+  }
+
+  @Composable
+  private fun ObserveScrollState(scrollState: ScrollState) {
+    val onScroll = onScroll
+    if (onScroll != null) {
+      val offset by remember { derivedStateOf { scrollState.value.toDouble() } }
+      LaunchedEffect(offset) {
+        onScroll(offset)
+      }
+    }
   }
 
   private fun measure(

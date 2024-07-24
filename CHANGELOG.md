@@ -5,6 +5,7 @@
 
 New:
 - Wasm JS added as a target for common Redwood modules. There is no Treehouse support today.
+- Add `onScroll` property to `Row` and `Column`. This property is invoked when `overflow = Overflow.Scroll` and the container is scrolled.
 
 Changed:
 - The `TreehouseApp` type is now an abstract class. This should make it easier to write unit tests for code that integrates Treehouse.

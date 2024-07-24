@@ -33,6 +33,7 @@ import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.Transparent
 import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
@@ -111,6 +112,7 @@ class ComposeUiLazyListTest(
     override val value: @Composable () -> Unit get() = delegate.value
 
     private var childCount = 0
+    private var onScroll: ((Double) -> Unit)? = null
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiLazyList().apply {
@@ -122,6 +124,17 @@ class ComposeUiLazyListTest(
     override val children: ComposeWidgetChildren = delegate.items
 
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+    }
+
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
+      this.onScroll = onScroll
+    }
+
+    override fun scroll(offset: Double) {
+      onScroll?.invoke(offset)
+    }
+
+    override fun overflow(overflow: Overflow) {
     }
 
     override fun add(widget: Widget<@Composable () -> Unit>) {

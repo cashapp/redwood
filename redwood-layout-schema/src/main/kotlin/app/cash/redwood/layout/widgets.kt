@@ -81,6 +81,16 @@ public data class Row(
   val verticalAlignment: CrossAxisAlignment,
 
   /**
+   * Invoked when the container scrolls. The function's `offset` is represented in units in the
+   * host's coordinate system.
+   *
+   * @see Overflow.Scroll
+   */
+  @Property(7)
+  @Default("null")
+  val onScroll: ((offset: Double) -> Unit)?,
+
+  /**
    * A slot to add widgets in.
    */
   @Children(1) val children: RowScope.() -> Unit,
@@ -141,6 +151,16 @@ public data class Column(
   @Property(6)
   @Default("MainAxisAlignment.Start")
   val verticalAlignment: MainAxisAlignment,
+
+  /**
+   * Invoked when the container scrolls. The function's `offset` is represented in units in the
+   * host's coordinate system.
+   *
+   * @see Overflow.Scroll
+   */
+  @Property(7)
+  @Default("null")
+  val onScroll: ((offset: Double) -> Unit)?,
 
   /**
    * A slot to add widgets in.

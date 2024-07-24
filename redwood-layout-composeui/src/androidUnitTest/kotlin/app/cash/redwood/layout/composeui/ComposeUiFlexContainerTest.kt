@@ -30,6 +30,7 @@ import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.runner.RunWith
 
@@ -69,12 +70,24 @@ class ComposeUiFlexContainerTest(
   ) : TestFlexContainer<@Composable () -> Unit>,
     FlexContainer<@Composable () -> Unit> by delegate {
     private var childCount = 0
+
     override val children: ComposeWidgetChildren = delegate.children
+
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiFlexContainer(direction).apply {
         testOnlyModifier = Modifier.background(Color(backgroundColor))
       },
     )
+
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
+      delegate.onScroll(onScroll)
+    }
+
+    override fun scroll(offset: Double) {
+      runBlocking {
+        delegate.scrollState?.scrollTo(offset.toInt())
+      }
+    }
 
     override fun add(widget: Widget<@Composable () -> Unit>) {
       addAt(childCount, widget)

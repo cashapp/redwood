@@ -69,7 +69,18 @@ class ViewFlexContainerTest(
     FlexContainer<View> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
+    private var onScroll: ((Double) -> Unit)? = null
+
     override val children: ViewGroupChildren = delegate.children
+
+    override fun onScroll(onScroll: ((Double) -> Unit)?) {
+      this.onScroll = onScroll
+    }
+
+    override fun scroll(offset: Double) {
+      onScroll?.invoke(offset)
+    }
+
     override fun add(widget: Widget<View>) {
       addAt(childCount, widget)
     }
