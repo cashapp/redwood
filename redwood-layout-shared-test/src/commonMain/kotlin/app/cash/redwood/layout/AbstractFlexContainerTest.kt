@@ -618,7 +618,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
     }
 
-    container.scroll(1000.0)
+    container.scroll(Px(1000.0))
 
     verifySnapshot(container)
 
@@ -638,7 +638,7 @@ interface TestFlexContainer<T : Any> :
   fun margin(margin: Margin)
   fun overflow(overflow: Overflow)
   fun onScroll(onScroll: ((Px) -> Unit)?)
-  fun scroll(offset: Double)
+  fun scroll(offset: Px)
   fun add(widget: Widget<T>)
   fun addAt(index: Int, widget: Widget<T>)
   fun removeAt(index: Int)

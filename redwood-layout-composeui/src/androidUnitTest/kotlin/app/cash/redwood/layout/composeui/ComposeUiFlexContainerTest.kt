@@ -24,6 +24,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
@@ -79,13 +80,13 @@ class ComposeUiFlexContainerTest(
       },
     )
 
-    override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    override fun onScroll(onScroll: ((Px) -> Unit)?) {
       delegate.onScroll(onScroll)
     }
 
-    override fun scroll(offset: Double) {
+    override fun scroll(offset: Px) {
       runBlocking {
-        delegate.scrollState?.scrollTo(offset.toInt())
+        delegate.scrollState?.scrollTo(offset.value.toInt())
       }
     }
 

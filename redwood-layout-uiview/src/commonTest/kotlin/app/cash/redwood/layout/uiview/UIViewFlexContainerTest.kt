@@ -64,8 +64,8 @@ class UIViewFlexContainerTest(
       delegate.onScroll(onScroll)
     }
 
-    override fun scroll(offset: Double) {
-      (delegate.value as UIScrollView).setContentOffset(cValue { y = offset }, false)
+    override fun scroll(offset: Px) {
+      (delegate.value as UIScrollView).setContentOffset(cValue { y = offset.value }, false)
     }
 
     override fun add(widget: Widget<UIView>) {
