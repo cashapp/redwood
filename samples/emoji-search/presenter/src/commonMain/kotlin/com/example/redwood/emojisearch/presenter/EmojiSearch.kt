@@ -186,7 +186,8 @@ fun Item(
     Image(
       url = emojiImage.url,
       modifier = Modifier
-        .margin(Margin(8.dp)),
+        .margin(Margin(8.dp))
+        .size(24.dp, 24.dp),
       onClick = onClick,
     )
     Text(text = emojiImage.label)
