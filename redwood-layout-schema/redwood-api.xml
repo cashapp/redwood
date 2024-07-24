@@ -6,7 +6,7 @@
     <property tag="4" name="overflow" type="app.cash.redwood.layout.api.Overflow"/>
     <property tag="5" name="horizontalAlignment" type="app.cash.redwood.layout.api.MainAxisAlignment"/>
     <property tag="6" name="verticalAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
-    <event tag="7" name="onScroll" params="kotlin.Double" nullable="true"/>
+    <event tag="7" name="onScroll" params="app.cash.redwood.ui.Px" nullable="true"/>
     <children tag="1" name="children"/>
   </widget>
   <widget tag="2" type="app.cash.redwood.layout.Column">
@@ -16,7 +16,7 @@
     <property tag="4" name="overflow" type="app.cash.redwood.layout.api.Overflow"/>
     <property tag="5" name="horizontalAlignment" type="app.cash.redwood.layout.api.CrossAxisAlignment"/>
     <property tag="6" name="verticalAlignment" type="app.cash.redwood.layout.api.MainAxisAlignment"/>
-    <event tag="7" name="onScroll" params="kotlin.Double" nullable="true"/>
+    <event tag="7" name="onScroll" params="app.cash.redwood.ui.Px" nullable="true"/>
     <children tag="1" name="children"/>
   </widget>
   <widget tag="3" type="app.cash.redwood.layout.Spacer">
