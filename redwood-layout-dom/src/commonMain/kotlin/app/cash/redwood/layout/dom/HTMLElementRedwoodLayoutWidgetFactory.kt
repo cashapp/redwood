@@ -35,6 +35,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.HTMLElementChildren
 import app.cash.redwood.widget.Widget
 import org.w3c.dom.Document
@@ -105,7 +106,7 @@ private class HTMLFlexContainer(
     value.overflowSetter(overflow.toCss())
   }
 
-  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+  override fun onScroll(onScroll: ((Px) -> Unit)?) {
     scrollEventListener?.let { eventListener ->
       value.removeEventListener("scroll", eventListener)
       scrollEventListener = null
@@ -119,7 +120,7 @@ private class HTMLFlexContainer(
             "column" -> value.scrollLeft
             else -> throw AssertionError()
           }
-          onScroll(offset)
+          onScroll(Px(offset))
         }
       }.also { scrollEventListener = it }
       value.addEventListener("scroll", eventListener)

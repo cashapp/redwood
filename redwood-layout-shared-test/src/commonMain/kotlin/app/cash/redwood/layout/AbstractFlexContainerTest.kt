@@ -23,6 +23,7 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Px
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -636,7 +637,7 @@ interface TestFlexContainer<T : Any> :
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
   fun overflow(overflow: Overflow)
-  fun onScroll(onScroll: ((Double) -> Unit)?)
+  fun onScroll(onScroll: ((Px) -> Unit)?)
   fun scroll(offset: Double)
   fun add(widget: Widget<T>)
   fun addAt(index: Int, widget: Widget<T>)

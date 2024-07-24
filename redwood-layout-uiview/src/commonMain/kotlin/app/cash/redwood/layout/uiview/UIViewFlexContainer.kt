@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.FlexDirection
@@ -74,7 +75,7 @@ internal class UIViewFlexContainer(
     yogaView.scrollEnabled = overflow == Overflow.Scroll
   }
 
-  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+  override fun onScroll(onScroll: ((Px) -> Unit)?) {
     yogaView.onScroll = onScroll
   }
 

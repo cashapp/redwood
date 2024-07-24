@@ -7,6 +7,7 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.ui.Px
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
@@ -31,7 +32,7 @@ internal class YogaUIView(
   var width = Constraint.Wrap
   var height = Constraint.Wrap
 
-  var onScroll: ((Double) -> Unit)? = null
+  var onScroll: ((Px) -> Unit)? = null
 
   init {
     // TODO: Support scroll indicators.
@@ -148,7 +149,7 @@ internal class YogaUIView(
       val offset = scrollView.contentOffset.useContents {
         if (isColumn()) y else x
       }
-      onScroll(offset)
+      onScroll(Px(offset))
     }
   }
 
