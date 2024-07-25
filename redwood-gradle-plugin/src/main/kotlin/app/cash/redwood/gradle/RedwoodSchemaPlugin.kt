@@ -32,7 +32,7 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       RedwoodSchemaExtension::class.java,
     ).apply {
       apiTracking.convention(true)
-      useFir.convention(false)
+      useFir.convention(true)
     }
 
     var applied = false
