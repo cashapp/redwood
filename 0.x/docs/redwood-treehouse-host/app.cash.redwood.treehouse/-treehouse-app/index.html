@@ -41,7 +41,7 @@
 <a class="library-name--link" href="../../../index.html">
                             redwood
                     </a>            </div>
-            <div class="library-version">0.12.0
+            <div class="library-version">0.13.0
             </div>
         </div>
         <div class="filter-section" id="filter-section">
@@ -62,11 +62,30 @@
   <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse-host</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><span class="current">TreehouseApp</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Treehouse</span><wbr><span><span>App</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseApp"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="index.html">TreehouseApp</a><span class="token operator">&lt;</span><a href="index.html">A</a><span class="token operator"> : </span><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-app-service/index.html">AppService</a><span class="token operator">&gt;</span></div><p class="paragraph">This class binds downloaded code to on-screen views.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseApp"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">TreehouseApp</a><span class="token operator">&lt;</span><a href="index.html">A</a><span class="token operator"> : </span><a href="../../../redwood-treehouse/app.cash.redwood.treehouse/-app-service/index.html">AppService</a><span class="token operator">&gt;</span> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><p class="paragraph">Manages the <span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span> runtimes that run the code to power on-screen views.</p><p class="paragraph">This takes care to launch a <span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span> when it is requested and available.</p><ul><li><p class="paragraph"><strong>Requested:</strong> The runtime is started either explicitly via a call to <a href="start.html">start</a>, or implicitly     by calling binding creating content to a UI.</p></li><li><p class="paragraph"><strong>Available:</strong> The runtime is available when its code is ready, either via a download,     embedded in the host application, or through the cache from an earlier execution.</p></li></ul><p class="paragraph">If new code is available during execution (typically during development), this will perform a hot reload: gracefully stopping the current Zipline and starting its successor. It also implements restarting the Zipline after an uncaught exception (in both development and production).</p><p class="paragraph">It is rarely necessary to call the <a href="start.html">start</a>, <a href="stop.html">stop</a>, and <a href="restart.html">restart</a> methods directly. Calling <a href="create-content.html">createContent</a> will trigger a start automatically. Use <a href="close.html">close</a> to permanently stop the Zipline.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="16155385%2FConstructors%2F723931153" anchor-label="TreehouseApp" id="16155385%2FConstructors%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-treehouse-app.html"><span>Treehouse</span><wbr><span><span>App</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="16155385%2FConstructors%2F723931153"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div data-togglable="TYPE">
         <h2 class="">Types</h2>
         <div class="table"><a data-name="1194536107%2FClasslikes%2F723931153" anchor-label="Factory" id="1194536107%2FClasslikes%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
@@ -79,7 +98,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseAppFactory"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-factory/index.html">Factory</a> : <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span></div><div class="brief "><p class="paragraph">This manages a cache that should be shared by all launched applications.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"TreehouseAppFactory"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-factory/index.html">Factory</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Creates new instances of <a href="index.html">TreehouseApp</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -113,7 +132,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="dispatchers.html">dispatchers</a><span class="token operator">: </span><a href="../-treehouse-dispatchers/index.html">TreehouseDispatchers</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="dispatchers.html">dispatchers</a><span class="token operator">: </span><a href="../-treehouse-dispatchers/index.html">TreehouseDispatchers</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -128,7 +147,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="spec.html">spec</a><span class="token operator">: </span><a href="-spec/index.html">TreehouseApp.Spec</a><span class="token operator">&lt;</span><a href="index.html">A</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="spec.html">spec</a><span class="token operator">: </span><a href="-spec/index.html">TreehouseApp.Spec</a><span class="token operator">&lt;</span><a href="index.html">A</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -143,7 +162,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="zipline.html">zipline</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span><span class="token operator">?</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The returned value will be invalid when new code is loaded.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="zipline.html">zipline</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span><span class="token operator">?</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns the current zipline attached to this host, or null if Zipline hasn't loaded yet. The returned value will be invalid when new code is loaded.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -162,7 +181,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Permanently stop the app and release any resources necessary to start it again.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="close.html"><span class="token function">close</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Permanently stop the app and release any resources necessary to start it again.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -177,7 +196,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="create-content.html"><span class="token function">createContent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">source<span class="token operator">: </span><a href="../-treehouse-content-source/index.html">TreehouseContentSource</a><span class="token operator">&lt;</span><a href="index.html">A</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">codeListener<span class="token operator">: </span><a href="../-code-listener/index.html">CodeListener</a><span class="token operator"> = </span>CodeListener()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-content/index.html">Content</a></div><div class="brief "><p class="paragraph">Create content for <a href="create-content.html">source</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="create-content.html"><span class="token function">createContent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">source<span class="token operator">: </span><a href="../-treehouse-content-source/index.html">TreehouseContentSource</a><span class="token operator">&lt;</span><a href="index.html">A</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">codeListener<span class="token operator">: </span><a href="../-code-listener/index.html">CodeListener</a><span class="token operator"> = </span>CodeListener()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-content/index.html">Content</a></div><div class="brief "><p class="paragraph">Create content for <a href="create-content.html">source</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -192,7 +211,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="restart.html"><span class="token function">restart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stop the currently-running application (if any) and start it again.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="restart.html"><span class="token function">restart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stop the currently-running application (if any) and start it again.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -207,7 +226,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="start.html"><span class="token function">start</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Initiate the initial code download and load, and start driving the views that are rendered by this app.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="start.html"><span class="token function">start</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Initiate the initial code download and load, and start driving the views that are rendered by this app.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -222,7 +241,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="stop.html"><span class="token function">stop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stop any currently-running code and stop receiving new code.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="stop.html"><span class="token function">stop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stop any currently-running code and stop receiving new code.</p></div></div></div>
                 </div>
               </div>
             </div>
