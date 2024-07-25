@@ -1,12 +1,26 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.13.0] - 2024-07-25
+[0.13.0]: https://github.com/cashapp/redwood/releases/tag/0.13.0
 
 New:
 - Wasm JS added as a target for common Redwood modules. There is no Treehouse support today.
 - Add `onScroll` property to `Row` and `Column`. This property is invoked when `overflow = Overflow.Scroll` and the container is scrolled.
 - Add `Px` class to represent a raw pixel value in the host's coordinate system.
+- New source-based schema parser can be enabled with `redwood { useFir = true }` in your schema module. Please report and failures to the issue tracker. This parser will become the default in 0.14.0.
 
 Changed:
 - The `TreehouseApp` type is now an abstract class. This should make it easier to write unit tests for code that integrates Treehouse.
@@ -21,12 +35,10 @@ Fixed:
 
 Breaking:
 - The `TreehouseApp.Factory.dispatchers` property is removed, and callers should migrate to `TreehouseApp.dispatchers`. With this update each `TreehouseApp` has its own private thread so a shared `dispatchers` property no longer fits our implementation.
+  -`TreehouseApp.Spec.bindServices()` now accepts a `TreehouseApp` parameter.
 
 Upgraded:
 - Zipline 1.16.0
-
-Breaking:
-  -`TreehouseApp.Spec.bindServices()` now accepts a `TreehouseApp` parameter.
 
 
 ## [0.12.0] - 2024-06-18
