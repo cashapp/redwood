@@ -69,7 +69,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 private const val REDWOOD_GROUP_ID = "app.cash.redwood"
 
 // HEY! If you change the major version update release.yaml doc folder.
-private const val REDWOOD_VERSION = "0.13.0"
+private const val REDWOOD_VERSION = "0.14.0-SNAPSHOT"
 
 private val isCiEnvironment = System.getenv("CI") == "true"
 
