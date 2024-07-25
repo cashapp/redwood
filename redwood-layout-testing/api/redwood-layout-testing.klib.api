@@ -34,7 +34,7 @@ final class app.cash.redwood.layout.testing/BoxValue : app.cash.redwood.testing/
 }
 
 final class app.cash.redwood.layout.testing/ColumnValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.layout.testing/ColumnValue|null[0]
-    constructor <init>(app.cash.redwood/Modifier = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.layout.api/Overflow = ..., app.cash.redwood.layout.api/CrossAxisAlignment = ..., app.cash.redwood.layout.api/MainAxisAlignment = ..., kotlin/Function1<kotlin/Double, kotlin/Unit>? = ..., kotlin.collections/List<app.cash.redwood.testing/WidgetValue> = ...) // app.cash.redwood.layout.testing/ColumnValue.<init>|<init>(app.cash.redwood.Modifier;app.cash.redwood.layout.api.Constraint;app.cash.redwood.layout.api.Constraint;app.cash.redwood.ui.Margin;app.cash.redwood.layout.api.Overflow;app.cash.redwood.layout.api.CrossAxisAlignment;app.cash.redwood.layout.api.MainAxisAlignment;kotlin.Function1<kotlin.Double,kotlin.Unit>?;kotlin.collections.List<app.cash.redwood.testing.WidgetValue>){}[0]
+    constructor <init>(app.cash.redwood/Modifier = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.layout.api/Overflow = ..., app.cash.redwood.layout.api/CrossAxisAlignment = ..., app.cash.redwood.layout.api/MainAxisAlignment = ..., kotlin/Function1<app.cash.redwood.ui/Px, kotlin/Unit>? = ..., kotlin.collections/List<app.cash.redwood.testing/WidgetValue> = ...) // app.cash.redwood.layout.testing/ColumnValue.<init>|<init>(app.cash.redwood.Modifier;app.cash.redwood.layout.api.Constraint;app.cash.redwood.layout.api.Constraint;app.cash.redwood.ui.Margin;app.cash.redwood.layout.api.Overflow;app.cash.redwood.layout.api.CrossAxisAlignment;app.cash.redwood.layout.api.MainAxisAlignment;kotlin.Function1<app.cash.redwood.ui.Px,kotlin.Unit>?;kotlin.collections.List<app.cash.redwood.testing.WidgetValue>){}[0]
 
     final val children // app.cash.redwood.layout.testing/ColumnValue.children|{}children[0]
         final fun <get-children>(): kotlin.collections/List<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.layout.testing/ColumnValue.children.<get-children>|<get-children>(){}[0]
@@ -49,7 +49,7 @@ final class app.cash.redwood.layout.testing/ColumnValue : app.cash.redwood.testi
     final val modifier // app.cash.redwood.layout.testing/ColumnValue.modifier|{}modifier[0]
         final fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.layout.testing/ColumnValue.modifier.<get-modifier>|<get-modifier>(){}[0]
     final val onScroll // app.cash.redwood.layout.testing/ColumnValue.onScroll|{}onScroll[0]
-        final fun <get-onScroll>(): kotlin/Function1<kotlin/Double, kotlin/Unit>? // app.cash.redwood.layout.testing/ColumnValue.onScroll.<get-onScroll>|<get-onScroll>(){}[0]
+        final fun <get-onScroll>(): kotlin/Function1<app.cash.redwood.ui/Px, kotlin/Unit>? // app.cash.redwood.layout.testing/ColumnValue.onScroll.<get-onScroll>|<get-onScroll>(){}[0]
     final val overflow // app.cash.redwood.layout.testing/ColumnValue.overflow|{}overflow[0]
         final fun <get-overflow>(): app.cash.redwood.layout.api/Overflow // app.cash.redwood.layout.testing/ColumnValue.overflow.<get-overflow>|<get-overflow>(){}[0]
     final val verticalAlignment // app.cash.redwood.layout.testing/ColumnValue.verticalAlignment|{}verticalAlignment[0]
@@ -74,7 +74,7 @@ final class app.cash.redwood.layout.testing/RedwoodLayoutTestingWidgetFactory : 
 }
 
 final class app.cash.redwood.layout.testing/RowValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.layout.testing/RowValue|null[0]
-    constructor <init>(app.cash.redwood/Modifier = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.layout.api/Overflow = ..., app.cash.redwood.layout.api/MainAxisAlignment = ..., app.cash.redwood.layout.api/CrossAxisAlignment = ..., kotlin/Function1<kotlin/Double, kotlin/Unit>? = ..., kotlin.collections/List<app.cash.redwood.testing/WidgetValue> = ...) // app.cash.redwood.layout.testing/RowValue.<init>|<init>(app.cash.redwood.Modifier;app.cash.redwood.layout.api.Constraint;app.cash.redwood.layout.api.Constraint;app.cash.redwood.ui.Margin;app.cash.redwood.layout.api.Overflow;app.cash.redwood.layout.api.MainAxisAlignment;app.cash.redwood.layout.api.CrossAxisAlignment;kotlin.Function1<kotlin.Double,kotlin.Unit>?;kotlin.collections.List<app.cash.redwood.testing.WidgetValue>){}[0]
+    constructor <init>(app.cash.redwood/Modifier = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.layout.api/Constraint = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.layout.api/Overflow = ..., app.cash.redwood.layout.api/MainAxisAlignment = ..., app.cash.redwood.layout.api/CrossAxisAlignment = ..., kotlin/Function1<app.cash.redwood.ui/Px, kotlin/Unit>? = ..., kotlin.collections/List<app.cash.redwood.testing/WidgetValue> = ...) // app.cash.redwood.layout.testing/RowValue.<init>|<init>(app.cash.redwood.Modifier;app.cash.redwood.layout.api.Constraint;app.cash.redwood.layout.api.Constraint;app.cash.redwood.ui.Margin;app.cash.redwood.layout.api.Overflow;app.cash.redwood.layout.api.MainAxisAlignment;app.cash.redwood.layout.api.CrossAxisAlignment;kotlin.Function1<app.cash.redwood.ui.Px,kotlin.Unit>?;kotlin.collections.List<app.cash.redwood.testing.WidgetValue>){}[0]
 
     final val children // app.cash.redwood.layout.testing/RowValue.children|{}children[0]
         final fun <get-children>(): kotlin.collections/List<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.layout.testing/RowValue.children.<get-children>|<get-children>(){}[0]
@@ -89,7 +89,7 @@ final class app.cash.redwood.layout.testing/RowValue : app.cash.redwood.testing/
     final val modifier // app.cash.redwood.layout.testing/RowValue.modifier|{}modifier[0]
         final fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.layout.testing/RowValue.modifier.<get-modifier>|<get-modifier>(){}[0]
     final val onScroll // app.cash.redwood.layout.testing/RowValue.onScroll|{}onScroll[0]
-        final fun <get-onScroll>(): kotlin/Function1<kotlin/Double, kotlin/Unit>? // app.cash.redwood.layout.testing/RowValue.onScroll.<get-onScroll>|<get-onScroll>(){}[0]
+        final fun <get-onScroll>(): kotlin/Function1<app.cash.redwood.ui/Px, kotlin/Unit>? // app.cash.redwood.layout.testing/RowValue.onScroll.<get-onScroll>|<get-onScroll>(){}[0]
     final val overflow // app.cash.redwood.layout.testing/RowValue.overflow|{}overflow[0]
         final fun <get-overflow>(): app.cash.redwood.layout.api/Overflow // app.cash.redwood.layout.testing/RowValue.overflow.<get-overflow>|<get-overflow>(){}[0]
     final val verticalAlignment // app.cash.redwood.layout.testing/RowValue.verticalAlignment|{}verticalAlignment[0]

@@ -23,6 +23,7 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Px
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -617,7 +618,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
     }
 
-    container.scroll(1000.0)
+    container.scroll(Px(1000.0))
 
     verifySnapshot(container)
 
@@ -636,8 +637,8 @@ interface TestFlexContainer<T : Any> :
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment)
   fun margin(margin: Margin)
   fun overflow(overflow: Overflow)
-  fun onScroll(onScroll: ((Double) -> Unit)?)
-  fun scroll(offset: Double)
+  fun onScroll(onScroll: ((Px) -> Unit)?)
+  fun scroll(offset: Px)
   fun add(widget: Widget<T>)
   fun addAt(index: Int, widget: Widget<T>)
   fun removeAt(index: Int)

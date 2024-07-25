@@ -19,6 +19,7 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
@@ -59,12 +60,12 @@ class UIViewFlexContainerTest(
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 1.0, alpha = 0.2)
     }
 
-    override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    override fun onScroll(onScroll: ((Px) -> Unit)?) {
       delegate.onScroll(onScroll)
     }
 
-    override fun scroll(offset: Double) {
-      (delegate.value as UIScrollView).setContentOffset(cValue { y = offset }, false)
+    override fun scroll(offset: Px) {
+      (delegate.value as UIScrollView).setContentOffset(cValue { y = offset.value }, false)
     }
 
     override fun add(widget: Widget<UIView>) {

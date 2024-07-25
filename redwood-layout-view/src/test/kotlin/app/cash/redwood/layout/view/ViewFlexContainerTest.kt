@@ -21,6 +21,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
@@ -69,15 +70,15 @@ class ViewFlexContainerTest(
     FlexContainer<View> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
-    private var onScroll: ((Double) -> Unit)? = null
+    private var onScroll: ((Px) -> Unit)? = null
 
     override val children: ViewGroupChildren = delegate.children
 
-    override fun onScroll(onScroll: ((Double) -> Unit)?) {
+    override fun onScroll(onScroll: ((Px) -> Unit)?) {
       this.onScroll = onScroll
     }
 
-    override fun scroll(offset: Double) {
+    override fun scroll(offset: Px) {
       onScroll?.invoke(offset)
     }
 

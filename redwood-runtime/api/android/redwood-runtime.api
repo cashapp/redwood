@@ -182,6 +182,37 @@ public abstract interface class app/cash/redwood/ui/OnBackPressedDispatcher {
 public final class app/cash/redwood/ui/OnBackPressedDispatcher$Companion {
 }
 
+public final class app/cash/redwood/ui/Px {
+	public static final field Companion Lapp/cash/redwood/ui/Px$Companion;
+	public static final synthetic fun box-impl (D)Lapp/cash/redwood/ui/Px;
+	public static fun constructor-impl (D)D
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (DLjava/lang/Object;)Z
+	public static final fun equals-impl0 (DD)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public static fun hashCode-impl (D)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (D)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()D
+}
+
+public synthetic class app/cash/redwood/ui/Px$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field $stable I
+	public static final field INSTANCE Lapp/cash/redwood/ui/Px$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-5CDL8Aw (Lkotlinx/serialization/encoding/Decoder;)D
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-o3_lFyk (Lkotlinx/serialization/encoding/Encoder;D)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class app/cash/redwood/ui/Px$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class app/cash/redwood/ui/Size {
 	public static final field $stable I
 	public static final field Companion Lapp/cash/redwood/ui/Size$Companion;

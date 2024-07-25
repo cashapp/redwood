@@ -31,6 +31,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.yoga.Direction
@@ -67,7 +68,7 @@ internal class ViewFlexContainer(
     },
   )
 
-  private var onScroll: ((Double) -> Unit)? = null
+  private var onScroll: ((Px) -> Unit)? = null
 
   override var modifier: Modifier = Modifier
 
@@ -100,7 +101,7 @@ internal class ViewFlexContainer(
     }
   }
 
-  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+  override fun onScroll(onScroll: ((Px) -> Unit)?) {
     this.onScroll = onScroll
     hostView.attachOrDetachScrollListeners()
   }
@@ -134,12 +135,12 @@ internal class ViewFlexContainer(
       val child = getChildAt(0)
       if (child is NestedScrollView) {
         val listener = (onScrollListener as OnScrollChangeListenerCompat?)
-          ?: OnScrollChangeListenerCompat { _, _, scrollY, _, _ -> onScroll?.invoke(scrollY.toDouble()) }
+          ?: OnScrollChangeListenerCompat { _, _, scrollY, _, _ -> onScroll?.invoke(Px(scrollY.toDouble())) }
             .also { onScrollListener = it }
         child.setOnScrollChangeListener(listener)
       } else if (SDK_INT >= 23 && child is HorizontalScrollView) {
         val listener = (onScrollListener as OnScrollChangeListener?)
-          ?: OnScrollChangeListener { _, scrollX, _, _, _ -> onScroll?.invoke(scrollX.toDouble()) }
+          ?: OnScrollChangeListener { _, scrollX, _, _, _ -> onScroll?.invoke(Px(scrollX.toDouble())) }
             .also { onScrollListener = it }
         child.setOnScrollChangeListener(listener)
       }

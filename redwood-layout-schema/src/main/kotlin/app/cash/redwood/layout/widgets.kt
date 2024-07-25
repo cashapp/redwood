@@ -25,6 +25,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Px
 
 /**
  * Lays out widgets horizontally in a row.
@@ -88,7 +89,7 @@ public data class Row(
    */
   @Property(7)
   @Default("null")
-  val onScroll: ((offset: Double) -> Unit)?,
+  val onScroll: ((offset: Px) -> Unit)?,
 
   /**
    * A slot to add widgets in.
@@ -160,7 +161,7 @@ public data class Column(
    */
   @Property(7)
   @Default("null")
-  val onScroll: ((offset: Double) -> Unit)?,
+  val onScroll: ((offset: Px) -> Unit)?,
 
   /**
    * A slot to add widgets in.

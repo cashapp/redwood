@@ -48,6 +48,7 @@ import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
@@ -69,7 +70,7 @@ internal class ComposeUiFlexContainer(
   private var height by mutableStateOf(Constraint.Wrap)
   private var overflow by mutableStateOf(Overflow.Clip)
   private var margin by mutableStateOf(Margin.Zero)
-  private var onScroll: ((Double) -> Unit)? by mutableStateOf(null)
+  private var onScroll: ((Px) -> Unit)? by mutableStateOf(null)
   override var density = Density(1.0)
 
   internal var testOnlyModifier: Modifier? = null
@@ -91,7 +92,7 @@ internal class ComposeUiFlexContainer(
     this.overflow = overflow
   }
 
-  override fun onScroll(onScroll: ((Double) -> Unit)?) {
+  override fun onScroll(onScroll: ((Px) -> Unit)?) {
     this.onScroll = onScroll
   }
 
@@ -164,7 +165,7 @@ internal class ComposeUiFlexContainer(
     if (onScroll != null) {
       val offset by remember { derivedStateOf { scrollState.value.toDouble() } }
       LaunchedEffect(offset) {
-        onScroll(offset)
+        onScroll(Px(offset))
       }
     }
   }
