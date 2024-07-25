@@ -17,6 +17,7 @@ package app.cash.redwood.widget
 
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.LayoutDirection
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
@@ -58,6 +59,21 @@ private class RedwoodHTMLElementView(
   private val _uiConfiguration: MutableStateFlow<UiConfiguration>
   override val uiConfiguration: StateFlow<UiConfiguration> get() = _uiConfiguration
 
+  override var windowInsets: Margin
+    get() = uiConfiguration.value.windowInsets
+    set(value) {
+      updateUiConfiguration { old ->
+        UiConfiguration(
+          darkMode = old.darkMode,
+          safeAreaInsets = old.safeAreaInsets,
+          windowInsets = value,
+          viewportSize = old.viewportSize,
+          density = old.density,
+          layoutDirection = old.layoutDirection,
+        )
+      }
+    }
+
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
@@ -67,6 +83,7 @@ private class RedwoodHTMLElementView(
     _uiConfiguration = MutableStateFlow(
       UiConfiguration(
         darkMode = colorSchemeQuery.matches,
+        windowInsets = Margin.Zero,
         viewportSize = Size(width = element.offsetWidth.dp, height = element.offsetHeight.dp),
         layoutDirection = when (element.dir) {
           "ltr" -> LayoutDirection.Ltr
@@ -82,6 +99,7 @@ private class RedwoodHTMLElementView(
         UiConfiguration(
           darkMode = event.unsafeCast<MediaQueryList>().matches,
           safeAreaInsets = old.safeAreaInsets,
+          windowInsets = old.windowInsets,
           viewportSize = old.viewportSize,
           density = old.density,
           layoutDirection = old.layoutDirection,
@@ -114,6 +132,7 @@ private class RedwoodHTMLElementView(
       UiConfiguration(
         darkMode = old.darkMode,
         safeAreaInsets = old.safeAreaInsets,
+        windowInsets = old.windowInsets,
         viewportSize = old.viewportSize,
         density = window.devicePixelRatio,
         layoutDirection = old.layoutDirection,

@@ -53,7 +53,9 @@ public abstract interface class app/cash/redwood/widget/RedwoodView {
 	public abstract fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
 	public abstract fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public abstract fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun getWindowInsets ()Lapp/cash/redwood/ui/Margin;
 	public abstract fun reset ()V
+	public abstract fun setWindowInsets (Lapp/cash/redwood/ui/Margin;)V
 }
 
 public abstract interface class app/cash/redwood/widget/SavedStateRegistry {

@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import kotlin.native.ObjCName
@@ -26,6 +27,12 @@ public interface RedwoodView<W : Any> {
   public val onBackPressedDispatcher: OnBackPressedDispatcher
   public val uiConfiguration: StateFlow<UiConfiguration>
   public val savedStateRegistry: SavedStateRegistry?
+
+  /**
+   * The insets of the viewport that the composition is responsible for consuming. This value is
+   * passed to the composition as [UiConfiguration.windowInsets].
+   */
+  public var windowInsets: Margin
 
   /**
    * This should at minimum clear all [children].

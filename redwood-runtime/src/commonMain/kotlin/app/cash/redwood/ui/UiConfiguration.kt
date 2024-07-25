@@ -22,7 +22,23 @@ import kotlinx.serialization.Serializable
 @Poko
 public class UiConfiguration(
   public val darkMode: Boolean = false,
+
+  /**
+   * The insets of the host window, independent of where the Redwood composition is positioned
+   * within it. The Redwood composition is not responsible for consuming these insets.
+   */
   public val safeAreaInsets: Margin = Margin.Zero,
+
+  /**
+   * The insets of the viewport that the composition is responsible for consuming.
+   *
+   * This may be zero if the host view isn't attached to a view hierarchy and therefore doesn't
+   * know its insets.
+   *
+   * See https://developer.android.com/develop/ui/views/layout/edge-to-edge
+   */
+  public val windowInsets: Margin = Margin.Zero,
+
   /**
    * The size of the viewport into which the composition is rendering. This could be as lage as the
    * entire screen or as small as an individual view within a larger native screen.
