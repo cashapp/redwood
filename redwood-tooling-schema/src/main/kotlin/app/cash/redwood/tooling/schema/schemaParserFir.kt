@@ -577,9 +577,10 @@ private fun FirContext.parseModifier(
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
       val parameterType = parameter.resolvedReturnType.toFqType()
+      val property = firClass.declarations.filterIsInstance<FirProperty>().single { it.name == parameter.name }
 
-      val defaultAnnotation = findDefaultAnnotation(parameter.annotations)
-      val deprecation = findDeprecationAnnotation(parameter.annotations)
+      val defaultAnnotation = findDefaultAnnotation(property.annotations)
+      val deprecation = findDeprecationAnnotation(property.annotations)
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
 
