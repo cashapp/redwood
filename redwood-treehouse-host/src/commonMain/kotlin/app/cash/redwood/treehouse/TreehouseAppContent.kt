@@ -504,8 +504,10 @@ private class ViewContentCodeBinding<A : AppService>(
     if (canceled) return
     canceled = true
 
-    viewOrNull?.let { codeEventPublisher.onCodeDetached(it, exception) }
-    viewOrNull?.saveCallback = null
+    viewOrNull?.let { view ->
+      codeEventPublisher.onCodeDetached(view, exception)
+      view.saveCallback = null
+    }
     viewOrNull = null
     hostAdapterOrNull?.close()
     hostAdapterOrNull = null
