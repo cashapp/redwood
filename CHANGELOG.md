@@ -7,7 +7,7 @@ New:
 - Nothing yet!
 
 Changed:
-- Removed Wasm JS targets for common Redwood modules. They are causing CI problems, and we're not ready for Wasm anyway.
+- Nothing yet!
 
 Fixed:
 - Nothing yet!
