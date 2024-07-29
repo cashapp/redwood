@@ -18,11 +18,13 @@ package app.cash.redwood.tooling.schema
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.layout.Row
 import app.cash.redwood.schema.Children
+import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.tooling.schema.Deprecation.Level
 import app.cash.redwood.tooling.schema.FqType.Variance.Out
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
@@ -49,6 +51,7 @@ import com.example.redwood.testapp.TestSchema
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import java.io.File
+import kotlin.DeprecationLevel.ERROR
 import kotlin.DeprecationLevel.HIDDEN
 import kotlin.reflect.KClass
 import kotlinx.serialization.Serializable
@@ -785,6 +788,33 @@ class SchemaParserTest(
     assertThat(modifier.tag).isEqualTo(-4_543_827)
   }
 
+  @Schema([DefaultExpressionWidget::class, DefaultExpressionModifier::class])
+  interface DefaultExpressionSchema
+
+  @Widget(1)
+  data class DefaultExpressionWidget(
+    @Property(1) @Default("5") val a: Int,
+    @Children(1) @Default("{}") val b: () -> Unit,
+  )
+
+  @Modifier(1)
+  data class DefaultExpressionModifier(
+    @Default("5") val a: Int,
+  )
+
+  @Test fun defaultExpressions() {
+    val schema = parser.parse(DefaultExpressionSchema::class).schema
+
+    val widget = schema.widgets.single()
+    val property = widget.traits.filterIsInstance<PropertyTrait>().single()
+    val children = widget.traits.filterIsInstance<ChildrenTrait>().single()
+    assertThat(property.defaultExpression).isEqualTo("5")
+    assertThat(children.defaultExpression).isEqualTo("{}")
+
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.properties.single().defaultExpression).isEqualTo("5")
+  }
+
   @Schema([SomeWidget::class, SomeModifier::class])
   interface SchemaTag
 
@@ -1236,6 +1266,62 @@ class SchemaParserTest(
 
     val noProperty = modifier.properties.single { it.name == "no" }
     assertThat(noProperty.isSerializable).isFalse()
+  }
+
+  @Suppress("DEPRECATION")
+  @Schema([DeprecatedWidget::class, DeprecatedModifier::class])
+  interface DeprecationSchema
+
+  @Widget(1)
+  @Deprecated("w")
+  data class DeprecatedWidget(
+    @Property(1) @Deprecated("a") val warn: Int,
+    @Property(2) @Deprecated("b", level = ERROR) val error: Int,
+    @Children(1) @Deprecated("c") val children: () -> Unit,
+  )
+
+  @Modifier(1)
+  @Deprecated("m")
+  data class DeprecatedModifier(
+    @Deprecated("d") val property: Int,
+  )
+
+  @Test fun deprecation() {
+    val schema = parser.parse(DeprecationSchema::class).schema
+
+    val widget = schema.widgets.single()
+    assertThat(widget.deprecation).isNotNull().all {
+      prop(Deprecation::level).isEqualTo(Level.WARNING)
+      prop(Deprecation::message).isEqualTo("w")
+    }
+
+    val warn = widget.traits.single { it.name == "warn" }
+    assertThat(warn.deprecation).isNotNull().all {
+      prop(Deprecation::level).isEqualTo(Level.WARNING)
+      prop(Deprecation::message).isEqualTo("a")
+    }
+    val error = widget.traits.single { it.name == "error" }
+    assertThat(error.deprecation).isNotNull().all {
+      prop(Deprecation::level).isEqualTo(Level.ERROR)
+      prop(Deprecation::message).isEqualTo("b")
+    }
+    val children = widget.traits.single { it.name == "children" }
+    assertThat(children.deprecation).isNotNull().all {
+      prop(Deprecation::level).isEqualTo(Level.WARNING)
+      prop(Deprecation::message).isEqualTo("c")
+    }
+
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.deprecation).isNotNull().all {
+      prop(Deprecation::level).isEqualTo(Level.WARNING)
+      prop(Deprecation::message).isEqualTo("m")
+    }
+
+    val property = modifier.properties.single()
+    assertThat(property.deprecation).isNotNull().all {
+      prop(Deprecation::level).isEqualTo(Level.WARNING)
+      prop(Deprecation::message).isEqualTo("d")
+    }
   }
 
   @Schema(
