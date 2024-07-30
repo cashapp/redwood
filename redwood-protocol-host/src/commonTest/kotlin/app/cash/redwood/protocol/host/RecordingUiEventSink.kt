@@ -15,13 +15,10 @@
  */
 package app.cash.redwood.protocol.host
 
-import app.cash.redwood.protocol.Event
-import app.cash.redwood.protocol.EventSink
+class RecordingUiEventSink : UiEventSink {
+  val events = mutableListOf<UiEvent>()
 
-class RecordingEventSink : EventSink {
-  val events = mutableListOf<Event>()
-
-  override fun sendEvent(event: Event) {
-    events += event
+  override fun sendEvent(uiEvent: UiEvent) {
+    events += uiEvent
   }
 }
