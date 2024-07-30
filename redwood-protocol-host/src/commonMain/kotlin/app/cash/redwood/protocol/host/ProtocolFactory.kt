@@ -30,7 +30,7 @@ import kotlin.native.ObjCName
  * @see HostProtocolAdapter
  */
 @ObjCName("ProtocolFactory", exact = true)
-public interface ProtocolFactory<W : Any> {
+public sealed interface ProtocolFactory<W : Any> {
   public val widgetSystem: WidgetSystem<W>
 }
 

@@ -7,7 +7,7 @@ New:
 - Source-based schema parser is now the default. Can be disabled in your schema module with `redwood { useFir = false }`.
 
 Changed:
-- Nothing yet!
+- `ProtocolFactory` interface is now sealed as arbitrary subtypes were never supported. Only schema-generated subtypes should be used.
 
 Fixed:
 - Nothing yet!
