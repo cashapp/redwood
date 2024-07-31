@@ -50,7 +50,7 @@ public fun RedwoodContent(
   content: @Composable () -> Unit,
 ) {
   // If the provider or content change, reset any assumption about the rendered size.
-  var viewportSize by remember(widgetSystem, content) { mutableStateOf(Size.Zero) }
+  var viewportSize: Size? by remember(widgetSystem, content) { mutableStateOf(null) }
 
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(

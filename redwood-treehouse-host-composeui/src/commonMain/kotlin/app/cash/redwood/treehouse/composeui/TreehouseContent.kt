@@ -59,7 +59,7 @@ public fun <A : AppService> TreehouseContent(
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
 
-  var viewportSize by remember { mutableStateOf(Size.Zero) }
+  var viewportSize: Size? by remember { mutableStateOf(null) }
   val density = LocalDensity.current
   val uiConfiguration = UiConfiguration(
     darkMode = isSystemInDarkTheme(),

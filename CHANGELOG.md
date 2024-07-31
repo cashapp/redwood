@@ -8,7 +8,7 @@ New:
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
 
 Changed:
-- Nothing yet!
+- Change `UiConfiguration.viewportSize` to be nullable. A null `viewportSize` indicates the viewport's size has not been resolved yet.
 
 Fixed:
 - Nothing yet!
