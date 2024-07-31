@@ -8,6 +8,7 @@ New:
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
 
 Changed:
+- `ProtocolFactory` interface is now sealed as arbitrary subtypes were never supported. Only schema-generated subtypes should be used.
 - Change `UiConfiguration.viewportSize` to be nullable. A null `viewportSize` indicates the viewport's size has not been resolved yet.
 
 Fixed:
