@@ -25,7 +25,7 @@ abstract interface app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.
 }
 
 final class app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy|null[0]
-    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Boolean = ...) // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 
     final var firstIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.firstIndex|{}firstIndex[0]
         final fun <get-firstIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.firstIndex.<get-firstIndex>|<get-firstIndex>(){}[0]

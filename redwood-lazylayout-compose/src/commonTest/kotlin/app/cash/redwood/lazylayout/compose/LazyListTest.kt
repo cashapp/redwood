@@ -116,9 +116,7 @@ class LazyListTest {
     TestSchemaTester {
       var index5ComposeCount = 0
       setContent {
-        val lazyListState = rememberLazyListState(
-          ScrollOptimizedLoadingStrategy(preloadItems = false),
-        )
+        val lazyListState = rememberLazyListState(DirectLoadingStrategy())
         LazyColumn(
           state = lazyListState,
           placeholder = { Text("Placeholder") },
@@ -149,21 +147,12 @@ class LazyListTest {
       awaitSnapshot()
       assertThat(index5ComposeCount).isEqualTo(1)
 
-      // Even when it's scrolled off-screen.
+      // It isn't recomposed when it's out of the loaded range.
       lazyList.onViewportChanged(6, 10)
       awaitSnapshot()
       assertThat(index5ComposeCount).isEqualTo(1)
 
-      // The item at index 5 remains composed because (6, 10) is contiguous with (4, 8).
-      lazyList.onViewportChanged(4, 8)
-      awaitSnapshot()
-      assertThat(index5ComposeCount).isEqualTo(1)
-
-      // Scrolling to a non-contiguous range causes a recomposition.
-      lazyList.onViewportChanged(9, 13)
-      awaitSnapshot()
-      assertThat(index5ComposeCount).isEqualTo(1)
-
+      // When it's scrolled back into range, it's recomposed.
       lazyList.onViewportChanged(4, 8)
       awaitSnapshot()
       assertThat(index5ComposeCount).isEqualTo(2)

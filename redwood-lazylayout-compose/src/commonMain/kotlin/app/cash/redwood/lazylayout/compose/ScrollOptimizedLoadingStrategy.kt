@@ -42,7 +42,6 @@ public class ScrollOptimizedLoadingStrategy(
   private val scrollInProgressPreloadItemCount: Int = SCROLL_IN_PROGRESS_PRELOAD_ITEM_COUNT,
   private val primaryPreloadItemCount: Int = PRIMARY_PRELOAD_ITEM_COUNT,
   private val secondaryPreloadItemCount: Int = SECONDARY_PRELOAD_ITEM_COUNT,
-  private val preloadItems: Boolean = true,
 ) : LoadingStrategy {
   /**
    * Update this to trigger a programmatic scroll. This may be updated multiple times, including
@@ -92,11 +91,6 @@ public class ScrollOptimizedLoadingStrategy(
 
     // Expand the range depending on scroll direction.
     when {
-      // Ignore preloads.
-      !preloadItems -> {
-        // No-op
-      }
-
       isScrollingDown -> {
         begin -= scrollInProgressPreloadItemCount
         end += primaryPreloadItemCount
