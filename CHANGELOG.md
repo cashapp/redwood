@@ -5,6 +5,7 @@
 
 New:
 - Source-based schema parser is now the default. Can be disabled in your schema module with `redwood { useFir = false }`.
+- Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
 
 Changed:
 - Nothing yet!
