@@ -116,7 +116,7 @@ class LazyListTest {
     TestSchemaTester {
       var index5ComposeCount = 0
       setContent {
-        val lazyListState = rememberLazyListState(DirectLoadingStrategy())
+        val lazyListState = rememberLazyListState(TestLoadingStrategy())
         LazyColumn(
           state = lazyListState,
           placeholder = { Text("Placeholder") },
