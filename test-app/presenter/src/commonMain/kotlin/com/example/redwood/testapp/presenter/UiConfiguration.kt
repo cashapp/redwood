@@ -40,8 +40,8 @@ fun UiConfigurationValues(modifier: Modifier = Modifier) {
 
     val viewportSize = uiConfiguration.viewportSize
     Text("Viewport size:")
-    Text("- width: ${viewportSize.width}")
-    Text("- height: ${viewportSize.height}")
+    Text("- width: ${viewportSize?.width}")
+    Text("- height: ${viewportSize?.height}")
 
     Text("Density: ${uiConfiguration.density}")
   }
