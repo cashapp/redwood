@@ -12,11 +12,6 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.protocol.host/GeneratedProt
     abstract fun widgetChildren(app.cash.redwood.protocol/WidgetTag): kotlin.collections/List<app.cash.redwood.protocol/ChildrenTag> // app.cash.redwood.protocol.host/GeneratedProtocolFactory.widgetChildren|widgetChildren(app.cash.redwood.protocol.WidgetTag){}[0]
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolFactory { // app.cash.redwood.protocol.host/ProtocolFactory|null[0]
-    abstract val widgetSystem // app.cash.redwood.protocol.host/ProtocolFactory.widgetSystem|{}widgetSystem[0]
-        abstract fun <get-widgetSystem>(): app.cash.redwood.widget/WidgetSystem<#A> // app.cash.redwood.protocol.host/ProtocolFactory.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
-}
-
 abstract interface app.cash.redwood.protocol.host/ProtocolMismatchHandler { // app.cash.redwood.protocol.host/ProtocolMismatchHandler|null[0]
     abstract fun onUnknownChildren(app.cash.redwood.protocol/WidgetTag, app.cash.redwood.protocol/ChildrenTag) // app.cash.redwood.protocol.host/ProtocolMismatchHandler.onUnknownChildren|onUnknownChildren(app.cash.redwood.protocol.WidgetTag;app.cash.redwood.protocol.ChildrenTag){}[0]
     abstract fun onUnknownModifier(app.cash.redwood.protocol/ModifierTag) // app.cash.redwood.protocol.host/ProtocolMismatchHandler.onUnknownModifier|onUnknownModifier(app.cash.redwood.protocol.ModifierTag){}[0]
@@ -27,6 +22,11 @@ abstract interface app.cash.redwood.protocol.host/ProtocolMismatchHandler { // a
         final val Throwing // app.cash.redwood.protocol.host/ProtocolMismatchHandler.Companion.Throwing|{}Throwing[0]
             final fun <get-Throwing>(): app.cash.redwood.protocol.host/ProtocolMismatchHandler // app.cash.redwood.protocol.host/ProtocolMismatchHandler.Companion.Throwing.<get-Throwing>|<get-Throwing>(){}[0]
     }
+}
+
+sealed interface <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolFactory { // app.cash.redwood.protocol.host/ProtocolFactory|null[0]
+    abstract val widgetSystem // app.cash.redwood.protocol.host/ProtocolFactory.widgetSystem|{}widgetSystem[0]
+        abstract fun <get-widgetSystem>(): app.cash.redwood.widget/WidgetSystem<#A> // app.cash.redwood.protocol.host/ProtocolFactory.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
 }
 
 abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { // app.cash.redwood.protocol.host/ProtocolNode|null[0]

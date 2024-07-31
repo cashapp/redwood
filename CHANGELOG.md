@@ -8,7 +8,7 @@ New:
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
 
 Changed:
-- Nothing yet!
+- `ProtocolFactory` interface is now sealed as arbitrary subtypes were never supported. Only schema-generated subtypes should be used.
 
 Fixed:
 - Nothing yet!
