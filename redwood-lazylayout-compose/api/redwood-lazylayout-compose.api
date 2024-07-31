@@ -24,28 +24,41 @@ public abstract interface class app/cash/redwood/lazylayout/compose/LazyListScop
 public class app/cash/redwood/lazylayout/compose/LazyListState {
 	public static final field $stable I
 	public fun <init> ()V
-	public final fun getDefaultPreloadItemCount ()I
-	public final fun getFirstIndex ()I
-	public final fun getLastIndex ()I
-	public final fun getPrimaryPreloadItemCount ()I
+	public fun <init> (Lapp/cash/redwood/lazylayout/compose/LoadingStrategy;)V
+	public synthetic fun <init> (Lapp/cash/redwood/lazylayout/compose/LoadingStrategy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getProgrammaticScrollIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
-	public final fun getScrollInProgressPreloadItemCount ()I
-	public final fun getSecondaryPreloadItemCount ()I
+	public final fun getStrategy ()Lapp/cash/redwood/lazylayout/compose/LoadingStrategy;
 	public final fun loadRange (I)Lkotlin/ranges/IntRange;
 	public final fun onUserScroll (II)V
 	public final fun programmaticScroll (IZZ)V
 	public static synthetic fun programmaticScroll$default (Lapp/cash/redwood/lazylayout/compose/LazyListState;IZZILjava/lang/Object;)V
-	public final fun setDefaultPreloadItemCount (I)V
-	public final fun setPrimaryPreloadItemCount (I)V
-	public final fun setScrollInProgressPreloadItemCount (I)V
-	public final fun setSecondaryPreloadItemCount (I)V
 }
 
 public final class app/cash/redwood/lazylayout/compose/LazyListStateKt {
-	public static final fun rememberLazyListState (Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/lazylayout/compose/LazyListState;
+	public static final fun rememberLazyListState (Lapp/cash/redwood/lazylayout/compose/LoadingStrategy;Landroidx/compose/runtime/Composer;II)Lapp/cash/redwood/lazylayout/compose/LazyListState;
+}
+
+public abstract interface class app/cash/redwood/lazylayout/compose/LoadingStrategy {
+	public abstract fun getFirstIndex ()I
+	public abstract fun loadRange (I)Lkotlin/ranges/IntRange;
+	public abstract fun onUserScroll (II)V
+	public abstract fun scrollTo (I)V
 }
 
 public final class app/cash/redwood/lazylayout/compose/RefreshableLazyListKt {
 	public static final fun RefreshableLazyList-usczW4I (ZLkotlin/jvm/functions/Function2;IIZLkotlin/jvm/functions/Function0;IILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;ILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+}
+
+public final class app/cash/redwood/lazylayout/compose/ScrollOptimizedLoadingStrategy : app/cash/redwood/lazylayout/compose/LoadingStrategy {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (IIIIZ)V
+	public synthetic fun <init> (IIIIZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getFirstIndex ()I
+	public final fun getLastIndex ()I
+	public final fun getProgrammaticScrollIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
+	public fun loadRange (I)Lkotlin/ranges/IntRange;
+	public fun onUserScroll (II)V
+	public fun scrollTo (I)V
 }
 

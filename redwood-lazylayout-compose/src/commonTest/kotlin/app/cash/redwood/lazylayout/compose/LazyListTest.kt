@@ -116,9 +116,9 @@ class LazyListTest {
     TestSchemaTester {
       var index5ComposeCount = 0
       setContent {
-        val lazyListState = rememberLazyListState().apply {
-          preloadItems = false
-        }
+        val lazyListState = rememberLazyListState(
+          ScrollOptimizedLoadingStrategy(preloadItems = false),
+        )
         LazyColumn(
           state = lazyListState,
           placeholder = { Text("Placeholder") },
