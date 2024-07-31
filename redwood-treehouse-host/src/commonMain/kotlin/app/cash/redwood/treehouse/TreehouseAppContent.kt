@@ -16,10 +16,11 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.Change
-import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.ProtocolFactory
+import app.cash.redwood.protocol.host.UiEvent
+import app.cash.redwood.protocol.host.UiEventSink
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.serialization.json.Json
 
 private class State<A : AppService>(
   val viewState: ViewState,
@@ -333,7 +335,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private var treehouseUiOrNull: ZiplineTreehouseUi? = null
 
   /** Note that this is necessary to break the retain cycle between host and guest. */
-  private val eventBridge = EventBridge(dispatchers.zipline, bindingScope)
+  private val eventBridge = EventBridge(codeSession.json, dispatchers.zipline, bindingScope)
 
   /** Only accessed on [TreehouseDispatchers.ui]. Empty after [initView]. */
   private val changesAwaitingInitView = ArrayDeque<List<Change>>()
@@ -531,19 +533,23 @@ private class ViewContentCodeBinding<A : AppService>(
  * problems when mixing garbage-collected Kotlin objects with reference-counted Swift objects.
  */
 private class EventBridge(
+  private val json: Json,
   // Both properties are only accessed on the UI dispatcher and null after cancel().
   var ziplineDispatcher: CoroutineDispatcher?,
   var bindingScope: CoroutineScope?,
-) : EventSink {
+) : UiEventSink {
   // Only accessed on the Zipline dispatcher and null after cancel().
   var delegate: EventSink? = null
 
   /** Send an event from the UI to Zipline. */
-  override fun sendEvent(event: Event) {
+  override fun sendEvent(uiEvent: UiEvent) {
     // Send UI events on the zipline dispatcher.
     val dispatcher = this.ziplineDispatcher ?: return
     val bindingScope = this.bindingScope ?: return
     bindingScope.launch(dispatcher) {
+      // Perform initial serialization of event arguments into JSON model after the thread hop.
+      val event = uiEvent.toProtocol(json)
+
       delegate?.sendEvent(event)
     }
   }

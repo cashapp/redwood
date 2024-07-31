@@ -18,7 +18,6 @@ package app.cash.redwood.protocol.host
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.WidgetTag
@@ -48,7 +47,7 @@ public abstract class ProtocolNode<W : Any>(
   /** Assigned when the node is added to the pool. */
   internal var shapeHash = 0L
 
-  public abstract fun apply(change: PropertyChange, eventSink: EventSink)
+  public abstract fun apply(change: PropertyChange, eventSink: UiEventSink)
 
   public fun updateModifier(modifier: Modifier) {
     widget.modifier = modifier
