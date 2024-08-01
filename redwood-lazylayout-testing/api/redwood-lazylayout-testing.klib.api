@@ -6,15 +6,15 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-lazylayout-testing>
-final class app.cash.redwood.lazylayout.compose/DirectLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy|null[0]
-    constructor <init>() // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy.<init>|<init>(){}[0]
+final class app.cash.redwood.lazylayout.compose/TestLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/TestLoadingStrategy|null[0]
+    constructor <init>() // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.<init>|<init>(){}[0]
 
-    final val firstIndex // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy.firstIndex|{}firstIndex[0]
-        final fun <get-firstIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy.firstIndex.<get-firstIndex>|<get-firstIndex>(){}[0]
+    final val firstIndex // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstIndex|{}firstIndex[0]
+        final fun <get-firstIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstIndex.<get-firstIndex>|<get-firstIndex>(){}[0]
 
-    final fun loadRange(kotlin/Int): kotlin.ranges/IntRange // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy.loadRange|loadRange(kotlin.Int){}[0]
-    final fun onUserScroll(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy.onUserScroll|onUserScroll(kotlin.Int;kotlin.Int){}[0]
-    final fun scrollTo(kotlin/Int) // app.cash.redwood.lazylayout.compose/DirectLoadingStrategy.scrollTo|scrollTo(kotlin.Int){}[0]
+    final fun loadRange(kotlin/Int): kotlin.ranges/IntRange // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.loadRange|loadRange(kotlin.Int){}[0]
+    final fun onUserScroll(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.onUserScroll|onUserScroll(kotlin.Int;kotlin.Int){}[0]
+    final fun scrollTo(kotlin/Int) // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.scrollTo|scrollTo(kotlin.Int){}[0]
 }
 
 final class app.cash.redwood.lazylayout.testing/LazyListValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.lazylayout.testing/LazyListValue|null[0]
