@@ -51,7 +51,6 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.JVMConfigurationKeys.JDK_HOME
 import org.jetbrains.kotlin.descriptors.ClassKind.OBJECT
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporterFactory
-import org.jetbrains.kotlin.diagnostics.getChildrenArray
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirProperty
@@ -84,7 +83,6 @@ import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.toSymbol
 import org.jetbrains.kotlin.fir.types.type
 import org.jetbrains.kotlin.fir.types.variance
-import org.jetbrains.kotlin.kdoc.lexer.KDocTokens
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.ClassId
@@ -619,10 +617,13 @@ private fun FirContext.parseModifier(
 }
 
 private fun KtSourceElement.findAndParseKDoc(): String? {
-  return treeStructure.getChildrenArray(lighterASTNode)
-    .filterNotNull()
-    .firstOrNull { it.tokenType == KDocTokens.KDOC }
-    ?.let { treeStructure.toString(it).toString() }
+  return null
+  // TODO We should be finding the KDeclaration on which we can get a KDoc instance and,
+  //  hopefully, parsed KDoc rather than raw KDoc.
+  // return treeStructure.getChildrenArray(lighterASTNode)
+  //   .filterNotNull()
+  //   .firstOrNull { it.tokenType == KDocTokens.KDOC }
+  //   ?.let { treeStructure.toString(it).toString() }
 }
 
 private fun FirContext.findSchemaAnnotation(
