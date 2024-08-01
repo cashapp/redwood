@@ -28,16 +28,19 @@ import androidx.compose.runtime.setValue
 public class TestLoadingStrategy : LoadingStrategy {
   private var loadRange: IntRange by mutableStateOf(0..0)
 
-  public override val firstIndex: Int
+  public override val firstVisibleIndex: Int
     get() = loadRange.first
 
-  override fun scrollTo(firstIndex: Int) {
-    require(firstIndex >= 0)
-    loadRange = firstIndex..firstIndex + (loadRange.last - loadRange.first)
+  public override val lastVisibleIndex: Int
+    get() = loadRange.last
+
+  override fun scrollTo(firstVisibleIndex: Int) {
+    require(firstVisibleIndex >= 0)
+    loadRange = firstVisibleIndex..firstVisibleIndex + (loadRange.last - loadRange.first)
   }
 
-  override fun onUserScroll(firstIndex: Int, lastIndex: Int) {
-    loadRange = firstIndex..lastIndex
+  override fun onUserScroll(firstVisibleIndex: Int, lastVisibleIndex: Int) {
+    loadRange = firstVisibleIndex..lastVisibleIndex
   }
 
   override fun loadRange(itemCount: Int): IntRange =

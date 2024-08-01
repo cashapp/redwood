@@ -9,8 +9,10 @@
 final class app.cash.redwood.lazylayout.compose/TestLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/TestLoadingStrategy|null[0]
     constructor <init>() // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.<init>|<init>(){}[0]
 
-    final val firstIndex // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstIndex|{}firstIndex[0]
-        final fun <get-firstIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstIndex.<get-firstIndex>|<get-firstIndex>(){}[0]
+    final val firstVisibleIndex // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstVisibleIndex|{}firstVisibleIndex[0]
+        final fun <get-firstVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstVisibleIndex.<get-firstVisibleIndex>|<get-firstVisibleIndex>(){}[0]
+    final val lastVisibleIndex // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.lastVisibleIndex|{}lastVisibleIndex[0]
+        final fun <get-lastVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.lastVisibleIndex.<get-lastVisibleIndex>|<get-lastVisibleIndex>(){}[0]
 
     final fun loadRange(kotlin/Int): kotlin.ranges/IntRange // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.loadRange|loadRange(kotlin.Int){}[0]
     final fun onUserScroll(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.onUserScroll|onUserScroll(kotlin.Int;kotlin.Int){}[0]

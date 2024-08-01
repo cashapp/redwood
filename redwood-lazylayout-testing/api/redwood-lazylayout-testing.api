@@ -1,6 +1,7 @@
 public final class app/cash/redwood/lazylayout/compose/TestLoadingStrategy : app/cash/redwood/lazylayout/compose/LoadingStrategy {
 	public fun <init> ()V
-	public fun getFirstIndex ()I
+	public fun getFirstVisibleIndex ()I
+	public fun getLastVisibleIndex ()I
 	public fun loadRange (I)Lkotlin/ranges/IntRange;
 	public fun onUserScroll (II)V
 	public fun scrollTo (I)V
