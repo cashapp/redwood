@@ -35,7 +35,9 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isSameInstanceAs
+import assertk.assertions.isTrue
 import java.util.Locale
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -101,19 +103,19 @@ class TreehouseLayoutTest {
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = activity.createConfigurationContext(newConfig) // Needs API 26.
     val layout = TreehouseLayout(newContext, throwingWidgetSystem, activity.onBackPressedDispatcher)
-    assertThat(layout.uiConfiguration.value.darkMode).isEqualTo(true)
+    assertThat(layout.uiConfiguration.value.darkMode).isTrue()
   }
 
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
-      assertThat(awaitItem().darkMode).isEqualTo(false)
+      assertThat(awaitItem().darkMode).isFalse()
 
       val newConfig = Configuration(activity.resources.configuration)
       newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
 
       layout.dispatchConfigurationChanged(newConfig)
-      assertThat(awaitItem().darkMode).isEqualTo(true)
+      assertThat(awaitItem().darkMode).isTrue()
     }
   }
 
