@@ -48,28 +48,19 @@ import assertk.assertions.isTrue
 import assertk.assertions.message
 import assertk.assertions.prop
 import com.example.redwood.testapp.TestSchema
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
-import java.io.File
 import kotlin.DeprecationLevel.ERROR
 import kotlin.DeprecationLevel.HIDDEN
-import kotlin.reflect.KClass
 import kotlinx.serialization.Serializable
-import org.junit.Assume.assumeTrue
 import org.junit.Ignore
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
-class SchemaParserTest(
-  @TestParameter private val parser: SchemaParser,
-) {
+class SchemaParserTest {
   object TestScope
 
   interface NonAnnotationSchema
 
   @Test fun nonAnnotatedSchemaThrows() {
-    assertFailure { parser.parse(NonAnnotationSchema::class) }
+    assertFailure { parseTestSchema(NonAnnotationSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotationSchema missing @Schema annotation",
@@ -87,7 +78,7 @@ class SchemaParserTest(
   )
 
   @Test fun nonAnnotatedWidgetThrows() {
-    assertFailure { parser.parse(NonAnnotatedWidgetSchema::class) }
+    assertFailure { parseTestSchema(NonAnnotatedWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "app.cash.redwood.tooling.schema.SchemaParserTest.NonAnnotatedMember must be annotated with either @Widget or @Modifier",
@@ -108,7 +99,7 @@ class SchemaParserTest(
   )
 
   @Test fun doubleAnnotatedWidgetThrows() {
-    assertFailure { parser.parse(DoubleAnnotatedWidgetSchema::class) }
+    assertFailure { parseTestSchema(DoubleAnnotatedWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "app.cash.redwood.tooling.schema.SchemaParserTest.DoubleAnnotatedWidget must be annotated with either @Widget or @Modifier",
@@ -140,7 +131,7 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateWidgetTagThrows() {
-    assertFailure { parser.parse(DuplicateWidgetTagSchema::class) }
+    assertFailure { parseTestSchema(DuplicateWidgetTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -176,7 +167,7 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateModifierTagThrows() {
-    assertFailure { parser.parse(DuplicateModifierTagSchema::class) }
+    assertFailure { parseTestSchema(DuplicateModifierTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -201,7 +192,7 @@ class SchemaParserTest(
   )
 
   @Test fun repeatedWidgetTypeThrows() {
-    assertFailure { parser.parse(RepeatedWidgetTypeSchema::class) }
+    assertFailure { parseTestSchema(RepeatedWidgetTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -227,7 +218,7 @@ class SchemaParserTest(
   )
 
   @Test fun duplicatePropertyTagThrows() {
-    assertFailure { parser.parse(DuplicatePropertyTagSchema::class) }
+    assertFailure { parseTestSchema(DuplicatePropertyTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -253,7 +244,7 @@ class SchemaParserTest(
   )
 
   @Test fun duplicateChildrenTagThrows() {
-    assertFailure { parser.parse(DuplicateChildrenTagSchema::class) }
+    assertFailure { parseTestSchema(DuplicateChildrenTagSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -279,7 +270,7 @@ class SchemaParserTest(
   )
 
   @Test fun unannotatedPrimaryParameterThrows() {
-    assertFailure { parser.parse(UnannotatedPrimaryParameterSchema::class) }
+    assertFailure { parseTestSchema(UnannotatedPrimaryParameterSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Unannotated parameter \"unannotated\" on app.cash.redwood.tooling.schema.SchemaParserTest.UnannotatedPrimaryParameterWidget",
@@ -299,7 +290,7 @@ class SchemaParserTest(
   )
 
   @Test fun nonDataClassWidgetThrows() {
-    assertFailure { parser.parse(NonDataClassWidgetSchema::class) }
+    assertFailure { parseTestSchema(NonDataClassWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassWidget must be 'data' class or object",
@@ -319,7 +310,7 @@ class SchemaParserTest(
   )
 
   @Test fun nonDataClassModifierThrows() {
-    assertFailure { parser.parse(NonDataClassModifierSchema::class) }
+    assertFailure { parseTestSchema(NonDataClassModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.NonDataClassModifier must be 'data' class or object",
@@ -348,7 +339,7 @@ class SchemaParserTest(
   )
 
   @Test fun propertyTypes() {
-    val schema = parser.parse(PropertyTypesSchema::class).schema
+    val schema = parseTestSchema(PropertyTypesSchema::class).schema
     val widget = schema.widgets.single()
 
     val string = widget.traits.single { it.name == "string" } as ProtocolProperty
@@ -393,7 +384,7 @@ class SchemaParserTest(
   )
 
   @Test fun modifierTypes() {
-    val schema = parser.parse(ModifierTypesSchema::class).schema
+    val schema = parseTestSchema(ModifierTypesSchema::class).schema
     val modifier = schema.modifiers.single()
 
     val string = modifier.properties.single { it.name == "string" }
@@ -429,7 +420,7 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenTypeThrows() {
-    assertFailure { parser.parse(InvalidChildrenTypeSchema::class) }
+    assertFailure { parseTestSchema(InvalidChildrenTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenTypeWidget#children must be of type '() -> Unit'",
@@ -449,7 +440,7 @@ class SchemaParserTest(
   )
 
   @Test fun invalidChildrenLambdaReturnTypeThrows() {
-    assertFailure { parser.parse(InvalidChildrenLambdaReturnTypeSchema::class) }
+    assertFailure { parseTestSchema(InvalidChildrenLambdaReturnTypeSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Children app.cash.redwood.tooling.schema.SchemaParserTest.InvalidChildrenLambdaReturnTypeWidget#children must be of type '() -> Unit'",
@@ -469,7 +460,7 @@ class SchemaParserTest(
   )
 
   @Test fun childrenArgumentsInvalid() {
-    assertFailure { parser.parse(ChildrenArgumentsInvalidSchema::class) }
+    assertFailure { parseTestSchema(ChildrenArgumentsInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
@@ -490,7 +481,7 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenArgumentsInvalid() {
-    assertFailure { parser.parse(ScopedChildrenArgumentsInvalidSchema::class) }
+    assertFailure { parseTestSchema(ScopedChildrenArgumentsInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenArgumentsInvalidWidget#children lambda type must not have any arguments. " +
@@ -511,7 +502,7 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenGenericInvalid() {
-    assertFailure { parser.parse(ScopedChildrenGenericInvalidSchema::class) }
+    assertFailure { parseTestSchema(ScopedChildrenGenericInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .message()
       .isNotNull()
@@ -534,7 +525,7 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenNullableInvalid() {
-    assertFailure { parser.parse(ScopedChildrenNullableInvalidSchema::class) }
+    assertFailure { parseTestSchema(ScopedChildrenNullableInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .message()
       .isNotNull()
@@ -557,7 +548,7 @@ class SchemaParserTest(
   )
 
   @Test fun scopedChildrenTypeParameterInvalid() {
-    assertFailure { parser.parse(ScopedChildrenTypeParameterInvalidSchema::class) }
+    assertFailure { parseTestSchema(ScopedChildrenTypeParameterInvalidSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Children app.cash.redwood.tooling.schema.SchemaParserTest.ScopedChildrenTypeParameterInvalidWidget#children lambda receiver can only be a non-null class. " +
@@ -579,7 +570,7 @@ class SchemaParserTest(
   )
 
   @Test fun eventTypes() {
-    val schema = parser.parse(EventTypeSchema::class).schema
+    val schema = parseTestSchema(EventTypeSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits.single { it.name == "requiredEvent" })
       .isInstanceOf<Event>()
@@ -612,7 +603,7 @@ class SchemaParserTest(
   )
 
   @Test fun eventArguments() {
-    val schema = parser.parse(EventArgumentsSchema::class).schema
+    val schema = parseTestSchema(EventArgumentsSchema::class).schema
     val widget = schema.widgets.single()
 
     val noArguments = widget.traits.single { it.name == "noArguments" } as Event
@@ -638,7 +629,7 @@ class SchemaParserTest(
   object ObjectWidget
 
   @Test fun objectWidget() {
-    val schema = parser.parse(ObjectWidgetSchema::class).schema
+    val schema = parseTestSchema(ObjectWidgetSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
   }
@@ -654,7 +645,7 @@ class SchemaParserTest(
   data object DataObjectWidget
 
   @Test fun dataObjectWidget() {
-    val schema = parser.parse(DataObjectWidgetSchema::class).schema
+    val schema = parseTestSchema(DataObjectWidgetSchema::class).schema
     val widget = schema.widgets.single()
     assertThat(widget.traits).isEmpty()
   }
@@ -670,7 +661,7 @@ class SchemaParserTest(
   object ObjectModifier
 
   @Test fun objectModifier() {
-    val schema = parser.parse(ObjectModifierSchema::class).schema
+    val schema = parseTestSchema(ObjectModifierSchema::class).schema
     val modifier = schema.modifiers.single()
     assertThat(modifier.properties).isEmpty()
   }
@@ -686,7 +677,7 @@ class SchemaParserTest(
   data object DataObjectModifier
 
   @Test fun dataObjectModifier() {
-    val schema = parser.parse(DataObjectModifierSchema::class).schema
+    val schema = parseTestSchema(DataObjectModifierSchema::class).schema
     val modifier = schema.modifiers.single()
     assertThat(modifier.properties).isEmpty()
   }
@@ -702,7 +693,7 @@ class SchemaParserTest(
   object OneMillionWidget
 
   @Test fun widgetTagOneMillionThrows() {
-    assertFailure { parser.parse(OneMillionWidgetSchema::class) }
+    assertFailure { parseTestSchema(OneMillionWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionWidget " +
@@ -721,7 +712,7 @@ class SchemaParserTest(
   object ZeroWidget
 
   @Test fun widgetTagZeroThrows() {
-    assertFailure { parser.parse(ZeroWidgetSchema::class) }
+    assertFailure { parseTestSchema(ZeroWidgetSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Widget app.cash.redwood.tooling.schema.SchemaParserTest.ZeroWidget " +
@@ -742,7 +733,7 @@ class SchemaParserTest(
   )
 
   @Test fun modifierTagOneMillionThrows() {
-    assertFailure { parser.parse(OneMillionModifierSchema::class) }
+    assertFailure { parseTestSchema(OneMillionModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.OneMillionModifier " +
@@ -763,7 +754,7 @@ class SchemaParserTest(
   )
 
   @Test fun modifierTagZeroThrows() {
-    assertFailure { parser.parse(ZeroModifierSchema::class) }
+    assertFailure { parseTestSchema(ZeroModifierSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "@Modifier app.cash.redwood.tooling.schema.SchemaParserTest.ZeroModifier " +
@@ -782,7 +773,7 @@ class SchemaParserTest(
   data object Reuse
 
   @Test fun specialModifiersAllowed() {
-    val schema = parser.parse(SpecialModifierSchema::class).schema
+    val schema = parseTestSchema(SpecialModifierSchema::class).schema
 
     val modifier = schema.modifiers.single()
     assertThat(modifier.tag).isEqualTo(-4_543_827)
@@ -803,7 +794,7 @@ class SchemaParserTest(
   )
 
   @Test fun defaultExpressions() {
-    val schema = parser.parse(DefaultExpressionSchema::class).schema
+    val schema = parseTestSchema(DefaultExpressionSchema::class).schema
 
     val widget = schema.widgets.single()
     val property = widget.traits.filterIsInstance<PropertyTrait>().single()
@@ -830,7 +821,7 @@ class SchemaParserTest(
   )
 
   @Test fun schemaTagDefault() {
-    val schema = parser.parse(SchemaTag::class).schema
+    val schema = parseTestSchema(SchemaTag::class).schema
 
     val widget = schema.widgets.single()
     assertThat(widget.tag).isEqualTo(1)
@@ -849,7 +840,7 @@ class SchemaParserTest(
 
   @Test fun schemaDuplicateReservedWidgetsFails() {
     assertFailure {
-      parser.parse(SchemaDuplicateReservedWidgets::class)
+      parseTestSchema(SchemaDuplicateReservedWidgets::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage("Schema reserved widgets contains duplicates [1, 3]")
   }
@@ -862,7 +853,7 @@ class SchemaParserTest(
 
   @Test fun schemaDuplicateReservedModifiersFails() {
     assertFailure {
-      parser.parse(SchemaDuplicateReservedModifiers::class)
+      parseTestSchema(SchemaDuplicateReservedModifiers::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage("Schema reserved modifiers contains duplicates [1, 3]")
   }
@@ -878,7 +869,7 @@ class SchemaParserTest(
 
   @Test fun schemaReservedWidgetCollision() {
     assertFailure {
-      parser.parse(SchemaReservedWidgetCollision::class)
+      parseTestSchema(SchemaReservedWidgetCollision::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -900,7 +891,7 @@ class SchemaParserTest(
 
   @Test fun schemaReservedModifierCollision() {
     assertFailure {
-      parser.parse(SchemaReservedModifierCollision::class)
+      parseTestSchema(SchemaReservedModifierCollision::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -918,7 +909,7 @@ class SchemaParserTest(
   interface SchemaReservedWidgetDoesNotApplyToModifier
 
   @Test fun schemaReservedWidgetDoesNotApplyToModifier() {
-    val schema = parser.parse(SchemaReservedWidgetDoesNotApplyToModifier::class).schema
+    val schema = parseTestSchema(SchemaReservedWidgetDoesNotApplyToModifier::class).schema
     assertThat(schema.widgets).hasSize(0)
     assertThat(schema.modifiers).hasSize(1)
   }
@@ -930,7 +921,7 @@ class SchemaParserTest(
   interface SchemaReservedModifierDoesNotApplyToWidget
 
   @Test fun schemaReservedModifierDoesNotApplyToWidget() {
-    val schema = parser.parse(SchemaReservedModifierDoesNotApplyToWidget::class).schema
+    val schema = parseTestSchema(SchemaReservedModifierDoesNotApplyToWidget::class).schema
     assertThat(schema.widgets).hasSize(1)
     assertThat(schema.modifiers).hasSize(0)
   }
@@ -947,7 +938,7 @@ class SchemaParserTest(
 
   @Test fun widgetDuplicateReservedProperties() {
     assertFailure {
-      parser.parse(SchemaDuplicateReservedProperties::class)
+      parseTestSchema(SchemaDuplicateReservedProperties::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage("Widget app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateReservedProperties reserved properties contains duplicates [1, 3]")
   }
@@ -964,7 +955,7 @@ class SchemaParserTest(
 
   @Test fun widgetDuplicateReservedChildren() {
     assertFailure {
-      parser.parse(SchemaDuplicateReservedChildren::class)
+      parseTestSchema(SchemaDuplicateReservedChildren::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage("Widget app.cash.redwood.tooling.schema.SchemaParserTest.WidgetDuplicateReservedChildren reserved children contains duplicates [1, 3]")
   }
@@ -984,7 +975,7 @@ class SchemaParserTest(
 
   @Test fun widgetReservedPropertyCollision() {
     assertFailure {
-      parser.parse(SchemaReservedPropertyCollision::class)
+      parseTestSchema(SchemaReservedPropertyCollision::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -1010,7 +1001,7 @@ class SchemaParserTest(
 
   @Test fun widgetReservedChildrenCollision() {
     assertFailure {
-      parser.parse(SchemaReservedChildrenCollision::class)
+      parseTestSchema(SchemaReservedChildrenCollision::class)
     }.isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -1034,7 +1025,7 @@ class SchemaParserTest(
   )
 
   @Test fun widgetReservedPropertyDoesNotApplyToChildren() {
-    val schema = parser.parse(SchemaReservedPropertyDoesNotApplyToChildren::class).schema
+    val schema = parseTestSchema(SchemaReservedPropertyDoesNotApplyToChildren::class).schema
     assertThat(schema.widgets.single().traits).hasSize(1)
   }
 
@@ -1051,7 +1042,7 @@ class SchemaParserTest(
   )
 
   @Test fun widgetReservedChildrenDoesNotApplyToProperty() {
-    val schema = parser.parse(SchemaReservedChildrenDoesNotApplyToProperty::class).schema
+    val schema = parseTestSchema(SchemaReservedChildrenDoesNotApplyToProperty::class).schema
     assertThat(schema.widgets.single().traits).hasSize(1)
   }
 
@@ -1064,7 +1055,7 @@ class SchemaParserTest(
   object SchemaDependencyTagOffsetsMemberTags
 
   @Test fun schemaTagOffsetsMemberTags() {
-    val schema = parser.parse(SchemaDependencyTagOffsetsMemberTags::class)
+    val schema = parseTestSchema(SchemaDependencyTagOffsetsMemberTags::class)
     val dependency = schema.dependencies.values.single()
 
     val widget = dependency.widgets.single { it.type.names.last() == "Row" }
@@ -1095,13 +1086,13 @@ class SchemaParserTest(
   object SchemaDependencyTagTooLow
 
   @Test fun dependencyTagTooHighThrows() {
-    assertFailure { parser.parse(SchemaDependencyTagTooHigh::class) }
+    assertFailure { parseTestSchema(SchemaDependencyTagTooHigh::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "app.cash.redwood.layout.RedwoodLayout tag must be 0 for the root or in range (0, 2000] as a dependency: 2001",
       )
 
-    assertFailure { parser.parse(SchemaDependencyTagTooLow::class) }
+    assertFailure { parseTestSchema(SchemaDependencyTagTooLow::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "app.cash.redwood.layout.RedwoodLayout tag must be 0 for the root or in range (0, 2000] as a dependency: -1",
@@ -1117,7 +1108,7 @@ class SchemaParserTest(
   object SchemaDependencyTagZero
 
   @Test fun dependencyTagZeroThrows() {
-    assertFailure { parser.parse(SchemaDependencyTagZero::class) }
+    assertFailure { parseTestSchema(SchemaDependencyTagZero::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Dependency app.cash.redwood.layout.RedwoodLayout tag must be non-zero",
@@ -1140,7 +1131,7 @@ class SchemaParserTest(
   object SchemaDuplicateDependencyTagB
 
   @Test fun schemaDuplicateDependencyTagThrows() {
-    assertFailure { parser.parse(SchemaDuplicateDependencyTag::class) }
+    assertFailure { parseTestSchema(SchemaDuplicateDependencyTag::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -1164,7 +1155,7 @@ class SchemaParserTest(
   object SchemaDuplicateDependencyTypeOther
 
   @Test fun schemaDuplicateDependencyTypeThrows() {
-    assertFailure { parser.parse(SchemaDuplicateDependencyType::class) }
+    assertFailure { parseTestSchema(SchemaDuplicateDependencyType::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         """
@@ -1184,7 +1175,7 @@ class SchemaParserTest(
   object SchemaDependencyHasDependency
 
   @Test fun schemaDependencyHasDependencyThrows() {
-    assertFailure { parser.parse(SchemaDependencyHasDependency::class) }
+    assertFailure { parseTestSchema(SchemaDependencyHasDependency::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema dependency com.example.redwood.testapp.TestSchema also has its own dependencies. " +
@@ -1192,34 +1183,8 @@ class SchemaParserTest(
       )
   }
 
-  @Schema(
-    members = [
-      Row::class,
-    ],
-    dependencies = [
-      Dependency(1, RedwoodLayout::class),
-    ],
-  )
-  object SchemaWidgetDuplicateInDependency
-
-  @Test fun schemaWidgetDuplicateInDependencyThrows() {
-    assumeTrue(parser != SchemaParser.Fir)
-
-    assertFailure { parser.parse(SchemaWidgetDuplicateInDependency::class) }
-      .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        """
-        |Schema dependency tree contains duplicated widgets
-        |
-        |- app.cash.redwood.layout.Row: app.cash.redwood.tooling.schema.SchemaParserTest.SchemaWidgetDuplicateInDependency, app.cash.redwood.layout.RedwoodLayout
-        """.trimMargin(),
-      )
-  }
-
   @Test fun schemaTypeMustBeInSource() {
-    assumeTrue(parser == SchemaParser.Fir)
-
-    assertFailure { parser.parse(RedwoodLayout::class) }
+    assertFailure { parseTestSchema(RedwoodLayout::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage("Unable to locate schema type app.cash.redwood.layout.RedwoodLayout in compilation unit")
   }
@@ -1232,9 +1197,7 @@ class SchemaParserTest(
   object SchemaMemberNotInCompilationUnit
 
   @Test fun schemaMembersMustBeInSource() {
-    assumeTrue(parser == SchemaParser.Fir)
-
-    assertFailure { parser.parse(SchemaMemberNotInCompilationUnit::class) }
+    assertFailure { parseTestSchema(SchemaMemberNotInCompilationUnit::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage("Unable to locate schema member app.cash.redwood.layout.Row in compilation unit")
   }
@@ -1258,7 +1221,7 @@ class SchemaParserTest(
   )
 
   @Test fun serializableModifierProperties() {
-    val schema = parser.parse(SerializationSchema::class).schema
+    val schema = parseTestSchema(SerializationSchema::class).schema
     val modifier = schema.modifiers.single()
 
     val yesProperty = modifier.properties.single { it.name == "yes" }
@@ -1287,7 +1250,7 @@ class SchemaParserTest(
   )
 
   @Test fun deprecation() {
-    val schema = parser.parse(DeprecationSchema::class).schema
+    val schema = parseTestSchema(DeprecationSchema::class).schema
 
     val widget = schema.widgets.single()
     assertThat(widget.deprecation).isNotNull().all {
@@ -1338,7 +1301,7 @@ class SchemaParserTest(
   )
 
   @Test fun deprecationHiddenThrows() {
-    assertFailure { parser.parse(DeprecationHiddenSchema::class) }
+    assertFailure { parseTestSchema(DeprecationHiddenSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema deprecation does not support level HIDDEN: " +
@@ -1359,7 +1322,7 @@ class SchemaParserTest(
   object DeprecationReplaceWithWidget
 
   @Test fun deprecationReplaceWithThrows() {
-    assertFailure { parser.parse(DeprecationReplaceWithSchema::class) }
+    assertFailure { parseTestSchema(DeprecationReplaceWithSchema::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
         "Schema deprecation does not support replacements: " +
@@ -1409,9 +1372,7 @@ Property
   @Ignore("Missing handling of '/** */' noise")
   @Test
   fun comments() = assertAll {
-    assumeTrue(parser == SchemaParser.Fir) // Comments are only available through the AST.
-
-    val schema = parser.parse(CommentsSchema::class).schema
+    val schema = parseTestSchema(CommentsSchema::class).schema
     assertThat(schema.documentation).isEqualTo("Schema single-line documentation.")
 
     val widget = schema.widgets.single()
@@ -1428,31 +1389,5 @@ Property
 
     val modifierProperty = modifier.properties.single()
     assertThat(modifierProperty.documentation).isEqualTo("Property same line documentation.")
-  }
-
-  @Suppress("unused") // Values used by TestParameterInjector.
-  enum class SchemaParser {
-    Reflection {
-      override fun parse(type: KClass<*>): ProtocolSchemaSet {
-        return parseProtocolSchemaSet(type)
-      }
-    },
-    Fir {
-      override fun parse(type: KClass<*>): ProtocolSchemaSet {
-        val jdkHome = System.getProperty("java.home").let(::File)
-        val sources = System.getProperty("redwood.internal.sources")
-          .split(File.pathSeparator)
-          .map(::File)
-          .filter(File::exists) // Entries that don't exist produce warnings.
-        val classpath = System.getProperty("redwood.internal.classpath")
-          .split(File.pathSeparator)
-          .map(::File)
-          .filter(File::exists) // Entries that don't exist produce warnings.
-        return parseProtocolSchema(jdkHome, sources, classpath, type.toFqType())
-      }
-    },
-    ;
-
-    abstract fun parse(type: KClass<*>): ProtocolSchemaSet
   }
 }

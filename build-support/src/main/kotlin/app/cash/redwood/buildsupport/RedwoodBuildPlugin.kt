@@ -32,6 +32,7 @@ import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SonatypeHost
+import java.io.File
 import kotlinx.validation.ApiValidationExtension
 import kotlinx.validation.ExperimentalBCVApi
 import org.gradle.accessors.dm.LibrariesForLibs
@@ -43,6 +44,7 @@ import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.java.TargetJvmEnvironment
 import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.api.plugins.JavaApplication
+import org.gradle.api.plugins.JavaPlugin.TEST_TASK_NAME
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskContainer
@@ -50,6 +52,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.AbstractTestTask
+import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
@@ -57,8 +60,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation.Companion.TEST_COMPILATION_NAME
 import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
@@ -318,7 +323,10 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         }
       }
       Tooling -> {
-        project.plugins.apply("org.jetbrains.kotlin.jvm")
+        project.applyKotlinJvm {
+          // Not every project needs this, but it's cheap to do everywhere.
+          project.injectTestSourcesForParsing(this)
+        }
         // Needed for lint in downstream Android projects to analyze this dependency.
         project.plugins.apply("com.android.lint")
       }
@@ -376,6 +384,24 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           jvm()
         }
       }
+    }
+  }
+
+  private fun Project.injectTestSourcesForParsing(kotlin: KotlinJvmProjectExtension) {
+    // In order to simplify writing test schemas, inject the test sources and
+    // test classpath as properties into the test runtime. This allows testing
+    // the FIR-based parser on sources written inside the test case. Cool!
+    tasks.named(TEST_TASK_NAME, Test::class.java).configure {
+      val compilation = kotlin.target.compilations.getByName(TEST_COMPILATION_NAME)
+
+      val sources = compilation.defaultSourceSet.kotlin.sourceDirectories.files
+      it.systemProperty("redwood.internal.sources", sources.joinToString(File.pathSeparator))
+
+      val classpath = project.configurations.getByName(compilation.compileDependencyConfigurationName).files
+      it.systemProperty("redwood.internal.classpath", classpath.joinToString(File.pathSeparator))
+
+      // FIR is heap hungry.
+      it.maxHeapSize = "2g"
     }
   }
 
@@ -633,6 +659,12 @@ private fun Project.withKotlinPlugins(block: KotlinProjectExtension.() -> Unit) 
   pluginManager.withPlugin("org.jetbrains.kotlin.android", handler)
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm", handler)
   pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform", handler)
+}
+
+private fun Project.applyKotlinJvm(block: KotlinJvmProjectExtension.() -> Unit) {
+  pluginManager.apply("org.jetbrains.kotlin.jvm")
+  val kotlin = extensions.getByType(KotlinJvmProjectExtension::class.java)
+  kotlin.block()
 }
 
 private fun Project.applyKotlinMultiplatform(block: KotlinMultiplatformExtension.() -> Unit) {

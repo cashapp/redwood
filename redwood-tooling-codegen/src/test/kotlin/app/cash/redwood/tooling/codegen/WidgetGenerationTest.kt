@@ -18,7 +18,7 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import app.cash.redwood.tooling.schema.parseTestSchema
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
@@ -41,7 +41,7 @@ class WidgetGenerationTest {
   data class Button(@Property(1) val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
+    val schema = parseTestSchema(SimpleNameCollisionSchema::class).schema
 
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).all {
@@ -51,7 +51,7 @@ class WidgetGenerationTest {
   }
 
   @Test fun tagInWidgetFactoryKDoc() {
-    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
+    val schema = parseTestSchema(SimpleNameCollisionSchema::class).schema
 
     val fileSpec = generateWidgetFactory(schema)
     assertThat(fileSpec.toString()).contains(
@@ -64,7 +64,7 @@ class WidgetGenerationTest {
   }
 
   @Test fun tagInWidgetKdoc() {
-    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
+    val schema = parseTestSchema(SimpleNameCollisionSchema::class).schema
     val button = schema.widgets.single { it.type.flatName == "WidgetGenerationTestButton" }
 
     val fileSpec = generateWidget(schema, button)

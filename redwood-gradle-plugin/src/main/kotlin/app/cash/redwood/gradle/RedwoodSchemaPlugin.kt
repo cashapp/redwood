@@ -17,8 +17,6 @@ package app.cash.redwood.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPlugin.JAR_TASK_NAME
-import org.gradle.jvm.tasks.Jar
 import org.gradle.language.base.plugins.LifecycleBasePlugin.BUILD_GROUP
 import org.gradle.language.base.plugins.LifecycleBasePlugin.CHECK_TASK_NAME
 import org.gradle.language.base.plugins.LifecycleBasePlugin.VERIFICATION_GROUP
@@ -32,7 +30,6 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       RedwoodSchemaExtension::class.java,
     ).apply {
       apiTracking.convention(true)
-      useFir.convention(true)
     }
 
     var applied = false
@@ -66,16 +63,10 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       it.toolClasspath.from(toolingConfiguration)
       it.outputDir.set(project.redwoodGeneratedDir("schema-json"))
       it.schemaType.set(extension.type)
-      it.useFir.set(extension.useFir)
       it.sources.setFrom(sources)
       it.classpath.from(classpath)
-      if (!extension.useFir.get()) {
-        it.classpath.from(compilation.output.classesDirs)
-      }
     }
-    project.tasks.named(JAR_TASK_NAME, Jar::class.java).configure {
-      it.from(generateJson)
-    }
+    compilation.defaultSourceSet.resources.srcDir(generateJson)
 
     // Wait for build script to run before checking if API tracking is still enabled.
     project.afterEvaluate {
@@ -89,12 +80,8 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
           it.toolClasspath.from(toolingConfiguration)
           it.apiFile.set(apiFile)
           it.schemaType.set(extension.type)
-          it.useFir.set(extension.useFir)
           it.sources.setFrom(sources)
           it.classpath.from(classpath)
-          if (!extension.useFir.get()) {
-            it.classpath.from(compilation.output.classesDirs)
-          }
         }
 
         val apiCheck =
@@ -105,12 +92,8 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
             it.toolClasspath.from(toolingConfiguration)
             it.apiFile.set(apiFile)
             it.schemaType.set(extension.type)
-            it.useFir.set(extension.useFir)
             it.sources.setFrom(sources)
             it.classpath.from(classpath)
-            if (!extension.useFir.get()) {
-              it.classpath.from(compilation.output.classesDirs)
-            }
 
             // Dummy output required to skip task if no inputs have changed.
             it.dummyOutputFile.set(project.layout.buildDirectory.file("tmp/redwoodApiCheckDummy.txt"))

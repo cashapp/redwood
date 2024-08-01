@@ -26,7 +26,4 @@ public abstract class RedwoodSchemaExtension {
    * The default is true.
    */
   public abstract val apiTracking: Property<Boolean>
-
-  /** Set to true to use the new, FIR-based schema parser. */
-  public abstract val useFir: Property<Boolean>
 }
