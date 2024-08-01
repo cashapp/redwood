@@ -38,9 +38,6 @@ internal abstract class RedwoodSchemaJsonTask @Inject constructor(
   @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
 
-  @get:Input
-  abstract val useFir: Property<Boolean>
-
   @get:Classpath
   abstract val sources: ConfigurableFileCollection
 
@@ -58,7 +55,6 @@ internal abstract class RedwoodSchemaJsonTask @Inject constructor(
     val queue = workerExecutor.noIsolation()
     queue.submit(RedwoodSchemaJsonWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
-      it.useFir.set(useFir)
       it.sources.setFrom(sources)
       it.classpath.setFrom(classpath)
       it.schemaType.set(schemaType)
@@ -90,9 +86,6 @@ private abstract class RedwoodSchemaJsonWorker @Inject constructor(
         add("json")
         add("--out")
         add(parameters.outputDir.get().asFile.absolutePath)
-        if (parameters.useFir.get()) {
-          add("--use-fir")
-        }
         for (source in parameters.sources.files) {
           add("--source")
           add(source.toString())

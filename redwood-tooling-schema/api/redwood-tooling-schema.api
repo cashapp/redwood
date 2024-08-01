@@ -111,7 +111,7 @@ public abstract interface class app/cash/redwood/tooling/schema/ProtocolSchemaSe
 
 public final class app/cash/redwood/tooling/schema/ProtocolSchemaSet$Companion {
 	public final fun load (Lapp/cash/redwood/tooling/schema/FqType;Ljava/lang/ClassLoader;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
-	public final fun parse (Lkotlin/reflect/KClass;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
+	public final fun load (Lkotlin/reflect/KClass;)Lapp/cash/redwood/tooling/schema/ProtocolSchemaSet;
 }
 
 public abstract interface class app/cash/redwood/tooling/schema/ProtocolWidget : app/cash/redwood/tooling/schema/Widget {

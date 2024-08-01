@@ -20,7 +20,7 @@ import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import app.cash.redwood.tooling.schema.parseTestSchema
 import assertk.all
 import assertk.assertAll
 import assertk.assertThat
@@ -64,7 +64,7 @@ class DeprecatedGenerationTest {
   )
 
   @Test fun modifierInterface() {
-    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
+    val schema = parseTestSchema(DeprecatedSchema::class).schema
 
     val modifier = schema.modifiers.single()
     val fileSpec = generateModifierInterface(schema, modifier)
@@ -92,7 +92,7 @@ class DeprecatedGenerationTest {
   }
 
   @Test fun widget() {
-    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
+    val schema = parseTestSchema(DeprecatedSchema::class).schema
 
     val widget = schema.widgets.single()
     val fileSpec = generateWidget(schema, widget)
@@ -143,7 +143,7 @@ class DeprecatedGenerationTest {
   fun protocolCodegen(
     @TestParameter type: ProtocolCodegenType,
   ) {
-    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class)
+    val schema = parseTestSchema(DeprecatedSchema::class)
     assertAll {
       for (fileSpec in schema.generateFileSpecs(type)) {
         assertThat(fileSpec.toString())
@@ -155,7 +155,7 @@ class DeprecatedGenerationTest {
   @Test fun codegen(
     @TestParameter type: CodegenType,
   ) {
-    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class)
+    val schema = parseTestSchema(DeprecatedSchema::class)
     assertAll {
       for (fileSpec in schema.generateFileSpecs(type)) {
         assertThat(fileSpec.toString())

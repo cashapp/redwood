@@ -128,12 +128,12 @@ public interface ProtocolSchemaSet : SchemaSet {
   }
 
   public companion object {
-    public fun load(type: FqType, classLoader: ClassLoader): ProtocolSchemaSet {
-      return loadProtocolSchemaSet(type, classLoader)
+    public fun load(type: KClass<*>): ProtocolSchemaSet {
+      return load(type.toFqType(), type.java.classLoader)
     }
 
-    public fun parse(type: KClass<*>): ProtocolSchemaSet {
-      return parseProtocolSchemaSet(type)
+    public fun load(type: FqType, classLoader: ClassLoader): ProtocolSchemaSet {
+      return loadProtocolSchemaSet(type, classLoader)
     }
   }
 }

@@ -19,6 +19,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import app.cash.redwood.tooling.schema.parseTestSchema
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
@@ -51,7 +52,7 @@ class WidgetProtocolGenerationTest {
   data class Node12(@Property(1) val text: String)
 
   @Test fun `names are sorted by their node tags`() {
-    val schema = ProtocolSchemaSet.parse(SortedByTagSchema::class)
+    val schema = parseTestSchema(SortedByTagSchema::class)
 
     val fileSpec = generateProtocolFactory(schema)
     assertThat(fileSpec.toString())
@@ -59,7 +60,7 @@ class WidgetProtocolGenerationTest {
   }
 
   @Test fun `dependency layout modifier are included in serialization`() {
-    val schema = ProtocolSchemaSet.parse(TestSchema::class)
+    val schema = ProtocolSchemaSet.load(TestSchema::class)
 
     val fileSpec = generateProtocolFactory(schema)
     assertThat(fileSpec.toString()).all {
