@@ -24,13 +24,17 @@ import app.cash.redwood.tooling.schema.Widget.Children
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
+import com.squareup.kotlinpoet.LIST
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 /*
 @OptIn(RedwoodCodegenApi::class)
@@ -113,6 +117,46 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
                 )
               }
             }
+            .build(),
+        )
+        .addType(
+          TypeSpec.companionObjectBuilder()
+            .addFunction(
+              FunSpec.builder("allChildren")
+                .addTypeVariable(typeVariableW)
+                .addParameter("widget", RedwoodWidget.Widget.parameterizedBy(typeVariableW))
+                .returns(LIST.parameterizedBy(RedwoodWidget.Widget.parameterizedBy(typeVariableW)))
+                .beginControlFlow("return when (widget)")
+                .apply {
+                  for (aSchema in schemaSet.all) {
+                    for (widget in aSchema.widgets) {
+                      val childrens = widget.traits.filterIsInstance<Children>()
+                      if (childrens.size == 0) continue
+
+                      val widgetOfStar = aSchema.widgetType(widget).parameterizedBy(STAR)
+                      beginControlFlow("is %T ->", widgetOfStar)
+
+                      val widgetOfW = aSchema.widgetType(widget).parameterizedBy(typeVariableW)
+                      addStatement("widget as %T", widgetOfW)
+
+                      if (childrens.size == 1) {
+                        addStatement("widget.%N.widgets", childrens[0].name)
+                      } else {
+                        addStatement("val size = %L", childrens.joinToCode(" + ") { CodeBlock.of("widget.%N.widgets.size", it.name) })
+                        beginControlFlow("buildList(size)", widgetOfStar)
+                        for (children in childrens) {
+                          addStatement("addAll(widget.%N.widgets)", children.name)
+                        }
+                        endControlFlow()
+                      }
+                      endControlFlow()
+                    }
+                  }
+                }
+                .addStatement("else -> emptyList()")
+                .endControlFlow()
+                .build(),
+            )
             .build(),
         )
         .build(),

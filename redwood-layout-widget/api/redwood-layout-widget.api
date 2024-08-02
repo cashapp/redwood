@@ -44,9 +44,14 @@ public final class app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwne
 }
 
 public final class app/cash/redwood/layout/widget/RedwoodLayoutWidgetSystem : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
+	public static final field Companion Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetSystem$Companion;
 	public fun <init> (Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;)V
 	public fun apply (Ljava/lang/Object;Lapp/cash/redwood/Modifier$UnscopedElement;)V
 	public fun getRedwoodLayout ()Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;
+}
+
+public final class app/cash/redwood/layout/widget/RedwoodLayoutWidgetSystem$Companion {
+	public final fun allChildren (Lapp/cash/redwood/widget/Widget;)Ljava/util/List;
 }
 
 public abstract interface class app/cash/redwood/layout/widget/Row : app/cash/redwood/widget/Widget {
