@@ -1,3 +1,12 @@
+public final class app/cash/redwood/lazylayout/compose/TestLoadingStrategy : app/cash/redwood/lazylayout/compose/LoadingStrategy {
+	public fun <init> ()V
+	public fun getFirstVisibleIndex ()I
+	public fun getLastVisibleIndex ()I
+	public fun loadRange (I)Lkotlin/ranges/IntRange;
+	public fun onUserScroll (II)V
+	public fun scrollTo (I)V
+}
+
 public final class app/cash/redwood/lazylayout/testing/LazyListValue : app/cash/redwood/testing/WidgetValue {
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;ZLkotlin/jvm/functions/Function2;IIIILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;ZLkotlin/jvm/functions/Function2;IIIILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;Ljava/util/List;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V

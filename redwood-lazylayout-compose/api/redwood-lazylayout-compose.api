@@ -39,7 +39,8 @@ public final class app/cash/redwood/lazylayout/compose/LazyListStateKt {
 }
 
 public abstract interface class app/cash/redwood/lazylayout/compose/LoadingStrategy {
-	public abstract fun getFirstIndex ()I
+	public abstract fun getFirstVisibleIndex ()I
+	public abstract fun getLastVisibleIndex ()I
 	public abstract fun loadRange (I)Lkotlin/ranges/IntRange;
 	public abstract fun onUserScroll (II)V
 	public abstract fun scrollTo (I)V
@@ -52,10 +53,10 @@ public final class app/cash/redwood/lazylayout/compose/RefreshableLazyListKt {
 public final class app/cash/redwood/lazylayout/compose/ScrollOptimizedLoadingStrategy : app/cash/redwood/lazylayout/compose/LoadingStrategy {
 	public static final field $stable I
 	public fun <init> ()V
-	public fun <init> (IIIIZ)V
-	public synthetic fun <init> (IIIIZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getFirstIndex ()I
-	public final fun getLastIndex ()I
+	public fun <init> (IIII)V
+	public synthetic fun <init> (IIIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getFirstVisibleIndex ()I
+	public fun getLastVisibleIndex ()I
 	public final fun getProgrammaticScrollIndex ()Lapp/cash/redwood/lazylayout/api/ScrollItemIndex;
 	public fun loadRange (I)Lkotlin/ranges/IntRange;
 	public fun onUserScroll (II)V

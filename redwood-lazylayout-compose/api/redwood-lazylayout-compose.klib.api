@@ -16,8 +16,10 @@ abstract interface app.cash.redwood.lazylayout.compose/LazyListScope { // app.ca
 }
 
 abstract interface app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/LoadingStrategy|null[0]
-    abstract val firstIndex // app.cash.redwood.lazylayout.compose/LoadingStrategy.firstIndex|{}firstIndex[0]
-        abstract fun <get-firstIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/LoadingStrategy.firstIndex.<get-firstIndex>|<get-firstIndex>(){}[0]
+    abstract val firstVisibleIndex // app.cash.redwood.lazylayout.compose/LoadingStrategy.firstVisibleIndex|{}firstVisibleIndex[0]
+        abstract fun <get-firstVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/LoadingStrategy.firstVisibleIndex.<get-firstVisibleIndex>|<get-firstVisibleIndex>(){}[0]
+    abstract val lastVisibleIndex // app.cash.redwood.lazylayout.compose/LoadingStrategy.lastVisibleIndex|{}lastVisibleIndex[0]
+        abstract fun <get-lastVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/LoadingStrategy.lastVisibleIndex.<get-lastVisibleIndex>|<get-lastVisibleIndex>(){}[0]
 
     abstract fun loadRange(kotlin/Int): kotlin.ranges/IntRange // app.cash.redwood.lazylayout.compose/LoadingStrategy.loadRange|loadRange(kotlin.Int){}[0]
     abstract fun onUserScroll(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.compose/LoadingStrategy.onUserScroll|onUserScroll(kotlin.Int;kotlin.Int){}[0]
@@ -25,12 +27,12 @@ abstract interface app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.
 }
 
 final class app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy|null[0]
-    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Boolean = ...) // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ..., kotlin/Int = ...) // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 
-    final var firstIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.firstIndex|{}firstIndex[0]
-        final fun <get-firstIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.firstIndex.<get-firstIndex>|<get-firstIndex>(){}[0]
-    final var lastIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.lastIndex|{}lastIndex[0]
-        final fun <get-lastIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.lastIndex.<get-lastIndex>|<get-lastIndex>(){}[0]
+    final var firstVisibleIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.firstVisibleIndex|{}firstVisibleIndex[0]
+        final fun <get-firstVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.firstVisibleIndex.<get-firstVisibleIndex>|<get-firstVisibleIndex>(){}[0]
+    final var lastVisibleIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.lastVisibleIndex|{}lastVisibleIndex[0]
+        final fun <get-lastVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.lastVisibleIndex.<get-lastVisibleIndex>|<get-lastVisibleIndex>(){}[0]
     final var programmaticScrollIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.programmaticScrollIndex|{}programmaticScrollIndex[0]
         final fun <get-programmaticScrollIndex>(): app.cash.redwood.lazylayout.api/ScrollItemIndex // app.cash.redwood.lazylayout.compose/ScrollOptimizedLoadingStrategy.programmaticScrollIndex.<get-programmaticScrollIndex>|<get-programmaticScrollIndex>(){}[0]
 
