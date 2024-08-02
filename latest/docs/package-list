@@ -38,6 +38,7 @@ app.cash.redwood.lazylayout.dom
 module:redwood-lazylayout-schema
 app.cash.redwood.lazylayout
 module:redwood-lazylayout-testing
+app.cash.redwood.lazylayout.compose
 app.cash.redwood.lazylayout.testing
 module:redwood-lazylayout-uiview
 app.cash.redwood.lazylayout.uiview
