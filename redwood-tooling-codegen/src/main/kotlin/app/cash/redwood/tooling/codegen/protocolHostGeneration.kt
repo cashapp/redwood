@@ -26,7 +26,6 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
-import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -100,7 +99,7 @@ internal fun generateProtocolFactory(
     addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(ProtocolHost.GeneratedProtocolFactory.parameterizedBy(typeVariableW))
+        .addSuperinterface(WidgetProtocol.GeneratedProtocolFactory.parameterizedBy(typeVariableW))
         .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
@@ -117,8 +116,8 @@ internal fun generateProtocolFactory(
                 .build(),
             )
             .addParameter(
-              ParameterSpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
-                .defaultValue("%T.Throwing", ProtocolHost.ProtocolMismatchHandler)
+              ParameterSpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
+                .defaultValue("%T.Throwing", WidgetProtocol.ProtocolMismatchHandler)
                 .build(),
             )
             .build(),
@@ -134,7 +133,7 @@ internal fun generateProtocolFactory(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -184,7 +183,7 @@ internal fun generateProtocolFactory(
             .addParameter("tag", WidgetTag)
             .addAnnotation(Redwood.RedwoodCodegenApi)
             .returns(
-              ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW)
+              WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
                 .copy(nullable = true),
             )
             .beginControlFlow("return when (tag.value)")
@@ -258,14 +257,14 @@ internal class ProtocolButton<W : Any>(
   private val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   private val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
-  public override fun apply(change: PropertyChange, eventSink: UiEventSink): Unit {
+  public override fun apply(change: PropertyChange, eventSink: EventSink): Unit {
     val widget = _widget ?: error("detached")
     when (change.tag.value) {
       1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
       2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
         val onClick: (() -> Unit)? = if (change.value.jsonPrimitive.boolean) {
-          OnClick(json, id, eventSink)
+          OnClick(json, change.id, eventSink)
         } else {
           null
         }
@@ -296,7 +295,7 @@ internal fun generateProtocolNode(
 ): FileSpec {
   val type = schema.protocolNodeType(widget, host)
   val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
-  val protocolType = ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW)
+  val protocolType = WidgetProtocol.ProtocolNode.parameterizedBy(typeVariableW)
   val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
   return buildFileSpec(type) {
     addAnnotation(suppressDeprecations)
@@ -311,7 +310,7 @@ internal fun generateProtocolNode(
             .addParameter("id", Id)
             .addParameter("widget", widgetType)
             .addParameter("json", KotlinxSerialization.Json)
-            .addParameter("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
+            .addParameter("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler)
             .build(),
         )
         .addSuperclassConstructorParameter("id")
@@ -337,7 +336,7 @@ internal fun generateProtocolNode(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", WidgetProtocol.ProtocolMismatchHandler, PRIVATE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -355,7 +354,7 @@ internal fun generateProtocolNode(
             FunSpec.builder("apply")
               .addModifiers(OVERRIDE)
               .addParameter("change", Protocol.PropertyChange)
-              .addParameter("eventSink", ProtocolHost.UiEventSink)
+              .addParameter("eventSink", Protocol.EventSink)
               .apply {
                 if (properties.isNotEmpty()) {
                   addStatement("val widget = _widget ?: error(%S)", "detached")
@@ -386,22 +385,22 @@ internal fun generateProtocolNode(
                         KotlinxSerialization.jsonPrimitive,
                         KotlinxSerialization.jsonBoolean,
                       )
+                      val arguments = mutableListOf<CodeBlock>()
+                      for (parameterFqType in trait.parameterTypes) {
+                        val parameterType = parameterFqType.asTypeName()
+                        val serializerId = serializerIds.computeIfAbsent(parameterType) {
+                          nextSerializerId++
+                        }
+                        arguments += CodeBlock.of("serializer_%L", serializerId)
+                      }
                       if (trait.parameterTypes.isEmpty()) {
                         addStatement(
-                          "%L(id, eventSink)::invoke",
+                          "%L(json, change.id, eventSink)::invoke",
                           trait.eventHandlerName,
                         )
                       } else {
-                        val arguments = mutableListOf<CodeBlock>()
-                        for (parameterFqType in trait.parameterTypes) {
-                          val parameterType = parameterFqType.asTypeName()
-                          val serializerId = serializerIds.computeIfAbsent(parameterType) {
-                            nextSerializerId++
-                          }
-                          arguments += CodeBlock.of("serializer_%L", serializerId)
-                        }
                         addStatement(
-                          "%L(id, eventSink, %L)::invoke",
+                          "%L(json, change.id, eventSink, %L)::invoke",
                           trait.eventHandlerName,
                           arguments.joinToCode(),
                         )
@@ -445,9 +444,9 @@ internal fun generateProtocolNode(
 
           for (children in childrens) {
             addProperty(
-              PropertySpec.builder(children.name, ProtocolHost.ProtocolChildren.parameterizedBy(typeVariableW))
+              PropertySpec.builder(children.name, WidgetProtocol.ProtocolChildren.parameterizedBy(typeVariableW))
                 .addModifiers(PRIVATE)
-                .initializer("%T(widget.%N)", ProtocolHost.ProtocolChildren, children.name)
+                .initializer("%T(widget.%N)", WidgetProtocol.ProtocolChildren, children.name)
                 .build(),
             )
           }
@@ -456,7 +455,7 @@ internal fun generateProtocolNode(
           FunSpec.builder("children")
             .addModifiers(OVERRIDE)
             .addParameter("tag", Protocol.ChildrenTag)
-            .returns(ProtocolHost.ProtocolChildren.parameterizedBy(typeVariableW).copy(nullable = true))
+            .returns(WidgetProtocol.ProtocolChildren.parameterizedBy(typeVariableW).copy(nullable = true))
             .apply {
               if (childrens.isNotEmpty()) {
                 beginControlFlow("return when (tag.value)")
@@ -526,24 +525,21 @@ private val ProtocolEvent.eventHandlerName: String
  */
 /*
 private class OnClick(
+  private val json: Json,
   private val id: Id,
-  private val eventSink: UiEventSink,
+  private val eventSink: EventSink,
   private val serializer_0: KSerializer<Int>,
   private val serializer_1: KSerializer<String>,
 ) : (Int, String) -> Unit {
   override fun invoke(arg0: Int, arg1: String) {
     eventSink.sendEvent(
-      UiEvent(
+      Event(
         id,
         EventTag(3),
         listOf(
-          arg0,
-          arg1,
-        ),
-        listOf(
-          serializer_0,
-          serializer_1,
-        ),
+          json.encodeToJsonElement(serializer_0, arg0),
+          json.encodeToJsonElement(serializer_1, arg1),
+        )
       )
     )
   }
@@ -554,20 +550,15 @@ private fun generateEventHandler(
 ): TypeSpec {
   val constructor = FunSpec.constructorBuilder()
   val invoke = FunSpec.builder("invoke")
-    .addAnnotation(
-      AnnotationSpec.builder(Suppress::class)
-        .addMember("%S", "UNCHECKED_CAST")
-        .build(),
-    )
 
   val classBuilder = TypeSpec.classBuilder(trait.eventHandlerName)
     .addModifiers(PRIVATE)
 
+  addConstructorParameterAndProperty(classBuilder, constructor, "json", KotlinxSerialization.Json)
   addConstructorParameterAndProperty(classBuilder, constructor, "id", Protocol.Id)
-  addConstructorParameterAndProperty(classBuilder, constructor, "eventSink", ProtocolHost.UiEventSink)
+  addConstructorParameterAndProperty(classBuilder, constructor, "eventSink", Protocol.EventSink)
 
   val arguments = mutableListOf<CodeBlock>()
-  val serializers = mutableListOf<CodeBlock>()
   for ((index, parameterFqType) in trait.parameterTypes.withIndex()) {
     val parameterType = parameterFqType.asTypeName()
     val serializerType = KotlinxSerialization.KSerializer.parameterizedBy(parameterType)
@@ -577,29 +568,27 @@ private fun generateEventHandler(
     addConstructorParameterAndProperty(classBuilder, constructor, serializerId, serializerType)
     invoke.addParameter(ParameterSpec(parameterName, parameterType))
 
-    arguments += CodeBlock.of("%L", parameterName)
-    serializers += CodeBlock.of(
-      "%L as %T",
+    arguments += CodeBlock.of(
+      "json.encodeToJsonElement(%L, %L)",
       serializerId,
-      KotlinxSerialization.KSerializer.parameterizedBy(ANY.copy(nullable = true)),
+      parameterName,
     )
   }
 
-  if (serializers.isEmpty()) {
+  if (arguments.isEmpty()) {
     invoke.addCode(
       "eventSink.sendEvent(%T(id, %T(%L)))",
-      ProtocolHost.UiEvent,
+      Protocol.Event,
       Protocol.EventTag,
       trait.tag,
     )
   } else {
     invoke.addCode(
-      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\nlistOf(⇥\n%L,\n⇤),\nlistOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
-      ProtocolHost.UiEvent,
+      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\nlistOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
+      Protocol.Event,
       Protocol.EventTag,
       trait.tag,
       arguments.joinToCode(separator = ",\n"),
-      serializers.joinToCode(separator = ",\n"),
     )
   }
 

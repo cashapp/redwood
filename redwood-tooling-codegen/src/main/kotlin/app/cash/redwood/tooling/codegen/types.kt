@@ -47,14 +47,12 @@ internal object ProtocolGuest {
   val ProtocolWidgetSystemFactory = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidgetSystemFactory")
 }
 
-internal object ProtocolHost {
+internal object WidgetProtocol {
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
   val ProtocolChildren = ClassName("app.cash.redwood.protocol.host", "ProtocolChildren")
   val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.host", "GeneratedProtocolFactory")
-  val UiEvent = ClassName("app.cash.redwood.protocol.host", "UiEvent")
-  val UiEventSink = ClassName("app.cash.redwood.protocol.host", "UiEventSink")
 }
 
 internal object Redwood {
