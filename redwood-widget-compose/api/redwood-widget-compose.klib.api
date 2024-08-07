@@ -21,3 +21,5 @@ final class app.cash.redwood.widget.compose/ComposeWidgetChildren : app.cash.red
 }
 
 final val app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop // app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop|#static{}app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop[0]
+
+final fun app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop_getter(): kotlin/Int // app.cash.redwood.widget.compose/app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop_getter|app_cash_redwood_widget_compose_ComposeWidgetChildren$stableprop_getter(){}[0]
