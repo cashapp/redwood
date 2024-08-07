@@ -17,14 +17,14 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Event
+import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.host.ProtocolChildren
 import app.cash.redwood.protocol.host.ProtocolNode
-import app.cash.redwood.protocol.host.UiEvent
-import app.cash.redwood.protocol.host.UiEventSink
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
@@ -37,10 +37,10 @@ internal class FakeProtocolNode(
 ) : ProtocolNode<FakeWidget>(id, tag) {
   override val widget = FakeWidget()
 
-  override fun apply(change: PropertyChange, eventSink: UiEventSink) {
+  override fun apply(change: PropertyChange, eventSink: EventSink) {
     widget.label = (change.value as JsonPrimitive).content
     widget.onClick = {
-      eventSink.sendEvent(UiEvent(Id(1), EventTag(1)))
+      eventSink.sendEvent(Event(Id(1), EventTag(1)))
     }
   }
 

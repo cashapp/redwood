@@ -5,7 +5,7 @@ public abstract interface class app/cash/redwood/protocol/host/GeneratedProtocol
 }
 
 public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash/redwood/protocol/ChangesSink {
-	public synthetic fun <init> (Ljava/lang/String;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/ProtocolFactory;Lapp/cash/redwood/protocol/host/UiEventSink;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/ProtocolFactory;Lapp/cash/redwood/protocol/EventSink;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun close ()V
 	public fun sendChanges (Ljava/util/List;)V
 }
@@ -35,7 +35,7 @@ public final class app/cash/redwood/protocol/host/ProtocolMismatchHandler$Compan
 
 public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun apply (Lapp/cash/redwood/protocol/PropertyChange;Lapp/cash/redwood/protocol/host/UiEventSink;)V
+	public abstract fun apply (Lapp/cash/redwood/protocol/PropertyChange;Lapp/cash/redwood/protocol/EventSink;)V
 	public abstract fun children-dBpC-2Y (I)Lapp/cash/redwood/protocol/host/ProtocolChildren;
 	public abstract fun detach ()V
 	public final fun getId-0HhLjSo ()I
@@ -43,23 +43,6 @@ public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 	public final fun getWidgetTag-BlhN7y0 ()I
 	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
 	public abstract fun visitIds (Lkotlin/jvm/functions/Function1;)V
-}
-
-public final class app/cash/redwood/protocol/host/UiEvent {
-	public synthetic fun <init> (IILjava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IILjava/util/List;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getArgs ()Ljava/util/List;
-	public final fun getId-0HhLjSo ()I
-	public final fun getSerializationStrategies ()Ljava/util/List;
-	public final fun getTag-RNF89mI ()I
-	public fun hashCode ()I
-	public final fun toProtocol (Lkotlinx/serialization/json/Json;)Lapp/cash/redwood/protocol/Event;
-	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class app/cash/redwood/protocol/host/UiEventSink {
-	public abstract fun sendEvent (Lapp/cash/redwood/protocol/host/UiEvent;)V
 }
 
 public final class app/cash/redwood/protocol/host/VersionKt {
