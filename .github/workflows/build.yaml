@@ -22,7 +22,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./scripts/enforce_git_lfs.sh
       - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps
@@ -41,7 +41,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -57,7 +57,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./gradlew dokkaHtmlMultiModule
 
@@ -79,7 +79,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./gradlew verifyPaparazzi
 
@@ -100,7 +100,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       # Run the tests that transitively depend on :test-app if it's available.
       - run: ./gradlew :redwood-treehouse-host:check
@@ -113,7 +113,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./gradlew -p samples/counter build
 
@@ -134,7 +134,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -150,7 +150,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./gradlew -p samples/emoji-search build
 
@@ -171,7 +171,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -187,7 +187,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./gradlew -p test-app build
 
@@ -219,7 +219,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
 
       - run: ./gradlew publishToMavenCentral
         env:
