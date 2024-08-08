@@ -110,4 +110,8 @@ final class <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/RedwoodLazyLayou
         final fun <get-RedwoodLazyLayout>(): app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<#A> // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetSystem.RedwoodLazyLayout.<get-RedwoodLazyLayout>|<get-RedwoodLazyLayout>(){}[0]
 
     final fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
+
+    final object Companion { // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetSystem.Companion|null[0]
+        final fun <#A2: kotlin/Any> allChildren(app.cash.redwood.widget/Widget<#A2>): kotlin.collections/List<app.cash.redwood.widget/Widget<#A2>> // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetSystem.Companion.allChildren|allChildren(app.cash.redwood.widget.Widget<0:0>){0§<kotlin.Any>}[0]
+    }
 }
