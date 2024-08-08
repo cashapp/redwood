@@ -314,22 +314,24 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   }
 
   private fun placeholderToLoaded(
-    placeholder: Binding<V, W>?,
+    binding: Binding<V, W>?,
     loadedContent: Widget<W>,
   ): Binding<V, W> {
     // No binding for this index. Create one.
-    if (placeholder == null) {
+    if (binding == null) {
       return Binding(this).apply {
         setContentAndModifier(loadedContent)
       }
     }
 
     // We have a binding. Give it loaded content.
-    require(placeholder.isPlaceholder)
-    recyclePlaceholder(placeholder.content)
-    placeholder.isPlaceholder = false
-    placeholder.setContentAndModifier(loadedContent)
-    return placeholder
+    require(binding.isPlaceholder)
+    if (binding.isBound) {
+      recyclePlaceholder(binding.content!!)
+    }
+    binding.isPlaceholder = false
+    binding.setContentAndModifier(loadedContent)
+    return binding
   }
 
   private fun loadedToPlaceholder(loaded: Binding<V, W>): Binding<V, W>? {
@@ -438,8 +440,13 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     public var view: V? = null
       private set
 
-    /** The content of this binding; either a loaded widget or a placeholder. */
-    internal lateinit var content: W
+    /**
+     * The content of this binding; either a loaded widget, a placeholder, or null.
+     *
+     * This may be null if its content is a placeholder that is not bound to a view. That way we
+     * don't take placeholders from the pool until we need them.
+     */
+    internal var content: W? = null
       private set
     private var modifier: Modifier = Modifier
 
@@ -458,8 +465,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     public val isBound: Boolean
       get() = view != null
 
-    internal fun bind(view: V) {
+    public fun bind(view: V) {
       require(this.view == null) { "already bound" }
+
+      if (isPlaceholder && this.content == null) {
+        this.content = processor.takePlaceholder()
+      }
 
       this.view = view
       processor.setContent(view, content, modifier)
@@ -481,7 +492,8 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         if (itemsAfterIndex != -1) processor.itemsAfter.set(itemsAfterIndex, null)
 
         // When a placeholder is reused, recycle its widget.
-        processor.recyclePlaceholder(content)
+        processor.recyclePlaceholder(content!!)
+        this.content = null
       }
     }
   }

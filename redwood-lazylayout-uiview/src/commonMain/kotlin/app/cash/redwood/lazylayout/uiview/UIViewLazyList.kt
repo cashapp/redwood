@@ -301,14 +301,13 @@ internal class LazyListContainerCell(
     }
 
     // Confirm the cell is bound when it's about to be displayed.
-    if (superview == null && newSuperview != null) {
-      require(binding!!.isBound) { "about to display a cell that isn't bound!" }
+    if (superview == null && newSuperview != null && !binding!!.isBound) {
+      binding!!.bind(this)
     }
 
     // Unbind the cell when its view is detached from the table.
     if (superview != null && newSuperview == null) {
       binding?.unbind()
-      binding = null
     }
   }
 
