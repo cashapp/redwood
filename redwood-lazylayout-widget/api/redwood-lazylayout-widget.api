@@ -42,6 +42,7 @@ public abstract class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor
 }
 
 public final class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor$Binding {
+	public final fun bind (Ljava/lang/Object;)V
 	public final fun getView ()Ljava/lang/Object;
 	public final fun isBound ()Z
 	public final fun unbind ()V

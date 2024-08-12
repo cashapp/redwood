@@ -87,6 +87,7 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
         final var view // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view|{}view[0]
             final fun <get-view>(): #A1? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view.<get-view>|<get-view>(){}[0]
 
+        final fun bind(#A1) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.bind|bind(1:0){}[0]
         final fun unbind() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.unbind|unbind(){}[0]
     }
 }
