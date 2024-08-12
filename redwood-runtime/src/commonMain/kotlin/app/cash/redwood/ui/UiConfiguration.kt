@@ -39,8 +39,10 @@ public class UiConfiguration(
    * This does not offer any information on the size of the individual composables which are
    * rendering within the composition, but is the frame into which they will render. The root
    * composable if stretching to fill the viewport will match this size.
+   *
+   * A null viewport size indicates it has not been resolved yet.
    */
-  public val viewportSize: Size = Size.Zero,
+  public val viewportSize: Size? = null,
   /**
    * The density of the display. This can be used to convert [Dp] within other properties back to
    * raw pixels, if needed.

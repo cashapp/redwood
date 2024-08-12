@@ -29,14 +29,15 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isSameInstanceAs
+import assertk.assertions.isTrue
 import java.util.Locale
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -102,26 +103,26 @@ class TreehouseLayoutTest {
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = activity.createConfigurationContext(newConfig) // Needs API 26.
     val layout = TreehouseLayout(newContext, throwingWidgetSystem, activity.onBackPressedDispatcher)
-    assertThat(layout.uiConfiguration.value).isEqualTo(UiConfiguration(darkMode = true))
+    assertThat(layout.uiConfiguration.value.darkMode).isTrue()
   }
 
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = false))
+      assertThat(awaitItem().darkMode).isFalse()
 
       val newConfig = Configuration(activity.resources.configuration)
       newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
 
       layout.dispatchConfigurationChanged(newConfig)
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = true))
+      assertThat(awaitItem().darkMode).isTrue()
     }
   }
 
   @Test fun uiConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(safeAreaInsets = Margin.Zero))
+      assertThat(awaitItem().safeAreaInsets).isEqualTo(Margin.Zero)
       val insets = Insets.of(10, 20, 30, 40)
       val windowInsets = WindowInsetsCompat.Builder()
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
@@ -135,20 +136,20 @@ class TreehouseLayoutTest {
           bottom = insets.bottom.toDp(),
         )
       }
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
+      assertThat(awaitItem().safeAreaInsets).isEqualTo(expectedInsets)
     }
   }
 
   @Test fun uiConfigurationEmitsLayoutDirectionChanges() = runTest {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(layoutDirection = LayoutDirection.Ltr))
+      assertThat(awaitItem().layoutDirection).isEqualTo(LayoutDirection.Ltr)
 
       val newConfig = Configuration(activity.resources.configuration)
       newConfig.setLayoutDirection(Locale("he")) // Hebrew is RTL
 
       layout.dispatchConfigurationChanged(newConfig)
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(layoutDirection = LayoutDirection.Rtl))
+      assertThat(awaitItem().layoutDirection).isEqualTo(LayoutDirection.Rtl)
     }
   }
 

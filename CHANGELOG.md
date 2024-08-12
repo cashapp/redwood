@@ -10,6 +10,7 @@ New:
 Changed:
 - `ProtocolFactory` interface is now sealed as arbitrary subtypes were never supported. Only schema-generated subtypes should be used.
 - `UIViewLazyList` doesn't crash with a `NullPointerException` if cells are added, removed, and re-added without being reused.
+- Change `UiConfiguration.viewportSize` to be nullable. A null `viewportSize` indicates the viewport's size has not been resolved yet.
 
 Fixed:
 - Nothing yet!

@@ -19,12 +19,13 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import kotlin.test.Test
 import kotlinx.cinterop.objcPtr
 import kotlinx.cinterop.useContents
@@ -95,7 +96,7 @@ class TreehouseUIViewTest {
     val layout = TreehouseUIView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    assertThat(layout.uiConfiguration.value).isEqualTo(UiConfiguration(darkMode = true))
+    assertThat(layout.uiConfiguration.value.darkMode).isTrue()
   }
 
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
@@ -105,13 +106,13 @@ class TreehouseUIViewTest {
     parent.addSubview(layout.view)
 
     layout.uiConfiguration.test {
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = false))
+      assertThat(awaitItem().darkMode).isFalse()
 
       parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
       // Style propagation through hierarchy is async so yield to run loop for any posted work.
       NSRunLoop.currentRunLoop.runUntilDate(NSDate())
 
-      assertThat(awaitItem()).isEqualTo(UiConfiguration(darkMode = true))
+      assertThat(awaitItem().darkMode).isTrue()
     }
   }
 
@@ -128,8 +129,7 @@ class TreehouseUIViewTest {
     val layout = TreehouseUIView(throwingWidgetSystem)
     parent.addSubview(layout.view)
 
-    assertThat(layout.uiConfiguration.value)
-      .isEqualTo(UiConfiguration(safeAreaInsets = expectedInsets))
+    assertThat(layout.uiConfiguration.value.safeAreaInsets).isEqualTo(expectedInsets)
   }
 
   @Test
@@ -144,8 +144,6 @@ class TreehouseUIViewTest {
       UIUserInterfaceLayoutDirectionRightToLeft -> LayoutDirection.Rtl
       else -> throw IllegalStateException("Unknown layout direction $direction")
     }
-    assertThat(layout.uiConfiguration.value).isEqualTo(
-      expected = UiConfiguration(layoutDirection = expectedLayoutDirection),
-    )
+    assertThat(layout.uiConfiguration.value.layoutDirection).isEqualTo(expectedLayoutDirection)
   }
 }
