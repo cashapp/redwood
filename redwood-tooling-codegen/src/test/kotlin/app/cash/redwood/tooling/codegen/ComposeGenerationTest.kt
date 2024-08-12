@@ -22,7 +22,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.FqType
-import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import app.cash.redwood.tooling.schema.parseTestSchema
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
@@ -45,7 +45,7 @@ class ComposeGenerationTest {
   )
 
   @Test fun `scoped and unscoped children`() {
-    val schema = ProtocolSchemaSet.parse(ScopedAndUnscopedSchema::class).schema
+    val schema = parseTestSchema(ScopedAndUnscopedSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).all {
@@ -55,7 +55,7 @@ class ComposeGenerationTest {
   }
 
   @Test fun `scope is annotated with layout scope marker`() {
-    val schema = ProtocolSchemaSet.parse(ScopedAndUnscopedSchema::class).schema
+    val schema = parseTestSchema(ScopedAndUnscopedSchema::class).schema
 
     val fileSpec = generateModifierScope(schema, FqType(listOf("example", "RowScope")))
     assertThat(fileSpec.toString()).contains(
@@ -87,7 +87,7 @@ class ComposeGenerationTest {
   )
 
   @Test fun `default is supported for all property types`() {
-    val schema = ProtocolSchemaSet.parse(DefaultSchema::class).schema
+    val schema = parseTestSchema(DefaultSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).all {
@@ -111,7 +111,7 @@ class ComposeGenerationTest {
   )
 
   @Test fun `layout modifier is the last non child parameter`() {
-    val schema = ProtocolSchemaSet.parse(MultipleChildSchema::class).schema
+    val schema = parseTestSchema(MultipleChildSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
@@ -138,7 +138,7 @@ class ComposeGenerationTest {
   @Test fun deprecation() {
     // NOTE: There's no way to deprecate a parameter to a function.
 
-    val schema = ProtocolSchemaSet.parse(DeprecatedSchema::class).schema
+    val schema = parseTestSchema(DeprecatedSchema::class).schema
 
     val fileSpec = generateComposable(schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(

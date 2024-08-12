@@ -21,7 +21,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Poko
 public class UiConfiguration(
+  /**
+   * True if the device is configured to use a dark color palette.
+   */
   public val darkMode: Boolean = false,
+  /**
+   * A set of distances from the edges of the display where system UI and other elements will be
+   * drawn.
+   *
+   * Use this margin to inset your content to avoid drawing under system UI elements.
+   */
   public val safeAreaInsets: Margin = Margin.Zero,
   /**
    * The size of the viewport into which the composition is rendering. This could be as lage as the

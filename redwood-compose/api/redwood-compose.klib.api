@@ -73,6 +73,10 @@ final val app.cash.redwood.compose/current // app.cash.redwood.compose/current|@
 final fun <#A: kotlin/Any> app.cash.redwood.compose/RedwoodComposition(kotlinx.coroutines/CoroutineScope, app.cash.redwood.widget/RedwoodView<#A>, app.cash.redwood.widget/WidgetSystem<#A>, kotlin/Function0<kotlin/Unit> = ...): app.cash.redwood.compose/RedwoodComposition // app.cash.redwood.compose/RedwoodComposition|RedwoodComposition(kotlinx.coroutines.CoroutineScope;app.cash.redwood.widget.RedwoodView<0:0>;app.cash.redwood.widget.WidgetSystem<0:0>;kotlin.Function0<kotlin.Unit>){0§<kotlin.Any>}[0]
 final fun <#A: kotlin/Any> app.cash.redwood.compose/RedwoodComposition(kotlinx.coroutines/CoroutineScope, app.cash.redwood.widget/Widget.Children<#A>, app.cash.redwood.ui/OnBackPressedDispatcher, androidx.compose.runtime.saveable/SaveableStateRegistry?, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>, app.cash.redwood.widget/WidgetSystem<#A>, kotlin/Function0<kotlin/Unit> = ...): app.cash.redwood.compose/RedwoodComposition // app.cash.redwood.compose/RedwoodComposition|RedwoodComposition(kotlinx.coroutines.CoroutineScope;app.cash.redwood.widget.Widget.Children<0:0>;app.cash.redwood.ui.OnBackPressedDispatcher;androidx.compose.runtime.saveable.SaveableStateRegistry?;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>;app.cash.redwood.widget.WidgetSystem<0:0>;kotlin.Function0<kotlin.Unit>){0§<kotlin.Any>}[0]
 final fun app.cash.redwood.compose/BackHandler(kotlin/Boolean, kotlin/Function0<kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.compose/BackHandler|BackHandler(kotlin.Boolean;kotlin.Function0<kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_ChildrenNode$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_ChildrenNode$stableprop_getter|app_cash_redwood_compose_ChildrenNode$stableprop_getter(){}[0]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_NodeApplier$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_NodeApplier$stableprop_getter|app_cash_redwood_compose_NodeApplier$stableprop_getter(){}[0]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_RedwoodComposeContent$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_RedwoodComposeContent$stableprop_getter|app_cash_redwood_compose_RedwoodComposeContent$stableprop_getter(){}[0]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_WidgetNode$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_WidgetNode$stableprop_getter|app_cash_redwood_compose_WidgetNode$stableprop_getter(){}[0]
 final inline fun <#A: app.cash.redwood.widget/WidgetFactoryOwner<#C>, #B: app.cash.redwood.widget/Widget<#C>, #C: kotlin/Any> app.cash.redwood.compose/RedwoodComposeNode(crossinline kotlin/Function1<#A, #B>, kotlin/Function1<androidx.compose.runtime/Updater<app.cash.redwood.compose/WidgetNode<#B, #C>>, kotlin/Unit>, kotlin/Function3<app.cash.redwood.compose/RedwoodComposeContent<#B>, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // app.cash.redwood.compose/RedwoodComposeNode|RedwoodComposeNode(kotlin.Function1<0:0,0:1>;kotlin.Function1<androidx.compose.runtime.Updater<app.cash.redwood.compose.WidgetNode<0:1,0:2>>,kotlin.Unit>;kotlin.Function3<app.cash.redwood.compose.RedwoodComposeContent<0:1>,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){0§<app.cash.redwood.widget.WidgetFactoryOwner<0:2>>;1§<app.cash.redwood.widget.Widget<0:2>>;2§<kotlin.Any>}[0]
 
 // Targets: [ios]
@@ -83,6 +87,9 @@ final object app.cash.redwood.compose/DisplayLinkClock : androidx.compose.runtim
 // Targets: [ios]
 final val app.cash.redwood.compose/app_cash_redwood_compose_DisplayLinkClock$stableprop // app.cash.redwood.compose/app_cash_redwood_compose_DisplayLinkClock$stableprop|#static{}app_cash_redwood_compose_DisplayLinkClock$stableprop[0]
 
+// Targets: [ios]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_DisplayLinkClock$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_DisplayLinkClock$stableprop_getter|app_cash_redwood_compose_DisplayLinkClock$stableprop_getter(){}[0]
+
 // Targets: [js]
 final object app.cash.redwood.compose/WindowAnimationFrameClock : androidx.compose.runtime/MonotonicFrameClock { // app.cash.redwood.compose/WindowAnimationFrameClock|null[0]
     final suspend fun <#A1: kotlin/Any?> withFrameNanos(kotlin/Function1<kotlin/Long, #A1>): #A1 // app.cash.redwood.compose/WindowAnimationFrameClock.withFrameNanos|withFrameNanos(kotlin.Function1<kotlin.Long,0:0>){0§<kotlin.Any?>}[0]
@@ -90,3 +97,6 @@ final object app.cash.redwood.compose/WindowAnimationFrameClock : androidx.compo
 
 // Targets: [js]
 final val app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop // app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop|#static{}app_cash_redwood_compose_WindowAnimationFrameClock$stableprop[0]
+
+// Targets: [js]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop_getter|app_cash_redwood_compose_WindowAnimationFrameClock$stableprop_getter(){}[0]

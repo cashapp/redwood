@@ -36,3 +36,6 @@ final class app.cash.redwood.lazylayout.api/ScrollItemIndex { // app.cash.redwoo
 
 final val app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop // app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop|#static{}app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop[0]
 final val app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop // app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop|#static{}app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop[0]
+
+final fun app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop_getter(): kotlin/Int // app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop_getter|app_cash_redwood_lazylayout_api_ScrollItemIndex$stableprop_getter(){}[0]
+final fun app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop_getter(): kotlin/Int // app.cash.redwood.lazylayout.api/app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop_getter|app_cash_redwood_lazylayout_api_ScrollItemIndex_$serializer$stableprop_getter(){}[0]

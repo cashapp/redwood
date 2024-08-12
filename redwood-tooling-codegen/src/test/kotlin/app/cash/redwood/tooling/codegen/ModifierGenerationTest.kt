@@ -17,7 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Schema
-import app.cash.redwood.tooling.schema.ProtocolSchemaSet
+import app.cash.redwood.tooling.schema.parseTestSchema
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
@@ -46,7 +46,7 @@ class ModifierGenerationTest {
   data class ContentDescription(val text: String)
 
   @Test fun `simple names do not collide`() {
-    val schema = ProtocolSchemaSet.parse(SimpleNameCollisionSchema::class).schema
+    val schema = parseTestSchema(SimpleNameCollisionSchema::class).schema
 
     val topType = schema.modifiers.single { it.type.flatName == "ModifierGenerationTestContentDescription" }
     val topTypeSpec = generateModifierInterface(schema, topType)
@@ -70,7 +70,7 @@ class ModifierGenerationTest {
   object ScopedModifier
 
   @Test fun `layout modifier functions are stable`() {
-    val schema = ProtocolSchemaSet.parse(ScopedModifierSchema::class).schema
+    val schema = parseTestSchema(ScopedModifierSchema::class).schema
 
     val modifier = schema.modifiers.single { it.type.names.last() == "ScopedModifier" }
     val scope = modifier.scopes.single { it.names.last() == "ModifierScope" }

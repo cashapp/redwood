@@ -45,7 +45,7 @@ internal class ApiCommand :
     .help("The command to generate an updated file (reported in failure messages)")
     .default("generate")
 
-  override fun run() {
+  override fun run(schema: ProtocolSchema) {
     val currentApi = ApiSchema(schema)
 
     when (val result = currentApi.validateAgainst(file, mode, fixCommand)) {

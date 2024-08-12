@@ -54,7 +54,6 @@ public abstract class app/cash/redwood/gradle/RedwoodSchemaExtension {
 	public fun <init> ()V
 	public abstract fun getApiTracking ()Lorg/gradle/api/provider/Property;
 	public abstract fun getType ()Lorg/gradle/api/provider/Property;
-	public abstract fun getUseFir ()Lorg/gradle/api/provider/Property;
 }
 
 public final class app/cash/redwood/gradle/RedwoodSchemaPlugin : org/gradle/api/Plugin {

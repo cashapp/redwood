@@ -6,6 +6,19 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-lazylayout-testing>
+final class app.cash.redwood.lazylayout.compose/TestLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/TestLoadingStrategy|null[0]
+    constructor <init>() // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.<init>|<init>(){}[0]
+
+    final val firstVisibleIndex // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstVisibleIndex|{}firstVisibleIndex[0]
+        final fun <get-firstVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.firstVisibleIndex.<get-firstVisibleIndex>|<get-firstVisibleIndex>(){}[0]
+    final val lastVisibleIndex // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.lastVisibleIndex|{}lastVisibleIndex[0]
+        final fun <get-lastVisibleIndex>(): kotlin/Int // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.lastVisibleIndex.<get-lastVisibleIndex>|<get-lastVisibleIndex>(){}[0]
+
+    final fun loadRange(kotlin/Int): kotlin.ranges/IntRange // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.loadRange|loadRange(kotlin.Int){}[0]
+    final fun onUserScroll(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.onUserScroll|onUserScroll(kotlin.Int;kotlin.Int){}[0]
+    final fun scrollTo(kotlin/Int) // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.scrollTo|scrollTo(kotlin.Int){}[0]
+}
+
 final class app.cash.redwood.lazylayout.testing/LazyListValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.lazylayout.testing/LazyListValue|null[0]
     constructor <init>(app.cash.redwood/Modifier = ..., kotlin/Boolean, kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Unit>, kotlin/Int, kotlin/Int, app.cash.redwood.layout.api/Constraint, app.cash.redwood.layout.api/Constraint, app.cash.redwood.ui/Margin, app.cash.redwood.layout.api/CrossAxisAlignment, app.cash.redwood.lazylayout.api/ScrollItemIndex, kotlin.collections/List<app.cash.redwood.testing/WidgetValue> = ..., kotlin.collections/List<app.cash.redwood.testing/WidgetValue> = ...) // app.cash.redwood.lazylayout.testing/LazyListValue.<init>|<init>(app.cash.redwood.Modifier;kotlin.Boolean;kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Unit>;kotlin.Int;kotlin.Int;app.cash.redwood.layout.api.Constraint;app.cash.redwood.layout.api.Constraint;app.cash.redwood.ui.Margin;app.cash.redwood.layout.api.CrossAxisAlignment;app.cash.redwood.lazylayout.api.ScrollItemIndex;kotlin.collections.List<app.cash.redwood.testing.WidgetValue>;kotlin.collections.List<app.cash.redwood.testing.WidgetValue>){}[0]
 

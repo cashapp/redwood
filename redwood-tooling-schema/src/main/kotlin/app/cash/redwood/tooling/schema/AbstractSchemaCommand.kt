@@ -17,9 +17,9 @@ package app.cash.redwood.tooling.schema
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.convert
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.options.defaultLazy
-import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
@@ -27,16 +27,11 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.options.split
 import com.github.ajalt.clikt.parameters.types.file
 import java.io.File
-import java.net.URLClassLoader
 
 internal abstract class AbstractSchemaCommand(
   name: String,
   help: String,
 ) : CliktCommand(name = name, help = help) {
-  private val fir by option("--use-fir")
-    .flag()
-    .help("Use new FIR-based parser")
-
   private val jdkHome by option("--jdk-home")
     .file()
     .defaultLazy { System.getProperty("java.home").let(::File) }
@@ -52,16 +47,14 @@ internal abstract class AbstractSchemaCommand(
     .split(File.pathSeparator)
     .required()
 
-  private val schemaTypeName by argument("schema")
+  private val schemaType by argument("schema")
+    .convert { FqType.bestGuess(it) }
     .help("Fully-qualified class name for the @Schema-annotated interface")
 
-  protected val schema: ProtocolSchema by lazy {
-    if (fir) {
-      parseProtocolSchema(jdkHome, sources, classpath, FqType.bestGuess(schemaTypeName)).schema
-    } else {
-      val classLoader = URLClassLoader(classpath.map { it.toURI().toURL() }.toTypedArray())
-      val schemaType = classLoader.loadClass(schemaTypeName).kotlin
-      ProtocolSchemaSet.parse(schemaType).schema
-    }
+  final override fun run() {
+    val schemaSet = parseProtocolSchema(jdkHome, sources, classpath, schemaType)
+    run(schemaSet.schema)
   }
+
+  abstract fun run(schema: ProtocolSchema)
 }

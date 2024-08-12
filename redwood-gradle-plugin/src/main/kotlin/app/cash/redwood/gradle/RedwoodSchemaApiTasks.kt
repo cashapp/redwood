@@ -41,9 +41,6 @@ internal abstract class RedwoodSchemaApiCheckTask @Inject constructor(
   @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
 
-  @get:Input
-  abstract val useFir: Property<Boolean>
-
   @get:Classpath
   abstract val sources: ConfigurableFileCollection
 
@@ -75,7 +72,6 @@ internal abstract class RedwoodSchemaApiCheckTask @Inject constructor(
     val queue = workerExecutor.noIsolation()
     queue.submit(RedwoodSchemaApiWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
-      it.useFir.set(useFir)
       it.sources.setFrom(sources)
       it.classpath.setFrom(classpath)
       it.schemaType.set(schemaType)
@@ -90,9 +86,6 @@ internal abstract class RedwoodSchemaApiGenerateTask @Inject constructor(
 ) : DefaultTask() {
   @get:Classpath
   abstract val toolClasspath: ConfigurableFileCollection
-
-  @get:Input
-  abstract val useFir: Property<Boolean>
 
   @get:Classpath
   abstract val sources: ConfigurableFileCollection
@@ -111,7 +104,6 @@ internal abstract class RedwoodSchemaApiGenerateTask @Inject constructor(
     val queue = workerExecutor.noIsolation()
     queue.submit(RedwoodSchemaApiWorker::class.java) {
       it.toolClasspath.from(toolClasspath)
-      it.useFir.set(useFir)
       it.sources.setFrom(sources)
       it.classpath.setFrom(classpath)
       it.schemaType.set(schemaType)
@@ -123,7 +115,6 @@ internal abstract class RedwoodSchemaApiGenerateTask @Inject constructor(
 
 private interface RedwoodSchemaApiParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
-  val useFir: Property<Boolean>
   val sources: ConfigurableFileCollection
   val classpath: ConfigurableFileCollection
   val schemaType: Property<String>
@@ -147,9 +138,6 @@ private abstract class RedwoodSchemaApiWorker @Inject constructor(
         add(parameters.apiFile.get().asFile.absolutePath)
         add("--fix-with")
         add(REDWOOD_API_GENERATE_TASK_NAME)
-        if (parameters.useFir.get()) {
-          add("--use-fir")
-        }
         for (source in parameters.sources.files) {
           add("--source")
           add(source.toString())

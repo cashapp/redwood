@@ -42,7 +42,6 @@ public class ScrollOptimizedLoadingStrategy(
   private val scrollInProgressPreloadItemCount: Int = SCROLL_IN_PROGRESS_PRELOAD_ITEM_COUNT,
   private val primaryPreloadItemCount: Int = PRIMARY_PRELOAD_ITEM_COUNT,
   private val secondaryPreloadItemCount: Int = SECONDARY_PRELOAD_ITEM_COUNT,
-  private val preloadItems: Boolean = true,
 ) : LoadingStrategy {
   /**
    * Update this to trigger a programmatic scroll. This may be updated multiple times, including
@@ -54,9 +53,9 @@ public class ScrollOptimizedLoadingStrategy(
     private set
 
   /** Bounds of what the user is looking at. Everything else is placeholders! */
-  public override var firstIndex: Int by mutableIntStateOf(0)
+  public override var firstVisibleIndex: Int by mutableIntStateOf(0)
     private set
-  public var lastIndex: Int by mutableIntStateOf(0)
+  public override var lastVisibleIndex: Int by mutableIntStateOf(0)
     private set
 
   private var firstIndexFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
@@ -66,37 +65,32 @@ public class ScrollOptimizedLoadingStrategy(
   private var beginFromPrevious1: Int by mutableIntStateOf(DEFAULT_SCROLL_INDEX)
   private var endFromPrevious1: Int by mutableStateOf(DEFAULT_SCROLL_INDEX)
 
-  override fun scrollTo(firstIndex: Int) {
-    require(firstIndex >= 0)
+  override fun scrollTo(firstVisibleIndex: Int) {
+    require(firstVisibleIndex >= 0)
 
-    val delta = (lastIndex - this.firstIndex)
-    this.firstIndex = firstIndex
-    this.lastIndex = firstIndex + delta
+    val delta = (lastVisibleIndex - this.firstVisibleIndex)
+    this.firstVisibleIndex = firstVisibleIndex
+    this.lastVisibleIndex = firstVisibleIndex + delta
   }
 
-  override fun onUserScroll(firstIndex: Int, lastIndex: Int) {
-    this.firstIndex = firstIndex
-    this.lastIndex = lastIndex
+  override fun onUserScroll(firstVisibleIndex: Int, lastVisibleIndex: Int) {
+    this.firstVisibleIndex = firstVisibleIndex
+    this.lastVisibleIndex = lastVisibleIndex
   }
 
   public override fun loadRange(itemCount: Int): IntRange {
     // Ensure that the range includes `firstIndex` through `lastIndex`.
-    var begin = firstIndex
-    var end = lastIndex
+    var begin = firstVisibleIndex
+    var end = lastVisibleIndex
 
-    val isScrollingDown = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 < firstIndex
-    val isScrollingUp = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 > firstIndex
-    val hasStoppedScrolling = firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstIndex == firstIndexFromPrevious1
+    val isScrollingDown = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 < firstVisibleIndex
+    val isScrollingUp = firstIndexFromPrevious1 != DEFAULT_SCROLL_INDEX && firstIndexFromPrevious1 > firstVisibleIndex
+    val hasStoppedScrolling = firstIndexFromPrevious2 != DEFAULT_SCROLL_INDEX && firstVisibleIndex == firstIndexFromPrevious1
     val wasScrollingDown = firstIndexFromPrevious1 > firstIndexFromPrevious2
     val wasScrollingUp = firstIndexFromPrevious1 < firstIndexFromPrevious2
 
     // Expand the range depending on scroll direction.
     when {
-      // Ignore preloads.
-      !preloadItems -> {
-        // No-op
-      }
-
       isScrollingDown -> {
         begin -= scrollInProgressPreloadItemCount
         end += primaryPreloadItemCount
@@ -124,8 +118,8 @@ public class ScrollOptimizedLoadingStrategy(
     }
 
     // On initial load, set lastIndex to the end of the loaded window.
-    if (lastIndex == 0) {
-      lastIndex = end
+    if (lastVisibleIndex == 0) {
+      lastVisibleIndex = end
     }
 
     // If we're contiguous with the previous visible window,
@@ -148,8 +142,8 @@ public class ScrollOptimizedLoadingStrategy(
     end = end.coerceIn(0, itemCount)
 
     this.firstIndexFromPrevious2 = firstIndexFromPrevious1
-    this.firstIndexFromPrevious1 = firstIndex
-    this.lastIndexFromPrevious1 = lastIndex
+    this.firstIndexFromPrevious1 = firstVisibleIndex
+    this.lastIndexFromPrevious1 = lastVisibleIndex
 
     this.beginFromPrevious1 = begin
     this.endFromPrevious1 = end

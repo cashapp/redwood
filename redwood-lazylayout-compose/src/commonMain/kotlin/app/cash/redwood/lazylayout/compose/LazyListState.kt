@@ -37,7 +37,7 @@ public fun rememberLazyListState(
 
 /** The default [Saver] implementation for [LazyListState]. */
 private val saver: Saver<LazyListState, *> = Saver(
-  save = { it.strategy.firstIndex },
+  save = { it.strategy.firstVisibleIndex },
   restore = {
     LazyListState().apply {
       programmaticScroll(firstIndex = it, animated = false, clobberUserScroll = false)

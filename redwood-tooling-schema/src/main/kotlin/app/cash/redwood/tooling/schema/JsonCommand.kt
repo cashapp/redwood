@@ -30,7 +30,7 @@ internal class JsonCommand :
   private val out by option().path().required()
     .help("Directory into which JSON is written")
 
-  override fun run() {
+  override fun run(schema: ProtocolSchema) {
     val embeddedSchema = schema.toEmbeddedSchema()
     val path = out.resolve(embeddedSchema.path)
     path.parent.createDirectories()

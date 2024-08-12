@@ -42,6 +42,7 @@ public abstract class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor
 }
 
 public final class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor$Binding {
+	public final fun bind (Ljava/lang/Object;)V
 	public final fun getView ()Ljava/lang/Object;
 	public final fun isBound ()Z
 	public final fun unbind ()V
@@ -62,9 +63,14 @@ public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFac
 }
 
 public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSystem : app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
+	public static final field Companion Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSystem$Companion;
 	public fun <init> (Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;)V
 	public fun apply (Ljava/lang/Object;Lapp/cash/redwood/Modifier$UnscopedElement;)V
 	public fun getRedwoodLazyLayout ()Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;
+}
+
+public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSystem$Companion {
+	public final fun allChildren (Lapp/cash/redwood/widget/Widget;)Ljava/util/List;
 }
 
 public abstract interface class app/cash/redwood/lazylayout/widget/RefreshableLazyList : app/cash/redwood/widget/Widget {

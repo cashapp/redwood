@@ -4,11 +4,12 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
 
 New:
-- Source-based schema parser is now the default. Can be disabled in your schema module with `redwood { useFir = false }`.
+- Source-based schema parser is now the default. The `useFir` Gradle property has been removed.
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
 
 Changed:
 - `ProtocolFactory` interface is now sealed as arbitrary subtypes were never supported. Only schema-generated subtypes should be used.
+- `UIViewLazyList` doesn't crash with a `NullPointerException` if cells are added, removed, and re-added without being reused.
 - Change `UiConfiguration.viewportSize` to be nullable. A null `viewportSize` indicates the viewport's size has not been resolved yet.
 
 Fixed:
