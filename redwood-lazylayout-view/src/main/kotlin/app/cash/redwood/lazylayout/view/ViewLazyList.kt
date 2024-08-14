@@ -56,7 +56,6 @@ internal open class ViewLazyList private constructor(
 ) : LazyList<View>,
   ChangeListener {
   private val adapter = LazyContentItemListAdapter()
-  private val scope = MainScope()
 
   override var modifier: Modifier = Modifier
 
@@ -145,10 +144,6 @@ internal open class ViewLazyList private constructor(
           }
         },
       )
-
-      doOnDetach {
-        scope.cancel()
-      }
     }
     recyclerView.adapter = adapter
   }
