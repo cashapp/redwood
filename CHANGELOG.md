@@ -13,7 +13,7 @@ Changed:
 - Change `UiConfiguration.viewportSize` to be nullable. A null `viewportSize` indicates the viewport's size has not been resolved yet.
 
 Fixed:
-- Nothing yet!
+- Breaking `content: UIView` retain cycle in `UIViewLazyList`'s `LazyListContainerCell`.
 
 
 ## [0.13.0] - 2024-07-25

@@ -119,7 +119,7 @@ internal open class UIViewLazyList :
     }
 
     override fun setContent(view: LazyListContainerCell, content: UIView?, modifier: Modifier) {
-      view.content = content
+      view.setContent(content)
     }
   }
 
@@ -269,16 +269,6 @@ internal class LazyListContainerCell(
   reuseIdentifier: String?,
 ) : UITableViewCell(style, reuseIdentifier) {
   internal var binding: Binding<LazyListContainerCell, UIView>? = null
-  internal var content: UIView? = null
-    set(value) {
-      field = value
-
-      removeAllSubviews()
-      if (value != null) {
-        contentView.addSubview(value)
-      }
-      setNeedsLayout()
-    }
 
   override fun initWithStyle(
     style: UITableViewCellStyle,
@@ -320,13 +310,26 @@ internal class LazyListContainerCell(
   override fun layoutSubviews() {
     super.layoutSubviews()
 
-    val content = this.content ?: return
+    if (contentView.subviews.isEmpty()) return
+
+    val content = contentView.subviews.first() as UIView ?: return
     content.setFrame(bounds)
     contentView.setFrame(bounds)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    return content?.sizeThatFits(size) ?: return super.sizeThatFits(size)
+    if (contentView.subviews.isEmpty()) return super.sizeThatFits(size)
+
+    val content = contentView.subviews.first() as UIView ?: return super.sizeThatFits(size)
+    return content.sizeThatFits(size)
+  }
+
+  internal fun setContent(content: UIView?) {
+    removeAllSubviews()
+    if (content != null) {
+      contentView.addSubview(content)
+    }
+    setNeedsLayout()
   }
 
   private fun removeAllSubviews() {
