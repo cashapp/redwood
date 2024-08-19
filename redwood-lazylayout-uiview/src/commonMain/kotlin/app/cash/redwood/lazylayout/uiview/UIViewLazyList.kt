@@ -310,17 +310,13 @@ internal class LazyListContainerCell(
   override fun layoutSubviews() {
     super.layoutSubviews()
 
-    if (contentView.subviews.isEmpty()) return
-
-    val content = contentView.subviews.first() as UIView ?: return
+    val content = contentView.subviews.firstOrNull() as UIView? ?: return
     content.setFrame(bounds)
     contentView.setFrame(bounds)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    if (contentView.subviews.isEmpty()) return super.sizeThatFits(size)
-
-    val content = contentView.subviews.first() as UIView ?: return super.sizeThatFits(size)
+    val content = contentView.subviews.firstOrNull() as UIView? ?: return super.sizeThatFits(size)
     return content.sizeThatFits(size)
   }
 
