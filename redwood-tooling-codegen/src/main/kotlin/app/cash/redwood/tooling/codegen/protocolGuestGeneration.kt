@@ -38,10 +38,9 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.LIST
+import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.NOTHING
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -49,6 +48,7 @@ import com.squareup.kotlinpoet.SHORT
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.U_INT
 import com.squareup.kotlinpoet.joinToCode
@@ -66,6 +66,10 @@ object ExampleProtocolWidgetSystemFactory : ProtocolWidgetSystemFactory {
       RedwoodLayout = ProtocolRedwoodLayoutWidgetFactory(guestAdapter, mismatchHandler),
     )
   }
+
+  public override fun modifierTag(element: Modifier.Element): ModifierTag { ... }
+
+  public override fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>  { ... }
 }
 */
 internal fun generateProtocolWidgetSystemFactory(
@@ -96,6 +100,8 @@ internal fun generateProtocolWidgetSystemFactory(
             }
             .build(),
         )
+        .addFunction(modifierTag(schemaSet))
+        .addFunction(modifierSerializer(schemaSet))
         .build(),
     )
   }
@@ -197,10 +203,7 @@ internal class ProtocolButton(
   override var modifier: Modifier
     get() = throw AssertionError()
     set(value) {
-      val json = buildJsonArray {
-        value.forEach { element -> add(element.toJsonElement(guestAdapter.json))
-      }
-      guestAdapter.appendModifierChange(id, guestAdapter.json))
+      guestAdapter.appendModifierChange(id, value)
     }
 
   override fun text(text: String?) {
@@ -417,7 +420,7 @@ internal fun generateProtocolWidget(
             .setter(
               FunSpec.setterBuilder()
                 .addParameter("value", Redwood.Modifier)
-                .addStatement("guestAdapter.appendModifierChange(id, value.%M(guestAdapter.json))", host.modifierToProtocol)
+                .addStatement("guestAdapter.appendModifierChange(id, value)")
                 .build(),
             )
             .build(),
@@ -689,66 +692,89 @@ internal fun generateProtocolModifierSerializers(
   }
 }
 
-internal fun generateComposeProtocolModifierSerialization(
+/*
+@RedwoodCodegenApi
+public override fun modifierTag(element: Modifier.Element): ModifierTag = when (element) {
+  is CustomType -> ModifierTag(3)
+  is CustomTypeStateless -> ModifierTag(4)
+  else -> throw AssertionError()
+}
+*/
+internal fun modifierTag(
   schemaSet: ProtocolSchemaSet,
-): FileSpec {
-  val schema = schemaSet.schema
-  val name = schema.modifierToProtocol.simpleName
-  return buildFileSpec(schema.guestProtocolPackage(), "modifierSerialization") {
-    addAnnotation(suppressDeprecations)
-    addFunction(
-      FunSpec.builder(name)
-        .addModifiers(INTERNAL)
-        .receiver(Redwood.Modifier)
-        .addParameter("json", KotlinxSerialization.Json)
-        .returns(LIST.parameterizedBy(Protocol.ModifierElement))
-        .beginControlFlow("return %M", Stdlib.buildList)
-        .addStatement(
-          "this@%L.forEach { element -> add(element.%M(json)) }",
-          name,
-          schema.modifierToProtocol,
+): FunSpec {
+  return FunSpec.builder("modifierTag")
+    .addAnnotation(Redwood.RedwoodCodegenApi)
+    .addModifiers(PUBLIC, OVERRIDE)
+    .addParameter("element", Redwood.ModifierElement)
+    .returns(Protocol.ModifierTag)
+    .beginControlFlow("return when (element)")
+    .apply {
+      val allModifiers = schemaSet.allModifiers()
+      for ((localSchema, modifier) in allModifiers) {
+        val modifierType = localSchema.modifierType(modifier)
+        addStatement(
+          "is %T -> %T(%L)",
+          modifierType,
+          Protocol.ModifierTag,
+          modifier.tag,
         )
-        .endControlFlow()
+      }
+    }
+    .addStatement("else -> throw %T()", Stdlib.AssertionError)
+    .endControlFlow()
+    .build()
+}
+
+/*
+@RedwoodCodegenApi
+@Suppress("UNCHECKED_CAST")
+public override fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>? =
+  when (element) {
+    is CustomType -> CustomTypeSerializer
+    is CustomTypeStateless -> null
+    else -> throw AssertionError()
+  } as KSerializer<T>?
+*/
+internal fun modifierSerializer(
+  schemaSet: ProtocolSchemaSet,
+): FunSpec {
+  val schema = schemaSet.schema
+  val allModifiers = schemaSet.allModifiers()
+  val t = TypeVariableName("T", Redwood.ModifierElement)
+
+  return FunSpec.builder("modifierSerializer")
+    .addAnnotation(Redwood.RedwoodCodegenApi)
+    .addAnnotation(
+      AnnotationSpec.builder(Suppress::class)
+        .addMember("%S", "UNCHECKED_CAST")
         .build(),
     )
-    addFunction(
-      FunSpec.builder(schema.modifierToProtocol)
-        .addModifiers(PRIVATE)
-        .receiver(Redwood.ModifierElement)
-        .addParameter("json", KotlinxSerialization.Json)
-        .returns(Protocol.ModifierElement)
-        .beginControlFlow("return when (this)")
-        .apply {
-          val modifier = schemaSet.allModifiers()
-          if (modifier.isEmpty()) {
-            addAnnotation(
-              AnnotationSpec.builder(Suppress::class)
-                .addMember("%S, %S", "UNUSED_PARAMETER", "UNUSED_EXPRESSION")
-                .build(),
+    .addModifiers(PUBLIC, OVERRIDE)
+    .addTypeVariable(t)
+    .addParameter("element", t)
+    .returns(KotlinxSerialization.KSerializer.parameterizedBy(t).copy(nullable = true))
+    .addCode("return when·(element)·{⇥\n")
+    .apply {
+      for ((localSchema, modifier) in allModifiers) {
+        val modifierType = localSchema.modifierType(modifier)
+        when {
+          modifier.properties.isEmpty() -> {
+            addStatement("is %T -> null", modifierType)
+          }
+          else -> {
+            addStatement(
+              "is %T -> %T",
+              modifierType,
+              localSchema.modifierSerializer(modifier, schema),
             )
-          } else {
-            for ((localSchema, modifier) in modifier) {
-              val modifierType = localSchema.modifierType(modifier)
-              val surrogate = localSchema.modifierSerializer(modifier, schema)
-              if (modifier.properties.isEmpty()) {
-                addStatement(
-                  "is %T -> %T(%T(%L))",
-                  modifierType,
-                  Protocol.ModifierElement,
-                  Protocol.ModifierTag,
-                  modifier.tag,
-                )
-              } else {
-                addStatement("is %T -> %T.encode(json, this)", modifierType, surrogate)
-              }
-            }
           }
         }
-        .addStatement("else -> throw %T()", Stdlib.AssertionError)
-        .endControlFlow()
-        .build(),
-    )
-  }
+      }
+    }
+    .addStatement("else -> throw %T()", Stdlib.AssertionError)
+    .addCode("⇤} as %T?\n", KotlinxSerialization.KSerializer.parameterizedBy(t))
+    .build()
 }
 
 private fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
@@ -762,6 +788,3 @@ private fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
 private fun Schema.modifierSerializer(modifier: Modifier, host: Schema): ClassName {
   return ClassName(guestProtocolPackage(host), modifier.type.flatName + "Serializer")
 }
-
-internal val Schema.modifierToProtocol: MemberName get() =
-  MemberName(guestProtocolPackage(), "toProtocol")

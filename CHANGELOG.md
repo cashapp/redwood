@@ -6,6 +6,7 @@
 New:
 - Source-based schema parser is now the default. The `useFir` Gradle property has been removed.
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
+- Optimize encoding modifiers in Kotlin/JS.
 
 Changed:
 - In Treehouse, events from the UI are now serialized on a background thread. This means that there is both a delay and a thread change between when a UI binding sends an event and when that object is converted to JSON. All arguments to events must not be mutable and support property reads on any thread. Best practice is for all event arguments to be completely immutable.

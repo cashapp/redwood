@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChangesSink
@@ -41,7 +42,7 @@ import kotlinx.serialization.json.JsonPrimitive
 public class DefaultGuestProtocolAdapter(
   public override val json: Json = Json.Default,
   hostVersion: RedwoodVersion,
-  widgetSystemFactory: ProtocolWidgetSystemFactory,
+  private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GuestProtocolAdapter {
   private var nextValue = Id.Root.value + 1
@@ -111,11 +112,21 @@ public class DefaultGuestProtocolAdapter(
     changes.add(PropertyChange(id, tag, JsonPrimitive(value)))
   }
 
-  public override fun appendModifierChange(
-    id: Id,
-    elements: List<ModifierElement>,
-  ) {
+  override fun appendModifierChange(id: Id, value: Modifier) {
+    val elements = mutableListOf<ModifierElement>()
+
+    value.forEach { element ->
+      elements += modifierElement(element)
+    }
+
     changes.add(ModifierChange(id, elements))
+  }
+
+  private fun <T : Modifier.Element> modifierElement(element: T): ModifierElement {
+    val tag = widgetSystemFactory.modifierTag(element)
+    val serializer = widgetSystemFactory.modifierSerializer(element)
+      ?: return ModifierElement(tag)
+    return ModifierElement(tag, json.encodeToJsonElement(serializer, element))
   }
 
   public override fun appendAdd(

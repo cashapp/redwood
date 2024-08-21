@@ -4,7 +4,7 @@ public final class app/cash/redwood/protocol/guest/DefaultGuestProtocolAdapter :
 	public synthetic fun <init> (Lkotlinx/serialization/json/Json;Ljava/lang/String;Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun appendAdd-ARs5Qwk (IIILapp/cash/redwood/protocol/guest/ProtocolWidget;)V
 	public fun appendCreate-kyz2zXs (II)V
-	public fun appendModifierChange-z3jyS0k (ILjava/util/List;)V
+	public fun appendModifierChange-z3jyS0k (ILapp/cash/redwood/Modifier;)V
 	public fun appendMove-HpxY78w (IIIII)V
 	public fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
 	public fun appendPropertyChange-M7EZMwg (III)V
@@ -25,7 +25,7 @@ public final class app/cash/redwood/protocol/guest/DefaultGuestProtocolAdapter :
 public abstract interface class app/cash/redwood/protocol/guest/GuestProtocolAdapter : app/cash/redwood/protocol/EventSink {
 	public abstract fun appendAdd-ARs5Qwk (IIILapp/cash/redwood/protocol/guest/ProtocolWidget;)V
 	public abstract fun appendCreate-kyz2zXs (II)V
-	public abstract fun appendModifierChange-z3jyS0k (ILjava/util/List;)V
+	public abstract fun appendModifierChange-z3jyS0k (ILapp/cash/redwood/Modifier;)V
 	public abstract fun appendMove-HpxY78w (IIIII)V
 	public abstract fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
 	public abstract fun appendPropertyChange-M7EZMwg (III)V
@@ -81,6 +81,8 @@ public final class app/cash/redwood/protocol/guest/ProtocolWidgetChildren : app/
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory {
 	public abstract fun create (Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/widget/WidgetSystem;
 	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/widget/WidgetSystem;
+	public abstract fun modifierSerializer (Lapp/cash/redwood/Modifier$Element;)Lkotlinx/serialization/KSerializer;
+	public abstract fun modifierTag-54iDFIs (Lapp/cash/redwood/Modifier$Element;)I
 }
 
 public final class app/cash/redwood/protocol/guest/VersionKt {

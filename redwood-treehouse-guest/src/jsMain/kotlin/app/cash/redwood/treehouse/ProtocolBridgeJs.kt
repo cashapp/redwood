@@ -15,13 +15,13 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
@@ -49,7 +49,7 @@ internal actual fun GuestProtocolAdapter(
 internal class FastGuestProtocolAdapter(
   override val json: Json = Json.Default,
   hostVersion: RedwoodVersion,
-  widgetSystemFactory: ProtocolWidgetSystemFactory,
+  private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GuestProtocolAdapter {
   private var nextValue = Id.Root.value + 1
@@ -138,12 +138,20 @@ internal class FastGuestProtocolAdapter(
     changes.push(js("""["property",{"id":id,"tag":tag,"value":value}]"""))
   }
 
-  override fun appendModifierChange(
-    id: Id,
-    elements: List<ModifierElement>,
-  ) {
+  override fun appendModifierChange(id: Id, value: Modifier) {
+    val elements = js("[]")
+
+    value.forEach { element ->
+      val tag = widgetSystemFactory.modifierTag(element)
+      val serializer = widgetSystemFactory.modifierSerializer(element)
+      val value = when {
+        serializer == null -> null
+        else -> json.encodeToDynamic(serializer, element)
+      }
+      elements.push(js("""[tag,value]"""))
+    }
+
     val id = id
-    val elements = Json.encodeToDynamic(elements)
     changes.push(js("""["modifier",{"id":id,"elements":elements}]"""))
   }
 

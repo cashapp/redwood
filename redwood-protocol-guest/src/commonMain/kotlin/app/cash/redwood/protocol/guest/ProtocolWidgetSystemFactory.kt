@@ -15,7 +15,11 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.Modifier
+import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.widget.WidgetSystem
+import kotlinx.serialization.KSerializer
 
 public interface ProtocolWidgetSystemFactory {
   /** Create a new [WidgetSystem] connected to a host via [guestAdapter]. */
@@ -23,4 +27,11 @@ public interface ProtocolWidgetSystemFactory {
     guestAdapter: GuestProtocolAdapter,
     mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
   ): WidgetSystem<Unit>
+
+  @RedwoodCodegenApi
+  public fun modifierTag(element: Modifier.Element): ModifierTag
+
+  /** Returns null if the modifier is stateless and should serialize as null. */
+  @RedwoodCodegenApi
+  public fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>?
 }

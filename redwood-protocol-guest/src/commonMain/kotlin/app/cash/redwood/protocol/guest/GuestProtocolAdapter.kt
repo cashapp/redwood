@@ -15,12 +15,12 @@
  */
 package app.cash.redwood.protocol.guest
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
@@ -106,7 +106,7 @@ public interface GuestProtocolAdapter : EventSink {
   @RedwoodCodegenApi
   public fun appendModifierChange(
     id: Id,
-    elements: List<ModifierElement>,
+    value: Modifier,
   )
 
   @RedwoodCodegenApi
