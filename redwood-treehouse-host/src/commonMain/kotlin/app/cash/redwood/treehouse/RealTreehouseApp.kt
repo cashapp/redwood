@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.zipline.EventListener as ZiplineEventListener
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.LoadResult
@@ -37,6 +38,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   spec: Spec<A>,
   override val dispatchers: TreehouseDispatchers,
   eventListenerFactory: EventListener.Factory,
+  private val leakDetector: LeakDetector,
 ) : TreehouseApp<A>() {
   /** This property is confined to [TreehouseDispatchers.ui]. */
   private var closed = false
@@ -85,6 +87,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       dispatchers = dispatchers,
       codeEventPublisher = RealCodeEventPublisher(codeListener, this),
       source = source,
+      leakDetector = leakDetector,
     )
   }
 
@@ -191,6 +194,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     private val loaderEventListener: LoaderEventListener,
     internal val concurrentDownloads: Int,
     internal val stateStore: StateStore,
+    private val leakDetector: LeakDetector,
   ) : TreehouseApp.Factory {
     /** This is lazy to avoid initializing the cache on the thread that creates this launcher. */
     internal val cache = lazy {
@@ -211,6 +215,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       spec = spec,
       dispatchers = platform.newDispatchers(spec.name),
       eventListenerFactory = eventListenerFactory,
+      leakDetector = leakDetector,
     )
 
     override fun close() {

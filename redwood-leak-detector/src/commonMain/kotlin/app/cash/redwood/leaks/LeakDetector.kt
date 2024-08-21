@@ -15,98 +15,140 @@
  */
 package app.cash.redwood.leaks
 
+import app.cash.redwood.leaks.LeakDetector.Callback
 import kotlin.time.Duration
-import kotlin.time.TimeMark
 import kotlin.time.TimeSource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart.UNDISPATCHED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 /** Watch references and detect when they leak. */
 @RedwoodLeakApi
-public interface LeakDetector {
+public interface LeakDetector : AutoCloseable {
   /**
    * Add [reference] as a watched instance that is expected to be garbage collected soon.
    *
    * This function is safe to call from any thread.
+   *
+   * @param note Information about why [reference] is being watched.
    */
-  public fun watchReference(reference: Any, name: String)
+  public fun watchReference(reference: Any, note: String)
 
   /**
-   * Trigger garbage collection and determine if any watched references have leaked per this
-   * instance's leak policy.
-   *
-   * This function is safe to call from any thread.
+   * Suspend until all current watched references are either collected or detected as a leak, and
+   * throw an exception for any new calls to [watchReference].
    */
-  public suspend fun checkLeaks()
+  public suspend fun awaitClose()
 
-  public object None : LeakDetector {
-    override fun watchReference(reference: Any, name: String) {}
-    override suspend fun checkLeaks() {}
-  }
+  /**
+   * Immediately stop all leak detection of current watched references, and throw an exception for
+   * any new calls to [watchReference].
+   */
+  override fun close()
 
   public companion object {
     /**
-     * Create a time-based [LeakDetector] which reports leaks to [listener] if watched references
+     * Create a time-based [LeakDetector] which reports leaks if watched references
      * have not been garbage collected before the [leakThreshold].
      *
-     * This function may return [None] if the platform does not support weak references, in which
-     * case [listener] will never be invoked.
+     * This function may return a [no-op detector][none] if the platform does not support weak references.
      */
-    public fun timeBased(
-      listener: LeakListener,
+    public fun timeBasedIn(
+      scope: CoroutineScope,
       timeSource: TimeSource,
       leakThreshold: Duration,
+      callback: Callback,
     ): LeakDetector {
       if (hasWeakReference()) {
-        return TimeBasedLeakDetector(listener, timeSource, leakThreshold)
+        return TimeBasedLeakDetector(scope, detectGc(), timeSource, leakThreshold, callback)
       }
-      return None
+      return none()
     }
-  }
-}
 
-@RedwoodLeakApi
-public interface LeakListener {
-  public fun onReferenceCollected(name: String)
-  public fun onReferenceLeaked(name: String, alive: Duration)
+    /** A [LeakDetector] that does not watch references for leaks. */
+    public fun none(): LeakDetector = NoOpLeakDetector()
+  }
+
+  public fun interface Callback {
+    public fun onReferenceLeaked(reference: Any, note: String)
+  }
 }
 
 internal class TimeBasedLeakDetector(
-  private val listener: LeakListener,
+  private val scope: CoroutineScope,
+  internal val gc: Gc,
   private val timeSource: TimeSource,
   private val leakThreshold: Duration,
+  private val callback: Callback,
 ) : LeakDetector {
-  internal val gc = detectGc()
-  private val watchedReferences = concurrentMutableListOf<WatchedReference>()
+  private var closed = false
 
-  override fun watchReference(reference: Any, name: String) {
-    watchedReferences += WatchedReference(
-      name = name,
-      weakReference = WeakReference(reference),
-      watchedAt = timeSource.markNow(),
-    )
+  private val gcJob = Job()
+  private val gcNotifications = flow {
+    val checkPeriod = leakThreshold / 2
+    while (true) {
+      delay(checkPeriod)
+      gc.collect()
+      emit(Unit)
+    }
+  }.shareIn(
+    scope = CoroutineScope(scope.coroutineContext + gcJob),
+    started = SharingStarted.WhileSubscribed(),
+  )
+
+  private val watchJob = Job()
+
+  override fun watchReference(reference: Any, note: String) {
+    check(!closed) { "closed" }
+    internalWatch(WeakReference(reference), note)
   }
 
-  override suspend fun checkLeaks() {
-    gc.collect()
-
-    watchedReferences.removeIf { watchedReference ->
-      if (watchedReference.weakReference.get() == null) {
-        listener.onReferenceCollected(watchedReference.name)
-        return@removeIf true
+  private fun internalWatch(weakReference: WeakReference<Any>, reason: String) {
+    scope.launch(watchJob, start = UNDISPATCHED) {
+      val watchedAt = timeSource.markNow()
+      gcNotifications.collect {
+        val reference = weakReference.get() ?: cancel()
+        if (watchedAt.elapsedNow() >= leakThreshold) {
+          callback.onReferenceLeaked(reference, reason)
+          cancel()
+        }
       }
-
-      val alive = watchedReference.watchedAt.elapsedNow()
-      if (alive >= leakThreshold) {
-        listener.onReferenceLeaked(watchedReference.name, alive)
-        return@removeIf true
-      }
-
-      false
     }
   }
 
-  private class WatchedReference(
-    val name: String,
-    val weakReference: WeakReference<Any>,
-    val watchedAt: TimeMark,
-  )
+  override suspend fun awaitClose() {
+    closed = true
+    // Wait for all active watches to complete.
+    watchJob.children.forEach { it.join() }
+    watchJob.cancel()
+    gcJob.cancel()
+  }
+
+  override fun close() {
+    closed = true
+    watchJob.cancel()
+    gcJob.cancel()
+  }
+}
+
+private class NoOpLeakDetector : LeakDetector {
+  private var closed = false
+
+  override fun watchReference(reference: Any, note: String) {
+    check(!closed) { "closed" }
+  }
+
+  override suspend fun awaitClose() {
+    closed = true
+  }
+
+  override fun close() {
+    closed = true
+  }
 }

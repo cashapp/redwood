@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.zipline.Zipline
 import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
@@ -107,6 +108,7 @@ internal class TreehouseTester(
     concurrentDownloads = 1,
     loaderEventListener = LoaderEventListener.None,
     stateStore = MemoryStateStore(),
+    leakDetector = LeakDetector.none(),
   )
 
   val openTreehouseDispatchersCount: Int

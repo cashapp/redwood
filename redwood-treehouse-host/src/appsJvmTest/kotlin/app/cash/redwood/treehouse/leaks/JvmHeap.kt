@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse.leaks
 
 import app.cash.redwood.treehouse.EventLog
+import java.lang.ref.WeakReference
 import java.lang.reflect.Field
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -78,6 +79,7 @@ internal object JvmHeap : Heap {
       instance is KSerializer<*> -> listOf()
       instance is SerializersModule -> listOf()
       instance is String -> listOf()
+      instance is WeakReference<*> -> listOf()
 
       // Explore everything else by reflecting on its fields.
       javaPackageName.isDescendant(

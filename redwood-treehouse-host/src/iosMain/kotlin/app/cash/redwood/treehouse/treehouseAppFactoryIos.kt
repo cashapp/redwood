@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
@@ -34,6 +35,7 @@ public fun TreehouseAppFactory(
   concurrentDownloads: Int = 8,
   loaderEventListener: LoaderEventListener = LoaderEventListener.None,
   stateStore: StateStore = MemoryStateStore(),
+  leakDetector: LeakDetector = LeakDetector.none(),
 ): TreehouseApp.Factory = RealTreehouseApp.Factory(
   platform = IosTreehousePlatform(),
   httpClient = httpClient,
@@ -47,4 +49,5 @@ public fun TreehouseAppFactory(
   loaderEventListener = loaderEventListener,
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,
+  leakDetector = leakDetector,
 )

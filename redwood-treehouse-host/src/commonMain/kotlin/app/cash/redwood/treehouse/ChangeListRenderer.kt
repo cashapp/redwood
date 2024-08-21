@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.ProtocolMismatchHandler
@@ -49,6 +50,7 @@ public class ChangeListRenderer<W : Any>(
         ProtocolMismatchHandler.Throwing,
       ),
       eventSink = refuseAllEvents,
+      leakDetector = LeakDetector.none(),
     )
     hostAdapter.sendChanges(changeList.changes)
   }

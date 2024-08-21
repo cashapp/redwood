@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.host
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChangesSink
 import app.cash.redwood.protocol.ChildrenChange
@@ -50,6 +51,7 @@ public class HostProtocolAdapter<W : Any>(
   container: Widget.Children<W>,
   factory: ProtocolFactory<W>,
   private val eventSink: UiEventSink,
+  private val leakDetector: LeakDetector,
 ) : ChangesSink {
   private val factory = when (factory) {
     is GeneratedProtocolFactory -> factory
@@ -182,11 +184,20 @@ public class HostProtocolAdapter<W : Any>(
       pool.addFirst(removedNode)
       if (pool.size > POOL_SIZE) {
         val evicted = pool.removeLast() // Evict the least-recently added element.
-        evicted.detach()
+        watchForLeaksAndDetach(evicted, "evicted from reuse pool")
       }
     } else {
-      removedNode.detach()
+      watchForLeaksAndDetach(removedNode, "not eligible for reuse")
     }
+  }
+
+  private fun watchForLeaksAndDetach(node: ProtocolNode<W>, note: String) {
+    leakDetector.watchReference(node.widget.value, note)
+    leakDetector.watchReference(node.widget, note)
+    leakDetector.watchReference(node, note)
+
+    // Detaching frees the node's reference to the widget, so this must be done last.
+    node.detach()
   }
 
   /**
@@ -406,6 +417,8 @@ private class RootProtocolNode<W : Any>(
   override fun detach() {
     children.detach()
   }
+
+  override fun toString() = "RootProtocolNode"
 }
 
 private const val REUSE_MODIFIER_TAG = -4_543_827

@@ -25,6 +25,7 @@ import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
@@ -45,6 +46,8 @@ import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
@@ -58,6 +61,15 @@ import okio.assetfilesystem.asFileSystem
 class EmojiSearchActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
   private lateinit var treehouseLayout: TreehouseLayout
+
+  private val leakDetector = LeakDetector.timeBasedIn(
+    scope = scope,
+    timeSource = TimeSource.Monotonic,
+    leakThreshold = 10.seconds,
+    callback = { reference, note ->
+      Log.e("LEAK", "Leak detected! $reference $note")
+    },
+  )
 
   @SuppressLint("ResourceType")
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,6 +166,7 @@ class EmojiSearchActivity : ComponentActivity() {
         fileSystem = FileSystem.SYSTEM,
         directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
       ),
+      leakDetector = leakDetector,
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")

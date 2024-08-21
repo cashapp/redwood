@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
@@ -67,6 +68,7 @@ class ViewRecyclingTester(
     eventSink = { event ->
       guestAdapter.sendEvent(event.toProtocol(Json.Default))
     },
+    leakDetector = LeakDetector.none(),
   )
 
   private val guestAdapter: GuestProtocolAdapter = DefaultGuestProtocolAdapter(

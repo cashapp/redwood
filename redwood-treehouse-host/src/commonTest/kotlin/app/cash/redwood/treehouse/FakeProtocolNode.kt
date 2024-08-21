@@ -54,4 +54,6 @@ internal class FakeProtocolNode(
 
   override fun detach() {
   }
+
+  override fun toString() = "FakeProtocolNode(id=${id.value}, tag=${widgetTag.value})"
 }

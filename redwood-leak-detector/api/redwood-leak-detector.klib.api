@@ -10,21 +10,17 @@ open annotation class app.cash.redwood.leaks/RedwoodLeakApi : kotlin/Annotation 
     constructor <init>() // app.cash.redwood.leaks/RedwoodLeakApi.<init>|<init>(){}[0]
 }
 
-abstract interface app.cash.redwood.leaks/LeakDetector { // app.cash.redwood.leaks/LeakDetector|null[0]
+abstract interface app.cash.redwood.leaks/LeakDetector : kotlin/AutoCloseable { // app.cash.redwood.leaks/LeakDetector|null[0]
+    abstract fun close() // app.cash.redwood.leaks/LeakDetector.close|close(){}[0]
     abstract fun watchReference(kotlin/Any, kotlin/String) // app.cash.redwood.leaks/LeakDetector.watchReference|watchReference(kotlin.Any;kotlin.String){}[0]
-    abstract suspend fun checkLeaks() // app.cash.redwood.leaks/LeakDetector.checkLeaks|checkLeaks(){}[0]
+    abstract suspend fun awaitClose() // app.cash.redwood.leaks/LeakDetector.awaitClose|awaitClose(){}[0]
+
+    abstract fun interface Callback { // app.cash.redwood.leaks/LeakDetector.Callback|null[0]
+        abstract fun onReferenceLeaked(kotlin/Any, kotlin/String) // app.cash.redwood.leaks/LeakDetector.Callback.onReferenceLeaked|onReferenceLeaked(kotlin.Any;kotlin.String){}[0]
+    }
 
     final object Companion { // app.cash.redwood.leaks/LeakDetector.Companion|null[0]
-        final fun timeBased(app.cash.redwood.leaks/LeakListener, kotlin.time/TimeSource, kotlin.time/Duration): app.cash.redwood.leaks/LeakDetector // app.cash.redwood.leaks/LeakDetector.Companion.timeBased|timeBased(app.cash.redwood.leaks.LeakListener;kotlin.time.TimeSource;kotlin.time.Duration){}[0]
+        final fun none(): app.cash.redwood.leaks/LeakDetector // app.cash.redwood.leaks/LeakDetector.Companion.none|none(){}[0]
+        final fun timeBasedIn(kotlinx.coroutines/CoroutineScope, kotlin.time/TimeSource, kotlin.time/Duration, app.cash.redwood.leaks/LeakDetector.Callback): app.cash.redwood.leaks/LeakDetector // app.cash.redwood.leaks/LeakDetector.Companion.timeBasedIn|timeBasedIn(kotlinx.coroutines.CoroutineScope;kotlin.time.TimeSource;kotlin.time.Duration;app.cash.redwood.leaks.LeakDetector.Callback){}[0]
     }
-
-    final object None : app.cash.redwood.leaks/LeakDetector { // app.cash.redwood.leaks/LeakDetector.None|null[0]
-        final fun watchReference(kotlin/Any, kotlin/String) // app.cash.redwood.leaks/LeakDetector.None.watchReference|watchReference(kotlin.Any;kotlin.String){}[0]
-        final suspend fun checkLeaks() // app.cash.redwood.leaks/LeakDetector.None.checkLeaks|checkLeaks(){}[0]
-    }
-}
-
-abstract interface app.cash.redwood.leaks/LeakListener { // app.cash.redwood.leaks/LeakListener|null[0]
-    abstract fun onReferenceCollected(kotlin/String) // app.cash.redwood.leaks/LeakListener.onReferenceCollected|onReferenceCollected(kotlin.String){}[0]
-    abstract fun onReferenceLeaked(kotlin/String, kotlin.time/Duration) // app.cash.redwood.leaks/LeakListener.onReferenceLeaked|onReferenceLeaked(kotlin.String;kotlin.time.Duration){}[0]
 }

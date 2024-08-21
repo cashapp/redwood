@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.host.HostProtocolAdapter
@@ -84,6 +85,7 @@ internal class TreehouseAppContent<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val codeEventPublisher: CodeEventPublisher,
   private val source: TreehouseContentSource<A>,
+  private val leakDetector: LeakDetector,
 ) : Content,
   CodeHost.Listener<A>,
   CodeSession.Listener<A> {
@@ -278,6 +280,7 @@ internal class TreehouseAppContent<A : AppService>(
       isInitialLaunch = isInitialLaunch,
       onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
+      leakDetector = leakDetector,
     ).apply {
       start()
     }
@@ -307,6 +310,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val isInitialLaunch: Boolean,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
+  private val leakDetector: LeakDetector,
 ) : ChangesSinkService,
   TreehouseView.SaveCallback,
   ZiplineTreehouseUi.Host {
@@ -404,6 +408,7 @@ private class ViewContentCodeBinding<A : AppService>(
           protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
         ) as ProtocolFactory<Any>,
         eventSink = eventBridge,
+        leakDetector = leakDetector,
       )
       hostAdapterOrNull = hostAdapter
     }

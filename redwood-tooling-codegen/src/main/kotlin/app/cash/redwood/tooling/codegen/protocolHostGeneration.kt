@@ -42,6 +42,7 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.UNIT
@@ -287,6 +288,8 @@ internal class ProtocolButton<W : Any>(
   public override fun detach() {
     _widget = null
   }
+
+  public override fun toString() = "ProtocolButton(id=$id, tag=12)
 }
 */
 internal fun generateProtocolNode(
@@ -508,6 +511,22 @@ internal fun generateProtocolNode(
               }
             }
             .addStatement("_widget = null")
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("toString")
+            .addModifiers(OVERRIDE)
+            .returns(STRING)
+            // This explicit string builder usage allows sharing of strings in dex.
+            // See https://jakewharton.com/the-economics-of-generated-code/#string-duplication.
+            .beginControlFlow("return buildString")
+            .addStatement("append(%S)", type.simpleName)
+            .addStatement("""append("(id=")""")
+            .addStatement("append(id.value)")
+            .addStatement("""append(", tag=")""")
+            .addStatement("append(widgetTag.value)")
+            .addStatement("append(')')")
+            .endControlFlow()
             .build(),
         )
         .build(),

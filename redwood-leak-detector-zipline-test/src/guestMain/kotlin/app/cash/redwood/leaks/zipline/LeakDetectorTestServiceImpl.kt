@@ -16,28 +16,26 @@
 package app.cash.redwood.leaks.zipline
 
 import app.cash.redwood.leaks.LeakDetector
-import app.cash.redwood.leaks.LeakListener
 import app.cash.redwood.leaks.zipline.LeakDetectorTestService.Companion.SERVICE_NAME
 import app.cash.zipline.Zipline
-import assertk.assertThat
-import assertk.assertions.isSameInstanceAs
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
+import kotlinx.coroutines.coroutineScope
 
 class LeakDetectorTestServiceImpl : LeakDetectorTestService {
-  override fun leakDetectorDisabled() {
-    val leakDetector = LeakDetector.timeBased(
-      listener = object : LeakListener {
-        override fun onReferenceCollected(name: String) {}
-        override fun onReferenceLeaked(name: String, alive: Duration) {}
-      },
+  override suspend fun leakDetectorDisabled() = coroutineScope {
+    val leakDetector = LeakDetector.timeBasedIn(
+      scope = this,
       timeSource = TimeSource.Monotonic,
-      leakThreshold = 2.seconds,
+      leakThreshold = 0.seconds,
+      callback = { _, _ -> throw AssertionError() },
     )
+
     // QuickJS does not support WeakRef which is required for the leak detection to work correctly.
     // Once WeakRef is supported and this test starts failing, enable bridging of the real tests.
-    assertThat(leakDetector).isSameInstanceAs(LeakDetector.None)
+    leakDetector.watchReference(this@LeakDetectorTestServiceImpl, "")
+
+    leakDetector.awaitClose()
   }
 }
 

@@ -18,6 +18,7 @@ package app.cash.redwood.protocol.host
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.ChildrenChange.Add
 import app.cash.redwood.protocol.ChildrenChange.Remove
 import app.cash.redwood.protocol.ChildrenTag
@@ -56,6 +57,7 @@ class HostProtocolAdapterTest {
         ),
       ),
       eventSink = ::error,
+      leakDetector = LeakDetector.none(),
     )
     val changes = listOf(
       Create(
@@ -82,6 +84,7 @@ class HostProtocolAdapterTest {
         ),
       ),
       eventSink = ::error,
+      leakDetector = LeakDetector.none(),
     )
     val changes = listOf(
       Create(
@@ -109,6 +112,7 @@ class HostProtocolAdapterTest {
         ),
       ),
       eventSink = ::error,
+      leakDetector = LeakDetector.none(),
     )
 
     // Add a button.
@@ -118,6 +122,12 @@ class HostProtocolAdapterTest {
           id = Id(1),
           // Button
           tag = WidgetTag(4),
+        ),
+        // Set Button's required color property.
+        PropertyChange(
+          id = Id(1),
+          tag = PropertyTag(3),
+          value = JsonPrimitive(0),
         ),
         Add(
           id = Id.Root,
@@ -169,6 +179,7 @@ class HostProtocolAdapterTest {
         ),
       ),
       eventSink = ::error,
+      leakDetector = LeakDetector.none(),
     )
 
     // Initial Button add does not trigger update callback (it's implicit because of insert).
@@ -203,6 +214,7 @@ class HostProtocolAdapterTest {
         ),
       ),
       eventSink = ::error,
+      leakDetector = LeakDetector.none(),
     )
 
     // TestRow {

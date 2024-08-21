@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.ui.UiConfiguration
 import assertk.assertThat
 import assertk.assertions.isEmpty
@@ -507,6 +508,7 @@ class TreehouseAppContentTest {
       dispatchers = dispatchers,
       codeEventPublisher = codeEventPublisher,
       source = { app -> app.newUi() },
+      leakDetector = LeakDetector.none(),
     )
   }
 

@@ -73,7 +73,7 @@ class LeakDetectorZiplineTest {
     zipline.close()
   }
 
-  @Test fun leakDetectorDisabled() {
+  @Test fun leakDetectorDisabled() = runBlocking {
     service.leakDetectorDisabled()
   }
 }
