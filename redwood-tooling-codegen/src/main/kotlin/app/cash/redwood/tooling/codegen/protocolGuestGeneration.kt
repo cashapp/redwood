@@ -69,7 +69,7 @@ object ExampleProtocolWidgetSystemFactory : ProtocolWidgetSystemFactory {
 
   public override fun modifierTag(element: Modifier.Element): ModifierTag { ... }
 
-  public override fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>  { ... }
+  public override fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>? { ... }
 }
 */
 internal fun generateProtocolWidgetSystemFactory(
