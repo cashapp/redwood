@@ -207,7 +207,7 @@ internal class ProtocolButton(
     }
 
   override fun text(text: String?) {
-    guestAdapter.appendPropertyChange(this.id, PropertyTag(1), guestAdapter.json.encodeToJsonElement(serializer_0, text))
+    this.guestAdapter.appendPropertyChange(this.id, PropertyTag(1), serializer_0, text)
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
@@ -494,11 +494,6 @@ internal object GrowSerializer : KSerializer<Grow> {
   override fun deserialize(decoder: Decoder): Grow {
     throw AssertionError()
   }
-
-  fun encode(json: Json, value: Grow): ModifierElement {
-    val element = json.encodeToJsonElement(this, value)
-    return ModifierElement(ModifierTag(3), element)
-  }
 }
 */
 internal fun generateProtocolModifierSerializers(
@@ -670,20 +665,6 @@ internal fun generateProtocolModifierSerializers(
               .addParameter("decoder", KotlinxSerialization.Decoder)
               .returns(NOTHING)
               .addStatement("throw %T()", Stdlib.AssertionError)
-              .build(),
-          )
-          .addFunction(
-            FunSpec.builder("encode")
-              .addParameter("json", KotlinxSerialization.Json)
-              .addParameter("value", modifierType)
-              .returns(Protocol.ModifierElement)
-              .addStatement("val element = json.encodeToJsonElement(this, value)")
-              .addStatement(
-                "return %T(%T(%L), element)",
-                Protocol.ModifierElement,
-                Protocol.ModifierTag,
-                modifier.tag,
-              )
               .build(),
           )
           .build(),
