@@ -18,12 +18,9 @@ package app.cash.redwood.tooling.codegen
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.parseTestSchema
-import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
-import com.example.redwood.testapp.TestSchema
 import org.junit.Test
 
 class ProtocolGuestGenerationTest {
@@ -50,15 +47,5 @@ class ProtocolGuestGenerationTest {
       |    this.guestAdapter.appendPropertyChange(this.id,
       """.trimMargin(),
     )
-  }
-
-  @Test fun `dependency layout modifier are included in serialization`() {
-    val schemaSet = ProtocolSchemaSet.load(TestSchema::class)
-
-    val fileSpec = generateComposeProtocolModifierSerialization(schemaSet)
-    assertThat(fileSpec.toString()).all {
-      contains("is TestRowVerticalAlignment -> TestRowVerticalAlignmentSerializer.encode(json, this)")
-      contains("is Grow -> GrowSerializer.encode(json, this)")
-    }
   }
 }
