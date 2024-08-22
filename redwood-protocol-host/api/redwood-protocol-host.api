@@ -41,6 +41,7 @@ public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 	public final fun getId-0HhLjSo ()I
 	public abstract fun getWidget ()Lapp/cash/redwood/widget/Widget;
 	public final fun getWidgetTag-BlhN7y0 ()I
+	public final fun setId-ou3jOuA (I)V
 	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
 	public abstract fun visitIds (Lkotlin/jvm/functions/Function1;)V
 }

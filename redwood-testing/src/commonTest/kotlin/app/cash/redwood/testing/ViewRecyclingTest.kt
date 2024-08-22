@@ -16,14 +16,19 @@
 package app.cash.redwood.testing
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.testing.BoxValue
 import app.cash.redwood.layout.testing.ColumnValue
 import app.cash.redwood.layout.widget.Box
+import app.cash.redwood.protocol.ChildrenTag
+import app.cash.redwood.protocol.Id
+import app.cash.redwood.protocol.host.HostProtocolAdapter
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testapp.compose.Button
@@ -56,6 +61,7 @@ class ViewRecyclingTest {
       )
       val snapshot1Box = widgets.single() as Box<WidgetValue>
       val snapshot1BoxText = snapshot1Box.children.widgets.single()
+      val snapshot1ProtocolNodeIds = hostAdapter.allProtocolNodeIds()
 
       // Update the content. The old widgets are pooled and new widgets are created.
       setContent {
@@ -71,6 +77,7 @@ class ViewRecyclingTest {
       )
       val snapshot2Box = widgets.single() as Box<WidgetValue>
       val snapshot2BoxText = snapshot2Box.children.widgets.single()
+      val snapshot2ProtocolNodeIds = hostAdapter.allProtocolNodeIds()
       assertThat(snapshot2Box).isNotSameInstanceAs(snapshot1Box)
       assertThat(snapshot2BoxText).isNotSameInstanceAs(snapshot1Box)
 
@@ -88,8 +95,13 @@ class ViewRecyclingTest {
       )
       val snapshot3Box = widgets.single() as Box<WidgetValue>
       val snapshot3BoxText = snapshot3Box.children.widgets.single()
+      val snapshot3ProtocolNodeIds = hostAdapter.allProtocolNodeIds()
       assertThat(snapshot3Box).isSameInstanceAs(snapshot1Box)
       assertThat(snapshot3BoxText).isSameInstanceAs(snapshot1BoxText)
+
+      // Confirm that the protocol IDs are updated in place.
+      assertThat(snapshot1ProtocolNodeIds.intersect(snapshot2ProtocolNodeIds)).isEmpty()
+      assertThat(snapshot2ProtocolNodeIds.intersect(snapshot3ProtocolNodeIds)).isEmpty()
     }
   }
 
@@ -697,5 +709,15 @@ class ViewRecyclingTest {
 
     // We should hit for every element in the pool (and 1 miss).
     assertThat(step1Texts.intersect(step3Texts.toSet())).hasSize(poolSize)
+  }
+
+  @OptIn(RedwoodCodegenApi::class)
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // To test implementation details!
+  private fun HostProtocolAdapter<WidgetValue>.allProtocolNodeIds(): Set<Id> {
+    val result = mutableSetOf<Id>()
+    node(Id.Root).children(ChildrenTag.Root)!!.visitIds {
+      result += it
+    }
+    return result
   }
 }

@@ -14,6 +14,7 @@ Changed:
 
 Fixed:
 - Breaking `content: UIView` retain cycle in `UIViewLazyList`'s `LazyListContainerCell`.
+- Update `ProtocolNode` widget IDs when recycling widgets. This was causing pooled nodes to be leaked.
 
 
 ## [0.13.0] - 2024-07-25

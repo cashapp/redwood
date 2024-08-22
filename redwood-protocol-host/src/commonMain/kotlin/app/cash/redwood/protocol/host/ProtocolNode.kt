@@ -33,7 +33,8 @@ import kotlin.math.min
  */
 @RedwoodCodegenApi
 public abstract class ProtocolNode<W : Any>(
-  public val id: Id,
+  /** Updated in place when a node is reused due to pooling. */
+  public var id: Id,
   public val widgetTag: WidgetTag,
 ) {
   public abstract val widget: Widget<W>
