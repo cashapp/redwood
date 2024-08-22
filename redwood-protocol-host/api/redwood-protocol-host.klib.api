@@ -34,10 +34,12 @@ abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { //
 
     abstract val widget // app.cash.redwood.protocol.host/ProtocolNode.widget|{}widget[0]
         abstract fun <get-widget>(): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.protocol.host/ProtocolNode.widget.<get-widget>|<get-widget>(){}[0]
-    final val id // app.cash.redwood.protocol.host/ProtocolNode.id|{}id[0]
-        final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/ProtocolNode.id.<get-id>|<get-id>(){}[0]
     final val widgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag|{}widgetTag[0]
         final fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
+
+    final var id // app.cash.redwood.protocol.host/ProtocolNode.id|{}id[0]
+        final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/ProtocolNode.id.<get-id>|<get-id>(){}[0]
+        final fun <set-id>(app.cash.redwood.protocol/Id) // app.cash.redwood.protocol.host/ProtocolNode.id.<set-id>|<set-id>(app.cash.redwood.protocol.Id){}[0]
 
     abstract fun apply(app.cash.redwood.protocol/PropertyChange, app.cash.redwood.protocol/EventSink) // app.cash.redwood.protocol.host/ProtocolNode.apply|apply(app.cash.redwood.protocol.PropertyChange;app.cash.redwood.protocol.EventSink){}[0]
     abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
