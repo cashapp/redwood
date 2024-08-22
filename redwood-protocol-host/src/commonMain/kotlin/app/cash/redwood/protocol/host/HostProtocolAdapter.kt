@@ -353,6 +353,9 @@ public class HostProtocolAdapter<W : Any>(
         "Insert attempted to replace existing widget with ID $widgetId"
       }
 
+      val skippedCreate = changesAndNulls[changeIndexForCreate] as Create
+      pooled.id = skippedCreate.id
+
       // Remove the corresponding changes that we avoided by node reuse. We don't clear the 'Add'
       // that adds the node to its new parent.
       changesAndNulls[changeIndexForCreate] = null
