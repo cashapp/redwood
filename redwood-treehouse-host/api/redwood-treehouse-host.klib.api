@@ -66,8 +66,8 @@ abstract class <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.tree
 
     abstract val dispatchers // app.cash.redwood.treehouse/TreehouseApp.dispatchers|{}dispatchers[0]
         abstract fun <get-dispatchers>(): app.cash.redwood.treehouse/TreehouseDispatchers // app.cash.redwood.treehouse/TreehouseApp.dispatchers.<get-dispatchers>|<get-dispatchers>(){}[0]
-    abstract val spec // app.cash.redwood.treehouse/TreehouseApp.spec|{}spec[0]
-        abstract fun <get-spec>(): app.cash.redwood.treehouse/TreehouseApp.Spec<#A> // app.cash.redwood.treehouse/TreehouseApp.spec.<get-spec>|<get-spec>(){}[0]
+    abstract val name // app.cash.redwood.treehouse/TreehouseApp.name|{}name[0]
+        abstract fun <get-name>(): kotlin/String // app.cash.redwood.treehouse/TreehouseApp.name.<get-name>|<get-name>(){}[0]
     abstract val zipline // app.cash.redwood.treehouse/TreehouseApp.zipline|{}zipline[0]
         abstract fun <get-zipline>(): kotlinx.coroutines.flow/StateFlow<app.cash.zipline/Zipline?> // app.cash.redwood.treehouse/TreehouseApp.zipline.<get-zipline>|<get-zipline>(){}[0]
 
