@@ -112,7 +112,7 @@ internal class TreehouseTester(
   val openTreehouseDispatchersCount: Int
     get() = returnedTreehouseDispatchers.count { !it.isClosed }
 
-  private val appSpec = object : TreehouseApp.Spec<TestAppPresenter>() {
+  var spec: TreehouseApp.Spec<TestAppPresenter> = object : TreehouseApp.Spec<TestAppPresenter>() {
     override val name: String
       get() = "test_app"
     override val manifestUrl: Flow<String>
@@ -135,7 +135,7 @@ internal class TreehouseTester(
   fun loadApp(): TreehouseApp<TestAppPresenter> {
     return treehouseAppFactory.create(
       appScope = testScope,
-      spec = appSpec,
+      spec = spec,
       eventListenerFactory = eventListenerFactory,
     )
   }

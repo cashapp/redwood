@@ -46,7 +46,7 @@ import kotlinx.serialization.modules.SerializersModule
  */
 @ObjCName("TreehouseApp", exact = true)
 public abstract class TreehouseApp<A : AppService> : AutoCloseable {
-  public abstract val spec: Spec<A>
+  public abstract val name: String
   public abstract val dispatchers: TreehouseDispatchers
 
   /**

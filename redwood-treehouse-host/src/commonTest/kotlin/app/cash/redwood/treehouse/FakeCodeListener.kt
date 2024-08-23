@@ -19,14 +19,14 @@ class FakeCodeListener(
   private val eventLog: EventLog,
 ) : CodeListener() {
   override fun onInitialCodeLoading(app: TreehouseApp<*>, view: TreehouseView<*>) {
-    eventLog += "onInitialCodeLoading(${app.spec.name}, $view)"
+    eventLog += "onInitialCodeLoading(${app.name}, $view)"
   }
 
   override fun onCodeLoaded(app: TreehouseApp<*>, view: TreehouseView<*>, initial: Boolean) {
-    eventLog += "onCodeLoaded(${app.spec.name}, $view, initial = $initial)"
+    eventLog += "onCodeLoaded(${app.name}, $view, initial = $initial)"
   }
 
   override fun onCodeDetached(app: TreehouseApp<*>, view: TreehouseView<*>, exception: Throwable?) {
-    eventLog += "onCodeDetached(${app.spec.name}, $view, $exception)"
+    eventLog += "onCodeDetached(${app.name}, $view, $exception)"
   }
 }

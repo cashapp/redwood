@@ -34,7 +34,7 @@ import okio.Path
 internal class RealTreehouseApp<A : AppService> private constructor(
   private val factory: Factory,
   private val appScope: CoroutineScope,
-  override val spec: Spec<A>,
+  spec: Spec<A>,
   override val dispatchers: TreehouseDispatchers,
   eventListenerFactory: EventListener.Factory,
 ) : TreehouseApp<A>() {
@@ -66,6 +66,10 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       }
     }
   }
+
+  private var spec: Spec<A>? = spec
+
+  override val name: String = spec.name
 
   override val zipline: StateFlow<Zipline?>
     get() = codeHost.zipline
@@ -106,6 +110,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   private fun ziplineFlow(
     eventListenerFactory: EventListener.Factory,
   ): Flow<LoadResult> {
+    val spec = spec ?: error("closed")
     var loader = ZiplineLoader(
       dispatcher = dispatchers.zipline,
       manifestVerifier = factory.manifestVerifier,
@@ -146,6 +151,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   }
 
   private fun createCodeSession(zipline: Zipline): ZiplineCodeSession<A> {
+    val spec = spec ?: error("closed")
     val appService = spec.create(zipline)
 
     // Extract the RealEventPublisher() created in ziplineFlow().
@@ -166,6 +172,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     dispatchers.checkUi()
 
     closed = true
+    spec = null
     eventListenerFactory = null
     stop()
     dispatchers.close()
