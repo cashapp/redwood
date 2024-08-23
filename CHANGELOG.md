@@ -16,6 +16,9 @@ Fixed:
 - Breaking `content: UIView` retain cycle in `UIViewLazyList`'s `LazyListContainerCell`.
 - Update `ProtocolNode` widget IDs when recycling widgets. This was causing pooled nodes to be leaked.
 
+Breaking:
+- The `TreehouseApp.spec` property is removed. Most callers should be able to use `TreehouseApp.name` instead. This is necessary to avoid a retain cycle.
+
 
 ## [0.13.0] - 2024-07-25
 [0.13.0]: https://github.com/cashapp/redwood/releases/tag/0.13.0

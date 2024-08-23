@@ -16,13 +16,16 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.leaks.LeakWatcher
+import app.cash.zipline.Zipline
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.example.redwood.testapp.testing.TextInputValue
+import com.example.redwood.testapp.treehouse.TestAppPresenter
 import kotlin.test.Test
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -184,6 +187,39 @@ class LeaksTest {
     codeListenerLeakWatcher.assertNotLeaked()
 
     treehouseApp.stop()
+  }
+
+  @Test
+  fun appSpecNotLeaked() = runTest {
+    val tester = TreehouseTester(this)
+    val treehouseApp = tester.loadApp()
+
+    val specLeakWatcher = LeakWatcher {
+      tester.spec
+    }
+
+    // Stop referencing our TreehouseApp.Spec from our test harness.
+    tester.spec = object : TreehouseApp.Spec<TestAppPresenter>() {
+      override val name: String
+        get() = error("unexpected call")
+      override val manifestUrl: Flow<String>
+        get() = error("unexpected call")
+
+      override suspend fun bindServices(
+        treehouseApp: TreehouseApp<TestAppPresenter>,
+        zipline: Zipline,
+      ) = error("unexpected call")
+
+      override fun create(zipline: Zipline) = error("unexpected call")
+    }
+
+    treehouseApp.close()
+
+    // Once the app is closed, the spec must be unreachable.
+    specLeakWatcher.assertNotLeaked()
+
+    // The app's name is always accessible.
+    assertThat(treehouseApp.name).isEqualTo("test_app")
   }
 
   @Test

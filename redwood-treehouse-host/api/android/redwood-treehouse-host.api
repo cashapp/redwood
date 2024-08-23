@@ -85,7 +85,7 @@ public abstract class app/cash/redwood/treehouse/TreehouseApp : java/lang/AutoCl
 	public abstract fun createContent (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;)Lapp/cash/redwood/treehouse/Content;
 	public static synthetic fun createContent$default (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/Content;
 	public abstract fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
-	public abstract fun getSpec ()Lapp/cash/redwood/treehouse/TreehouseApp$Spec;
+	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getZipline ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun restart ()V
 	public abstract fun start ()V

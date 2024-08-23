@@ -32,27 +32,27 @@ class FakeEventListener(
   }
 
   override fun codeLoadStart(): Any? {
-    eventLog += "${app.spec.name}.codeLoadStart()"
+    eventLog += "${app.name}.codeLoadStart()"
     return null
   }
 
   override fun codeLoadSuccess(manifest: ZiplineManifest, zipline: Zipline, startValue: Any?) {
-    eventLog += "${app.spec.name}.codeLoadSuccess()"
+    eventLog += "${app.name}.codeLoadSuccess()"
   }
 
   override fun codeLoadFailed(exception: Exception, startValue: Any?) {
-    eventLog += "${app.spec.name}.codeLoadFailed()"
+    eventLog += "${app.name}.codeLoadFailed()"
   }
 
   override fun codeUnloaded() {
-    eventLog += "${app.spec.name}.codeUnloaded()"
+    eventLog += "${app.name}.codeUnloaded()"
   }
 
   override fun unknownEvent(widgetTag: WidgetTag, tag: EventTag) {
-    eventLog += "${app.spec.name}.unknownEvent($widgetTag, $tag)"
+    eventLog += "${app.name}.unknownEvent($widgetTag, $tag)"
   }
 
   override fun uncaughtException(exception: Throwable) {
-    eventLog += "${app.spec.name}.uncaughtException($exception)"
+    eventLog += "${app.name}.uncaughtException($exception)"
   }
 }
