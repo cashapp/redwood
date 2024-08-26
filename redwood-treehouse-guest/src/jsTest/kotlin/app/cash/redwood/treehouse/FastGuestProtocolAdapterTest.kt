@@ -24,11 +24,13 @@ import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.example.redwood.testapp.compose.TestScope
 import com.example.redwood.testapp.compose.backgroundColor
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
@@ -59,6 +61,20 @@ class FastGuestProtocolAdapterTest {
 
       root.move(0, 1, 1)
       root.remove(0, 2)
+    }
+  }
+
+  @Test fun consistentWithDefaultGuestProtocolAdapterForModifiers() {
+    assertChangesEqual { root, widgetSystem ->
+      with(object : TestScope {}) {
+        val button = widgetSystem.TestSchema.Button()
+        button.modifier = Modifier
+          .backgroundColor(0xff0000u)
+          .customType(5.seconds)
+          .customTypeWithDefault(10.seconds, "sup")
+          .customTypeStateless()
+        root.insert(0, button)
+      }
     }
   }
 
