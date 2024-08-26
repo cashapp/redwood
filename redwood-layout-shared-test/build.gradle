@@ -15,6 +15,11 @@ kotlin {
         api projects.redwoodWidget
         api projects.redwoodYoga
         api libs.kotlin.test
+
+        // TODO(jwilson): extract KotlinHostingXCTestCase out of redwood-layout-uiview so we can
+        //     move lazylayout tests to a new redwood-lazylayout-shared-test module.
+        api projects.redwoodLazylayoutApi
+        api projects.redwoodLazylayoutWidget
       }
     }
     jvmMain {
