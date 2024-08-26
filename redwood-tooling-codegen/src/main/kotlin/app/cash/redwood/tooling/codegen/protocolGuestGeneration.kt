@@ -41,7 +41,6 @@ import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.NOTHING
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.SHORT
@@ -69,7 +68,9 @@ object ExampleProtocolWidgetSystemFactory : ProtocolWidgetSystemFactory {
 
   public override fun modifierTag(element: Modifier.Element): ModifierTag { ... }
 
-  public override fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>? { ... }
+  public override fun <T : Modifier.Element> modifierTagAndSerializationStrategy(
+    element: T
+  ): Pair<ModifierTag, SerializationStrategy<T>?> { ... }
 }
 */
 internal fun generateProtocolWidgetSystemFactory(
@@ -100,8 +101,7 @@ internal fun generateProtocolWidgetSystemFactory(
             }
             .build(),
         )
-        .addFunction(modifierTag(schemaSet))
-        .addFunction(modifierSerializer(schemaSet))
+        .addFunction(modifierTagAndSerializationStrategy(schemaSet))
         .build(),
     )
   }
@@ -479,7 +479,7 @@ private fun workAroundLazyListPlaceholderRemoveCrash(
 ): Boolean = widget.type.names in placeholderParentTypeNames && trait.name == "placeholder"
 
 /*
-internal object GrowSerializer : KSerializer<Grow> {
+internal object GrowSerializer : SerializationStrategy<Grow> {
   override val descriptor =
     buildClassSerialDescriptor("app.cash.redwood.layout.Grow") {
       element<Double>("value")
@@ -607,7 +607,7 @@ internal fun generateProtocolModifierSerializers(
       addType(
         TypeSpec.objectBuilder(serializerType)
           .addModifiers(INTERNAL)
-          .addSuperinterface(KotlinxSerialization.KSerializer.parameterizedBy(modifierType))
+          .addSuperinterface(KotlinxSerialization.SerializationStrategy.parameterizedBy(modifierType))
           .addProperty(
             PropertySpec.builder("descriptor", KotlinxSerialization.SerialDescriptor)
               .addModifiers(OVERRIDE)
@@ -659,14 +659,6 @@ internal fun generateProtocolModifierSerializers(
               .addStatement("composite.endStructure(descriptor)")
               .build(),
           )
-          .addFunction(
-            FunSpec.builder("deserialize")
-              .addModifiers(OVERRIDE)
-              .addParameter("decoder", KotlinxSerialization.Decoder)
-              .returns(NOTHING)
-              .addStatement("throw %T()", Stdlib.AssertionError)
-              .build(),
-          )
           .build(),
       )
     }
@@ -675,56 +667,27 @@ internal fun generateProtocolModifierSerializers(
 
 /*
 @RedwoodCodegenApi
-public override fun modifierTag(element: Modifier.Element): ModifierTag = when (element) {
-  is CustomType -> ModifierTag(3)
-  is CustomTypeStateless -> ModifierTag(4)
-  else -> throw AssertionError()
-}
-*/
-internal fun modifierTag(
-  schemaSet: ProtocolSchemaSet,
-): FunSpec {
-  return FunSpec.builder("modifierTag")
-    .addAnnotation(Redwood.RedwoodCodegenApi)
-    .addModifiers(PUBLIC, OVERRIDE)
-    .addParameter("element", Redwood.ModifierElement)
-    .returns(Protocol.ModifierTag)
-    .beginControlFlow("return when (element)")
-    .apply {
-      val allModifiers = schemaSet.allModifiers()
-      for ((localSchema, modifier) in allModifiers) {
-        val modifierType = localSchema.modifierType(modifier)
-        addStatement(
-          "is %T -> %T(%L)",
-          modifierType,
-          Protocol.ModifierTag,
-          modifier.tag,
-        )
-      }
-    }
-    .addStatement("else -> throw %T()", Stdlib.AssertionError)
-    .endControlFlow()
-    .build()
-}
-
-/*
-@RedwoodCodegenApi
 @Suppress("UNCHECKED_CAST")
-public override fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>? =
+public override fun <T : Modifier.Element> modifierTagAndSerializationStrategy(
+  element: T,
+): Pair<ModifierTag, SerializationStrategy<T>?> =
   when (element) {
-    is CustomType -> CustomTypeSerializer
-    is CustomTypeStateless -> null
+    is CustomType -> ModifierTag(3) to CustomTypeSerializer
+    is CustomTypeStateless -> ModifierTag(4) to null
     else -> throw AssertionError()
-  } as KSerializer<T>?
+  }
 */
-internal fun modifierSerializer(
+internal fun modifierTagAndSerializationStrategy(
   schemaSet: ProtocolSchemaSet,
 ): FunSpec {
   val schema = schemaSet.schema
   val allModifiers = schemaSet.allModifiers()
   val t = TypeVariableName("T", Redwood.ModifierElement)
-
-  return FunSpec.builder("modifierSerializer")
+  val returnType = Stdlib.Pair.parameterizedBy(
+    Protocol.ModifierTag,
+    KotlinxSerialization.KSerializer.parameterizedBy(t).copy(nullable = true),
+  )
+  return FunSpec.builder("modifierTagAndSerializationStrategy")
     .addAnnotation(Redwood.RedwoodCodegenApi)
     .addAnnotation(
       AnnotationSpec.builder(Suppress::class)
@@ -734,19 +697,26 @@ internal fun modifierSerializer(
     .addModifiers(PUBLIC, OVERRIDE)
     .addTypeVariable(t)
     .addParameter("element", t)
-    .returns(KotlinxSerialization.KSerializer.parameterizedBy(t).copy(nullable = true))
+    .returns(returnType)
     .addCode("return when·(element)·{⇥\n")
     .apply {
       for ((localSchema, modifier) in allModifiers) {
         val modifierType = localSchema.modifierType(modifier)
         when {
           modifier.properties.isEmpty() -> {
-            addStatement("is %T -> null", modifierType)
+            addStatement(
+              "is %T -> %T(%L) to null",
+              modifierType,
+              Protocol.ModifierTag,
+              modifier.tag,
+            )
           }
           else -> {
             addStatement(
-              "is %T -> %T",
+              "is %T -> %T(%L) to %T",
               modifierType,
+              Protocol.ModifierTag,
+              modifier.tag,
               localSchema.modifierSerializer(modifier, schema),
             )
           }
@@ -754,7 +724,7 @@ internal fun modifierSerializer(
       }
     }
     .addStatement("else -> throw %T()", Stdlib.AssertionError)
-    .addCode("⇤} as %T?\n", KotlinxSerialization.KSerializer.parameterizedBy(t))
+    .addCode("⇤} as %T\n", returnType)
     .build()
 }
 

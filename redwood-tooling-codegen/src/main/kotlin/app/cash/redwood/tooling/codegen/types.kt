@@ -112,7 +112,7 @@ internal object Stdlib {
   val ExperimentalObjCName = ClassName("kotlin.experimental", "ExperimentalObjCName")
   val List = ClassName("kotlin.collections", "List")
   val ObjCName = ClassName("kotlin.native", "ObjCName")
-  val buildList = MemberName("kotlin.collections", "buildList")
+  val Pair = ClassName("kotlin", "Pair")
   val listOf = MemberName("kotlin.collections", "listOf")
 }
 
@@ -124,6 +124,7 @@ internal object KotlinxSerialization {
   val ExperimentalSerializationApi = ClassName("kotlinx.serialization", "ExperimentalSerializationApi")
   val KSerializer = ClassName("kotlinx.serialization", "KSerializer")
   val Serializable = ClassName("kotlinx.serialization", "Serializable")
+  val SerializationStrategy = ClassName("kotlinx.serialization", "SerializationStrategy")
   val serializer = MemberName("kotlinx.serialization", "serializer")
 
   val SerialDescriptor = ClassName("kotlinx.serialization.descriptors", "SerialDescriptor")

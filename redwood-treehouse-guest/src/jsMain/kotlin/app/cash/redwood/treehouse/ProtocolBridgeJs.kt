@@ -142,8 +142,7 @@ internal class FastGuestProtocolAdapter(
     val elements = js("[]")
 
     value.forEach { element ->
-      val tag = widgetSystemFactory.modifierTag(element)
-      val serializer = widgetSystemFactory.modifierSerializer(element)
+      val (tag, serializer) = widgetSystemFactory.modifierTagAndSerializationStrategy(element)
       val value = when {
         serializer == null -> null
         else -> json.encodeToDynamic(serializer, element)

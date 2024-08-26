@@ -123,9 +123,8 @@ public class DefaultGuestProtocolAdapter(
   }
 
   private fun <T : Modifier.Element> modifierElement(element: T): ModifierElement {
-    val tag = widgetSystemFactory.modifierTag(element)
-    val serializer = widgetSystemFactory.modifierSerializer(element)
-      ?: return ModifierElement(tag)
+    val (tag, serializer) = widgetSystemFactory.modifierTagAndSerializationStrategy(element)
+    if (serializer == null) return ModifierElement(tag)
     return ModifierElement(tag, json.encodeToJsonElement(serializer, element))
   }
 

@@ -19,7 +19,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.widget.WidgetSystem
-import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationStrategy
 
 public interface ProtocolWidgetSystemFactory {
   /** Create a new [WidgetSystem] connected to a host via [guestAdapter]. */
@@ -28,10 +28,9 @@ public interface ProtocolWidgetSystemFactory {
     mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
   ): WidgetSystem<Unit>
 
+  /** The serialization strategy is null if the modifier is stateless. */
   @RedwoodCodegenApi
-  public fun modifierTag(element: Modifier.Element): ModifierTag
-
-  /** Returns null if the modifier is stateless and should serialize as null. */
-  @RedwoodCodegenApi
-  public fun <T : Modifier.Element> modifierSerializer(element: T): KSerializer<T>?
+  public fun <T : Modifier.Element> modifierTagAndSerializationStrategy(
+    element: T,
+  ): Pair<ModifierTag, SerializationStrategy<T>?>
 }
