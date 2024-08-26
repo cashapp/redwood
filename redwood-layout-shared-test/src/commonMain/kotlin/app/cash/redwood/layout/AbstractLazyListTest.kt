@@ -64,7 +64,7 @@ abstract class AbstractLazyListTest<T : Any> {
     name: String? = null,
   )
 
-  @Test fun happyPath() {
+  @Test fun testHappyPath() {
     val lazyList = defaultLazyList()
 
     for ((index, value) in movies.take(5).withIndex()) {
@@ -75,7 +75,7 @@ abstract class AbstractLazyListTest<T : Any> {
     verifySnapshot(lazyList)
   }
 
-  @Test fun placeholderToLoadedAndLoadedToPlaceholder() {
+  @Test fun testPlaceholderToLoadedAndLoadedToPlaceholder() {
     val lazyList = defaultLazyList()
 
     (lazyList as? ChangeListener)?.onEndChanges()
@@ -106,7 +106,7 @@ abstract class AbstractLazyListTest<T : Any> {
     verifySnapshot(lazyList, "4 empty")
   }
 
-  @Test fun placeholdersExhausted() {
+  @Test fun testPlaceholdersExhausted() {
     val lazyList = defaultLazyList()
 
     lazyList.itemsBefore(11)
