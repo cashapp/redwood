@@ -23,6 +23,7 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
+import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.hostRedwoodVersion
@@ -58,14 +59,16 @@ class ViewRecyclingTester(
 
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
-  val hostAdapter = HostProtocolAdapter(
+  val hostAdapter: HostProtocolAdapter<WidgetValue> = HostProtocolAdapter(
     guestVersion = guestRedwoodVersion,
     container = widgetContainer,
     factory = widgetProtocolFactory,
-    eventSink = { throw AssertionError() },
+    eventSink = { event ->
+      guestAdapter.sendEvent(event)
+    },
   )
 
-  private val guestAdapter = DefaultGuestProtocolAdapter(
+  private val guestAdapter: GuestProtocolAdapter = DefaultGuestProtocolAdapter(
     hostVersion = hostRedwoodVersion,
     widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
   ).apply {
