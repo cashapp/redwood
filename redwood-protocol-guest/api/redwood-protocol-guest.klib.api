@@ -53,9 +53,8 @@ abstract interface app.cash.redwood.protocol.guest/ProtocolWidget : app.cash.red
 }
 
 abstract interface app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory { // app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory|null[0]
-    abstract fun <#A1: app.cash.redwood/Modifier.Element> modifierSerializer(#A1): kotlinx.serialization/KSerializer<#A1>? // app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory.modifierSerializer|modifierSerializer(0:0){0§<app.cash.redwood.Modifier.Element>}[0]
+    abstract fun <#A1: app.cash.redwood/Modifier.Element> modifierTagAndSerializationStrategy(#A1): kotlin/Pair<app.cash.redwood.protocol/ModifierTag, kotlinx.serialization/SerializationStrategy<#A1>?> // app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory.modifierTagAndSerializationStrategy|modifierTagAndSerializationStrategy(0:0){0§<app.cash.redwood.Modifier.Element>}[0]
     abstract fun create(app.cash.redwood.protocol.guest/GuestProtocolAdapter, app.cash.redwood.protocol.guest/ProtocolMismatchHandler = ...): app.cash.redwood.widget/WidgetSystem<kotlin/Unit> // app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory.create|create(app.cash.redwood.protocol.guest.GuestProtocolAdapter;app.cash.redwood.protocol.guest.ProtocolMismatchHandler){}[0]
-    abstract fun modifierTag(app.cash.redwood/Modifier.Element): app.cash.redwood.protocol/ModifierTag // app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory.modifierTag|modifierTag(app.cash.redwood.Modifier.Element){}[0]
 }
 
 final class app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter : app.cash.redwood.protocol.guest/GuestProtocolAdapter { // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter|null[0]

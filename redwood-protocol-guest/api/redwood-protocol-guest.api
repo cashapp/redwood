@@ -81,8 +81,7 @@ public final class app/cash/redwood/protocol/guest/ProtocolWidgetChildren : app/
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory {
 	public abstract fun create (Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;)Lapp/cash/redwood/widget/WidgetSystem;
 	public static synthetic fun create$default (Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;Lapp/cash/redwood/protocol/guest/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/widget/WidgetSystem;
-	public abstract fun modifierSerializer (Lapp/cash/redwood/Modifier$Element;)Lkotlinx/serialization/KSerializer;
-	public abstract fun modifierTag-54iDFIs (Lapp/cash/redwood/Modifier$Element;)I
+	public abstract fun modifierTagAndSerializationStrategy (Lapp/cash/redwood/Modifier$Element;)Lkotlin/Pair;
 }
 
 public final class app/cash/redwood/protocol/guest/VersionKt {
