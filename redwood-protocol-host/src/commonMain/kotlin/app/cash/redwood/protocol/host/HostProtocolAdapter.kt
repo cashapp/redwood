@@ -25,7 +25,6 @@ import app.cash.redwood.protocol.ChildrenChange.Move
 import app.cash.redwood.protocol.ChildrenChange.Remove
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Create
-import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
@@ -50,7 +49,7 @@ public class HostProtocolAdapter<W : Any>(
   guestVersion: RedwoodVersion,
   container: Widget.Children<W>,
   factory: ProtocolFactory<W>,
-  private val eventSink: EventSink,
+  private val eventSink: UiEventSink,
 ) : ChangesSink {
   private val factory = when (factory) {
     is GeneratedProtocolFactory -> factory
@@ -381,7 +380,7 @@ private class RootProtocolNode<W : Any>(
   Widget<W> {
   private val children = ProtocolChildren(children)
 
-  override fun apply(change: PropertyChange, eventSink: EventSink) {
+  override fun apply(change: PropertyChange, eventSink: UiEventSink) {
     throw AssertionError("unexpected: $change")
   }
 

@@ -18,7 +18,6 @@ package app.cash.redwood.protocol.host
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.WidgetTag
@@ -128,7 +127,7 @@ class ChildrenNodeIndexTest {
 
 @OptIn(RedwoodCodegenApi::class)
 private class WidgetNode(override val widget: StringWidget) : ProtocolNode<String>(Id(1), WidgetTag(1)) {
-  override fun apply(change: PropertyChange, eventSink: EventSink) {
+  override fun apply(change: PropertyChange, eventSink: UiEventSink) {
     throw UnsupportedOperationException()
   }
 

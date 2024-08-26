@@ -21,7 +21,6 @@ import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Event
-import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierElement
@@ -258,7 +257,7 @@ class ProtocolFactoryTest {
     )
     val textInput = factory.createNode(Id(1), WidgetTag(5))!!
 
-    val throwingEventSink = EventSink { error(it) }
+    val throwingEventSink = UiEventSink { error(it) }
     textInput.apply(PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
 
     assertThat((textInput.widget.value as TextInputValue).customType).isEqualTo(10.seconds)
@@ -275,7 +274,7 @@ class ProtocolFactoryTest {
     val button = factory.createNode(Id(1), WidgetTag(4))!!
 
     val change = PropertyChange(Id(1), PropertyTag(345432))
-    val eventSink = EventSink { throw UnsupportedOperationException() }
+    val eventSink = UiEventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(change, eventSink)
     }
@@ -315,12 +314,12 @@ class ProtocolFactoryTest {
     )
     val textInput = factory.createNode(Id(1), WidgetTag(5))!!
 
-    val eventSink = RecordingEventSink()
+    val eventSink = RecordingUiEventSink()
     textInput.apply(PropertyChange(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)
 
     (textInput.widget.value as TextInputValue).onChangeCustomType!!.invoke(10.seconds)
 
-    assertThat(eventSink.events.single())
+    assertThat(eventSink.events.single().toProtocol(json))
       .isEqualTo(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
   }
 }
