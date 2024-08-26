@@ -6,6 +6,7 @@ redwoodBuild {
 }
 
 apply plugin: 'com.github.gmazzo.buildconfig'
+apply plugin: 'dev.drewhamilton.poko'
 
 kotlin {
   sourceSets {

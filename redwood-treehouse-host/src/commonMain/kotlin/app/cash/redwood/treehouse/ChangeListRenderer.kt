@@ -15,10 +15,10 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.ProtocolMismatchHandler
+import app.cash.redwood.protocol.host.UiEventSink
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import kotlinx.serialization.json.Json
 
@@ -31,7 +31,7 @@ import kotlinx.serialization.json.Json
 public class ChangeListRenderer<W : Any>(
   private val json: Json,
 ) {
-  private val refuseAllEvents = EventSink { event ->
+  private val refuseAllEvents = UiEventSink { event ->
     throw IllegalStateException("unexpected event: $event")
   }
 
