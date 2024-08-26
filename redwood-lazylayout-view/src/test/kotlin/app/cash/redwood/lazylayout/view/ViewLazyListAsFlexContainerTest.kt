@@ -42,7 +42,7 @@ import org.junit.Rule
 import org.junit.runner.RunWith
 
 @RunWith(TestParameterInjector::class)
-class ViewLazyListTest(
+class ViewLazyListAsFlexContainerTest(
   @TestParameter layoutDirection: LayoutDirection,
 ) : AbstractFlexContainerTest<View>() {
 
