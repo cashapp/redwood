@@ -760,7 +760,7 @@ class ViewRecyclingTest {
       snapshot1.onClick?.invoke()
 
       val snapshot2 = awaitSnapshot().single() as ButtonValue
-      assertThat(widgets.single()).isNotSameInstanceAs(snapshot1Button) // No reuse: pool is empty.
+      assertThat(widgets.single()).isNotSameInstanceAs(snapshot1Button) // No reuse: pool was empty.
       assertThat(snapshot2).isEqualTo(
         ButtonValue(
           modifier = reuse,
