@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.testing
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.compose.Box
@@ -29,12 +32,14 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
 import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Split
 import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.compose.reuse
+import com.example.redwood.testapp.testing.ButtonValue
 import com.example.redwood.testapp.testing.SplitValue
 import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
@@ -709,6 +714,75 @@ class ViewRecyclingTest {
 
     // We should hit for every element in the pool (and 1 miss).
     assertThat(step1Texts.intersect(step3Texts.toSet())).hasSize(poolSize)
+  }
+
+  /** Confirm events work on reused nodes. */
+  @Test
+  fun eventsOnReusedNodes() = runTest {
+    viewRecyclingTest {
+      var step by mutableIntStateOf(1)
+
+      setContent {
+        when (step) {
+          1 -> {
+            Button(
+              modifier = reuse,
+              text = "One",
+              onClick = { step = 2 },
+            )
+          }
+          2 -> {
+            Button(
+              modifier = reuse,
+              text = "Two",
+              onClick = { step = 3 },
+            )
+          }
+          3 -> {
+            Button(
+              modifier = reuse,
+              text = "Three",
+              onClick = { step = 4 },
+            )
+          }
+        }
+      }
+
+      val snapshot1 = awaitSnapshot().single() as ButtonValue
+      val snapshot1Button = widgets.single()
+      assertThat(snapshot1).isEqualTo(
+        ButtonValue(
+          modifier = reuse,
+          text = "One",
+          onClick = {},
+        ),
+      )
+      snapshot1.onClick?.invoke()
+
+      val snapshot2 = awaitSnapshot().single() as ButtonValue
+      assertThat(widgets.single()).isNotSameInstanceAs(snapshot1Button) // No reuse: pool was empty.
+      assertThat(snapshot2).isEqualTo(
+        ButtonValue(
+          modifier = reuse,
+          text = "Two",
+          onClick = {},
+        ),
+      )
+      snapshot2.onClick?.invoke()
+
+      val snapshot3 = awaitSnapshot().single() as ButtonValue
+      assertThat(widgets.single()).isSameInstanceAs(snapshot1Button) // Reused.
+      assertThat(snapshot3).isEqualTo(
+        ButtonValue(
+          modifier = reuse,
+          text = "Three",
+          onClick = {},
+        ),
+      )
+      snapshot3.onClick?.invoke()
+
+      assertThat(step).isEqualTo(4)
+    }
   }
 
   @OptIn(RedwoodCodegenApi::class)
