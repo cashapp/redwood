@@ -18,6 +18,8 @@ package app.cash.redwood.layout.uiview
 import app.cash.redwood.layout.AbstractLazyListTest
 import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.Widget
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
@@ -43,7 +45,9 @@ class UIViewLazyListTest(
       layoutIfNeeded()
     }
 
-    callback.verifySnapshot(frame, name)
+    // Unfortunately even with animations forced off, UITableView's animation system breaks
+    // synchronous snapshots. The simplest workaround is to delay snapshots one frame.
+    callback.verifySnapshot(frame, name, delay = 1.milliseconds.toDouble(DurationUnit.SECONDS))
     container.value.removeFromSuperview()
   }
 }

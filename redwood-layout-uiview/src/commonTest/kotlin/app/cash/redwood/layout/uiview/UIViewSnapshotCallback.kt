@@ -18,5 +18,5 @@ package app.cash.redwood.layout.uiview
 import platform.UIKit.UIView
 
 interface UIViewSnapshotCallback {
-  fun verifySnapshot(view: UIView, name: String?)
+  fun verifySnapshot(view: UIView, name: String?, delay: Double = 0.0)
 }
