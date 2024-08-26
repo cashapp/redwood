@@ -41,6 +41,7 @@ import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.SHORT
@@ -479,7 +480,8 @@ private fun workAroundLazyListPlaceholderRemoveCrash(
 ): Boolean = widget.type.names in placeholderParentTypeNames && trait.name == "placeholder"
 
 /*
-internal object GrowSerializer : SerializationStrategy<Grow> {
+internal val GrowTagAndSerializer: Pair<ModifierTag, SerializationStrategy<Grow>?> =
+    ModifierTag(1_000_001) to object : SerializationStrategy<Grow> {
   override val descriptor =
     buildClassSerialDescriptor("app.cash.redwood.layout.Grow") {
       element<Double>("value")
@@ -500,15 +502,14 @@ internal fun generateProtocolModifierSerializers(
   schema: ProtocolSchema,
   host: ProtocolSchema,
 ): FileSpec? {
-  val serializableModifiers = schema.modifiers.filter { it.properties.isNotEmpty() }
-  if (serializableModifiers.isEmpty()) {
+  if (schema.modifiers.isEmpty()) {
     return null
   }
   return buildFileSpec(schema.guestProtocolPackage(host), "modifierSerializers") {
     addAnnotation(suppressDeprecations)
 
-    for (modifier in serializableModifiers) {
-      val serializerType = schema.modifierSerializer(modifier, host)
+    for (modifier in schema.modifiers) {
+      val serializerTagAndSerializer = schema.modifierTagAndSerializer(modifier, host)
       val modifierType = schema.modifierType(modifier)
 
       var nextSerializerId = 0
@@ -604,10 +605,11 @@ internal fun generateProtocolModifierSerializers(
         }
       }
 
-      addType(
-        TypeSpec.objectBuilder(serializerType)
-          .addModifiers(INTERNAL)
-          .addSuperinterface(KotlinxSerialization.SerializationStrategy.parameterizedBy(modifierType))
+      val serializationStrategyType =
+        KotlinxSerialization.SerializationStrategy.parameterizedBy(modifierType)
+      val serializationStrategyValue = if (modifier.properties.isNotEmpty()) {
+        TypeSpec.anonymousClassBuilder()
+          .addSuperinterface(serializationStrategyType)
           .addProperty(
             PropertySpec.builder("descriptor", KotlinxSerialization.SerialDescriptor)
               .addModifiers(OVERRIDE)
@@ -638,7 +640,11 @@ internal fun generateProtocolModifierSerializers(
                       parameters += CodeBlock.of("emptyArray()")
                     }
 
-                    initializer("%T(%L)", KotlinxSerialization.ContextualSerializer, parameters.joinToCode())
+                    initializer(
+                      "%T(%L)",
+                      KotlinxSerialization.ContextualSerializer,
+                      parameters.joinToCode(),
+                    )
                   }
                   .build(),
               )
@@ -659,6 +665,26 @@ internal fun generateProtocolModifierSerializers(
               .addStatement("composite.endStructure(descriptor)")
               .build(),
           )
+          .build()
+      } else {
+        null
+      }
+
+      addProperty(
+        PropertySpec.builder(
+          name = serializerTagAndSerializer.simpleName,
+          type = Stdlib.Pair.parameterizedBy(
+            Protocol.ModifierTag,
+            serializationStrategyType.copy(nullable = true),
+          ),
+          INTERNAL,
+        )
+          .initializer(
+            "%T(%L) to %L",
+            Protocol.ModifierTag,
+            modifier.tag,
+            serializationStrategyValue,
+          )
           .build(),
       )
     }
@@ -672,8 +698,8 @@ public override fun <T : Modifier.Element> modifierTagAndSerializationStrategy(
   element: T,
 ): Pair<ModifierTag, SerializationStrategy<T>?> =
   when (element) {
-    is CustomType -> ModifierTag(3) to CustomTypeSerializer
-    is CustomTypeStateless -> ModifierTag(4) to null
+    is CustomType -> CustomTypeTagAndSerializer
+    is CustomTypeStateless -> CustomTypeStatelessTagAndSerializer
     else -> throw AssertionError()
   }
 */
@@ -702,25 +728,11 @@ internal fun modifierTagAndSerializationStrategy(
     .apply {
       for ((localSchema, modifier) in allModifiers) {
         val modifierType = localSchema.modifierType(modifier)
-        when {
-          modifier.properties.isEmpty() -> {
-            addStatement(
-              "is %T -> %T(%L) to null",
-              modifierType,
-              Protocol.ModifierTag,
-              modifier.tag,
-            )
-          }
-          else -> {
-            addStatement(
-              "is %T -> %T(%L) to %T",
-              modifierType,
-              Protocol.ModifierTag,
-              modifier.tag,
-              localSchema.modifierSerializer(modifier, schema),
-            )
-          }
-        }
+        addStatement(
+          "is %T -> %M",
+          modifierType,
+          localSchema.modifierTagAndSerializer(modifier, schema),
+        )
       }
     }
     .addStatement("else -> throw %T()", Stdlib.AssertionError)
@@ -736,6 +748,6 @@ private fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
   return ClassName(guestProtocolPackage(host), "Protocol${widget.type.flatName}")
 }
 
-private fun Schema.modifierSerializer(modifier: Modifier, host: Schema): ClassName {
-  return ClassName(guestProtocolPackage(host), modifier.type.flatName + "Serializer")
+private fun Schema.modifierTagAndSerializer(modifier: Modifier, host: Schema): MemberName {
+  return MemberName(guestProtocolPackage(host), modifier.type.flatName + "TagAndSerializer")
 }
