@@ -11,7 +11,7 @@ kotlin {
       testTask {
         useMocha {
           // We use up to 10s of wall clock time to test leaks. Add extra time for slow CI machines.
-          timeout = '30s'
+          timeout = '15s'
           // Required for access to V8 GC function.
           nodeJsArgs.add('--expose-gc')
         }
