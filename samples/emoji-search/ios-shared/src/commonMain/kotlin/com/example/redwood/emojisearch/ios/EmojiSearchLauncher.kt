@@ -15,6 +15,7 @@
  */
 package com.example.redwood.emojisearch.ios
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -26,6 +27,8 @@ import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.HostApi
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.flowOf
@@ -63,6 +66,14 @@ class EmojiSearchLauncher(
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
+      leakDetector = LeakDetector.timeBasedIn(
+        scope = coroutineScope,
+        timeSource = TimeSource.Monotonic,
+        leakThreshold = 10.seconds,
+        callback = { reference, note ->
+          NSLog("Leak detected! $reference $note")
+        },
+      ),
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)

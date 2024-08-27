@@ -17,7 +17,7 @@ package app.cash.redwood.leaks
 
 internal expect fun detectGc(): Gc
 
-internal interface Gc {
+internal fun interface Gc {
   suspend fun collect()
 
   object None : Gc {

@@ -113,6 +113,7 @@ gradlePlugin {
 test {
   dependsOn(':redwood-compose:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-gradle-plugin:publishAllPublicationsToLocalMavenRepository')
+  dependsOn(':redwood-leak-detector:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol-guest:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-protocol-host:publishAllPublicationsToLocalMavenRepository')

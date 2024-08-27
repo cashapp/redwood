@@ -22,6 +22,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
@@ -67,6 +68,7 @@ class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
       container = MutableListChildren(),
       factory = TestSchemaProtocolFactory(widgetSystem),
       eventSink = { throw AssertionError() },
+      leakDetector = LeakDetector.none(),
     )
     guestAdapter.initChangesSink(hostAdapter)
     return TestRedwoodComposition(this, guestAdapter.widgetSystem, guestAdapter.root) {

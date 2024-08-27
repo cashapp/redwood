@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -299,6 +300,7 @@ class CodeHostTest {
       dispatchers = dispatchers,
       codeEventPublisher = codeEventPublisher,
       source = { app -> app.newUi() },
+      leakDetector = LeakDetector.none(),
     )
   }
 

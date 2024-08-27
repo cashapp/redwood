@@ -18,7 +18,7 @@ package app.cash.redwood.leaks.zipline
 import app.cash.zipline.ZiplineService
 
 interface LeakDetectorTestService : ZiplineService {
-  fun leakDetectorDisabled()
+  suspend fun leakDetectorDisabled()
 
   // TODO Once QuickJS supports WeakRef, enable regular tests:
   //  suspend fun detectImmediateCollection()

@@ -140,6 +140,8 @@ private class WidgetNode(override val widget: StringWidget) : ProtocolNode<Strin
 
   override fun detach() {
   }
+
+  override fun toString() = "WidgetNode"
 }
 
 private class StringWidget(override val value: String) : Widget<String> {

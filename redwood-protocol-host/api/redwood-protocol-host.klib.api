@@ -48,12 +48,13 @@ abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { //
     abstract fun apply(app.cash.redwood.protocol/PropertyChange, app.cash.redwood.protocol.host/UiEventSink) // app.cash.redwood.protocol.host/ProtocolNode.apply|apply(app.cash.redwood.protocol.PropertyChange;app.cash.redwood.protocol.host.UiEventSink){}[0]
     abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
     abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
+    abstract fun toString(): kotlin/String // app.cash.redwood.protocol.host/ProtocolNode.toString|toString(){}[0]
     abstract fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
     final fun updateModifier(app.cash.redwood/Modifier) // app.cash.redwood.protocol.host/ProtocolNode.updateModifier|updateModifier(app.cash.redwood.Modifier){}[0]
 }
 
 final class <#A: kotlin/Any> app.cash.redwood.protocol.host/HostProtocolAdapter : app.cash.redwood.protocol/ChangesSink { // app.cash.redwood.protocol.host/HostProtocolAdapter|null[0]
-    constructor <init>(app.cash.redwood.protocol/RedwoodVersion, app.cash.redwood.widget/Widget.Children<#A>, app.cash.redwood.protocol.host/ProtocolFactory<#A>, app.cash.redwood.protocol.host/UiEventSink) // app.cash.redwood.protocol.host/HostProtocolAdapter.<init>|<init>(app.cash.redwood.protocol.RedwoodVersion;app.cash.redwood.widget.Widget.Children<1:0>;app.cash.redwood.protocol.host.ProtocolFactory<1:0>;app.cash.redwood.protocol.host.UiEventSink){}[0]
+    constructor <init>(app.cash.redwood.protocol/RedwoodVersion, app.cash.redwood.widget/Widget.Children<#A>, app.cash.redwood.protocol.host/ProtocolFactory<#A>, app.cash.redwood.protocol.host/UiEventSink, app.cash.redwood.leaks/LeakDetector) // app.cash.redwood.protocol.host/HostProtocolAdapter.<init>|<init>(app.cash.redwood.protocol.RedwoodVersion;app.cash.redwood.widget.Widget.Children<1:0>;app.cash.redwood.protocol.host.ProtocolFactory<1:0>;app.cash.redwood.protocol.host.UiEventSink;app.cash.redwood.leaks.LeakDetector){}[0]
 
     final fun close() // app.cash.redwood.protocol.host/HostProtocolAdapter.close|close(){}[0]
     final fun sendChanges(kotlin.collections/List<app.cash.redwood.protocol/Change>) // app.cash.redwood.protocol.host/HostProtocolAdapter.sendChanges|sendChanges(kotlin.collections.List<app.cash.redwood.protocol.Change>){}[0]

@@ -33,6 +33,7 @@ import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -53,6 +54,8 @@ import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -66,6 +69,15 @@ import okio.assetfilesystem.asFileSystem
 class EmojiSearchActivity : ComponentActivity() {
   private val scope: CoroutineScope = CoroutineScope(Main)
   private val snackbarHostState = SnackbarHostState()
+
+  private val leakDetector = LeakDetector.timeBasedIn(
+    scope = scope,
+    timeSource = TimeSource.Monotonic,
+    leakThreshold = 10.seconds,
+    callback = { reference, note ->
+      Log.e("LEAK", "Leak detected! $reference $note")
+    },
+  )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -143,6 +155,7 @@ class EmojiSearchActivity : ComponentActivity() {
       manifestVerifier = ManifestVerifier.Companion.NO_SIGNATURE_CHECKS,
       embeddedFileSystem = applicationContext.assets.asFileSystem(),
       embeddedDir = "/".toPath(),
+      leakDetector = leakDetector,
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")

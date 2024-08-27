@@ -21,6 +21,7 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.compose.current
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange.Add
 import app.cash.redwood.protocol.ChildrenTag
@@ -152,6 +153,7 @@ class ViewTreesTest {
       container = widgetContainer,
       factory = protocolNodes,
       eventSink = { throw AssertionError() },
+      leakDetector = LeakDetector.none(),
     )
     hostAdapter.sendChanges(expected)
 

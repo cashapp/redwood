@@ -15,6 +15,7 @@ kotlin {
       dependencies {
         api projects.redwoodProtocol
         api projects.redwoodWidget
+        api projects.redwoodLeakDetector
       }
     }
     commonTest {

@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("NOTHING_TO_INLINE")
-
 package app.cash.redwood.leaks
 
-internal actual typealias ConcurrentMutableList<T> = ArrayList<T>
+class RecordingLeakCallback : LeakDetector.Callback {
+  val events = mutableListOf<String>()
 
-internal actual inline fun <T> concurrentMutableListOf(): ConcurrentMutableList<T> {
-  return arrayListOf()
-}
-
-internal actual inline operator fun <T> ConcurrentMutableList<T>.plusAssign(element: T) {
-  add(element)
-}
-
-internal actual inline fun <T> ConcurrentMutableList<T>.removeIf(predicate: (element: T) -> Boolean) {
-  var i = 0
-  while (i < size) {
-    if (predicate(get(i))) {
-      removeAt(i)
-    } else {
-      i++
-    }
+  override fun onReferenceLeaked(reference: Any, note: String) {
+    events += "leaked $reference $note"
   }
 }
