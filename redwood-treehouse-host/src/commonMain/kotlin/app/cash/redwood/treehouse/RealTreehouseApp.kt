@@ -168,6 +168,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       appService = appService,
       zipline = zipline,
       appScope = appScope,
+      leakDetector = leakDetector,
     )
   }
 
