@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineApiMismatchException
@@ -31,6 +32,7 @@ internal class ZiplineCodeSession<A : AppService>(
   appService: A,
   private val frameClockFactory: FrameClock.Factory,
   val zipline: Zipline,
+  private val leakDetector: LeakDetector,
 ) : CodeSession<A>(
   dispatchers = dispatchers,
   eventPublisher = eventPublisher,
@@ -72,6 +74,7 @@ internal class ZiplineCodeSession<A : AppService>(
   override fun ziplineStop() {
     ziplineScope.close()
     zipline.close()
+    leakDetector.watchReference(zipline, "code session stopped")
   }
 
   override fun newServiceScope(): ServiceScope<A> {

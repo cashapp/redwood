@@ -5,6 +5,7 @@
 
 New:
 - Source-based schema parser is now the default. The `useFir` Gradle property has been removed.
+- `TreehouseAppFactory` accepts a `LeakDetector` which can be used to notify you of reference leaks for native UI nodes, Zipline instances, Redwood's own internal wrappers, and more.
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
 - Optimize encoding modifiers in Kotlin/JS.
 
