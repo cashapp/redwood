@@ -21,8 +21,8 @@ import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.Modifier
-import app.cash.redwood.layout.AbstractLazyListTest
-import app.cash.redwood.layout.Text
+import app.cash.redwood.lazylayout.AbstractLazyListTest
+import app.cash.redwood.lazylayout.Text
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.widget.Widget
 import com.google.testing.junit.testparameterinjector.TestParameterInjector

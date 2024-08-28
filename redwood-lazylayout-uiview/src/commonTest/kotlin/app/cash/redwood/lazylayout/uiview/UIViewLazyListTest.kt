@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+package app.cash.redwood.lazylayout.uiview
 
-import app.cash.redwood.layout.AbstractLazyListTest
-import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.lazylayout.AbstractLazyListTest
 import app.cash.redwood.widget.Widget
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit

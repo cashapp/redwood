@@ -1,4 +1,4 @@
-import RedwoodLayoutUIViewTestKt
+import RedwoodLazylayoutUIViewTestKt
 import UIKit
 
 final class UIViewLazyListTestHost: KotlinHostingXCTestCase<UIViewLazyListTest> {

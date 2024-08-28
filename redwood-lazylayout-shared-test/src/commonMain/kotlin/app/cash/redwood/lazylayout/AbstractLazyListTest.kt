@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.lazylayout
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
