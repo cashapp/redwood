@@ -26,7 +26,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
-import androidx.core.view.doOnDetach
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePaddingRelative
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,8 +45,6 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 
 private const val VIEW_TYPE_ITEM = 1
 
