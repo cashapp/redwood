@@ -1,0 +1,28 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAllWithoutAndroid
+
+redwoodBuild {
+  targets(ToolkitAllWithoutAndroid)
+}
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodLazylayoutApi
+        api projects.redwoodLazylayoutWidget
+        api projects.redwoodRuntime
+        api projects.redwoodWidget
+        api projects.redwoodYoga
+        api libs.kotlin.test
+      }
+    }
+    jvmMain {
+      dependencies {
+        // The kotlin.test library provides JVM variants for multiple testing frameworks. When used
+        // as a test dependency this selection is transparent. But since we are publishing a library
+        // we need to select one ourselves at compilation time.
+        api libs.kotlin.test.junit
+      }
+    }
+  }
+}

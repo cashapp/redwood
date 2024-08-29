@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+@file:Suppress("ktlint:standard:property-naming")
 
-import platform.UIKit.UIView
+package app.cash.redwood.lazylayout
 
-interface UIViewSnapshotCallback {
-  fun verifySnapshot(view: UIView, name: String?, delay: Double = 0.0)
+import app.cash.redwood.widget.Widget
+
+const val Green: Int = 0xff00ff00.toInt()
+
+fun argb(
+  alpha: Int,
+  red: Int,
+  green: Int,
+  blue: Int,
+): Int {
+  return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
+}
+
+interface Text<T : Any> : Widget<T> {
+  fun text(text: String)
+  fun bgColor(color: Int)
 }

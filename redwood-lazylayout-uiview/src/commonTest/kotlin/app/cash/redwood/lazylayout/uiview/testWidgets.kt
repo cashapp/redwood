@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+package app.cash.redwood.lazylayout.uiview
 
+import app.cash.redwood.Modifier
+import app.cash.redwood.lazylayout.Text
+import app.cash.redwood.lazylayout.toUIColor
+import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
-interface UIViewSnapshotCallback {
-  fun verifySnapshot(view: UIView, name: String?, delay: Double = 0.0)
+class UIViewText : Text<UIView> {
+  override val value = UILabel().apply {
+    numberOfLines = 0
+    textColor = platform.UIKit.UIColor.blackColor
+  }
+  override var modifier: Modifier = Modifier
+
+  override fun text(text: String) {
+    value.text = text
+  }
+
+  override fun bgColor(color: Int) {
+    value.backgroundColor = color.toUIColor()
+  }
 }

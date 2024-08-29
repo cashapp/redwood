@@ -1,4 +1,5 @@
 import static app.cash.redwood.buildsupport.TargetGroup.ToolkitIos
+import static org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
 
 redwoodBuild {
   targets(ToolkitIos)
@@ -6,11 +7,26 @@ redwoodBuild {
 }
 
 kotlin {
+  targets.configureEach { target ->
+    if (target.platformType != common) {
+      target.binaries.framework {
+        compilation = target.compilations.test
+        baseName = 'RedwoodLazylayoutUIViewTestKt'
+      }
+    }
+  }
+
   sourceSets {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
         implementation projects.redwoodWidgetCompose
+      }
+    }
+    commonTest {
+      dependencies {
+        api projects.redwoodLazylayoutSharedTest
+        api libs.kotlin.test
       }
     }
   }
