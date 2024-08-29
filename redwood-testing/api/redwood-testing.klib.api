@@ -24,9 +24,7 @@ abstract interface app.cash.redwood.testing/WidgetValue { // app.cash.redwood.te
     abstract fun toDebugString(): kotlin/String // app.cash.redwood.testing/WidgetValue.toDebugString|toDebugString(){}[0]
 }
 
-sealed class app.cash.redwood.testing/TestSavedState { // app.cash.redwood.testing/TestSavedState|null[0]
-    constructor <init>() // app.cash.redwood.testing/TestSavedState.<init>|<init>(){}[0]
-}
+sealed class app.cash.redwood.testing/TestSavedState // app.cash.redwood.testing/TestSavedState|null[0]
 
 final object app.cash.redwood.testing/NoOpOnBackPressedDispatcher : app.cash.redwood.ui/OnBackPressedDispatcher { // app.cash.redwood.testing/NoOpOnBackPressedDispatcher|null[0]
     final fun addCallback(app.cash.redwood.ui/OnBackPressedCallback): app.cash.redwood.ui/Cancellable // app.cash.redwood.testing/NoOpOnBackPressedDispatcher.addCallback|addCallback(app.cash.redwood.ui.OnBackPressedCallback){}[0]
