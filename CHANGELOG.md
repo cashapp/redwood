@@ -4,6 +4,19 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
 
 New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.14.0] - 2024-08-29
+[0.14.0]: https://github.com/cashapp/redwood/releases/tag/0.14.0
+
+New:
 - Source-based schema parser is now the default. The `useFir` Gradle property has been removed.
 - `TreehouseAppFactory` accepts a `LeakDetector` which can be used to notify you of reference leaks for native UI nodes, Zipline instances, Redwood's own internal wrappers, and more.
 - Introduce a `LoadingStrategy` interface to manage `LazyList` preloading.
@@ -21,6 +34,10 @@ Fixed:
 
 Breaking:
 - The `TreehouseApp.spec` property is removed. Most callers should be able to use `TreehouseApp.name` instead. This is necessary to avoid a retain cycle.
+
+Upgraded:
+- Kotlin 2.0.20
+- Zipline 1.17.0
 
 
 ## [0.13.0] - 2024-07-25
