@@ -68,11 +68,13 @@ import platform.darwin.NSObject
 internal open class UIViewLazyList :
   LazyList<UIView>,
   ChangeListener {
-  internal val tableView: UITableView = object : UITableView(
+  internal var tableView: UITableView? = object : UITableView(
     CGRectZero.readValue(),
     UITableViewStyle.UITableViewStylePlain,
   ) {
     override fun setContentOffset(contentOffset: CValue<CGPoint>, animated: Boolean) {
+      val scrollProcessor = this@UIViewLazyList.scrollProcessor ?: return // Detached.
+
       // If the caller is requesting a contentOffset with y == 0,
       // and the current contentOffset.y is not 0,
       // assume that it's a programmatic scroll-to-top call.
@@ -87,14 +89,17 @@ internal open class UIViewLazyList :
   override var modifier: Modifier = Modifier
 
   override val value: UIView
-    get() = tableView
+    get() = tableView ?: error("detached")
 
-  private val updateProcessor = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
+  private var updateProcessor: LazyListUpdateProcessor<LazyListContainerCell, UIView>? = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
     override fun createPlaceholder(original: UIView) = SizeOnlyPlaceholder(original)
 
     override fun isSizeOnlyPlaceholder(placeholder: UIView) = placeholder is SizeOnlyPlaceholder
 
     override fun insertRows(index: Int, count: Int) {
+      rowCount += count
+      val tableView = this@UIViewLazyList.tableView ?: error("detached")
+
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.beginUpdates()
       UIView.performWithoutAnimation {
@@ -107,6 +112,9 @@ internal open class UIViewLazyList :
     }
 
     override fun deleteRows(index: Int, count: Int) {
+      rowCount -= count
+      val tableView = this@UIViewLazyList.tableView ?: error("detached")
+
       // TODO(jwilson): pass a range somehow when 'count' is large?
       tableView.beginUpdates()
       UIView.performWithoutAnimation {
@@ -121,14 +129,26 @@ internal open class UIViewLazyList :
     override fun setContent(view: LazyListContainerCell, content: UIView?, modifier: Modifier) {
       view.setContent(content)
     }
+
+    override fun detach(view: LazyListContainerCell) {
+      view.detach()
+    }
+
+    override fun detach() {
+      this@UIViewLazyList.detach()
+    }
   }
+
+  /** Cache of [LazyListUpdateProcessor.size] so we can return it after [detach]. */
+  private var rowCount = 0
 
   private var ignoreScrollUpdates = false
 
-  private val scrollProcessor = object : LazyListScrollProcessor() {
-    override fun contentSize() = updateProcessor.size
+  private var scrollProcessor: LazyListScrollProcessor? = object : LazyListScrollProcessor() {
+    override fun contentSize() = rowCount
 
     override fun programmaticScroll(firstIndex: Int, animated: Boolean) {
+      val tableView = this@UIViewLazyList.tableView ?: error("detached")
       ignoreScrollUpdates = animated // Don't forward scroll updates to scrollProcessor.
       tableView.scrollToRowAtIndexPath(
         NSIndexPath.indexPathForItem(firstIndex.toLong(), 0),
@@ -138,9 +158,9 @@ internal open class UIViewLazyList :
     }
   }
 
-  override val placeholder: Widget.Children<UIView> = updateProcessor.placeholder
+  override val placeholder: Widget.Children<UIView> = updateProcessor!!.placeholder
 
-  override val items: Widget.Children<UIView> = updateProcessor.items
+  override val items: Widget.Children<UIView> = updateProcessor!!.items
 
   private val dataSource = object : NSObject(), UITableViewDataSourceProtocol {
     override fun tableView(
@@ -148,13 +168,15 @@ internal open class UIViewLazyList :
       numberOfRowsInSection: NSInteger,
     ): Long {
       require(numberOfRowsInSection == 0L)
-      return updateProcessor.size.toLong()
+      return rowCount.toLong()
     }
 
     override fun tableView(
       tableView: UITableView,
       cellForRowAtIndexPath: NSIndexPath,
-    ): LazyListContainerCell {
+    ): UITableViewCell {
+      val updateProcessor = this@UIViewLazyList.updateProcessor
+        ?: return UITableViewCell(UITableViewCellStyle.UITableViewCellStyleDefault, null) // Detached.
       val index = cellForRowAtIndexPath.item.toInt()
       return updateProcessor.getOrCreateView(index) { binding ->
         createView(tableView, binding, index)
@@ -179,6 +201,8 @@ internal open class UIViewLazyList :
   private val tableViewDelegate: UITableViewDelegateProtocol =
     object : NSObject(), UITableViewDelegateProtocol {
       override fun scrollViewDidScroll(scrollView: UIScrollView) {
+        val tableView = this@UIViewLazyList.tableView ?: return // Detached.
+        val scrollProcessor = this@UIViewLazyList.scrollProcessor ?: return // Detached.
         if (ignoreScrollUpdates) return // Only notify of user scrolls.
 
         val visibleIndexPaths = tableView.indexPathsForVisibleRows ?: return
@@ -203,7 +227,7 @@ internal open class UIViewLazyList :
     }
 
   init {
-    tableView.apply {
+    tableView!!.apply {
       dataSource = this@UIViewLazyList.dataSource
       delegate = tableViewDelegate
       rowHeight = UITableViewAutomaticDimension
@@ -219,6 +243,7 @@ internal open class UIViewLazyList :
   }
 
   final override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) {
+    val scrollProcessor = this@UIViewLazyList.scrollProcessor ?: error("detached")
     scrollProcessor.onViewportChanged(onViewportChanged)
   }
 
@@ -232,6 +257,7 @@ internal open class UIViewLazyList :
   override fun height(height: Constraint) {}
 
   override fun margin(margin: Margin) {
+    val tableView = this@UIViewLazyList.tableView ?: error("detached")
     tableView.contentInset = UIEdgeInsetsMake(
       margin.top.value,
       margin.start.value,
@@ -245,20 +271,32 @@ internal open class UIViewLazyList :
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
+    val scrollProcessor = this@UIViewLazyList.scrollProcessor ?: error("detached")
     scrollProcessor.scrollItemIndex(scrollItemIndex)
   }
 
   override fun itemsBefore(itemsBefore: Int) {
+    val updateProcessor = this@UIViewLazyList.updateProcessor ?: error("detached")
     updateProcessor.itemsBefore(itemsBefore)
   }
 
   override fun itemsAfter(itemsAfter: Int) {
+    val updateProcessor = this@UIViewLazyList.updateProcessor ?: error("detached")
     updateProcessor.itemsAfter(itemsAfter)
   }
 
   override fun onEndChanges() {
+    val updateProcessor = this@UIViewLazyList.updateProcessor ?: error("detached")
+    val scrollProcessor = this@UIViewLazyList.scrollProcessor ?: error("detached")
     updateProcessor.onEndChanges()
     scrollProcessor.onEndChanges()
+  }
+
+  protected open fun detach() {
+    // Break reference cycles.
+    this.tableView = null
+    this.updateProcessor = null
+    this.scrollProcessor = null
   }
 }
 
@@ -286,18 +324,20 @@ internal class LazyListContainerCell(
     super.willMoveToSuperview(newSuperview)
 
     backgroundColor = UIColor.clearColor
-    if (newSuperview is UITableView) {
-      newSuperview.separatorStyle = UITableViewCellSeparatorStyleNone
-    }
+    if (newSuperview != null) {
+      if (newSuperview is UITableView) {
+        newSuperview.separatorStyle = UITableViewCellSeparatorStyleNone
+      }
 
-    // Confirm the cell is bound when it's about to be displayed.
-    if (superview == null && newSuperview != null && !binding!!.isBound) {
-      binding!!.bind(this)
-    }
-
-    // Unbind the cell when its view is detached from the table.
-    if (superview != null && newSuperview == null) {
-      binding?.unbind()
+      // Make sure the cell is bound when it's about to be displayed.
+      if (superview == null && !binding!!.isBound) {
+        binding!!.bind(this)
+      }
+    } else {
+      // Unbind the cell when its view is detached from the table.
+      if (superview != null) {
+        binding?.unbind()
+      }
     }
   }
 
@@ -334,6 +374,10 @@ internal class LazyListContainerCell(
     }
     selectedBackgroundView = null
   }
+
+  internal fun detach() {
+    binding = null // Break a reference cycle.
+  }
 }
 
 internal class UIViewRefreshableLazyList :
@@ -342,15 +386,24 @@ internal class UIViewRefreshableLazyList :
 
   private var onRefresh: (() -> Unit)? = null
 
-  private val refreshControl by lazy {
-    UIRefreshControl().apply {
-      setEventHandler(UIControlEventValueChanged) {
-        onRefresh?.invoke()
+  private var refreshControl: UIRefreshControl? = null
+
+  private fun requireRefreshControl(): UIRefreshControl {
+    val result = refreshControl
+    if (result != null) return result
+
+    return UIRefreshControl()
+      .apply {
+        setEventHandler(UIControlEventValueChanged) {
+          onRefresh?.invoke()
+        }
       }
-    }
+      .also { this.refreshControl = it }
   }
 
   override fun refreshing(refreshing: Boolean) {
+    val refreshControl = requireRefreshControl()
+
     if (refreshing != refreshControl.refreshing) {
       if (refreshing) {
         refreshControl.beginRefreshing()
@@ -361,6 +414,7 @@ internal class UIViewRefreshableLazyList :
   }
 
   override fun onRefresh(onRefresh: (() -> Unit)?) {
+    val tableView = this.tableView ?: error("detached")
     this.onRefresh = onRefresh
 
     if (onRefresh != null) {
@@ -368,12 +422,17 @@ internal class UIViewRefreshableLazyList :
         tableView.refreshControl = refreshControl
       }
     } else {
-      refreshControl.removeFromSuperview()
+      refreshControl?.removeFromSuperview()
     }
   }
 
   override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
-    refreshControl.tintColor = UIColor(pullRefreshContentColor)
+    requireRefreshControl().tintColor = UIColor(pullRefreshContentColor)
+  }
+
+  override fun detach() {
+    super.detach()
+    refreshControl = null // Break a reference cycle.
   }
 }
 

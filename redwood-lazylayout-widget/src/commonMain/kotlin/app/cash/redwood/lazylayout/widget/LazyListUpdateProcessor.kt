@@ -85,6 +85,16 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     override fun detach() {
       _widgets.clear()
+
+      firstPlaceholder = null
+      placeholdersQueue.clear()
+
+      for (binding in itemsBefore.nonNullElements) {
+        binding.detach()
+      }
+      for (binding in itemsAfter.nonNullElements) {
+        binding.detach()
+      }
     }
   }
 
@@ -129,6 +139,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     override fun detach() {
       _widgets.clear()
+
+      for (binding in loadedItems) {
+        binding.detach()
+      }
+
+      this@LazyListUpdateProcessor.detach()
     }
   }
 
@@ -327,7 +343,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     // We have a binding. Give it loaded content.
     require(binding.isPlaceholder)
     if (binding.isBound) {
-      recyclePlaceholder(binding.content!!)
+      recyclePlaceholder(binding.content)
     }
     binding.isPlaceholder = false
     binding.setContentAndModifier(loadedContent)
@@ -342,7 +358,9 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     // Show the placeholder in the bound view.
     val placeholderContent = loaded.processor.takePlaceholder()
-    loaded.setContentAndModifier(placeholderContent, Modifier)
+    if (placeholderContent != null) {
+      loaded.setContentAndModifier(placeholderContent, Modifier)
+    }
     loaded.isPlaceholder = true
     return loaded
   }
@@ -377,7 +395,8 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       processor = this@LazyListUpdateProcessor,
       isPlaceholder = true,
     ).apply {
-      setContentAndModifier(takePlaceholder(), Modifier)
+      val placeholder = takePlaceholder() ?: return@apply // Detached.
+      setContentAndModifier(placeholder, Modifier)
     }
 
     return when {
@@ -387,15 +406,16 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
   }
 
-  private fun takePlaceholder(): W {
+  private fun takePlaceholder(): W? {
     val result = placeholdersQueue.removeFirstOrNull()
     if (result != null) return result
 
-    return createPlaceholder(firstPlaceholder!!)
-      ?: throw IllegalStateException("no more placeholders!")
+    val firstPlaceholder = this.firstPlaceholder ?: return null // Detached.
+    return createPlaceholder(firstPlaceholder)
   }
 
-  private fun recyclePlaceholder(placeholder: W) {
+  private fun recyclePlaceholder(placeholder: W?) {
+    if (placeholder == null) return // Detached.
     if (!isSizeOnlyPlaceholder(placeholder)) {
       placeholdersQueue += placeholder
     }
@@ -416,6 +436,12 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   protected abstract fun deleteRows(index: Int, count: Int)
 
   protected abstract fun setContent(view: V, content: W?, modifier: Modifier)
+
+  protected open fun detach(view: V) {
+  }
+
+  protected open fun detach() {
+  }
 
   /**
    * Binds a UI-managed view to model-managed content.
@@ -440,14 +466,21 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     public var view: V? = null
       private set
 
+    public val isBound: Boolean
+      get() = view != null
+
     /**
      * The content of this binding; either a loaded widget, a placeholder, or null.
      *
      * This may be null if its content is a placeholder that is not bound to a view. That way we
      * don't take placeholders from the pool until we need them.
+     *
+     * This may also be null if it should be a placeholder but the enclosing LazyList is detached.
+     * This could happen if the user scrolls the table after the view is detached.
      */
     internal var content: W? = null
       private set
+
     private var modifier: Modifier = Modifier
 
     internal fun setContentAndModifier(widget: Widget<W>) {
@@ -461,9 +494,6 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       val view = this.view
       if (view != null) processor.setContent(view, content, modifier)
     }
-
-    public val isBound: Boolean
-      get() = view != null
 
     public fun bind(view: V) {
       require(this.view == null) { "already bound" }
@@ -479,7 +509,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     public fun unbind() {
       val view = this.view ?: return
 
-      // Detach the view.
+      // Unbind the view.
       processor.setContent(view, null, Modifier)
       this.view = null
 
@@ -492,9 +522,17 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
         if (itemsAfterIndex != -1) processor.itemsAfter.set(itemsAfterIndex, null)
 
         // When a placeholder is reused, recycle its widget.
-        processor.recyclePlaceholder(content!!)
+        processor.recyclePlaceholder(content)
         this.content = null
       }
+    }
+
+    public fun detach() {
+      val view = this.view
+      if (view != null) processor.detach(view)
+
+      this.content = null
+      this.view = null
     }
   }
 
