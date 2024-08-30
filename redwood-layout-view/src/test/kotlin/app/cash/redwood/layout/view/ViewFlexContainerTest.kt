@@ -60,8 +60,8 @@ class ViewFlexContainerTest(
 
   override fun text() = ViewText(paparazzi.context)
 
-  override fun verifySnapshot(container: Widget<View>, name: String?) {
-    paparazzi.snapshot(container.value, name)
+  override fun verifySnapshot(widget: View, name: String?) {
+    paparazzi.snapshot(widget, name)
   }
 
   class ViewTestFlexContainer internal constructor(
