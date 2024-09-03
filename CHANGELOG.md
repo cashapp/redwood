@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
 
 New:
-- Nothing yet!
+- Default expressions can now be used directly in the schema rather than using the `@Default` annotation. The annotation has been deprecated, and will be removed in the next release.
 
 Changed:
 - Nothing yet!

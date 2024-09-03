@@ -70,6 +70,7 @@ import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.expressions.impl.FirResolvedArgumentList
 import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
+import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.fir.types.ConeKotlinTypeProjection
 import org.jetbrains.kotlin.fir.types.ConeStarProjection
@@ -413,7 +414,7 @@ private fun FirContext.parseWidget(
 
       val propertyAnnotation = findPropertyAnnotation(property.annotations)
       val childrenAnnotation = findChildrenAnnotation(property.annotations)
-      val defaultAnnotation = findDefaultAnnotation(property.annotations)
+      val defaultExpression = findDefaultExpression(memberType, parameter, property)
       val deprecation = findDeprecationAnnotation(property.annotations)
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
@@ -427,7 +428,7 @@ private fun FirContext.parseWidget(
             documentation = documentation,
             parameterTypes = arguments.map { it.toFqType() },
             isNullable = type.isNullable,
-            defaultExpression = defaultAnnotation?.expression,
+            defaultExpression = defaultExpression,
             deprecation = deprecation,
           )
         } else {
@@ -436,7 +437,7 @@ private fun FirContext.parseWidget(
             name = name,
             documentation = documentation,
             type = type.toFqType(),
-            defaultExpression = defaultAnnotation?.expression,
+            defaultExpression = defaultExpression,
             deprecation = deprecation,
           )
         }
@@ -463,7 +464,7 @@ private fun FirContext.parseWidget(
           name = name,
           documentation = documentation,
           scope = scope?.toFqType(),
-          defaultExpression = defaultAnnotation?.expression,
+          defaultExpression = defaultExpression,
           deprecation = deprecation,
         )
       } else {
@@ -577,7 +578,7 @@ private fun FirContext.parseModifier(
       val parameterType = parameter.resolvedReturnType.toFqType()
       val property = firClass.declarations.filterIsInstance<FirProperty>().single { it.name == parameter.name }
 
-      val defaultAnnotation = findDefaultAnnotation(property.annotations)
+      val defaultExpression = findDefaultExpression(memberType, parameter, property)
       val deprecation = findDeprecationAnnotation(property.annotations)
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
@@ -592,7 +593,7 @@ private fun FirContext.parseModifier(
         documentation = documentation,
         type = parameterType,
         isSerializable = isSerializable,
-        defaultExpression = defaultAnnotation?.expression,
+        defaultExpression = defaultExpression,
         deprecation = deprecation,
       )
     }
@@ -770,22 +771,30 @@ private data class ChildrenAnnotation(
   val tag: Int,
 )
 
-private fun FirContext.findDefaultAnnotation(
-  annotations: List<FirAnnotation>,
-): DefaultAnnotation? {
-  val annotation = annotations.find { it.fqName(firSession) == FqNames.Default }
-    ?: return null
+private fun FirContext.findDefaultExpression(
+  memberType: FqType,
+  parameter: FirValueParameterSymbol,
+  property: FirProperty,
+): String? {
+  val annotation = property.annotations.find { it.fqName(firSession) == FqNames.Default }
+    ?.let { annotation ->
+      annotation.argumentMapping
+        .mapping[Name.identifier("expression")] as? FirLiteralExpression
+        ?: throw AssertionError(annotation.source?.text)
+    }
+    ?.value as String?
 
-  val expression = annotation.argumentMapping
-    .mapping[Name.identifier("expression")] as? FirLiteralExpression
-    ?: throw AssertionError(annotation.source?.text)
+  val expression = parameter.defaultValueSource?.let { defaultValue ->
+    defaultValue.treeStructure
+      .toString(defaultValue.lighterASTNode)
+      .toString()
+  }
 
-  return DefaultAnnotation(expression.value as String)
+  check(annotation == null || expression == null) {
+    "Only @Default or a default expression may be present–not both: $memberType.${parameter.name}"
+  }
+  return expression ?: annotation
 }
-
-private data class DefaultAnnotation(
-  val expression: String,
-)
 
 private fun FirContext.findModifierAnnotation(
   annotations: List<FirAnnotation>,
