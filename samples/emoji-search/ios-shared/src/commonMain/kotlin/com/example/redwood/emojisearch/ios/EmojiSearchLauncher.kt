@@ -85,7 +85,11 @@ class EmojiSearchLauncher(
         manifestUrl = manifestUrlFlow,
         hostApi = hostApi,
       ),
-      eventListenerFactory = { app, manifestUrl -> eventListener },
+      eventListenerFactory = object : EventListener.Factory {
+        override fun create(app: TreehouseApp<*>, manifestUrl: String?) = eventListener
+        override fun close() {
+        }
+      },
     )
 
     treehouseApp.start()

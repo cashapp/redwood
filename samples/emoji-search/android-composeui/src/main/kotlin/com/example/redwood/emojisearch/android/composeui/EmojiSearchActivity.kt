@@ -174,7 +174,11 @@ class EmojiSearchActivity : ComponentActivity() {
           },
         ),
       ),
-      eventListenerFactory = { _, _ -> appEventListener },
+      eventListenerFactory = object : EventListener.Factory {
+        override fun create(app: TreehouseApp<*>, manifestUrl: String?) = appEventListener
+        override fun close() {
+        }
+      },
     )
 
     treehouseApp.start()
