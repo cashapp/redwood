@@ -78,6 +78,8 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
     final fun itemsBefore(kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.itemsBefore|itemsBefore(kotlin.Int){}[0]
     final fun onEndChanges() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.onEndChanges|onEndChanges(){}[0]
     open fun createPlaceholder(#B): #B? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.createPlaceholder|createPlaceholder(1:1){}[0]
+    open fun detach(#A) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.detach|detach(1:0){}[0]
+    open fun detach() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.detach|detach(){}[0]
     open fun isSizeOnlyPlaceholder(#B): kotlin/Boolean // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.isSizeOnlyPlaceholder|isSizeOnlyPlaceholder(1:1){}[0]
 
     final class <#A1: kotlin/Any, #B1: kotlin/Any> Binding { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding|null[0]
@@ -88,6 +90,7 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
             final fun <get-view>(): #A1? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view.<get-view>|<get-view>(){}[0]
 
         final fun bind(#A1) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.bind|bind(1:0){}[0]
+        final fun detach() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.detach|detach(){}[0]
         final fun unbind() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.unbind|unbind(){}[0]
     }
 }

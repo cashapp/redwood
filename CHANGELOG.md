@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Breaking the last remaining retain cycle in `UIViewLazyList`.
 
 
 ## [0.14.0] - 2024-08-29
