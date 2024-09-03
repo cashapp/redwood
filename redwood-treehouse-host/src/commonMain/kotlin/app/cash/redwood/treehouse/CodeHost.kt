@@ -106,7 +106,7 @@ internal abstract class CodeHost<A : AppService>(
     codeUpdatesScope.collectCodeUpdates(eventListenerFactory)
   }
 
-  /** This function may only be invoked on [TreehouseDispatchers.zipline]. */
+  /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   fun stop() {
     dispatchers.checkUi()
 

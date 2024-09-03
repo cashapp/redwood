@@ -21,7 +21,6 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierTag
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.treehouse.EventListener.Factory
 import app.cash.zipline.Call
 import app.cash.zipline.CallResult
 import app.cash.zipline.Zipline
@@ -367,7 +366,15 @@ public open class EventListener {
   ) {
   }
 
-  public fun interface Factory {
+  /**
+   * Creates new instances of [EventListener].
+   *
+   * A new [EventListener] will be created for each code load attempt: there may be multiple
+   * instances for a single [TreehouseApp] due to hot reloading.
+   *
+   * This factory will be closed when the [TreehouseApp] it belongs to is closed.
+   */
+  public interface Factory : AutoCloseable {
     /**
      * Returns an event listener that receives the events of a specific code session. Each code
      * session includes a single [Zipline] instance, unless code loading fails, in which case there
@@ -380,8 +387,10 @@ public open class EventListener {
   }
 
   public companion object {
-    public val NONE: Factory = Factory { _, _ ->
-      EventListener()
+    public val NONE: Factory = object : Factory {
+      override fun create(app: TreehouseApp<*>, manifestUrl: String?) = EventListener()
+      override fun close() {
+      }
     }
   }
 }

@@ -177,6 +177,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
 
     closed = true
     spec = null
+    eventListenerFactory?.close()
     eventListenerFactory = null
     stop()
     dispatchers.close()

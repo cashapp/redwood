@@ -43,5 +43,6 @@ class TreehouseTesterTest {
     assertThat(buttonValue.text).isEqualTo("This is TreehouseTesterTestHappyPathStep2")
 
     treehouseApp.stop()
+    treehouseApp.close()
   }
 }
