@@ -25,6 +25,8 @@ kotlin {
     }
     commonTest {
       dependencies {
+        api projects.redwoodLayoutSharedTest
+        api projects.redwoodLayoutUiview
         api projects.redwoodLazylayoutSharedTest
         api libs.kotlin.test
       }

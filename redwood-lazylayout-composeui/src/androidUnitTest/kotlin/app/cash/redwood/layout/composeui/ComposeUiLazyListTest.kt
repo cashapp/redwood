@@ -98,9 +98,9 @@ class ComposeUiLazyListTest(
     }
   }
 
-  override fun verifySnapshot(container: Widget<@Composable () -> Unit>, name: String?) {
+  override fun verifySnapshot(widget: @Composable () -> Unit, name: String?) {
     paparazzi.snapshot(name) {
-      container.value()
+      widget()
     }
   }
 
