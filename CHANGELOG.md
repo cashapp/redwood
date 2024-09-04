@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
 
 New:
-- Nothing yet!
+- `EventListener.Factory.close()` is called by `TreehouseApp.close()` to release any resources held by the factory.
 
 Changed:
 - Nothing yet!
