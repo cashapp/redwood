@@ -784,13 +784,13 @@ class SchemaParserTest {
 
   @Widget(1)
   data class DefaultExpressionWidget(
-    @Property(1) @Default("5") val a: Int,
-    @Children(1) @Default("{}") val b: () -> Unit,
+    @Property(1) val a: Int = 5,
+    @Children(1) val b: () -> Unit = {},
   )
 
   @Modifier(1)
   data class DefaultExpressionModifier(
-    @Default("5") val a: Int,
+    val a: Int = 5,
   )
 
   @Test fun defaultExpressions() {
@@ -804,6 +804,51 @@ class SchemaParserTest {
 
     val modifier = schema.modifiers.single()
     assertThat(modifier.properties.single().defaultExpression).isEqualTo("5")
+  }
+
+  @Schema([DefaultExpressionAnnotationWidget::class, DefaultExpressionAnnotationModifier::class])
+  interface DefaultExpressionAnnotationSchema
+
+  @Suppress("DEPRECATION") // Testing deprecated annotation.
+  @Widget(1)
+  data class DefaultExpressionAnnotationWidget(
+    @Property(1) @Default("5") val a: Int,
+    @Children(1) @Default("{}") val b: () -> Unit,
+  )
+
+  @Modifier(1)
+  @Suppress("DEPRECATION") // Testing deprecated annotation.
+  data class DefaultExpressionAnnotationModifier(
+    @Default("5") val a: Int,
+  )
+
+  @Test fun defaultExpressionAnnotations() {
+    val schema = parseTestSchema(DefaultExpressionAnnotationSchema::class).schema
+
+    val widget = schema.widgets.single()
+    val property = widget.traits.filterIsInstance<PropertyTrait>().single()
+    val children = widget.traits.filterIsInstance<ChildrenTrait>().single()
+    assertThat(property.defaultExpression).isEqualTo("5")
+    assertThat(children.defaultExpression).isEqualTo("{}")
+
+    val modifier = schema.modifiers.single()
+    assertThat(modifier.properties.single().defaultExpression).isEqualTo("5")
+  }
+
+  @Schema([DefaultExpressionBothWidget::class])
+  interface DefaultExpressionBothSchema
+
+  @Widget(1)
+  @Suppress("DEPRECATION") // Testing deprecated annotation.
+  data class DefaultExpressionBothWidget(
+    @Property(1) @Default("5") val a: Int = 5,
+  )
+
+  @Test fun defaultExpressionBothThrows() {
+    assertFailure {
+      parseTestSchema(DefaultExpressionBothSchema::class)
+    }.isInstanceOf<IllegalStateException>()
+      .hasMessage("Only @Default or a default expression may be present–not both: app.cash.redwood.tooling.schema.SchemaParserTest.DefaultExpressionBothWidget.a")
   }
 
   @Schema([SomeWidget::class, SomeModifier::class])

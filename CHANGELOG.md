@@ -4,6 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
 
 New:
+- Default expressions can now be used directly in the schema rather than using the `@Default` annotation. The annotation has been deprecated, and will be removed in the next release.
 - `EventListener.Factory.close()` is called by `TreehouseApp.close()` to release any resources held by the factory.
 
 Changed:

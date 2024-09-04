@@ -197,6 +197,7 @@ public annotation class Children(
  */
 @Retention(RUNTIME)
 @Target(PROPERTY)
+@Deprecated("Migrate to normal default parameter expressions")
 public annotation class Default(val expression: String)
 
 /**

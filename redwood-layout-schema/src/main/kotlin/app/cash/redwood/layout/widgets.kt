@@ -20,7 +20,6 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Widget
 import app.cash.redwood.ui.Dp
@@ -37,16 +36,14 @@ public data class Row(
    * its parent ([Constraint.Fill]).
    */
   @Property(1)
-  @Default("Constraint.Wrap")
-  val width: Constraint,
+  val width: Constraint = Constraint.Wrap,
 
   /**
    * Sets whether the row's height will wrap its contents ([Constraint.Wrap]) or match the height of
    * its parent ([Constraint.Fill]).
    */
   @Property(2)
-  @Default("Constraint.Wrap")
-  val height: Constraint,
+  val height: Constraint = Constraint.Wrap,
 
   /**
    * Applies margin (space) around the row.
@@ -54,23 +51,20 @@ public data class Row(
    * This can also be applied to an individual widget using `Modifier.margin`.
    */
   @Property(3)
-  @Default("Margin.Zero")
-  val margin: Margin,
+  val margin: Margin = Margin.Zero,
 
   /**
    * Sets whether the row allows scrolling ([Overflow.Scroll]) if its content overflows its bounds
    * or if it does not allow scrolling ([Overflow.Clip]).
    */
   @Property(4)
-  @Default("Overflow.Clip")
-  val overflow: Overflow,
+  val overflow: Overflow = Overflow.Clip,
 
   /**
    * Sets the horizontal alignment for widgets in this row.
    */
   @Property(5)
-  @Default("MainAxisAlignment.Start")
-  val horizontalAlignment: MainAxisAlignment,
+  val horizontalAlignment: MainAxisAlignment = MainAxisAlignment.Start,
 
   /**
    * Sets the default vertical alignment for widgets in this row.
@@ -78,8 +72,7 @@ public data class Row(
    * This can also be applied to an individual widget using `Modifier.verticalAlignment`.
    */
   @Property(6)
-  @Default("CrossAxisAlignment.Start")
-  val verticalAlignment: CrossAxisAlignment,
+  val verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
 
   /**
    * Invoked when the container scrolls. The function's `offset` is represented in units in the
@@ -88,8 +81,7 @@ public data class Row(
    * @see Overflow.Scroll
    */
   @Property(7)
-  @Default("null")
-  val onScroll: ((offset: Px) -> Unit)?,
+  val onScroll: ((offset: Px) -> Unit)? = null,
 
   /**
    * A slot to add widgets in.
@@ -109,16 +101,14 @@ public data class Column(
    * of its parent ([Constraint.Fill]).
    */
   @Property(1)
-  @Default("Constraint.Wrap")
-  val width: Constraint,
+  val width: Constraint = Constraint.Wrap,
 
   /**
    * Sets whether the column's height will wrap its contents ([Constraint.Wrap]) or match the height
    * of its parent ([Constraint.Fill]).
    */
   @Property(2)
-  @Default("Constraint.Wrap")
-  val height: Constraint,
+  val height: Constraint = Constraint.Wrap,
 
   /**
    * Applies margin (space) around the column.
@@ -126,16 +116,14 @@ public data class Column(
    * This can also be applied to an individual widget using `Modifier.margin`.
    */
   @Property(3)
-  @Default("Margin.Zero")
-  val margin: Margin,
+  val margin: Margin = Margin.Zero,
 
   /**
    * Sets whether the column allows scrolling ([Overflow.Scroll]) if its content overflows its bounds
    * or if it does not allow scrolling ([Overflow.Clip]).
    */
   @Property(4)
-  @Default("Overflow.Clip")
-  val overflow: Overflow,
+  val overflow: Overflow = Overflow.Clip,
 
   /**
    * Sets the default horizontal alignment for widgets in this column.
@@ -143,15 +131,13 @@ public data class Column(
    * This can also be applied to an individual widget using `Modifier.horizontalAlignment`.
    */
   @Property(5)
-  @Default("CrossAxisAlignment.Start")
-  val horizontalAlignment: CrossAxisAlignment,
+  val horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
 
   /**
    * Sets the vertical alignment for widgets in this column.
    */
   @Property(6)
-  @Default("MainAxisAlignment.Start")
-  val verticalAlignment: MainAxisAlignment,
+  val verticalAlignment: MainAxisAlignment = MainAxisAlignment.Start,
 
   /**
    * Invoked when the container scrolls. The function's `offset` is represented in units in the
@@ -160,8 +146,7 @@ public data class Column(
    * @see Overflow.Scroll
    */
   @Property(7)
-  @Default("null")
-  val onScroll: ((offset: Px) -> Unit)?,
+  val onScroll: ((offset: Px) -> Unit)? = null,
 
   /**
    * A slot to add widgets in.
@@ -180,15 +165,13 @@ public data class Spacer(
    * Sets the width of the spacer.
    */
   @Property(1)
-  @Default("Dp(0.0)")
-  val width: Dp,
+  val width: Dp = Dp(0.0),
 
   /**
    * Sets the height of the spacer.
    */
   @Property(2)
-  @Default("Dp(0.0)")
-  val height: Dp,
+  val height: Dp = Dp(0.0),
 )
 
 /**
@@ -203,16 +186,14 @@ public data class Box(
    * of its parent ([Constraint.Fill]).
    */
   @Property(1)
-  @Default("Constraint.Wrap")
-  val width: Constraint,
+  val width: Constraint = Constraint.Wrap,
 
   /**
    * Sets whether the box's height will match its tallest child ([Constraint.Wrap]) or match the
    * height of its parent ([Constraint.Fill]).
    */
   @Property(2)
-  @Default("Constraint.Wrap")
-  val height: Constraint,
+  val height: Constraint = Constraint.Wrap,
 
   /**
    * Applies margin (space) around the box.
@@ -220,8 +201,7 @@ public data class Box(
    * This can also be applied to an individual widget using `Modifier.margin`.
    */
   @Property(3)
-  @Default("Margin.Zero")
-  val margin: Margin,
+  val margin: Margin = Margin.Zero,
 
   /**
    * Sets the default horizontal alignment for widgets in this Box.
@@ -229,8 +209,7 @@ public data class Box(
    * This can also be applied to an individual widget using `Modifier.horizontalAlignment`.
    */
   @Property(4)
-  @Default("CrossAxisAlignment.Start")
-  val horizontalAlignment: CrossAxisAlignment,
+  val horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
 
   /**
    * Sets the default vertical alignment for widgets in this Box.
@@ -238,8 +217,7 @@ public data class Box(
    * This can also be applied to an individual widget using `Modifier.horizontalAlignment`.
    */
   @Property(5)
-  @Default("CrossAxisAlignment.Start")
-  val verticalAlignment: CrossAxisAlignment,
+  val verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start,
 
   /**
    * A slot to add widgets in.

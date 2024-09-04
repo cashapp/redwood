@@ -17,7 +17,6 @@ package app.cash.redwood.tooling.codegen
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
@@ -76,14 +75,11 @@ class ComposeGenerationTest {
   @Widget(1)
   data class DefaultTestWidget(
     @Property(1)
-    @Default("\"test\"")
-    val trait: String,
+    val trait: String = "test",
     @Property(2)
-    @Default("{ error(\"test\") }")
-    val onEvent: () -> Unit,
+    val onEvent: () -> Unit = { error("test") },
     @Children(1)
-    @Default("{}")
-    val block: () -> Unit,
+    val block: () -> Unit = {},
   )
 
   @Test fun `default is supported for all property types`() {

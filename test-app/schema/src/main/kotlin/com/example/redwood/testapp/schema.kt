@@ -18,7 +18,6 @@ package com.example.redwood.testapp
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
@@ -81,7 +80,7 @@ public data class Text(
 public data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: (() -> Unit)?,
-  @Property(3) @Default("0u") val color: UInt,
+  @Property(3) val color: UInt = 0u,
 )
 
 /** Like [Button] but with a required lambda. */
@@ -95,9 +94,9 @@ public data class Button2(
 public data class TextInput(
   @Property(1) val text: String?,
   @Property(2) val customType: Duration?,
-  @Property(3) @Default("null") val onChange: ((String) -> Unit)?,
-  @Property(4) @Default("null") val onChangeCustomType: ((Duration) -> Unit)?,
-  @Property(5) @Default("null") val maxLength: Int?,
+  @Property(3) val onChange: ((String) -> Unit)? = null,
+  @Property(4) val onChangeCustomType: ((Duration) -> Unit)? = null,
+  @Property(5) val maxLength: Int? = null,
 )
 
 @Widget(9)
@@ -132,7 +131,7 @@ public object CustomTypeStateless
 @Modifier(5, TestScope::class)
 public data class CustomTypeWithDefault(
   val customType: Duration,
-  @Default("\"sup\"") val string: String,
+  val string: String = "sup",
 )
 
 @Modifier(6, TestScope::class, SecondaryTestScope::class)
