@@ -128,6 +128,25 @@ class LeaksTest {
   }
 
   @Test
+  fun eventListenerFactoryNotLeaked() = runTest {
+    val tester = TreehouseTester(this)
+    tester.eventListenerFactory = RetainEverythingEventListenerFactory(tester.eventLog)
+    val treehouseApp = tester.loadApp()
+
+    val eventListenerFactoryLeakWatcher = LeakWatcher {
+      tester.eventListenerFactory
+    }
+
+    // Stop referencing our EventListener.Factory from our test harness.
+    tester.eventListenerFactory = FakeEventListener.Factory(tester.eventLog)
+
+    // After close, it's unreachable.
+    treehouseApp.close()
+    eventListenerFactoryLeakWatcher.assertNotLeaked()
+    tester.eventLog.takeEvent("EventListener.Factory.close()", skipOthers = true)
+  }
+
+  @Test
   fun contentSourceNotLeaked() = runTest {
     val tester = TreehouseTester(this)
     val treehouseApp = tester.loadApp()

@@ -5,12 +5,13 @@
 
 New:
 - Default expressions can now be used directly in the schema rather than using the `@Default` annotation. The annotation has been deprecated, and will be removed in the next release.
+- `EventListener.Factory.close()` is called by `TreehouseApp.close()` to release any resources held by the factory.
 
 Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Breaking the last remaining retain cycle in `UIViewLazyList`.
 
 
 ## [0.14.0] - 2024-08-29

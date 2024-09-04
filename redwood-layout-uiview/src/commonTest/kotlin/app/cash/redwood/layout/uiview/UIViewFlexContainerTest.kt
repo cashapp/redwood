@@ -83,19 +83,19 @@ class UIViewFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(container: Widget<UIView>, name: String?) {
+  override fun verifySnapshot(widget: UIView, name: String?) {
     val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    container.value.setFrame(screenSize)
+    widget.setFrame(screenSize)
 
     // Snapshot the container on a white background.
     val frame = UIView().apply {
       backgroundColor = UIColor.whiteColor
       setFrame(screenSize)
-      addSubview(container.value)
+      addSubview(widget)
       layoutIfNeeded()
     }
 
     callback.verifySnapshot(frame, name)
-    container.value.removeFromSuperview()
+    widget.removeFromSuperview()
   }
 }

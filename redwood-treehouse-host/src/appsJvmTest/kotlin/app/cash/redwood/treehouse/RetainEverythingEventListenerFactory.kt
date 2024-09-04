@@ -45,4 +45,8 @@ class RetainEverythingEventListenerFactory(
   override fun codeUnloaded() {
     eventLog += "codeUnloaded"
   }
+
+  override fun close() {
+    eventLog += "EventListener.Factory.close()"
+  }
 }

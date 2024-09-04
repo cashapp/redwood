@@ -64,7 +64,7 @@ public final class app/cash/redwood/treehouse/EventListener$Companion {
 	public final fun getNONE ()Lapp/cash/redwood/treehouse/EventListener$Factory;
 }
 
-public abstract interface class app/cash/redwood/treehouse/EventListener$Factory {
+public abstract interface class app/cash/redwood/treehouse/EventListener$Factory : java/lang/AutoCloseable {
 	public abstract fun create (Lapp/cash/redwood/treehouse/TreehouseApp;Ljava/lang/String;)Lapp/cash/redwood/treehouse/EventListener;
 }
 
