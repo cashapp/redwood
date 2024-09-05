@@ -23,7 +23,7 @@ import org.gradle.api.reporting.ReportingExtension
 internal fun Project.redwoodDependency(artifactId: String): Any {
   // Indicates when the plugin is applied inside the Redwood repo to Redwood's own modules. This
   // changes dependencies from being external Maven coordinates to internal project references.
-  val isInternalBuild = properties["app.cash.redwood.internal"].toString() == "true"
+  val isInternalBuild = providers.gradleProperty("app.cash.redwood.internal").getOrElse("false").toBoolean()
 
   return if (isInternalBuild) {
     project(":$artifactId")
