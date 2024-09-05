@@ -12,6 +12,7 @@ Changed:
 
 Fixed:
 - Breaking the last remaining retain cycle in `UIViewLazyList`.
+- Don't leak the `DisplayLink` when a `TreehouseApp` is stopped on iOS.
 
 
 ## [0.14.0] - 2024-08-29

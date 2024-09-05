@@ -49,4 +49,8 @@ internal class RealAppLifecycleHost(
   override fun handleUncaughtException(exception: Throwable) {
     codeSession.handleUncaughtException(exception)
   }
+
+  override fun close() {
+    frameClock.close()
+  }
 }

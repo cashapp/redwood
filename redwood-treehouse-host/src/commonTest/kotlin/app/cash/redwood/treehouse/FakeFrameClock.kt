@@ -21,6 +21,9 @@ internal class FakeFrameClock : FrameClock {
   override fun requestFrame(appLifecycle: AppLifecycle) {
   }
 
+  override fun close() {
+  }
+
   object Factory : FrameClock.Factory {
     override fun create(
       scope: CoroutineScope,

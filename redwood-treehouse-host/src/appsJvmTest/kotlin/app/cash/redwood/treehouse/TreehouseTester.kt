@@ -89,6 +89,9 @@ internal class TreehouseTester(
     override fun requestFrame(appLifecycle: AppLifecycle) {
       appLifecycleAwaitingAFrame.value = appLifecycle
     }
+
+    override fun close() {
+    }
   }
 
   private val frameClockFactory = object : FrameClock.Factory {
