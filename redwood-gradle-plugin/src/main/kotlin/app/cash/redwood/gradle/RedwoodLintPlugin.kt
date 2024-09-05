@@ -75,7 +75,7 @@ public class RedwoodLintPlugin : Plugin<Project> {
         configureKotlinAndroidVariants(project, rootTask, androidPlugin, prefix = false)
         rootTask
       } else {
-        val name = if (project === project.rootProject) {
+        val name = if (project.path == ":") {
           "root project"
         } else {
           "project ${project.path}"
