@@ -24,6 +24,7 @@ import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import platform.Foundation.NSThread
 
 internal class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
   /** We haven't set done the work to dispatch to the UI thread on iOS tests. */
@@ -36,24 +37,25 @@ internal class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() 
   @Test
   fun closeFinishesZiplineThreadWithoutExecutingSubsequentRunnable() = runBlocking {
     val treehouseDispatchers = newTreehouseDispatchers("appName")
+    val ziplineThread = treehouseDispatchers.ziplineThread!!
 
     val loggedRunnableIds = mutableListOf<Char>()
     fun runnable(id: Char) = Runnable { loggedRunnableIds.add(id) }
 
-    treehouseDispatchers.awaitZiplineThread(isExecuting = true)
+    ziplineThread.awaitIsExecuting(isExecuting = true)
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('a'))
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('b'))
     treehouseDispatchers.close()
     treehouseDispatchers.zipline.dispatch(coroutineContext, runnable('c'))
-    treehouseDispatchers.awaitZiplineThread(isExecuting = false)
+    ziplineThread.awaitIsExecuting(isExecuting = false)
 
-    assertTrue(treehouseDispatchers.ziplineThread.isFinished())
+    assertTrue(ziplineThread.isFinished())
     assertEquals(listOf('a', 'b'), loggedRunnableIds)
   }
 
-  private suspend fun IosTreehouseDispatchers.awaitZiplineThread(isExecuting: Boolean) {
+  private suspend fun NSThread.awaitIsExecuting(isExecuting: Boolean) {
     withTimeout(1.seconds) {
-      while (ziplineThread.isExecuting() != isExecuting) {
+      while (isExecuting() != isExecuting) {
         delay(5.milliseconds)
       }
     }

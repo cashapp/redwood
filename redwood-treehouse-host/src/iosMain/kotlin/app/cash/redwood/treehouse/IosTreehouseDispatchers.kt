@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.runBlocking
 import platform.Foundation.NSThread
 
@@ -36,7 +37,7 @@ internal class IosTreehouseDispatchers(applicationName: String) : TreehouseDispa
     stackSize = ZIPLINE_THREAD_STACK_SIZE,
   )
 
-  internal val ziplineThread: NSThread
+  internal val ziplineThread: NSThread?
     get() = ziplineSingleThreadDispatcher.thread
 
   override val ui: CoroutineDispatcher get() = Dispatchers.Main
@@ -60,35 +61,50 @@ internal class SingleThreadDispatcher(
   name: String,
   stackSize: Int? = null,
 ) : CloseableCoroutineDispatcher() {
-  private val channel = Channel<Runnable>(capacity = Channel.UNLIMITED)
+  /** This is non-null while this dispatcher is accepting tasks. */
+  private var sendChannel: SendChannel<Runnable>?
 
-  internal val thread = NSThread {
-    runBlocking {
-      while (true) {
+  /** This is non-null while this dispatcher is executing tasks. */
+  internal var thread: NSThread?
+
+  init {
+    val channel = Channel<Runnable>(capacity = Channel.UNLIMITED)
+    val thread = NSThread {
+      runBlocking {
         try {
-          val runnable = channel.receive()
-          // TODO(jwilson): handle uncaught exceptions.
-          runnable.run()
-        } catch (e: ClosedReceiveChannelException) {
-          break
+          while (true) {
+            try {
+              val runnable = channel.receive()
+              // TODO(jwilson): handle uncaught exceptions.
+              runnable.run()
+            } catch (e: ClosedReceiveChannelException) {
+              break
+            }
+          }
+        } finally {
+          this@SingleThreadDispatcher.thread = null // Break a reference cycle.
         }
       }
-    }
-  }.apply {
-    this.name = name
+    }.apply {
+      this.name = name
 
-    if (stackSize != null) {
-      this.stackSize = stackSize.convert()
+      if (stackSize != null) {
+        this.stackSize = stackSize.convert()
+      }
     }
 
-    start()
+    thread.start()
+
+    this.sendChannel = channel
+    this.thread = thread
   }
 
   override fun dispatch(context: CoroutineContext, block: Runnable) {
-    channel.trySend(block)
+    sendChannel?.trySend(block)
   }
 
   override fun close() {
-    channel.close()
+    sendChannel?.close()
+    sendChannel = null
   }
 }
