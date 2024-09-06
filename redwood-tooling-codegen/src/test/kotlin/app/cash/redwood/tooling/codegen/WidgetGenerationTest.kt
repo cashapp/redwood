@@ -90,4 +90,29 @@ class WidgetGenerationTest {
       )
     }
   }
+
+  @Schema(
+    [
+      EventParameterNameWidget::class,
+    ],
+  )
+  interface EventParameterNameSchema
+
+  @Widget(1)
+  data class EventParameterNameWidget(
+    @Property(1) val none: () -> Unit,
+    @Property(2) val one: (s: String) -> Unit,
+    @Property(3) val mixed: (i: Int, Long) -> Unit,
+  )
+
+  @Test fun eventParameterNames() {
+    val schema = parseTestSchema(EventParameterNameSchema::class).schema
+
+    val fileSpec = generateWidget(schema, schema.widgets.single())
+    assertThat(fileSpec.toString()).all {
+      contains("fun none(none: () -> Unit)")
+      contains("fun one(one: (s: String) -> Unit)")
+      contains("fun mixed(mixed: (i: Int, Long) -> Unit)")
+    }
+  }
 }

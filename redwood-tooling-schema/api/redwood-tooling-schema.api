@@ -164,8 +164,13 @@ public abstract interface class app/cash/redwood/tooling/schema/Widget$Children 
 }
 
 public abstract interface class app/cash/redwood/tooling/schema/Widget$Event : app/cash/redwood/tooling/schema/Widget$Trait {
-	public abstract fun getParameterTypes ()Ljava/util/List;
+	public abstract fun getParameters ()Ljava/util/List;
 	public abstract fun isNullable ()Z
+}
+
+public abstract interface class app/cash/redwood/tooling/schema/Widget$Event$Parameter {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
 }
 
 public abstract interface class app/cash/redwood/tooling/schema/Widget$Property : app/cash/redwood/tooling/schema/Widget$Trait {

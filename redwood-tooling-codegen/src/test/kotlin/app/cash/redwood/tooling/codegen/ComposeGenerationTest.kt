@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import androidx.compose.runtime.Composable
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
@@ -102,8 +101,8 @@ class ComposeGenerationTest {
 
   @Widget(1)
   data class MultipleChildWidget(
-    @Children(1) val top: @Composable () -> Unit,
-    @Children(2) val bottom: @Composable () -> Unit,
+    @Children(1) val top: () -> Unit,
+    @Children(2) val bottom: () -> Unit,
   )
 
   @Test fun `layout modifier is the last non child parameter`() {
@@ -146,5 +145,30 @@ class ComposeGenerationTest {
       |public fun ComposeGenerationTestDeprecatedWidget
       """.trimMargin(),
     )
+  }
+
+  @Schema(
+    [
+      EventParameterNameWidget::class,
+    ],
+  )
+  interface EventParameterNameSchema
+
+  @Widget(1)
+  data class EventParameterNameWidget(
+    @Property(1) val none: () -> Unit,
+    @Property(2) val one: (s: String) -> Unit,
+    @Property(3) val mixed: (i: Int, Long) -> Unit,
+  )
+
+  @Test fun eventParameterNames() {
+    val schema = parseTestSchema(EventParameterNameSchema::class).schema
+
+    val fileSpec = generateComposable(schema, schema.widgets.single())
+    assertThat(fileSpec.toString()).all {
+      contains("none: () -> Unit")
+      contains("one: (s: String) -> Unit")
+      contains("mixed: (i: Int, Long) -> Unit")
+    }
   }
 }

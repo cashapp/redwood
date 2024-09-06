@@ -312,7 +312,7 @@ internal data class ApiWidgetEvent(
   constructor(event: ProtocolEvent) : this(
     tag = event.tag,
     name = event.name,
-    params = event.parameterTypes.joinToString(","),
+    params = event.parameters.joinToString(",") { it.type.toString() },
     nullable = event.isNullable,
   )
 }
