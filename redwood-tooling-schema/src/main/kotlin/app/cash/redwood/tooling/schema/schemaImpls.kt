@@ -21,6 +21,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolChildren
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolEvent
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolTrait
+import app.cash.redwood.tooling.schema.Widget.Event.Parameter
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.EncodeDefault.Mode.ALWAYS
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -133,12 +134,18 @@ internal data class ParsedProtocolProperty(
 internal data class ParsedProtocolEvent(
   override val tag: Int,
   override val name: String,
-  override val parameterTypes: List<FqType> = emptyList(),
+  override val parameters: List<ParsedParameter> = emptyList(),
   override val isNullable: Boolean,
   override val defaultExpression: String? = null,
   override val deprecation: ParsedDeprecation? = null,
   override val documentation: String? = null,
 ) : ProtocolEvent
+
+@Serializable
+internal data class ParsedParameter(
+  override val type: FqType,
+  override val name: String? = null,
+) : Parameter
 
 @Serializable
 @SerialName("children")

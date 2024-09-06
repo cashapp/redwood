@@ -55,7 +55,13 @@ internal val FqType.flatName: String
 internal val Event.lambdaType: TypeName
   get() = LambdaTypeName.get(
     null,
-    parameterTypes.map { ParameterSpec.unnamed(it.asTypeName()) },
+    parameters.map {
+      if (it.name != null) {
+        ParameterSpec.builder(it.name!!, it.type.asTypeName()).build()
+      } else {
+        ParameterSpec.unnamed(it.type.asTypeName())
+      }
+    },
     returnType = UNIT,
   ).copy(nullable = isNullable)
 

@@ -374,8 +374,8 @@ internal fun generateProtocolWidget(
               .apply {
                 for (event in widget.traits.filterIsInstance<ProtocolEvent>()) {
                   val arguments = mutableListOf<CodeBlock>()
-                  for ((index, parameterFqType) in event.parameterTypes.withIndex()) {
-                    val parameterType = parameterFqType.asTypeName()
+                  for ((index, parameter) in event.parameters.withIndex()) {
+                    val parameterType = parameter.type.asTypeName()
                     val serializerId = serializerIds.computeIfAbsent(parameterType) {
                       nextSerializerId++
                     }

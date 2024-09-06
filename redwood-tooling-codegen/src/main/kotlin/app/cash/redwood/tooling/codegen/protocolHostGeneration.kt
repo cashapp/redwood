@@ -389,15 +389,15 @@ internal fun generateProtocolNode(
                         KotlinxSerialization.jsonPrimitive,
                         KotlinxSerialization.jsonBoolean,
                       )
-                      if (trait.parameterTypes.isEmpty()) {
+                      if (trait.parameters.isEmpty()) {
                         addStatement(
                           "%L(id, eventSink)::invoke",
                           trait.eventHandlerName,
                         )
                       } else {
                         val arguments = mutableListOf<CodeBlock>()
-                        for (parameterFqType in trait.parameterTypes) {
-                          val parameterType = parameterFqType.asTypeName()
+                        for (parameter in trait.parameters) {
+                          val parameterType = parameter.type.asTypeName()
                           val serializerId = serializerIds.computeIfAbsent(parameterType) {
                             nextSerializerId++
                           }
@@ -587,8 +587,8 @@ private fun generateEventHandler(
 
   val arguments = mutableListOf<CodeBlock>()
   val serializers = mutableListOf<CodeBlock>()
-  for ((index, parameterFqType) in trait.parameterTypes.withIndex()) {
-    val parameterType = parameterFqType.asTypeName()
+  for ((index, parameter) in trait.parameters.withIndex()) {
+    val parameterType = parameter.type.asTypeName()
     val serializerType = KotlinxSerialization.KSerializer.parameterizedBy(parameterType)
     val serializerId = "serializer_$index"
     val parameterName = "arg$index"

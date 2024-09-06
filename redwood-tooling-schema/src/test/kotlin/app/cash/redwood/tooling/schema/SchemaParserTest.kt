@@ -575,13 +575,13 @@ class SchemaParserTest {
     assertThat(widget.traits.single { it.name == "requiredEvent" })
       .isInstanceOf<Event>()
       .all {
-        prop(Event::parameterTypes).isEmpty()
+        prop(Event::parameters).isEmpty()
         prop(Event::isNullable).isFalse()
       }
     assertThat(widget.traits.single { it.name == "optionalEvent" })
       .isInstanceOf<Event>()
       .all {
-        prop(Event::parameterTypes).isEmpty()
+        prop(Event::parameters).isEmpty()
         prop(Event::isNullable).isTrue()
       }
   }
@@ -600,6 +600,7 @@ class SchemaParserTest {
     @Property(3) val oneArgumentOptional: ((String) -> Unit)?,
     @Property(4) val manyArguments: (String, Boolean?, Long) -> Unit,
     @Property(5) val manyArgumentsOptional: ((String, Boolean?, Long) -> Unit)?,
+    @Property(6) val manyArgumentsWithNames: (s: String, bool: Boolean?, Long) -> Unit,
   )
 
   @Test fun eventArguments() {
@@ -607,15 +608,38 @@ class SchemaParserTest {
     val widget = schema.widgets.single()
 
     val noArguments = widget.traits.single { it.name == "noArguments" } as Event
-    assertThat(noArguments.parameterTypes).isEmpty()
+    assertThat(noArguments.parameters).isEmpty()
+
     val oneArgument = widget.traits.single { it.name == "oneArgument" } as Event
-    assertThat(oneArgument.parameterTypes).containsExactly(String::class.toFqType())
+    assertThat(oneArgument.parameters).containsExactly(
+      ParsedParameter(String::class.toFqType()),
+    )
+
     val oneArgumentOptional = widget.traits.single { it.name == "oneArgumentOptional" } as Event
-    assertThat(oneArgumentOptional.parameterTypes).containsExactly(String::class.toFqType())
+    assertThat(oneArgumentOptional.parameters).containsExactly(
+      ParsedParameter(String::class.toFqType()),
+    )
+
     val manyArguments = widget.traits.single { it.name == "manyArguments" } as Event
-    assertThat(manyArguments.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(nullable = true), Long::class.toFqType())
-    val manyArgumentOptional = widget.traits.single { it.name == "manyArgumentsOptional" } as Event
-    assertThat(manyArgumentOptional.parameterTypes).containsExactly(String::class.toFqType(), Boolean::class.toFqType(nullable = true), Long::class.toFqType())
+    assertThat(manyArguments.parameters).containsExactly(
+      ParsedParameter(String::class.toFqType()),
+      ParsedParameter(Boolean::class.toFqType(nullable = true)),
+      ParsedParameter(Long::class.toFqType()),
+    )
+
+    val manyArgumentsOptional = widget.traits.single { it.name == "manyArgumentsOptional" } as Event
+    assertThat(manyArgumentsOptional.parameters).containsExactly(
+      ParsedParameter(String::class.toFqType()),
+      ParsedParameter(Boolean::class.toFqType(nullable = true)),
+      ParsedParameter(Long::class.toFqType()),
+    )
+
+    val manyArgumentsWithNames = widget.traits.single { it.name == "manyArgumentsWithNames" } as Event
+    assertThat(manyArgumentsWithNames.parameters).containsExactly(
+      ParsedParameter(String::class.toFqType(), "s"),
+      ParsedParameter(Boolean::class.toFqType(nullable = true), "bool"),
+      ParsedParameter(Long::class.toFqType()),
+    )
   }
 
   @Schema(
