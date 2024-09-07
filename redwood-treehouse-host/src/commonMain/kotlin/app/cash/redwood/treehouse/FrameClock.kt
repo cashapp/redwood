@@ -17,7 +17,7 @@ package app.cash.redwood.treehouse
 
 import kotlinx.coroutines.CoroutineScope
 
-internal interface FrameClock {
+internal interface FrameClock : AutoCloseable {
   /**
    * Request a call to [AppLifecycle.sendFrame]. It is an error to call [requestFrame] again before
    * that call is made.

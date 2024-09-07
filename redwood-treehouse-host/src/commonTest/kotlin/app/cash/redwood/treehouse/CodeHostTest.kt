@@ -39,7 +39,6 @@ class CodeHostTest {
     eventPublisher = eventPublisher,
     dispatchers = dispatchers,
     appScope = appScope,
-    frameClockFactory = FakeFrameClock.Factory,
   )
   private val codeEventPublisher = FakeCodeEventPublisher(eventLog)
   private val onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog)

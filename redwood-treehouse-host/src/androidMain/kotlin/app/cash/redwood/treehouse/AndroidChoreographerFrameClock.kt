@@ -36,6 +36,9 @@ internal class AndroidChoreographerFrameClock private constructor(
     }
   }
 
+  override fun close() {
+  }
+
   class Factory : FrameClock.Factory {
     private val choreographer = Choreographer.getInstance()
     override fun create(

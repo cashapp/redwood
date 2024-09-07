@@ -25,11 +25,9 @@ internal class FakeCodeHost(
   private val eventPublisher: EventPublisher,
   private val dispatchers: TreehouseDispatchers,
   private val appScope: CoroutineScope,
-  frameClockFactory: FrameClock.Factory,
 ) : CodeHost<FakeAppService>(
   dispatchers = dispatchers,
   appScope = appScope,
-  frameClockFactory = frameClockFactory,
   stateStore = MemoryStateStore(),
 ) {
   private var codeSessions: Channel<CodeSession<FakeAppService>>? = null

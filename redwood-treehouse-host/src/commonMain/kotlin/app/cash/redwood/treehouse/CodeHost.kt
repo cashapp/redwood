@@ -51,7 +51,6 @@ import kotlinx.coroutines.launch
 internal abstract class CodeHost<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val appScope: CoroutineScope,
-  private val frameClockFactory: FrameClock.Factory,
   val stateStore: StateStore,
 ) {
   /** Contents that this app is currently responsible for. */

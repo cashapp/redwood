@@ -28,7 +28,7 @@ internal class IosDisplayLinkClock private constructor(
   /** Non-null if we're expecting a call to [AppLifecycle.sendFrame]. */
   private var appLifecycle: AppLifecycle? = null
 
-  private val displayLinkTarget = DisplayLinkTarget {
+  private var displayLinkTarget: DisplayLinkTarget? = DisplayLinkTarget {
     unsubscribe()
     scope.launch(dispatchers.zipline) {
       val nanos = clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW.convert()).convert<Long>()
@@ -40,8 +40,14 @@ internal class IosDisplayLinkClock private constructor(
   override fun requestFrame(appLifecycle: AppLifecycle) {
     this.appLifecycle = appLifecycle
     scope.launch(dispatchers.ui) {
-      displayLinkTarget.subscribe()
+      displayLinkTarget?.subscribe()
     }
+  }
+
+  override fun close() {
+    appLifecycle = null
+    displayLinkTarget?.close()
+    displayLinkTarget = null // Break a reference cycle.
   }
 
   companion object : FrameClock.Factory {

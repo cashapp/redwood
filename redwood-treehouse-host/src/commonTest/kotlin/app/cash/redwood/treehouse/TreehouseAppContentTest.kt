@@ -52,7 +52,6 @@ class TreehouseAppContentTest {
     eventPublisher = eventPublisher,
     dispatchers = dispatchers,
     appScope = appScope,
-    frameClockFactory = FakeFrameClock.Factory,
   )
   private val codeEventPublisher = FakeCodeEventPublisher(eventLog)
   private val uiConfiguration = MutableStateFlow(UiConfiguration())

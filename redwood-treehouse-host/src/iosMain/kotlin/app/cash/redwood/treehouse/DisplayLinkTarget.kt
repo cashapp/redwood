@@ -26,7 +26,7 @@ import platform.darwin.NSObject
 internal class DisplayLinkTarget(
   private val callback: DisplayLinkTarget.() -> Unit,
 ) : NSObject() {
-  private val displayLink: CADisplayLink = CADisplayLink.displayLinkWithTarget(
+  private var displayLink: CADisplayLink? = CADisplayLink.displayLinkWithTarget(
     target = this,
     selector = NSSelectorFromString(this::onFrame.name),
   )
@@ -38,16 +38,21 @@ internal class DisplayLinkTarget(
   }
 
   fun subscribe() {
-    displayLink.addToRunLoop(
+    displayLink?.addToRunLoop(
       NSRunLoop.currentRunLoop,
       NSRunLoop.currentRunLoop.currentMode,
     )
   }
 
   fun unsubscribe() {
-    displayLink.removeFromRunLoop(
+    displayLink?.removeFromRunLoop(
       NSRunLoop.currentRunLoop,
       NSRunLoop.currentRunLoop.currentMode,
     )
+  }
+
+  fun close() {
+    displayLink?.invalidate()
+    displayLink = null
   }
 }

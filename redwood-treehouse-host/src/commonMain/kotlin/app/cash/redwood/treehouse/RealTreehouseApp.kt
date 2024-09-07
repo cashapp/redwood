@@ -49,7 +49,6 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   private val codeHost = object : CodeHost<A>(
     dispatchers = dispatchers,
     appScope = appScope,
-    frameClockFactory = factory.frameClockFactory,
     stateStore = factory.stateStore,
   ) {
     override fun codeUpdatesFlow(
