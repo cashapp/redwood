@@ -798,10 +798,10 @@ private fun FirContext.findDefaultExpression(
       .toString()
   }
 
-  check(annotation == null || expression == null) {
-    "Only @Default or a default expression may be present–not both: $memberType.${parameter.name}"
-  }
-  return expression ?: annotation
+//  check(annotation == null || expression == null) {
+//    "Only @Default or a default expression may be present–not both: $memberType.${parameter.name}"
+//  }
+  return annotation ?: expression
 }
 
 private fun FirContext.findModifierAnnotation(

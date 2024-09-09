@@ -53,7 +53,7 @@ public class HostProtocolAdapter<W : Any>(
   private val eventSink: UiEventSink,
   private val leakDetector: LeakDetector,
 ) : ChangesSink {
-  private val factory = when (factory) {
+  private var factory: GeneratedProtocolFactory<W>? = when (factory) {
     is GeneratedProtocolFactory -> factory
   }
 
@@ -68,10 +68,11 @@ public class HostProtocolAdapter<W : Any>(
   private var closed = false
 
   override fun sendChanges(changes: List<Change>) {
+    val factory = this.factory ?: error("closed")
     check(!closed)
 
     @Suppress("NAME_SHADOWING")
-    val changes = applyReuse(changes)
+    val changes = applyReuse(factory, changes)
 
     for (i in changes.indices) {
       val change = changes[i]
@@ -102,7 +103,7 @@ public class HostProtocolAdapter<W : Any>(
               for (childIndex in change.index until change.index + change.count) {
                 val child = children.nodes[childIndex]
                 child.visitIds(nodes::remove)
-                poolOrDetach(child)
+                poolOrDetach(factory, child)
               }
               children.remove(change.index, change.count)
             }
@@ -176,11 +177,16 @@ public class HostProtocolAdapter<W : Any>(
       node.detach()
     }
     pool.clear()
+
+    factory = null // Break a reference cycle.
   }
 
-  private fun poolOrDetach(removedNode: ProtocolNode<W>) {
+  private fun poolOrDetach(
+    factory: GeneratedProtocolFactory<W>,
+    removedNode: ProtocolNode<W>,
+  ) {
     if (removedNode.reuse) {
-      removedNode.shapeHash = shapeHash(this.factory, removedNode)
+      removedNode.shapeHash = shapeHash(factory, removedNode)
       pool.addFirst(removedNode)
       if (pool.size > POOL_SIZE) {
         val evicted = pool.removeLast() // Evict the least-recently added element.
@@ -210,7 +216,10 @@ public class HostProtocolAdapter<W : Any>(
    *
    * Returns the updated set of changes that omits any changes that were implemented with reuse.
    */
-  private fun applyReuse(changes: List<Change>): List<Change> {
+  private fun applyReuse(
+    factory: GeneratedProtocolFactory<W>,
+    changes: List<Change>,
+  ): List<Change> {
     if (pool.isEmpty()) return changes // Short circuit reuse.
 
     // Find nodes that have Modifier.reuse

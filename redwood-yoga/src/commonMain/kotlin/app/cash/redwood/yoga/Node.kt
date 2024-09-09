@@ -21,7 +21,7 @@ import app.cash.redwood.yoga.internal.enums.YGEdge
 
 @RedwoodYogaApi
 public class Node internal constructor(
-  internal val native: YGNode,
+  public val native: YGNode,
 ) {
   public constructor() : this(Yoga.YGNodeNew())
 
@@ -110,6 +110,15 @@ public class Node internal constructor(
     // TODO: Figure out how to measure incrementally safely.
     native.markDirtyAndPropogateDownwards()
 
+    Yoga.YGNodeCalculateLayout(
+      node = native,
+      ownerWidth = parentWidth,
+      ownerHeight = parentHeight,
+      ownerDirection = native.style.direction(),
+    )
+  }
+
+  public fun measureWithoutMarkingDirty(parentWidth: Float, parentHeight: Float) {
     Yoga.YGNodeCalculateLayout(
       node = native,
       ownerWidth = parentWidth,

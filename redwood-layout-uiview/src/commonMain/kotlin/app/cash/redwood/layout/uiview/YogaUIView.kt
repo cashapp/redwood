@@ -92,14 +92,18 @@ internal class YogaUIView(
     val y = node.top.toDouble()
     val width = node.width.toDouble()
     val height = node.height.toDouble()
+
+    // Here we're calling setFrame. We need to tell the node and all of its
+    // children that they no longer need layout.
+
     node.view.setFrame(CGRectMake(x, y, width, height))
 
-    if (node.view is YogaUIView) {
-      // Optimization: for a YogaUIView nested within another YogaUIView,
-      // there's no need to call layoutNodes for its children here,
-      // as it will happen within its own layoutSubviews() pass.
-      return
-    }
+//    if (node.view is YogaUIView) {
+//      // Optimization: for a YogaUIView nested within another YogaUIView,
+//      // there's no need to call layoutNodes for its children here,
+//      // as it will happen within its own layoutSubviews() pass.
+//      return
+//    }
 
     for (childNode in node.children) {
       layoutNodes(childNode)
@@ -111,9 +115,46 @@ internal class YogaUIView(
       applyModifier(node, index)
     }
 
-    size.useContents { rootNode.measure(width.toFloat(), height.toFloat()) }
+    flushDirtyFlagsRecursively(rootNode)
+    size.useContents { rootNode.measureWithoutMarkingDirty(width.toFloat(), height.toFloat()) }
+    callLayoutIfNeededRecursively(rootNode)
 
     return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
+  }
+
+  /** Sync the dirty flag from the UIView to the Yoga node. */
+  private fun flushDirtyFlagsRecursively(node: Node) {
+    val view = when {
+      node === rootNode -> this
+      else -> node.view
+    }
+
+    if (view.layer().needsLayout()) {
+      node.native.setDirty(true)
+    }
+
+    for (childNode in node.children) {
+      flushDirtyFlagsRecursively(childNode)
+    }
+  }
+
+  /**
+   * Now that the UIView has the right dimensions, do layout. This has the happy side effect of
+   * clearing the dirty flag.
+   */
+  private fun callLayoutIfNeededRecursively(node: Node) {
+    val view = when {
+      node === rootNode -> this
+      else -> node.view
+    }
+
+    if (view.layer().needsLayout()) {
+      view.layoutIfNeeded()
+    }
+
+    for (childNode in node.children) {
+      callLayoutIfNeededRecursively(childNode)
+    }
   }
 
   private fun sizeForConstraints(size: CGSize): CValue<CGSize> {
