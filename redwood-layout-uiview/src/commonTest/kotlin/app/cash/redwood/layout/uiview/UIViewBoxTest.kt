@@ -41,18 +41,19 @@ class UIViewBoxTest(
     return UIViewText()
   }
 
-  override fun verifySnapshot(value: UIView, name: String?) {
+  override fun verifySnapshot(widget: UIView, name: String?) {
     val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
+    widget.setFrame(screenSize)
 
     // Snapshot the container on a white background.
     val frame = UIView().apply {
       backgroundColor = UIColor.whiteColor
       setFrame(screenSize)
-      addSubview(value)
+      addSubview(widget)
       layoutIfNeeded()
     }
 
     callback.verifySnapshot(frame, name)
-    value.removeFromSuperview()
+    widget.removeFromSuperview()
   }
 }

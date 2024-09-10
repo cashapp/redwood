@@ -38,7 +38,7 @@ abstract class AbstractBoxTest<T : Any> {
     height(height)
   }
 
-  abstract fun verifySnapshot(value: T, name: String? = null)
+  abstract fun verifySnapshot(widget: T, name: String? = null)
 
   @Test
   fun testEmpty_Defaults() {
