@@ -105,7 +105,7 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/ResizableWidget : ap
         abstract fun <set-sizeListener>(app.cash.redwood.widget/ResizableWidget.SizeListener?) // app.cash.redwood.widget/ResizableWidget.sizeListener.<set-sizeListener>|<set-sizeListener>(app.cash.redwood.widget.ResizableWidget.SizeListener?){}[0]
 
     abstract interface SizeListener { // app.cash.redwood.widget/ResizableWidget.SizeListener|null[0]
-        abstract fun invalidateSize(app.cash.redwood.widget/ResizableWidget<*>) // app.cash.redwood.widget/ResizableWidget.SizeListener.invalidateSize|invalidateSize(app.cash.redwood.widget.ResizableWidget<*>){}[0]
+        abstract fun invalidateSize() // app.cash.redwood.widget/ResizableWidget.SizeListener.invalidateSize|invalidateSize(){}[0]
     }
 }
 

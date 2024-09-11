@@ -55,7 +55,7 @@ class UIViewText :
 
   override fun text(text: String) {
     value.text = text
-    sizeListener?.invalidateSize(this)
+    sizeListener?.invalidateSize()
   }
 
   override fun bgColor(color: Int) {

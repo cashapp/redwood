@@ -65,9 +65,7 @@ internal class UIViewFlexContainer(
     updateModifier = { modifier, index ->
       yogaView.rootNode.children[index].context = modifier
     },
-    invalidateSize = {
-      invalidateSize()
-    },
+    invalidateSize = ::invalidateSize,
   )
   override var modifier: Modifier = Modifier
 
@@ -103,7 +101,7 @@ internal class UIViewFlexContainer(
         // The node was newly-dirty. Propagate that up the tree.
         val sizeListener = this.sizeListener
         if (sizeListener != null) {
-          sizeListener.invalidateSize(this)
+          sizeListener.invalidateSize()
         } else {
           value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
           value.setNeedsLayout() // Update layout of subviews.
@@ -127,7 +125,7 @@ private class NodeSizeListener(
   private val node: Node,
   private val enclosing: UIViewFlexContainer,
 ) : SizeListener {
-  override fun invalidateSize(widget: ResizableWidget<*>) {
+  override fun invalidateSize() {
     if (node.markDirty()) {
       enclosing.invalidateSize()
     }

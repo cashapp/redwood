@@ -24,6 +24,6 @@ public interface ResizableWidget<W : Any> : Widget<W> {
   public var sizeListener: SizeListener?
 
   public interface SizeListener {
-    public fun invalidateSize(widget: ResizableWidget<*>)
+    public fun invalidateSize()
   }
 }
