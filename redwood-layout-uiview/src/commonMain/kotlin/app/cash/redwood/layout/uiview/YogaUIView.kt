@@ -113,7 +113,7 @@ internal class YogaUIView(
     }
 
     if (!incremental) {
-      size.useContents { rootNode.markEverythingDirty() }
+      rootNode.markEverythingDirty()
     }
 
     size.useContents { rootNode.measureOnly(width.toFloat(), height.toFloat()) }
