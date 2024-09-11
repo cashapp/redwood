@@ -27,6 +27,7 @@ import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.UIViewChildren
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
@@ -41,21 +42,25 @@ import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
-internal class UIViewBox : Box<UIView> {
+internal class UIViewBox :
+  Box<UIView>,
+  ResizableWidget<UIView> {
   override val value: View = View()
 
   override var modifier: Modifier = Modifier
 
   override val children get() = value.children
 
+  override var sizeListener: ResizableWidget.SizeListener? by value::sizeListener
+
   override fun width(width: Constraint) {
     value.widthConstraint = width
-    value.setNeedsLayout()
+    value.invalidateSize()
   }
 
   override fun height(height: Constraint) {
     value.heightConstraint = height
-    value.setNeedsLayout()
+    value.invalidateSize()
   }
 
   override fun margin(margin: Margin) {
@@ -67,17 +72,17 @@ internal class UIViewBox : Box<UIView> {
         right = margin.end.toPx(),
       )
     }
-    value.setNeedsLayout()
+    value.invalidateSize()
   }
 
   override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
     value.horizontalAlignment = horizontalAlignment
-    value.setNeedsLayout()
+    value.invalidateSize()
   }
 
   override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
     value.verticalAlignment = verticalAlignment
-    value.setNeedsLayout()
+    value.invalidateSize()
   }
 
   internal class View : UIView(CGRectZero.readValue()) {
@@ -85,27 +90,44 @@ internal class UIViewBox : Box<UIView> {
     var heightConstraint = Constraint.Wrap
     var horizontalAlignment = CrossAxisAlignment.Start
     var verticalAlignment = CrossAxisAlignment.Start
+    var sizeListener: ResizableWidget.SizeListener? = null
 
     val children = UIViewChildren(
       container = this,
-      insert = { _, view, _, index ->
+      insert = { widget, view, _, index ->
+        if (widget is ResizableWidget<*>) {
+          widget.sizeListener = object : ResizableWidget.SizeListener {
+            override fun invalidateSize() {
+              this@View.invalidateSize()
+            }
+          }
+        }
         insertSubview(view, index.convert<NSInteger>())
-        view.setNeedsLayout()
       },
       remove = { index, count ->
         val views = Array(count) {
           typedSubviews[index].also(UIView::removeFromSuperview)
         }
-        setNeedsLayout()
         return@UIViewChildren views
       },
+      invalidateSize = ::invalidateSize,
     )
+
+    fun invalidateSize() {
+      val sizeListener = sizeListener
+      if (sizeListener != null) {
+        sizeListener.invalidateSize()
+      } else {
+        setNeedsLayout() // Update layout of subviews.
+      }
+    }
 
     override fun layoutSubviews() {
       super.layoutSubviews()
 
       children.widgets.forEach { widget ->
         val view = widget.value
+        view.setFrame(frame)
         view.sizeToFit()
 
         // Check for modifier overrides in the children, otherwise default to the Box's alignment values.
