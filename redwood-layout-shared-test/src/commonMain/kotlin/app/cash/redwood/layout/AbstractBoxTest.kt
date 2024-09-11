@@ -385,6 +385,30 @@ abstract class AbstractBoxTest<T : Any> {
     verifySnapshot(widget.value, "After")
   }
 
+  @Test fun testDynamicWidgetResizing() {
+    val container = box()
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+        horizontalAlignment(CrossAxisAlignment.Start)
+        verticalAlignment(CrossAxisAlignment.Start)
+      }
+
+    val a = coloredText(text = "AAA", color = Red)
+      .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Start) }
+      .also { container.children.insert(0, it) }
+    val b = coloredText(text = "BBB", color = Blue)
+      .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Center) }
+      .also { container.children.insert(1, it) }
+    val c = coloredText(text = "CCC", color = Green)
+      .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.End) }
+      .also { container.children.insert(2, it) }
+    verifySnapshot(container.value, "v1")
+
+    b.text("BBB_v2")
+    verifySnapshot(container.value, "v2")
+  }
+
   private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
     text(text)
     bgColor(color)
