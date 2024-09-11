@@ -29,6 +29,7 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.UIViewChildren
+import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
@@ -126,85 +127,95 @@ internal class UIViewBox :
       super.layoutSubviews()
 
       children.widgets.forEach { widget ->
-        val view = widget.value
-        view.setFrame(frame)
-        view.sizeToFit()
-
-        // Check for modifier overrides in the children, otherwise default to the Box's alignment values.
-        var itemHorizontalAlignment = horizontalAlignment
-        var itemVerticalAlignment = verticalAlignment
-
-        var requestedWidth: CGFloat = Double.MIN_VALUE
-        var requestedHeight: CGFloat = Double.MIN_VALUE
-
-        widget.modifier.forEachScoped { childModifier ->
-          when (childModifier) {
-            is HorizontalAlignment -> {
-              itemHorizontalAlignment = childModifier.alignment
-            }
-
-            is VerticalAlignment -> {
-              itemVerticalAlignment = childModifier.alignment
-            }
-
-            is Width -> with(Density.Default) {
-              requestedWidth = childModifier.width.toPx()
-            }
-
-            is Height -> with(Density.Default) {
-              requestedHeight = childModifier.height.toPx()
-            }
-
-            is Size -> with(Density.Default) {
-              requestedWidth = childModifier.width.toPx()
-              requestedHeight = childModifier.height.toPx()
-            }
-          }
-        }
-
-        // Use requested modifiers, otherwise use the size established from sizeToFit().
-        var childWidth: CGFloat = if (requestedWidth != Double.MIN_VALUE) {
-          requestedWidth
-        } else {
-          view.frame.useContents { size.width }
-        }
-        var childHeight: CGFloat = if (requestedHeight != Double.MIN_VALUE) {
-          requestedHeight
-        } else {
-          view.frame.useContents { size.height }
-        }
-
-        // Compute origin and stretch if needed.
-        var x: CGFloat = 0.0
-        var y: CGFloat = 0.0
-        when (itemHorizontalAlignment) {
-          CrossAxisAlignment.Stretch -> {
-            x = 0.0
-            childWidth = frame.useContents { size.width }
-          }
-
-          CrossAxisAlignment.Start -> x = 0.0
-
-          CrossAxisAlignment.Center -> x = (frame.useContents { size.width } - childWidth) / 2.0
-
-          CrossAxisAlignment.End -> x = frame.useContents { size.width } - childWidth
-        }
-        when (itemVerticalAlignment) {
-          CrossAxisAlignment.Stretch -> {
-            y = 0.0
-            childHeight = frame.useContents { size.height }
-          }
-
-          CrossAxisAlignment.Start -> y = 0.0
-
-          CrossAxisAlignment.Center -> y = (frame.useContents { size.height } - childHeight) / 2.0
-
-          CrossAxisAlignment.End -> y = frame.useContents { size.height } - childHeight
-        }
-
-        // Position the view.
-        view.setFrame(CGRectMake(x, y, childWidth, childHeight))
+        layoutWidget(widget)
       }
+    }
+
+    private fun layoutWidget(widget: Widget<UIView>) {
+      val view = widget.value
+
+      // Check for modifier overrides in the children, otherwise default to the Box's alignment values.
+      var itemHorizontalAlignment = horizontalAlignment
+      var itemVerticalAlignment = verticalAlignment
+
+      val frameWidth = frame.useContents { size.width }
+      val frameHeight = frame.useContents { size.height }
+
+      var requestedWidth: CGFloat = Double.NaN
+      var requestedHeight: CGFloat = Double.NaN
+
+      widget.modifier.forEachScoped { childModifier ->
+        when (childModifier) {
+          is HorizontalAlignment -> {
+            itemHorizontalAlignment = childModifier.alignment
+          }
+
+          is VerticalAlignment -> {
+            itemVerticalAlignment = childModifier.alignment
+          }
+
+          is Width -> with(Density.Default) {
+            requestedWidth = childModifier.width.toPx()
+          }
+
+          is Height -> with(Density.Default) {
+            requestedHeight = childModifier.height.toPx()
+          }
+
+          is Size -> with(Density.Default) {
+            requestedWidth = childModifier.width.toPx()
+            requestedHeight = childModifier.height.toPx()
+          }
+        }
+      }
+
+      // Initialize this to the view's width before any measurement. Use the frame's dimensions
+      // if the user didn't explicitly specify one. This is the final value for Stretch alignment.
+      var viewWidth = when {
+        !requestedWidth.isNaN() -> requestedWidth
+        else -> frameWidth
+      }
+      var viewHeight = when {
+        !requestedHeight.isNaN() -> requestedHeight
+        else -> frameHeight
+      }
+
+      // Measure the view if don't have an exact width or height.
+      val mustMeasureWidth = requestedWidth.isNaN() &&
+        itemHorizontalAlignment != CrossAxisAlignment.Stretch
+      val mustMeasureHeight = requestedHeight.isNaN() &&
+        itemVerticalAlignment != CrossAxisAlignment.Stretch
+
+      if (mustMeasureWidth || mustMeasureHeight) {
+        val fittingSize = view.systemLayoutSizeFittingSize(CGSizeMake(viewWidth, viewHeight))
+
+        viewWidth = when {
+          !requestedWidth.isNaN() -> requestedWidth
+          itemHorizontalAlignment == CrossAxisAlignment.Stretch -> frameWidth
+          else -> fittingSize.useContents { width }
+        }
+
+        viewHeight = when {
+          !requestedHeight.isNaN() -> requestedHeight
+          itemVerticalAlignment == CrossAxisAlignment.Stretch -> frameHeight
+          else -> fittingSize.useContents { height }
+        }
+      }
+
+      // Compute the view's offset.
+      val x = when (itemHorizontalAlignment) {
+        CrossAxisAlignment.Center -> (frameWidth - viewWidth) / 2.0
+        CrossAxisAlignment.End -> frameWidth - viewWidth
+        else -> 0.0
+      }
+      val y = when (itemVerticalAlignment) {
+        CrossAxisAlignment.Center -> (frameHeight - viewHeight) / 2.0
+        CrossAxisAlignment.End -> frameHeight - viewHeight
+        else -> 0.0
+      }
+
+      // Position the view.
+      view.setFrame(CGRectMake(x, y, viewWidth, viewHeight))
     }
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
