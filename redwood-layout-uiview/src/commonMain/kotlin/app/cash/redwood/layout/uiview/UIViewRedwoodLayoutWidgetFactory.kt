@@ -25,8 +25,10 @@ import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodLayoutWidgetFactory", exact = true)
 public class UIViewRedwoodLayoutWidgetFactory(
-  private val incremental: Boolean = false,
+  private val incremental: Boolean,
 ) : RedwoodLayoutWidgetFactory<UIView> {
+  public constructor() : this(false)
+
   override fun Box(): Box<UIView> = UIViewBox()
   override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column, incremental)
   override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row, incremental)
