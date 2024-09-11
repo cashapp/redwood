@@ -99,8 +99,19 @@ final class <#A: kotlin/Any> app.cash.redwood.widget/MutableListChildren : app.c
 }
 
 // Targets: [ios]
+abstract interface <#A: kotlin/Any> app.cash.redwood.widget/ResizableWidget : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.widget/ResizableWidget|null[0]
+    abstract var sizeListener // app.cash.redwood.widget/ResizableWidget.sizeListener|{}sizeListener[0]
+        abstract fun <get-sizeListener>(): app.cash.redwood.widget/ResizableWidget.SizeListener? // app.cash.redwood.widget/ResizableWidget.sizeListener.<get-sizeListener>|<get-sizeListener>(){}[0]
+        abstract fun <set-sizeListener>(app.cash.redwood.widget/ResizableWidget.SizeListener?) // app.cash.redwood.widget/ResizableWidget.sizeListener.<set-sizeListener>|<set-sizeListener>(app.cash.redwood.widget.ResizableWidget.SizeListener?){}[0]
+
+    abstract interface SizeListener { // app.cash.redwood.widget/ResizableWidget.SizeListener|null[0]
+        abstract fun invalidateSize() // app.cash.redwood.widget/ResizableWidget.SizeListener.invalidateSize|invalidateSize(){}[0]
+    }
+}
+
+// Targets: [ios]
 final class app.cash.redwood.widget/UIViewChildren : app.cash.redwood.widget/Widget.Children<platform.UIKit/UIView> { // app.cash.redwood.widget/UIViewChildren|null[0]
-    constructor <init>(platform.UIKit/UIView, kotlin/Function3<platform.UIKit/UIView, app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> = ..., kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Array<platform.UIKit/UIView>> = ..., kotlin/Function2<app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> = ...) // app.cash.redwood.widget/UIViewChildren.<init>|<init>(platform.UIKit.UIView;kotlin.Function3<platform.UIKit.UIView,app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>;kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Array<platform.UIKit.UIView>>;kotlin.Function2<app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>){}[0]
+    constructor <init>(platform.UIKit/UIView, kotlin/Function4<app.cash.redwood.widget/Widget<platform.UIKit/UIView>, platform.UIKit/UIView, app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> = ..., kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Array<platform.UIKit/UIView>> = ..., kotlin/Function2<app.cash.redwood/Modifier, kotlin/Int, kotlin/Unit> = ..., kotlin/Function0<kotlin/Unit> = ...) // app.cash.redwood.widget/UIViewChildren.<init>|<init>(platform.UIKit.UIView;kotlin.Function4<app.cash.redwood.widget.Widget<platform.UIKit.UIView>,platform.UIKit.UIView,app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>;kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Array<platform.UIKit.UIView>>;kotlin.Function2<app.cash.redwood.Modifier,kotlin.Int,kotlin.Unit>;kotlin.Function0<kotlin.Unit>){}[0]
 
     final val widgets // app.cash.redwood.widget/UIViewChildren.widgets|{}widgets[0]
         final fun <get-widgets>(): kotlin.collections/List<app.cash.redwood.widget/Widget<platform.UIKit/UIView>> // app.cash.redwood.widget/UIViewChildren.widgets.<get-widgets>|<get-widgets>(){}[0]

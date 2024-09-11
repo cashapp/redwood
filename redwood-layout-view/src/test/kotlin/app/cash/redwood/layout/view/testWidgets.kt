@@ -25,12 +25,20 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
 
 class ViewText(context: Context) : Text<View> {
-  override val value = TextView(context).apply {
+  override val value = object : TextView(context) {
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+      measureCount++
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+  }.apply {
     textSize = 18f
     textDirection = View.TEXT_DIRECTION_LOCALE
     setTextColor(android.graphics.Color.BLACK)
   }
   override var modifier: Modifier = Modifier
+
+  override var measureCount = 0
+    private set
 
   override fun text(text: String) {
     value.text = text

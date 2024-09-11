@@ -26,10 +26,13 @@ import app.cash.redwood.yoga.FlexDirection
 
 public class ViewRedwoodLayoutWidgetFactory(
   private val context: Context,
+  private val incremental: Boolean = false,
 ) : RedwoodLayoutWidgetFactory<View> {
   override fun Box(): Box<View> = ViewBox(context)
 
-  override fun Column(): Column<View> = ViewFlexContainer(context, FlexDirection.Column)
-  override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row)
+  override fun Column(): Column<View> =
+    ViewFlexContainer(context, FlexDirection.Column, incremental)
+
+  override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row, incremental)
   override fun Spacer(): Spacer<View> = ViewSpacer(context)
 }

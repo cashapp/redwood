@@ -22,6 +22,8 @@ import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
+import app.cash.redwood.widget.ResizableWidget
+import app.cash.redwood.widget.ResizableWidget.SizeListener
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectMake
@@ -32,15 +34,28 @@ import platform.UIKit.UIColor
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
-class UIViewText : Text<UIView> {
-  override val value = UILabel().apply {
+class UIViewText :
+  Text<UIView>,
+  ResizableWidget<UIView> {
+  override val value = object : UILabel(CGRectZero.readValue()) {
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      measureCount++
+      return super.sizeThatFits(size)
+    }
+  }.apply {
     numberOfLines = 0
     textColor = UIColor.blackColor
   }
   override var modifier: Modifier = Modifier
 
+  override var sizeListener: SizeListener? = null
+
+  override var measureCount = 0
+    private set
+
   override fun text(text: String) {
     value.text = text
+    sizeListener?.invalidateSize()
   }
 
   override fun bgColor(color: Int) {

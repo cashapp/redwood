@@ -106,10 +106,19 @@ public class Node internal constructor(
   public val height: Float
     get() = Yoga.YGNodeLayoutGetHeight(native)
 
-  public fun measure(parentWidth: Float, parentHeight: Float) {
-    // TODO: Figure out how to measure incrementally safely.
-    native.markDirtyAndPropogateDownwards()
+  /** Returns false if this node already dirty. */
+  public fun markDirty(): Boolean {
+    if (native.isDirty()) return false
 
+    native.setDirty(true)
+    return true
+  }
+
+  public fun markEverythingDirty() {
+    native.markDirtyAndPropogateDownwards()
+  }
+
+  public fun measureOnly(parentWidth: Float, parentHeight: Float) {
     Yoga.YGNodeCalculateLayout(
       node = native,
       ownerWidth = parentWidth,
