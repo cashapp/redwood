@@ -45,8 +45,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     backgroundColor: Int = argb(51, 0, 0, 255),
   ): TestFlexContainer<T>
 
+  /** Returns a non-lazy flex container row, even if the test is for a LazyList. */
   abstract fun row(): Row<T>
 
+  /** Returns a non-lazy flex container column, even if the test is for a LazyList. */
   abstract fun column(): Column<T>
 
   abstract fun text(): Text<T>
@@ -691,19 +693,19 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
 
-    val rowA = flexContainer(FlexDirection.Row)
+    val rowA = row()
       .apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
       }
       .also { container.add(it) }
-    val rowB = flexContainer(FlexDirection.Row)
+    val rowB = row()
       .apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
       }
       .also { container.add(it) }
-    val rowC = flexContainer(FlexDirection.Row)
+    val rowC = row()
       .apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
@@ -711,13 +713,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
       .also { container.add(it) }
     val a = text("A")
       .apply { modifier = HeightImpl(100.dp) }
-      .also { rowA.add(it) }
+      .also { rowA.children.insert(0, it) }
     val b = text("B")
       .apply { modifier = HeightImpl(100.dp) }
-      .also { rowB.add(it) }
+      .also { rowB.children.insert(0, it) }
     val c = text("C")
       .apply { modifier = HeightImpl(100.dp) }
-      .also { rowC.add(it) }
+      .also { rowC.children.insert(0, it) }
     container.onEndChanges()
     verifySnapshot(container.value, "v1")
     val aMeasureCountV1 = a.measureCount

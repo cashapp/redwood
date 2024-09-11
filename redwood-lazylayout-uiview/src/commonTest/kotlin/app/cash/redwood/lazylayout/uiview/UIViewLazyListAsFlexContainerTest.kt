@@ -26,6 +26,7 @@ import app.cash.redwood.lazylayout.toUIColor
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
+import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.time.Duration.Companion.milliseconds
@@ -48,16 +49,18 @@ class UIViewLazyListAsFlexContainerTest(
 
   override fun column() = UIViewRedwoodLayoutWidgetFactory().Column()
 
-  override fun text() = object : Text<UIView> {
+  override fun text(): Text<UIView> = object : Text<UIView>, ResizableWidget<UIView> {
     override val value = UILabel().apply {
       numberOfLines = 0
       textColor = platform.UIKit.UIColor.blackColor
     }
     override var modifier: Modifier = Modifier
     override val measureCount = 0
+    override var sizeListener: ResizableWidget.SizeListener? = null
 
     override fun text(text: String) {
       value.text = text
+      sizeListener?.invalidateSize()
     }
 
     override fun bgColor(color: Int) {
