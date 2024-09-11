@@ -29,9 +29,17 @@ import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 abstract class AbstractFlexContainerTest<T : Any> {
+  /**
+   * Returns true if the FlexContainer implementation implements incremental layouts. This is
+   * currently opt-in, but will soon be the only supported mode.
+   */
+  open val incremental: Boolean
+    get() = false
+
   abstract fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int = argb(51, 0, 0, 255),
@@ -624,6 +632,120 @@ abstract class AbstractFlexContainerTest<T : Any> {
     verifySnapshot(container.value)
 
     assertTrue(scrolled)
+  }
+
+  /**
+   * Confirm that we don't perform unnecessary measurements of unchanged views.
+   *
+   * This creates a 3-element layout where each widgets' dimensions are independent. Then it
+   * changes one of the widgets' and confirms that only that widget is measured.
+   */
+  @Test fun testLayoutIsIncremental() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
+
+    val a = text("A")
+      .apply { modifier = HeightImpl(100.dp) }
+      .also { container.add(it) }
+    val b = text("B")
+      .apply { modifier = HeightImpl(100.dp) }
+      .also { container.add(it) }
+    val c = text("C")
+      .apply { modifier = HeightImpl(100.dp) }
+      .also { container.add(it) }
+    container.onEndChanges()
+    verifySnapshot(container.value, "v1")
+    val aMeasureCountV1 = a.measureCount
+    val bMeasureCountV1 = b.measureCount
+    val cMeasureCountV1 = c.measureCount
+
+    b.text("B v2")
+    verifySnapshot(container.value, "v2")
+    val aMeasureCountV2 = a.measureCount
+    val bMeasureCountV2 = b.measureCount
+    val cMeasureCountV2 = c.measureCount
+    if (incremental) {
+      // Only 'b' is measured again.
+      assertEquals(aMeasureCountV1, aMeasureCountV2)
+      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+      assertEquals(cMeasureCountV1, cMeasureCountV2)
+    }
+
+    verifySnapshot(container.value, "v3")
+    val aMeasureCountV3 = a.measureCount
+    val bMeasureCountV3 = b.measureCount
+    val cMeasureCountV3 = c.measureCount
+    if (incremental) {
+      // Nothing is measured again.
+      assertEquals(aMeasureCountV2, aMeasureCountV3)
+      assertEquals(bMeasureCountV2, bMeasureCountV3)
+      assertEquals(cMeasureCountV2, cMeasureCountV3)
+    }
+  }
+
+  @Test fun testRecursiveLayoutIsIncremental() {
+    val container = flexContainer(FlexDirection.Column)
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.crossAxisAlignment(CrossAxisAlignment.Start)
+
+    val rowA = flexContainer(FlexDirection.Row)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+      }
+      .also { container.add(it) }
+    val rowB = flexContainer(FlexDirection.Row)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+      }
+      .also { container.add(it) }
+    val rowC = flexContainer(FlexDirection.Row)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+      }
+      .also { container.add(it) }
+    val a = text("A")
+      .apply { modifier = HeightImpl(100.dp) }
+      .also { rowA.add(it) }
+    val b = text("B")
+      .apply { modifier = HeightImpl(100.dp) }
+      .also { rowB.add(it) }
+    val c = text("C")
+      .apply { modifier = HeightImpl(100.dp) }
+      .also { rowC.add(it) }
+    container.onEndChanges()
+    verifySnapshot(container.value, "v1")
+    val aMeasureCountV1 = a.measureCount
+    val bMeasureCountV1 = b.measureCount
+    val cMeasureCountV1 = c.measureCount
+
+    b.text("B v2")
+    verifySnapshot(container.value, "v2")
+    val aMeasureCountV2 = a.measureCount
+    val bMeasureCountV2 = b.measureCount
+    val cMeasureCountV2 = c.measureCount
+    if (incremental) {
+      // Only 'b' is measured again.
+      assertEquals(aMeasureCountV1, aMeasureCountV2)
+      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+      assertEquals(cMeasureCountV1, cMeasureCountV2)
+    }
+
+    verifySnapshot(container.value, "v3")
+    val aMeasureCountV3 = a.measureCount
+    val bMeasureCountV3 = b.measureCount
+    val cMeasureCountV3 = c.measureCount
+    if (incremental) {
+      // Nothing is measured again.
+      assertEquals(aMeasureCountV2, aMeasureCountV3)
+      assertEquals(bMeasureCountV2, bMeasureCountV3)
+      assertEquals(cMeasureCountV2, cMeasureCountV3)
+    }
   }
 }
 

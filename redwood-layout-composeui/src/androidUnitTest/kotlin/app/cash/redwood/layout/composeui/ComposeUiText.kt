@@ -43,6 +43,8 @@ class ComposeUiText : Text<@Composable () -> Unit> {
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
+  override val measureCount = 0
+
   override fun text(text: String) {
     this.text = text
   }

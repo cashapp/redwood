@@ -22,6 +22,8 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
+import app.cash.redwood.widget.ResizableWidget
+import app.cash.redwood.widget.ResizableWidget.SizeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
@@ -31,20 +33,27 @@ import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
+  private val incremental: Boolean,
 ) : YogaFlexContainer<UIView>,
+  ResizableWidget<UIView>,
   ChangeListener {
   private val yogaView: YogaUIView = YogaUIView(
     applyModifier = { node, _ ->
       node.applyModifier(node.context as Modifier, Density.Default)
     },
+    incremental = incremental,
   )
   override val rootNode: Node get() = yogaView.rootNode
   override val density: Density get() = Density.Default
   override val value: UIView get() = yogaView
   override val children: UIViewChildren = UIViewChildren(
     container = value,
-    insert = { view, modifier, index ->
-      yogaView.rootNode.children.add(index, view.asNode(context = modifier))
+    insert = { widget, view, modifier, index ->
+      val node = view.asNode(context = modifier)
+      if (widget is ResizableWidget<*>) {
+        widget.sizeListener = NodeSizeListener(node, this@UIViewFlexContainer)
+      }
+      yogaView.rootNode.children.add(index, node)
       value.insertSubview(view, index.convert<NSInteger>())
     },
     remove = { index, count ->
@@ -56,8 +65,13 @@ internal class UIViewFlexContainer(
     updateModifier = { modifier, index ->
       yogaView.rootNode.children[index].context = modifier
     },
+    invalidateSize = {
+      invalidateSize()
+    },
   )
   override var modifier: Modifier = Modifier
+
+  override var sizeListener: SizeListener? = null
 
   init {
     yogaView.rootNode.flexDirection = direction
@@ -80,8 +94,25 @@ internal class UIViewFlexContainer(
   }
 
   override fun onEndChanges() {
-    value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
-    value.setNeedsLayout() // Update layout of subviews.
+    invalidateSize()
+  }
+
+  internal fun invalidateSize() {
+    if (incremental) {
+      if (rootNode.markDirty()) {
+        // The node was newly-dirty. Propagate that up the tree.
+        val sizeListener = this.sizeListener
+        if (sizeListener != null) {
+          sizeListener.invalidateSize(this)
+        } else {
+          value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
+          value.setNeedsLayout() // Update layout of subviews.
+        }
+      }
+    } else {
+      value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
+      value.setNeedsLayout() // Update layout of subviews.
+    }
   }
 }
 
@@ -90,4 +121,15 @@ private fun UIView.asNode(context: Any?): Node {
   childNode.measureCallback = UIViewMeasureCallback(this)
   childNode.context = context
   return childNode
+}
+
+private class NodeSizeListener(
+  private val node: Node,
+  private val enclosing: UIViewFlexContainer,
+) : SizeListener {
+  override fun invalidateSize(widget: ResizableWidget<*>) {
+    if (node.markDirty()) {
+      enclosing.invalidateSize()
+    }
+  }
 }

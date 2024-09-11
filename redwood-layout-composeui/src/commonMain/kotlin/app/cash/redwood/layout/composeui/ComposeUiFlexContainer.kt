@@ -187,7 +187,10 @@ internal class ComposeUiFlexContainer(
     } else {
       Size.UNDEFINED
     }
-    rootNode.measure(constrainedWidth, constrainedHeight)
+
+    // TODO: Figure out how to measure incrementally safely.
+    rootNode.markEverythingDirty()
+    rootNode.measureOnly(constrainedWidth, constrainedHeight)
 
     return layout(rootNode.width.toInt(), rootNode.height.toInt()) {
       for (node in rootNode.children) {

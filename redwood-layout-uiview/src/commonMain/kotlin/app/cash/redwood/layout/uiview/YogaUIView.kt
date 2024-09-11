@@ -26,6 +26,7 @@ import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class YogaUIView(
   private val applyModifier: (Node, Int) -> Unit,
+  private val incremental: Boolean,
 ) : UIScrollView(cValue { CGRectZero }), UIScrollViewDelegateProtocol {
   val rootNode = Node()
 
@@ -111,7 +112,11 @@ internal class YogaUIView(
       applyModifier(node, index)
     }
 
-    size.useContents { rootNode.measure(width.toFloat(), height.toFloat()) }
+    if (!incremental) {
+      size.useContents { rootNode.markEverythingDirty() }
+    }
+
+    size.useContents { rootNode.measureOnly(width.toFloat(), height.toFloat()) }
 
     return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
   }

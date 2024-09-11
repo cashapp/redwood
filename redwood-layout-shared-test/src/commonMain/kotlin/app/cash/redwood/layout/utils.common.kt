@@ -53,6 +53,7 @@ interface Color<T : Any> : Widget<T> {
 }
 
 interface Text<T : Any> : Widget<T> {
+  val measureCount: Int
   fun text(text: String)
   fun bgColor(color: Int)
 }

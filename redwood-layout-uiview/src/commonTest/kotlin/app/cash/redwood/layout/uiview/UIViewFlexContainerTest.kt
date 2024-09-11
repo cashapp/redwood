@@ -36,7 +36,7 @@ class UIViewFlexContainerTest(
     direction: FlexDirection,
     backgroundColor: Int,
   ): UIViewTestFlexContainer {
-    return UIViewTestFlexContainer(UIViewFlexContainer(direction)).apply {
+    return UIViewTestFlexContainer(UIViewFlexContainer(direction, incremental)).apply {
       value.backgroundColor = backgroundColor.toUIColor()
     }
   }

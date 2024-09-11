@@ -78,6 +78,7 @@ class ComposeUiLazyListTest(
   override fun text() = object : Text<@Composable () -> Unit> {
     private var text by mutableStateOf("")
     private var bgColor by mutableStateOf(Transparent)
+    override val measureCount = 0
 
     override val value = @Composable {
       BasicText(

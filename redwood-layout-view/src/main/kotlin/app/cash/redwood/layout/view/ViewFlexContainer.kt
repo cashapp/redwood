@@ -19,6 +19,7 @@ import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.util.LayoutDirection
 import android.view.View
+import android.view.View.OnScrollChangeListener
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -42,6 +43,7 @@ import app.cash.redwood.yoga.isHorizontal
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
+  incremental: Boolean = false,
 ) : YogaFlexContainer<View>,
   ChangeListener {
   private val yogaLayout: YogaLayout = YogaLayout(
@@ -49,6 +51,7 @@ internal class ViewFlexContainer(
     applyModifier = { node, index ->
       node.applyModifier(children.widgets[index].modifier, density)
     },
+    incremental = incremental,
   )
   override val rootNode: Node get() = yogaLayout.rootNode
   override val density = Density(context.resources)

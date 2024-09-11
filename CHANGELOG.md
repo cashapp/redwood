@@ -7,6 +7,7 @@ New:
 - Default expressions can now be used directly in the schema rather than using the `@Default` annotation. The annotation has been deprecated, and will be removed in the next release.
 - `EventListener.Factory.close()` is called by `TreehouseApp.close()` to release any resources held by the factory.
 - Lambda parameter names defined in the schema are now propagated to the generated composable and widget interface.
+- `ResizableWidget` is an interface that `UIView` widgets must use if their intrinsic sizes may change dynamically. It notifies any enclosing parent views to trigger a new layout.
 
 Changed:
 - Nothing yet!

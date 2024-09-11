@@ -54,6 +54,7 @@ class UIViewLazyListAsFlexContainerTest(
       textColor = platform.UIKit.UIColor.blackColor
     }
     override var modifier: Modifier = Modifier
+    override val measureCount = 0
 
     override fun text(text: String) {
       value.text = text
