@@ -56,7 +56,7 @@ class ViewBoxTest(
     return ViewText(paparazzi.context)
   }
 
-  override fun verifySnapshot(value: View, name: String?) {
+  override fun verifySnapshot(widget: View, name: String?) {
     val container = object : FrameLayout(paparazzi.context) {
       override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // Allow children to wrap.
@@ -66,8 +66,8 @@ class ViewBoxTest(
         )
       }
     }
-    container.addView(value)
+    container.addView(widget)
     paparazzi.snapshot(view = container, name = name)
-    container.removeView(value)
+    container.removeView(widget)
   }
 }
