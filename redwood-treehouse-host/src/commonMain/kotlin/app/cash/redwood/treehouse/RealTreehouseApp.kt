@@ -25,7 +25,6 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
@@ -108,7 +107,6 @@ internal class RealTreehouseApp<A : AppService> private constructor(
    * Continuously polls for updated code, and emits a new [LoadResult] instance when new code is
    * found.
    */
-  @OptIn(ExperimentalCoroutinesApi::class) // limitedParallelism is experimental.
   private fun ziplineFlow(
     eventListenerFactory: EventListener.Factory,
   ): Flow<LoadResult> {

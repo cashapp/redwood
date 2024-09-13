@@ -32,7 +32,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -504,7 +504,7 @@ private class ViewContentCodeBinding<A : AppService>(
     }
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
+  @OptIn(DelicateCoroutinesApi::class)
   fun cancel(exception: Throwable?) {
     dispatchers.checkUi()
 

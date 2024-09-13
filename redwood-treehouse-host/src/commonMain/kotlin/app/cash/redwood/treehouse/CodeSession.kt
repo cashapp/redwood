@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
@@ -68,7 +68,7 @@ internal abstract class CodeSession<A : AppService>(
   /** Invoked on [TreehouseDispatchers.zipline]. */
   protected abstract fun ziplineStart()
 
-  @OptIn(ExperimentalCoroutinesApi::class)
+  @OptIn(DelicateCoroutinesApi::class)
   fun stop() {
     dispatchers.checkUi()
 
