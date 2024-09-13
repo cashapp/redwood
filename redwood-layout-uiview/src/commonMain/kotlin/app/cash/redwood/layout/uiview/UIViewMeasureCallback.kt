@@ -24,7 +24,6 @@ import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
-import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
   override fun measure(
@@ -35,11 +34,11 @@ internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
     heightMode: MeasureMode,
   ): Size {
     val constrainedWidth = when (widthMode) {
-      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
+      MeasureMode.Undefined -> 0.0
       else -> width.toDouble()
     }
     val constrainedHeight = when (heightMode) {
-      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
+      MeasureMode.Undefined -> 0.0
       else -> height.toDouble()
     }
 
