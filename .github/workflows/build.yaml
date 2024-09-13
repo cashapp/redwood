@@ -25,7 +25,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - run: ./scripts/enforce_git_lfs.sh
-      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps
+      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps -x dokkaHtml
 
   emulator-tests:
     runs-on: ubuntu-latest
