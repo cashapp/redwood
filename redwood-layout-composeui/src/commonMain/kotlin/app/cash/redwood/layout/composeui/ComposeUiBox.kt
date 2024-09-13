@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.layout.composeui
 
+import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,12 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.util.fastMap
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
-import app.cash.redwood.layout.modifier.Margin as MarginModifier
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
@@ -48,7 +48,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 internal class ComposeUiBox(
   private val backgroundColor: Int = 0,
-) : Box<@Composable () -> Unit> {
+) : Box<@Composable () -> Unit>() {
   private var modifierTick by mutableIntStateOf(0)
   override val children = ComposeWidgetChildren(onModifierUpdated = { modifierTick++ })
 

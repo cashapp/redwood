@@ -66,7 +66,7 @@ import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
 internal open class UIViewLazyList :
-  LazyList<UIView>,
+  LazyList<UIView>(),
   ChangeListener {
   internal var tableView: UITableView? = object : UITableView(
     CGRectZero.readValue(),

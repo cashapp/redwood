@@ -33,7 +33,7 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
-internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
+internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement>() {
   override var modifier: Modifier = Modifier
 
   final override val value = document.createElement("div") as HTMLDivElement

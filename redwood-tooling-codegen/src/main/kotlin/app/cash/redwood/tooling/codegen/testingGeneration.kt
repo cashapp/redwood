@@ -187,7 +187,7 @@ internal fun generateMutableWidget(schema: Schema, widget: Widget): FileSpec {
     addType(
       TypeSpec.classBuilder(mutableWidgetType)
         .addModifiers(INTERNAL)
-        .addSuperinterface(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
+        .superclass(schema.widgetType(widget).parameterizedBy(RedwoodTesting.WidgetValue))
         .addProperty(
           PropertySpec.builder("value", RedwoodTesting.WidgetValue)
             .addModifiers(OVERRIDE)

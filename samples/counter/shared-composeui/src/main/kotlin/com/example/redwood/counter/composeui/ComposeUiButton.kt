@@ -15,6 +15,7 @@
  */
 package com.example.redwood.counter.composeui
 
+import app.cash.redwood.Modifier as RedwoodModifier
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -23,10 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import app.cash.redwood.Modifier as RedwoodModifier
 import com.example.redwood.counter.widget.Button
 
-internal class ComposeUiButton : Button<@Composable () -> Unit> {
+internal class ComposeUiButton : Button<@Composable () -> Unit>() {
   private var text by mutableStateOf("")
   private var isEnabled by mutableStateOf(false)
   private var onClick by mutableStateOf({})

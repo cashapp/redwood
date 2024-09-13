@@ -46,7 +46,7 @@ import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
 internal class UIViewBox :
-  Box<UIView>,
+  Box<UIView>(),
   ResizableWidget<UIView> {
   override val value: View = View()
 

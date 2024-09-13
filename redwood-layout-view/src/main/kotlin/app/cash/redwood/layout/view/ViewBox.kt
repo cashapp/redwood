@@ -39,8 +39,7 @@ import app.cash.redwood.widget.ViewGroupChildren
 
 internal class ViewBox(
   context: Context,
-) : FrameLayout(context),
-  Box<View> {
+) : Box<View>() {
   private val density = Density(context.resources)
   private var horizontalAlignment = CrossAxisAlignment.Start
   private var verticalAlignment = CrossAxisAlignment.Start
@@ -50,22 +49,18 @@ internal class ViewBox(
 
   override var modifier: Modifier = Modifier
 
-  override val value get() = this
+  override val value = FrameLayout(context)
 
-  override val children = ViewGroupChildren(this)
-
-  override fun generateDefaultLayoutParams(): LayoutParams {
-    return LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-  }
+  override val children = ViewGroupChildren(value)
 
   override fun width(width: Constraint) {
     this.width = width
-    invalidate()
+    value.invalidate()
   }
 
   override fun height(height: Constraint) {
     this.height = height
-    invalidate()
+    value.invalidate()
   }
 
   override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
@@ -220,5 +215,11 @@ internal class ViewBox(
       CrossAxisAlignment.Stretch -> MATCH_PARENT
       else -> throw AssertionError()
     }
+  }
+}
+
+private class BoxFrameLayout(context: Context) : FrameLayout(context) {
+  override fun generateDefaultLayoutParams(): LayoutParams {
+    return FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
   }
 }

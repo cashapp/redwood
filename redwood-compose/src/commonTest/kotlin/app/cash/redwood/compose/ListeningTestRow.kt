@@ -23,7 +23,7 @@ import com.example.redwood.testapp.testing.TestRowValue
 import com.example.redwood.testapp.widget.TestRow
 
 class ListeningTestRow :
-  TestRow<WidgetValue>,
+  TestRow<WidgetValue>(),
   ChangeListener {
   private val changes = ArrayList<String>()
   fun changes(): List<String> {
