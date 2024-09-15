@@ -65,7 +65,7 @@ jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-t
 
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.6.0" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "1.18.1" }
-clikt = { module = "com.github.ajalt.clikt:clikt", version = "4.4.0" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version = "5.0.0" }
 junit = { module = "junit:junit", version = "4.13.2" }
 testParameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version = "1.17" }
 assertk = "com.willowtreeapps.assertk:assertk:0.28.1"
