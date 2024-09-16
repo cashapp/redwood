@@ -18,6 +18,7 @@
 package app.cash.redwood.tooling.schema
 
 import com.github.ajalt.clikt.core.NoOpCliktCommand
+import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 
 public fun main(vararg args: String) {

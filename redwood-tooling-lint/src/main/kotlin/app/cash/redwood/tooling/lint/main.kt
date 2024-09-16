@@ -18,6 +18,7 @@
 package app.cash.redwood.tooling.lint
 
 import com.github.ajalt.clikt.core.NoOpCliktCommand
+import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.core.subcommands
 import java.nio.file.FileSystems
 
