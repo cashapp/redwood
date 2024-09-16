@@ -30,8 +30,7 @@ import java.io.File
 
 internal abstract class AbstractSchemaCommand(
   name: String,
-  help: String,
-) : CliktCommand(name = name, help = help) {
+) : CliktCommand(name = name) {
   private val jdkHome by option("--jdk-home")
     .file()
     .defaultLazy { System.getProperty("java.home").let(::File) }
