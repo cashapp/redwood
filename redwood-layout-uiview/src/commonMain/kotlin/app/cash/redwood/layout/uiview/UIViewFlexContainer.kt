@@ -51,7 +51,7 @@ internal class UIViewFlexContainer(
     insert = { widget, view, modifier, index ->
       val node = view.asNode(context = modifier)
       if (widget is ResizableWidget<*>) {
-        widget.sizeListener = NodeSizeListener(node, this@UIViewFlexContainer)
+        widget.sizeListener = NodeSizeListener(node, view, this@UIViewFlexContainer)
       }
       yogaView.rootNode.children.add(index, node)
       value.insertSubview(view, index.convert<NSInteger>())
@@ -123,10 +123,12 @@ private fun UIView.asNode(context: Any?): Node {
 
 private class NodeSizeListener(
   private val node: Node,
+  private val view: UIView,
   private val enclosing: UIViewFlexContainer,
 ) : SizeListener {
   override fun invalidateSize() {
     if (node.markDirty()) {
+      view.setNeedsLayout()
       enclosing.invalidateSize()
     }
   }

@@ -53,6 +53,6 @@ internal class DisplayLinkTarget(
 
   fun close() {
     displayLink?.invalidate()
-    displayLink = null
+    displayLink = null // Break a reference cycle.
   }
 }
