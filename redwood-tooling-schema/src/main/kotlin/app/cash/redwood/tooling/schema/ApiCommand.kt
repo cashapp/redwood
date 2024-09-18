@@ -19,6 +19,7 @@ import app.cash.redwood.tooling.schema.ValidationMode.Check
 import app.cash.redwood.tooling.schema.ValidationMode.Generate
 import app.cash.redwood.tooling.schema.ValidationResult.Failure
 import app.cash.redwood.tooling.schema.ValidationResult.Success
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.core.PrintMessage
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.help
@@ -27,11 +28,10 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.path
 
-internal class ApiCommand :
-  AbstractSchemaCommand(
-    name = "api",
-    help = "Write schema protocol API to XML, or validate schema compatibility with existing XML",
-  ) {
+internal class ApiCommand : AbstractSchemaCommand("api") {
+  override fun help(context: Context) =
+    "Write schema protocol API to XML, or validate schema compatibility with existing XML"
+
   private val file by option("-f", "--file")
     .path()
     .required()

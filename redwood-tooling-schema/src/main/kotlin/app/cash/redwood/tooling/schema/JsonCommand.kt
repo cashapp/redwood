@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.tooling.schema
 
+import com.github.ajalt.clikt.core.Context
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
@@ -22,11 +23,10 @@ import com.github.ajalt.clikt.parameters.types.path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
-internal class JsonCommand :
-  AbstractSchemaCommand(
-    name = "json",
-    help = "Parse schema members into a JSON representation",
-  ) {
+internal class JsonCommand : AbstractSchemaCommand("json") {
+  override fun help(context: Context) =
+    "Parse schema members into a JSON representation"
+
   private val out by option().path().required()
     .help("Directory into which JSON is written")
 
