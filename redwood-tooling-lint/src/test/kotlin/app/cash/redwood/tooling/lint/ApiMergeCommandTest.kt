@@ -17,6 +17,7 @@ package app.cash.redwood.tooling.lint
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.github.ajalt.clikt.core.main
 import com.google.common.jimfs.Configuration.unix
 import com.google.common.jimfs.Jimfs
 import kotlin.io.path.readText
