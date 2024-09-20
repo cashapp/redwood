@@ -58,6 +58,11 @@ public interface GeneratedProtocolFactory<W : Any> : ProtocolFactory<W> {
    */
   public fun createModifier(element: ModifierElement): Modifier
 
-  /** Look up known children tags for the given widget [tag]. */
-  public fun widgetChildren(tag: WidgetTag): List<ChildrenTag>
+  /**
+   * Look up known children tags for the given widget [tag]. These are stored as a bare [IntArray]
+   * for efficiency, but are otherwise an array of [ChildrenTag] instances.
+   *
+   * @return `null` when widget has no children
+   */
+  public fun widgetChildren(tag: WidgetTag): IntArray?
 }

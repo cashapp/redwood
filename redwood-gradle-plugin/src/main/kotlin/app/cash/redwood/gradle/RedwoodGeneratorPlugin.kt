@@ -70,11 +70,12 @@ public abstract class RedwoodGeneratorPlugin(
   public enum class Strategy(
     internal val generatorFlag: String,
     internal val dependencyArtifactId: String,
+    internal vararg val implementationDependencies: String,
   ) {
     Compose("--compose", "redwood-compose"),
     Modifiers("--modifier", "redwood-runtime"),
     ProtocolGuest("--protocol-guest", "redwood-protocol-guest"),
-    ProtocolHost("--protocol-host", "redwood-protocol-host"),
+    ProtocolHost("--protocol-host", "redwood-protocol-host", androidxCollectionCoordinates),
     Testing("--testing", "redwood-testing"),
     Widget("--widget", "redwood-widget"),
   }
@@ -122,6 +123,9 @@ public abstract class RedwoodGeneratorPlugin(
         sourceSet.kotlin.srcDir(generate)
         sourceSet.dependencies {
           api(project.redwoodDependency(strategy.dependencyArtifactId))
+          for (implementationDependency in strategy.implementationDependencies) {
+            implementation(implementationDependency)
+          }
         }
       }
     }

@@ -136,4 +136,5 @@ buildConfig {
 
   packageName('app.cash.redwood.gradle')
   buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
+  buildConfigField("String", "androidxCollectionCoordinates", "\"${libs.jetbrains.compose.collection.get()}\"")
 }
