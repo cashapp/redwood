@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse.leaks
 
+import androidx.collection.IntObjectMap
 import app.cash.redwood.treehouse.EventLog
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
@@ -63,6 +64,9 @@ internal object JvmHeap : Heap {
         Edge("key", instance.key),
         Edge("value", instance.value),
       )
+      instance is IntObjectMap<*> -> {
+        references(buildList { instance.forEachValue(::add) })
+      }
       instance is StateFlow<*> -> listOf(
         Edge("value", instance.value),
       )
