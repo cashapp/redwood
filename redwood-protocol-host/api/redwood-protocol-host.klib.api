@@ -13,7 +13,7 @@ abstract fun interface app.cash.redwood.protocol.host/UiEventSink { // app.cash.
 abstract interface <#A: kotlin/Any> app.cash.redwood.protocol.host/GeneratedProtocolFactory : app.cash.redwood.protocol.host/ProtocolFactory<#A> { // app.cash.redwood.protocol.host/GeneratedProtocolFactory|null[0]
     abstract fun createModifier(app.cash.redwood.protocol/ModifierElement): app.cash.redwood/Modifier // app.cash.redwood.protocol.host/GeneratedProtocolFactory.createModifier|createModifier(app.cash.redwood.protocol.ModifierElement){}[0]
     abstract fun createNode(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag): app.cash.redwood.protocol.host/ProtocolNode<#A>? // app.cash.redwood.protocol.host/GeneratedProtocolFactory.createNode|createNode(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
-    abstract fun widgetChildren(app.cash.redwood.protocol/WidgetTag): kotlin.collections/List<app.cash.redwood.protocol/ChildrenTag> // app.cash.redwood.protocol.host/GeneratedProtocolFactory.widgetChildren|widgetChildren(app.cash.redwood.protocol.WidgetTag){}[0]
+    abstract fun widgetChildren(app.cash.redwood.protocol/WidgetTag): kotlin/IntArray? // app.cash.redwood.protocol.host/GeneratedProtocolFactory.widgetChildren|widgetChildren(app.cash.redwood.protocol.WidgetTag){}[0]
 }
 
 abstract interface app.cash.redwood.protocol.host/ProtocolMismatchHandler { // app.cash.redwood.protocol.host/ProtocolMismatchHandler|null[0]
