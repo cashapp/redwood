@@ -326,9 +326,9 @@ internal fun generateProtocolNode(
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return %T(%L)", WidgetTag, widget.tag)
-                .build()
+                .build(),
             )
-            .build()
+            .build(),
         )
         .addProperty(
           PropertySpec.builder("_widget", widgetType.copy(nullable = true), PRIVATE)
