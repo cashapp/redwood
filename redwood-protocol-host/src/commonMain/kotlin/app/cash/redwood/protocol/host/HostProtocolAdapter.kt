@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.protocol.host
 
+import androidx.collection.MutableIntObjectMap
+import androidx.collection.mutableIntObjectMapOf
+import androidx.collection.mutableScatterSetOf
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.leaks.LeakDetector
@@ -57,10 +60,12 @@ public class HostProtocolAdapter<W : Any>(
     is GeneratedProtocolFactory -> factory
   }
 
-  private val nodes = mutableMapOf<Id, ProtocolNode<W>>(
-    Id.Root to RootProtocolNode(container),
-  )
-  private val changedWidgets = mutableSetOf<ChangeListener>()
+  private val nodes =
+    mutableIntObjectMapOf<ProtocolNode<W>>(Id.Root.value, RootProtocolNode(container))
+
+  private val removeNodeById: (Id) -> Unit = { nodes.remove(it.value) }
+
+  private val changedWidgets = mutableScatterSetOf<ChangeListener>()
 
   /** Nodes available for reuse. */
   private val pool = ArrayDeque<ProtocolNode<W>>()
@@ -79,7 +84,7 @@ public class HostProtocolAdapter<W : Any>(
       when (change) {
         is Create -> {
           val node = factory.createNode(id, change.tag) ?: continue
-          val old = nodes.put(change.id, node)
+          val old = nodes.put(change.id.value, node)
           require(old == null) {
             "Insert attempted to replace existing widget with ID ${change.id.value}"
           }
@@ -101,7 +106,7 @@ public class HostProtocolAdapter<W : Any>(
             is Remove -> {
               for (childIndex in change.index until change.index + change.count) {
                 val child = children.nodes[childIndex]
-                child.visitIds(nodes::remove)
+                child.visitIds(removeNodeById)
                 poolOrDetach(child)
               }
               children.remove(change.index, change.count)
@@ -149,7 +154,7 @@ public class HostProtocolAdapter<W : Any>(
     }
 
     if (changedWidgets.isNotEmpty()) {
-      for (widget in changedWidgets) {
+      changedWidgets.forEach { widget ->
         widget.onEndChanges()
       }
       changedWidgets.clear()
@@ -157,7 +162,7 @@ public class HostProtocolAdapter<W : Any>(
   }
 
   internal fun node(id: Id): ProtocolNode<W> {
-    return checkNotNull(nodes[id]) { "Unknown widget ID ${id.value}" }
+    return checkNotNull(nodes[id.value]) { "Unknown widget ID ${id.value}" }
   }
 
   /**
@@ -167,7 +172,7 @@ public class HostProtocolAdapter<W : Any>(
   public fun close() {
     closed = true
 
-    for (node in nodes.values) {
+    nodes.forEachValue { node ->
       node.detach()
     }
     nodes.clear()
@@ -353,12 +358,12 @@ public class HostProtocolAdapter<W : Any>(
      * descendants into the nodes map.
      */
     fun assignPooledNodeRecursive(
-      nodes: MutableMap<Id, ProtocolNode<W>>,
+      nodes: MutableIntObjectMap<ProtocolNode<W>>,
       changesAndNulls: Array<Change?>,
       pooled: ProtocolNode<W>,
     ) {
       // Reuse the node.
-      val old = nodes.put(widgetId, pooled)
+      val old = nodes.put(widgetId.value, pooled)
       require(old == null) {
         "Insert attempted to replace existing widget with ID $widgetId"
       }
