@@ -63,28 +63,28 @@ class UIViewBoxTest(
   @Test
   fun sizeThatWraps() {
     assertThat(
-      sizeThatWraps(
+      maxEachDimension(
         CGSizeMake(5.0, 10.0),
         CGSizeMake(8.0, 4.0),
       ),
     ).isEqualTo(8.0, 10.0)
 
     assertThat(
-      sizeThatWraps(
+      maxEachDimension(
         CGSizeMake(8.0, 4.0),
         CGSizeMake(5.0, 10.0),
       ),
     ).isEqualTo(8.0, 10.0)
 
     assertThat(
-      sizeThatWraps(
+      maxEachDimension(
         CGSizeMake(8.0, 10.0),
         CGSizeMake(5.0, 4.0),
       ),
     ).isEqualTo(8.0, 10.0)
 
     assertThat(
-      sizeThatWraps(
+      maxEachDimension(
         CGSizeMake(5.0, 4.0),
         CGSizeMake(8.0, 10.0),
       ),
