@@ -54,6 +54,7 @@ androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha02"
 
 google-material = { module = "com.google.android.material:material", version = "1.12.0" }
 
+jetbrains-compose-collection = { module = "org.jetbrains.compose.collection-internal:collection", version.ref = "jbCompose" }
 jetbrains-compose-gradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jbCompose" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jbCompose" }
 jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jbCompose" }

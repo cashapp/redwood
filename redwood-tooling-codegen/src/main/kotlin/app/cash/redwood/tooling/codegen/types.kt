@@ -94,6 +94,11 @@ internal object ComposeRuntime {
   val Stable = ClassName("androidx.compose.runtime", "Stable")
 }
 
+internal object AndroidxCollection {
+  val IntObjectMap = ClassName("androidx.collection", "IntObjectMap")
+  val MutableIntObjectMap = ClassName("androidx.collection", "MutableIntObjectMap")
+}
+
 internal fun composableLambda(
   receiver: TypeName?,
 ): TypeName {
