@@ -15,12 +15,12 @@
  */
 package app.cash.redwood.layout.uiview
 
-import app.cash.redwood.layout.modifier.Margin as ModifierMargin
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Margin as ModifierMargin
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
@@ -331,6 +331,7 @@ internal val Margin.height: Double
   get() = with(Density.Default) { top.toPx() + bottom.toPx() }
 
 /** Returns a size that takes the width from [widthSize] and the height from [heightSize]. */
+@Suppress("FunctionName")
 internal fun CGSizeMake(
   widthSize: CValue<CGSize>,
   heightSize: CValue<CGSize>,
