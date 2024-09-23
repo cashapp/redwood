@@ -61,7 +61,7 @@ class UIViewBoxTest(
   }
 
   @Test
-  fun sizeThatWraps() {
+  fun maxEachDimension() {
     assertThat(
       maxEachDimension(
         CGSizeMake(5.0, 10.0),
