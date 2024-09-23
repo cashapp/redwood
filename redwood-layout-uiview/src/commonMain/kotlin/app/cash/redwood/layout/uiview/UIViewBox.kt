@@ -219,74 +219,84 @@ internal class UIViewBox :
     }
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      var maxItemWidth: CGFloat = 0.0
-      var maxItemHeight: CGFloat = 0.0
-      var maxRequestedWidth: CGFloat = 0.0
-      var maxRequestedHeight: CGFloat = 0.0
+      val zero = CGSizeMake(0.0, 0.0)
 
-      // Get the largest sizes based on explicit widget modifiers.
-      children.widgets.forEach { widget ->
-        widget.modifier.forEachScoped { childModifier ->
-          when (childModifier) {
-            is Width -> with(Density.Default) {
-              maxRequestedWidth = maxOf(maxRequestedWidth, childModifier.width.toPx())
-            }
-
-            is Height -> with(Density.Default) {
-              maxRequestedHeight = maxOf(maxRequestedHeight, childModifier.height.toPx())
-            }
-
-            is Size -> with(Density.Default) {
-              maxRequestedWidth = maxOf(maxRequestedWidth, childModifier.width.toPx())
-              maxRequestedHeight = maxOf(maxRequestedHeight, childModifier.height.toPx())
-            }
-          }
-        }
+      val requestedSize = children.widgets.fold(zero) { acc, widget ->
+        sizeThatWraps(acc, widget.modifier.requestedSize)
       }
 
-      // Calculate the size based on Constraint values.
-      when (widthConstraint) {
-        Constraint.Fill -> when (heightConstraint) {
-          Constraint.Fill -> { // Fill Fill
-            size.useContents {
-              maxItemWidth = width
-              maxItemHeight = height
-            }
+      val wrapOrFillSize = when {
+        widthConstraint == Constraint.Wrap || heightConstraint == Constraint.Wrap -> {
+          val wrapSize = typedSubviews.fold(zero) { acc, subview ->
+            sizeThatWraps(acc, subview.sizeThatFits(size))
           }
 
-          Constraint.Wrap -> { // Fill Wrap
-            maxItemWidth = size.useContents { width }
-            for (subview in typedSubviews) {
-              subview.sizeThatFits(size).useContents {
-                maxItemHeight = maxOf(maxItemHeight, height)
-              }
-            }
-          }
+          CGSizeMake(
+            widthSize = when (widthConstraint) {
+              Constraint.Wrap -> wrapSize
+              else -> size
+            },
+            heightSize = when (heightConstraint) {
+              Constraint.Wrap -> wrapSize
+              else -> size
+            },
+          )
         }
 
-        Constraint.Wrap -> when (heightConstraint) {
-          Constraint.Fill -> { // Wrap Fill
-            for (subview in typedSubviews) {
-              subview.sizeThatFits(size).useContents {
-                maxItemWidth = maxOf(maxItemWidth, width)
-              }
-            }
-            maxItemHeight = size.useContents { height }
-          }
+        // Optimization: Don't call sizeThatFits() if we don't need to.
+        else -> size
+      }
 
-          Constraint.Wrap -> { // Wrap Wrap
-            for (subview in typedSubviews) {
-              subview.sizeThatFits(size).useContents {
-                maxItemWidth = maxOf(maxItemWidth, width)
-                maxItemHeight = maxOf(maxItemHeight, height)
-              }
-            }
-          }
+      return sizeThatWraps(requestedSize, wrapOrFillSize)
+    }
+  }
+}
+
+/**
+ * Returns the literal size specified by the modifier. If none is specified this returns
+ * `0.0 x 0.0`. If conflicting sizes are specified this returns the maximum of the values.
+ */
+internal val Modifier.requestedSize: CValue<CGSize>
+  get() {
+    var width = 0.0
+    var height = 0.0
+
+    forEachScoped { childModifier ->
+      when (childModifier) {
+        is Width -> with(Density.Default) {
+          width = maxOf(width, childModifier.width.toPx())
+        }
+
+        is Height -> with(Density.Default) {
+          height = maxOf(height, childModifier.height.toPx())
+        }
+
+        is Size -> with(Density.Default) {
+          width = maxOf(width, childModifier.width.toPx())
+          height = maxOf(height, childModifier.height.toPx())
         }
       }
-      return CGSizeMake(
-        width = maxOf(maxRequestedWidth, maxItemWidth),
-        height = maxOf(maxRequestedHeight, maxItemHeight),
+    }
+
+    return CGSizeMake(width, height)
+  }
+
+/** Returns a size that takes the width from [widthSize] and the height from [heightSize]. */
+internal fun CGSizeMake(
+  widthSize: CValue<CGSize>,
+  heightSize: CValue<CGSize>,
+): CValue<CGSize> = CGSizeMake(
+  width = widthSize.useContents { width },
+  height = heightSize.useContents { height },
+)
+
+/** Returns the smallest size that wraps both [a] and [b]. */
+internal fun sizeThatWraps(a: CValue<CGSize>, b: CValue<CGSize>): CValue<CGSize> {
+  return a@a.useContents {
+    b@b.useContents {
+      CGSizeMake(
+        maxOf(a@width, b@width),
+        maxOf(a@height, b@height),
       )
     }
   }
