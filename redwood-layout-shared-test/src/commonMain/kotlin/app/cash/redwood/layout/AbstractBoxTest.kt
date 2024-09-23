@@ -349,6 +349,92 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
+  fun testMarginsAndAlignment() {
+    val widget = box().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+
+      children.insert(
+        0,
+        text().apply {
+          text("start x, end y")
+          bgColor(Red)
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 20.dp, top = 10.dp, end = 40.dp, bottom = 30.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Start))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.End))
+        },
+      )
+      children.insert(
+        1,
+        text().apply {
+          text("end x, start y")
+          bgColor(Green)
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 40.dp, top = 30.dp, end = 20.dp, bottom = 10.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.End))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Start))
+        },
+      )
+      children.insert(
+        2,
+        text().apply {
+          text("center both")
+          bgColor(Blue)
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 10.dp, top = 50.dp, end = 50.dp, bottom = 10.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Center))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Center))
+        },
+      )
+    }
+    verifySnapshot(widget.value)
+  }
+
+  @Test
+  fun testMarginsAndStretch() {
+    val widget = box().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+
+      children.insert(
+        0,
+        text().apply {
+          text("stretch both")
+          bgColor(Red)
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 20.dp, top = 10.dp, end = 40.dp, bottom = 30.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch))
+        },
+      )
+      children.insert(
+        1,
+        text().apply {
+          text("end x, stretch y")
+          bgColor(Green)
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 40.dp, top = 30.dp, end = 20.dp, bottom = 10.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.End))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch))
+        },
+      )
+      children.insert(
+        2,
+        text().apply {
+          text("stretch x, end y")
+          bgColor(Blue)
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.End))
+        },
+      )
+    }
+    verifySnapshot(widget.value)
+  }
+
+  @Test
   fun testChildrenModifierChanges() {
     val redColor = coloredText(MarginImpl(30.dp), longText(), Red)
     val widget = box().apply {

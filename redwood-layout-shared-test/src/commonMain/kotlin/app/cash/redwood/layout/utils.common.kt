@@ -68,6 +68,10 @@ internal data class CrossAxisAlignmentImpl(
 ) : HorizontalAlignment,
   VerticalAlignment
 
+internal data class VerticalAlignmentImpl(
+  override val alignment: CrossAxisAlignment,
+) : VerticalAlignment
+
 internal data class HorizontalAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment

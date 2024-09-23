@@ -19,7 +19,10 @@ import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
+import assertk.assertThat
+import kotlin.test.Test
 import platform.CoreGraphics.CGRectMake
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
@@ -55,5 +58,36 @@ class UIViewBoxTest(
 
     callback.verifySnapshot(frame, name)
     widget.removeFromSuperview()
+  }
+
+  @Test
+  fun maxEachDimension() {
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(5.0, 10.0),
+        CGSizeMake(8.0, 4.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
+
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(8.0, 4.0),
+        CGSizeMake(5.0, 10.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
+
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(8.0, 10.0),
+        CGSizeMake(5.0, 4.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
+
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(5.0, 4.0),
+        CGSizeMake(8.0, 10.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
   }
 }
