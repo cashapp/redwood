@@ -48,16 +48,12 @@ public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 }
 
 public final class app/cash/redwood/protocol/host/UiEvent {
-	public synthetic fun <init> (IILjava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (IILjava/util/List;Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getArgs ()Ljava/util/List;
+	public synthetic fun <init> (II[Ljava/lang/Object;[Lkotlinx/serialization/SerializationStrategy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getArgs ()[Ljava/lang/Object;
 	public final fun getId-0HhLjSo ()I
-	public final fun getSerializationStrategies ()Ljava/util/List;
+	public final fun getSerializationStrategies ()[Lkotlinx/serialization/SerializationStrategy;
 	public final fun getTag-RNF89mI ()I
-	public fun hashCode ()I
 	public final fun toProtocol (Lkotlinx/serialization/json/Json;)Lapp/cash/redwood/protocol/Event;
-	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class app/cash/redwood/protocol/host/UiEventSink {

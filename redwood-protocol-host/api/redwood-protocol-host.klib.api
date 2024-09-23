@@ -71,21 +71,18 @@ final class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolChildren { /
 }
 
 final class app.cash.redwood.protocol.host/UiEvent { // app.cash.redwood.protocol.host/UiEvent|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin.collections/List<kotlin/Any?> = ..., kotlin.collections/List<kotlinx.serialization/SerializationStrategy<kotlin/Any?>> = ...) // app.cash.redwood.protocol.host/UiEvent.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.collections.List<kotlin.Any?>;kotlin.collections.List<kotlinx.serialization.SerializationStrategy<kotlin.Any?>>){}[0]
+    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin/Array<kotlin/Any?>?, kotlin/Array<kotlinx.serialization/SerializationStrategy<kotlin/Any?>>?) // app.cash.redwood.protocol.host/UiEvent.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.Array<kotlin.Any?>?;kotlin.Array<kotlinx.serialization.SerializationStrategy<kotlin.Any?>>?){}[0]
 
     final val args // app.cash.redwood.protocol.host/UiEvent.args|{}args[0]
-        final fun <get-args>(): kotlin.collections/List<kotlin/Any?> // app.cash.redwood.protocol.host/UiEvent.args.<get-args>|<get-args>(){}[0]
+        final fun <get-args>(): kotlin/Array<kotlin/Any?>? // app.cash.redwood.protocol.host/UiEvent.args.<get-args>|<get-args>(){}[0]
     final val id // app.cash.redwood.protocol.host/UiEvent.id|{}id[0]
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/UiEvent.id.<get-id>|<get-id>(){}[0]
     final val serializationStrategies // app.cash.redwood.protocol.host/UiEvent.serializationStrategies|{}serializationStrategies[0]
-        final fun <get-serializationStrategies>(): kotlin.collections/List<kotlinx.serialization/SerializationStrategy<kotlin/Any?>> // app.cash.redwood.protocol.host/UiEvent.serializationStrategies.<get-serializationStrategies>|<get-serializationStrategies>(){}[0]
+        final fun <get-serializationStrategies>(): kotlin/Array<kotlinx.serialization/SerializationStrategy<kotlin/Any?>>? // app.cash.redwood.protocol.host/UiEvent.serializationStrategies.<get-serializationStrategies>|<get-serializationStrategies>(){}[0]
     final val tag // app.cash.redwood.protocol.host/UiEvent.tag|{}tag[0]
         final fun <get-tag>(): app.cash.redwood.protocol/EventTag // app.cash.redwood.protocol.host/UiEvent.tag.<get-tag>|<get-tag>(){}[0]
 
-    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol.host/UiEvent.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // app.cash.redwood.protocol.host/UiEvent.hashCode|hashCode(){}[0]
     final fun toProtocol(kotlinx.serialization.json/Json): app.cash.redwood.protocol/Event // app.cash.redwood.protocol.host/UiEvent.toProtocol|toProtocol(kotlinx.serialization.json.Json){}[0]
-    final fun toString(): kotlin/String // app.cash.redwood.protocol.host/UiEvent.toString|toString(){}[0]
 }
 
 final val app.cash.redwood.protocol.host/hostRedwoodVersion // app.cash.redwood.protocol.host/hostRedwoodVersion|{}hostRedwoodVersion[0]
