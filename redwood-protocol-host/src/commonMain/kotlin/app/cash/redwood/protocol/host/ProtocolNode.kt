@@ -34,8 +34,9 @@ import kotlin.math.min
 public abstract class ProtocolNode<W : Any>(
   /** Updated in place when a node is reused due to pooling. */
   public var id: Id,
-  public val widgetTag: WidgetTag,
 ) {
+  public abstract val widgetTag: WidgetTag
+
   public abstract val widget: Widget<W>
 
   /** The index of [widget] within its parent [container]. */
@@ -65,7 +66,9 @@ public abstract class ProtocolNode<W : Any>(
   public abstract fun children(tag: ChildrenTag): ProtocolChildren<W>?
 
   /** Recursively visit IDs in this widget's tree, starting with this widget's [id]. */
-  public abstract fun visitIds(block: (Id) -> Unit)
+  public open fun visitIds(block: (Id) -> Unit) {
+    block(id)
+  }
 
   /**
    * Detach all child widgets recursively, then clear direct references to them.

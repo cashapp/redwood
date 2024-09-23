@@ -33,8 +33,8 @@ import kotlinx.serialization.json.JsonPrimitive
 @RedwoodCodegenApi
 internal class FakeProtocolNode(
   id: Id,
-  tag: WidgetTag,
-) : ProtocolNode<FakeWidget>(id, tag) {
+  override val widgetTag: WidgetTag,
+) : ProtocolNode<FakeWidget>(id) {
   override val widget = FakeWidget()
 
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {

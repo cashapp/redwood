@@ -126,16 +126,15 @@ class ChildrenNodeIndexTest {
 }
 
 @OptIn(RedwoodCodegenApi::class)
-private class WidgetNode(override val widget: StringWidget) : ProtocolNode<String>(Id(1), WidgetTag(1)) {
+private class WidgetNode(override val widget: StringWidget) : ProtocolNode<String>(Id(1)) {
+  override val widgetTag: WidgetTag get() = WidgetTag(1)
+
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {
     throw UnsupportedOperationException()
   }
 
   override fun children(tag: ChildrenTag): ProtocolChildren<String>? {
     throw UnsupportedOperationException()
-  }
-
-  override fun visitIds(block: (Id) -> Unit) {
   }
 
   override fun detach() {
