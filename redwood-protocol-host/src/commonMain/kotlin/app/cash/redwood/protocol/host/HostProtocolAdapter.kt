@@ -387,8 +387,10 @@ public class HostProtocolAdapter<W : Any>(
 @OptIn(RedwoodCodegenApi::class)
 private class RootProtocolNode<W : Any>(
   children: Widget.Children<W>,
-) : ProtocolNode<W>(Id.Root, UnknownWidgetTag),
+) : ProtocolNode<W>(Id.Root),
   Widget<W> {
+  override val widgetTag: WidgetTag get() = UnknownWidgetTag
+
   private val children = ProtocolChildren(children)
 
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {

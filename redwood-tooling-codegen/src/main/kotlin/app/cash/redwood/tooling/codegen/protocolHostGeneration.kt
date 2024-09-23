@@ -253,7 +253,9 @@ internal class ProtocolButton<W : Any>(
   widget: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ProtocolNode<W>(id, WidgetTag(4)) {
+) : ProtocolNode<W>(id) {
+  override val widgetTag: WidgetTag get() = WidgetTag(4)
+
   private var _widget: Button<W>? = widget
   override val widget: Widget<W> get() = _widget ?: error("detached")
 
@@ -319,7 +321,15 @@ internal fun generateProtocolNode(
             .build(),
         )
         .addSuperclassConstructorParameter("id")
-        .addSuperclassConstructorParameter("%T(%L)", WidgetTag, widget.tag)
+        .addProperty(
+          PropertySpec.builder("widgetTag", WidgetTag, OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return %T(%L)", WidgetTag, widget.tag)
+                .build(),
+            )
+            .build(),
+        )
         .addProperty(
           PropertySpec.builder("_widget", widgetType.copy(nullable = true), PRIVATE)
             .mutable(true)
@@ -487,20 +497,24 @@ internal fun generateProtocolNode(
             }
             .build(),
         )
-        .addFunction(
-          FunSpec.builder("visitIds")
-            .addModifiers(OVERRIDE)
-            .addParameter("block", LambdaTypeName.get(null, Id, returnType = UNIT))
-            .addStatement("block(id)")
-            .apply {
-              for (trait in widget.traits) {
-                if (trait is ProtocolChildren) {
-                  addStatement("%N.visitIds(block)", trait.name)
+        .apply {
+          if (childrens.isNotEmpty()) {
+            addFunction(
+              FunSpec.builder("visitIds")
+                .addModifiers(OVERRIDE)
+                .addParameter("block", LambdaTypeName.get(null, Id, returnType = UNIT))
+                .addStatement("block(id)")
+                .apply {
+                  for (trait in widget.traits) {
+                    if (trait is ProtocolChildren) {
+                      addStatement("%N.visitIds(block)", trait.name)
+                    }
+                  }
                 }
-              }
-            }
-            .build(),
-        )
+                .build(),
+            )
+          }
+        }
         .addFunction(
           FunSpec.builder("detach")
             .addModifiers(OVERRIDE)
@@ -525,7 +539,7 @@ internal fun generateProtocolNode(
             .addStatement("""append("(id=")""")
             .addStatement("append(id.value)")
             .addStatement("""append(", tag=")""")
-            .addStatement("append(widgetTag.value)")
+            .addStatement("append(%L)", widget.tag)
             .addStatement("append(')')")
             .endControlFlow()
             .build(),
