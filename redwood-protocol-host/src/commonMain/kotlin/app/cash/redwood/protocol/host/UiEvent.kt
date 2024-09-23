@@ -19,7 +19,6 @@ import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
-import dev.drewhamilton.poko.Poko
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
 
@@ -27,27 +26,24 @@ import kotlinx.serialization.json.Json
  * A version of [Event] whose arguments have not yet been serialized to JSON and is thus
  * cheap to create on the UI thread.
  */
-@Poko
 public class UiEvent(
   public val id: Id,
   public val tag: EventTag,
-  public val args: List<Any?> = emptyList(),
-  public val serializationStrategies: List<SerializationStrategy<Any?>> = emptyList(),
+  public val args: Array<Any?>?,
+  public val serializationStrategies: Array<SerializationStrategy<Any?>>?,
 ) {
-  init {
-    check(args.size == serializationStrategies.size) {
-      "Properties 'args' and 'serializationStrategies' must have the same size. " +
-        "Found ${args.size} and ${serializationStrategies.size}"
-    }
-  }
-
   /** Serialize [args] into a JSON model using [serializationStrategies] into an [Event]. */
   public fun toProtocol(json: Json): Event {
     return Event(
       id = id,
       tag = tag,
-      args = List(args.size) {
-        json.encodeToJsonElement(serializationStrategies[it], args[it])
+      args = if (args == null) {
+        emptyList()
+      } else {
+        val serializationStrategies = serializationStrategies!!
+        List(args.size) { i ->
+          json.encodeToJsonElement(serializationStrategies[i], args[i])
+        }
       },
     )
   }

@@ -40,7 +40,7 @@ internal class FakeProtocolNode(
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {
     widget.label = (change.value as JsonPrimitive).content
     widget.onClick = {
-      eventSink.sendEvent(UiEvent(Id(1), EventTag(1)))
+      eventSink.sendEvent(UiEvent(Id(1), EventTag(1), null, null))
     }
   }
 

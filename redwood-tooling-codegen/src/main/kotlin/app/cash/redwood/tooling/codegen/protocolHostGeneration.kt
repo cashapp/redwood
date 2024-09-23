@@ -570,11 +570,11 @@ private class OnClick(
       UiEvent(
         id,
         EventTag(3),
-        listOf(
+        arrayOf(
           arg0,
           arg1,
         ),
-        listOf(
+        arrayOf(
           serializer_0,
           serializer_1,
         ),
@@ -621,14 +621,14 @@ private fun generateEventHandler(
 
   if (serializers.isEmpty()) {
     invoke.addCode(
-      "eventSink.sendEvent(%T(id, %T(%L)))",
+      "eventSink.sendEvent(%T(id, %T(%L), null, null))",
       ProtocolHost.UiEvent,
       Protocol.EventTag,
       trait.tag,
     )
   } else {
     invoke.addCode(
-      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\nlistOf(⇥\n%L,\n⇤),\nlistOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
+      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\narrayOf(⇥\n%L,\n⇤),\narrayOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
       ProtocolHost.UiEvent,
       Protocol.EventTag,
       trait.tag,
