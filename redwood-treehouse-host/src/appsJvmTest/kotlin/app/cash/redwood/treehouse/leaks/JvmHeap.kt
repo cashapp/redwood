@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse.leaks
 
 import androidx.collection.IntObjectMap
+import androidx.collection.ScatterSet
 import app.cash.redwood.treehouse.EventLog
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
@@ -66,6 +67,9 @@ internal object JvmHeap : Heap {
       )
       instance is IntObjectMap<*> -> {
         references(buildList { instance.forEachValue(::add) })
+      }
+      instance is ScatterSet<*> -> {
+        references(instance.asSet())
       }
       instance is StateFlow<*> -> listOf(
         Edge("value", instance.value),
