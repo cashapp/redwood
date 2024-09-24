@@ -10,7 +10,7 @@ New:
 - `ResizableWidget` is an interface that `UIView` widgets must use if their intrinsic sizes may change dynamically. It notifies any enclosing parent views to trigger a new layout.
 
 Changed:
-- Nothing yet!
+- Removed Wasm JS target. We are not ready to support it yet.
 
 Fixed:
 - Breaking the last remaining retain cycle in `UIViewLazyList`.
