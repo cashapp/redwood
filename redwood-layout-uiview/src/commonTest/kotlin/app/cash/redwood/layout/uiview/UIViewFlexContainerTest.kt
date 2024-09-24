@@ -49,6 +49,13 @@ class UIViewFlexContainerTest(
   ): UIViewTestFlexContainer {
     return UIViewTestFlexContainer(UIViewFlexContainer(direction, incremental)).apply {
       value.backgroundColor = backgroundColor.toUIColor()
+
+      // Install a default SizeListener that doesn't do anything. Otherwise the test subject
+      // benefits from fallback behavior that it might not get in other containers.
+      sizeListener = object : SizeListener {
+        override fun invalidateSize() {
+        }
+      }
     }
   }
 

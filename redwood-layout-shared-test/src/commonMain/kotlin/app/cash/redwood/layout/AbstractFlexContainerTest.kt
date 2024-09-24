@@ -749,6 +749,44 @@ abstract class AbstractFlexContainerTest<T : Any> {
       assertEquals(cMeasureCountV2, cMeasureCountV3)
     }
   }
+
+  /** Confirm that child element size changes propagate up the view hierarchy. */
+  @Test fun testRecursiveLayoutHandlesResizes() {
+    val column = flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+        crossAxisAlignment(CrossAxisAlignment.Stretch)
+      }
+    val snapshotter = snapshotter(column.value)
+
+    val rowA = row()
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+      }
+      .also { column.add(it) }
+
+    val rowA1 = text("A1 ".repeat(50))
+      .apply { modifier = FlexImpl(1.0) }
+      .also { rowA.children.insert(0, it) }
+    val rowA2 = text("A-TWO ".repeat(50))
+      .apply { modifier = FlexImpl(1.0) }
+      .also { rowA.children.insert(1, it) }
+
+    val rowB = text("B1 ".repeat(5))
+      .apply {
+        modifier = Modifier
+          .then(HorizontalAlignmentImpl(CrossAxisAlignment.Center))
+      }
+      .also { column.add(it) }
+    column.onEndChanges()
+    snapshotter.snapshot("v1")
+
+    rowA1.text("A1 ".repeat(5))
+    rowA2.text("A-TWO ".repeat(5))
+    snapshotter.snapshot("v2")
+  }
 }
 
 interface TestFlexContainer<T : Any> :
