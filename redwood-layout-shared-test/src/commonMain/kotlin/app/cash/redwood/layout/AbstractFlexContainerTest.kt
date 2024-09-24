@@ -38,7 +38,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * currently opt-in, but will soon be the only supported mode.
    */
   open val incremental: Boolean
-    get() = false
+    get() = true
 
   abstract fun flexContainer(
     direction: FlexDirection,
@@ -65,10 +65,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     return widget
   }
 
-  abstract fun verifySnapshot(
-    widget: T,
-    name: String? = null,
-  )
+  abstract fun snapshotter(widget: T): Snapshotter
 
   @Test fun testEmptyLayout_Column() {
     emptyLayout(FlexDirection.Column)
@@ -85,7 +82,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testLayoutWithConstraints_Column_Wrap_Wrap() {
@@ -131,7 +128,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(height)
     container.add(text(movies.first()))
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testShortLayout_Column() {
@@ -152,7 +149,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text(movie))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testLongLayout_Column() {
@@ -173,7 +170,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text(movie))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testLayoutWithMarginAndDifferentAlignments_Column() {
@@ -202,7 +199,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text(movie, modifier))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testLayoutWithCrossAxisAlignment_Column_Start() {
@@ -250,11 +247,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text(movie))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun columnWithUpdatedCrossAxisAlignment() {
     val container = flexContainer(FlexDirection.Column)
+    val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Center)
@@ -262,10 +260,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text(movie))
     }
     container.onEndChanges()
-    verifySnapshot(container.value, "Center")
+    snapshotter.snapshot("Center")
     container.crossAxisAlignment(CrossAxisAlignment.End)
     container.onEndChanges()
-    verifySnapshot(container.value, "FlexEnd")
+    snapshotter.snapshot("FlexEnd")
   }
 
   @Test fun testColumnWithMainAxisAlignment_Center() {
@@ -293,7 +291,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text(movie))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testContainerWithFixedWidthItems() {
@@ -305,7 +303,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text("$index", WidthImpl(50.dp)))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testContainerWithFixedHeightItems() {
@@ -317,7 +315,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text("$index", HeightImpl(50.dp)))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testContainerWithFixedSizeItems() {
@@ -329,21 +327,22 @@ abstract class AbstractFlexContainerTest<T : Any> {
       container.add(text("$index", SizeImpl(50.dp, 50.dp)))
     }
     container.onEndChanges()
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testChildWithUpdatedProperty() {
     val container = flexContainer(FlexDirection.Column)
+    val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     val widget = text("")
     container.add(widget)
     container.onEndChanges()
-    verifySnapshot(container.value, "initial")
+    snapshotter.snapshot("initial")
     widget.text(movies.first())
     container.onEndChanges()
-    verifySnapshot(container.value, "updated")
+    snapshotter.snapshot("updated")
   }
 
   @Test fun testColumnThenRow() {
@@ -382,7 +381,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       },
     )
 
-    verifySnapshot(column.value)
+    snapshotter(column.value).snapshot()
   }
 
   /** This test demonstrates that margins are lost unless `shrink(1.0)` is added. */
@@ -436,11 +435,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
       },
     )
 
-    verifySnapshot(column.value)
+    snapshotter(column.value).snapshot()
   }
 
   @Test fun testDynamicElementUpdates() {
     val container = flexContainer(FlexDirection.Column)
+    val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.add(text("A"))
@@ -449,15 +449,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(text("E"))
 
     container.onEndChanges()
-    verifySnapshot(container.value, "ABDE")
+    snapshotter.snapshot("ABDE")
 
     container.addAt(index = 2, widget = text("C"))
     container.onEndChanges()
-    verifySnapshot(container.value, "ABCDE")
+    snapshotter.snapshot("ABCDE")
 
     container.removeAt(index = 0)
     container.onEndChanges()
-    verifySnapshot(container.value, "BCDE")
+    snapshotter.snapshot("BCDE")
   }
 
   @Test fun testDynamicContainerSize() {
@@ -465,6 +465,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
+    val snapshotter = snapshotter(parent.value)
 
     parent.children.insert(
       0,
@@ -509,10 +510,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
       },
     )
 
-    verifySnapshot(parent.value, "both")
+    snapshotter.snapshot("both")
 
     parent.children.remove(index = 1, count = 1)
-    verifySnapshot(parent.value, "single")
+    snapshotter.snapshot("single")
   }
 
   @Test fun testFlexDistributesWeightEqually() {
@@ -523,7 +524,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(text("SHORTER TEXT", FlexImpl(1.0)))
     container.add(text("A", FlexImpl(1.0)))
     container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testFlexDistributesWeightUnequally() {
@@ -534,7 +535,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(text("SHORTER TEXT", FlexImpl(1.0)))
     container.add(text("A", FlexImpl(1.0)))
     container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
   }
 
   @Test fun testNestedColumnsWithFlex() {
@@ -561,16 +562,14 @@ abstract class AbstractFlexContainerTest<T : Any> {
     outerContainer.add(innerContainer2)
     innerContainer2.modifier = Modifier.then(FlexImpl(1.0))
     outerContainer.children.onModifierUpdated(1, innerContainer2)
-    verifySnapshot(outerContainer.value)
+    snapshotter(outerContainer.value).snapshot()
   }
 
-  @Test
-  fun testColumnWithChildModifierChanges() {
+  @Test fun testColumnWithChildModifierChanges() {
     testContainerWithChildrenModifierChanges(FlexDirection.Column)
   }
 
-  @Test
-  fun testRowWithChildModifierChanges() {
+  @Test fun testRowWithChildModifierChanges() {
     testContainerWithChildrenModifierChanges(FlexDirection.Row)
   }
 
@@ -578,6 +577,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     flexDirection: FlexDirection,
   ) {
     val container = flexContainer(flexDirection)
+    val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
 
@@ -588,37 +588,35 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.add(text(mediumText(), backgroundColor = Green))
     container.add(text(shortText(), backgroundColor = Blue))
     container.onEndChanges()
-    verifySnapshot(container.value, "Margin")
+    snapshotter.snapshot("Margin")
     first.modifier = Modifier
     container.children.onModifierUpdated(0, first)
     container.onEndChanges()
-    verifySnapshot(container.value, "Empty")
+    snapshotter.snapshot("Empty")
   }
 
   /** The view shouldn't crash if its displayed after being detached. */
-  @Test
-  fun testLayoutAfterDetach() {
+  @Test fun testLayoutAfterDetach() {
     val container = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
-    val widget = container.value // Don't access widget.value after detach().
+    val snapshotter = snapshotter(container.value)
 
     // Render before calling detach().
     container.children.insert(0, text(mediumText(), MarginImpl(10.dp), Green))
     container.children.insert(1, text(shortText(), MarginImpl(0.dp), Blue))
     container.onEndChanges()
-    verifySnapshot(widget, "Before")
+    snapshotter.snapshot("Before")
 
     // Detach after changes are applied but before they're rendered.
     container.children.insert(0, text(longText(), MarginImpl(20.dp), Red))
     container.onEndChanges()
     container.children.detach()
-    verifySnapshot(widget, "After")
+    snapshotter.snapshot("After")
   }
 
-  @Test
-  fun testOnScrollListener() {
+  @Test fun testOnScrollListener() {
     var scrolled = false
     val container = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
@@ -631,7 +629,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     container.scroll(Px(1000.0))
 
-    verifySnapshot(container.value)
+    snapshotter(container.value).snapshot()
 
     assertTrue(scrolled)
   }
@@ -644,6 +642,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    */
   @Test fun testLayoutIsIncremental() {
     val container = flexContainer(FlexDirection.Column)
+    val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
@@ -658,13 +657,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
       .apply { modifier = HeightImpl(100.dp) }
       .also { container.add(it) }
     container.onEndChanges()
-    verifySnapshot(container.value, "v1")
+    snapshotter.snapshot("v1")
     val aMeasureCountV1 = a.measureCount
     val bMeasureCountV1 = b.measureCount
     val cMeasureCountV1 = c.measureCount
 
     b.text("B v2")
-    verifySnapshot(container.value, "v2")
+    snapshotter.snapshot("v2")
     val aMeasureCountV2 = a.measureCount
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
@@ -675,7 +674,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       assertEquals(cMeasureCountV1, cMeasureCountV2)
     }
 
-    verifySnapshot(container.value, "v3")
+    snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
     val bMeasureCountV3 = b.measureCount
     val cMeasureCountV3 = c.measureCount
@@ -689,6 +688,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testRecursiveLayoutIsIncremental() {
     val container = flexContainer(FlexDirection.Column)
+    val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
@@ -721,13 +721,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
       .apply { modifier = HeightImpl(100.dp) }
       .also { rowC.children.insert(0, it) }
     container.onEndChanges()
-    verifySnapshot(container.value, "v1")
+    snapshotter.snapshot("v1")
     val aMeasureCountV1 = a.measureCount
     val bMeasureCountV1 = b.measureCount
     val cMeasureCountV1 = c.measureCount
 
     b.text("B v2")
-    verifySnapshot(container.value, "v2")
+    snapshotter.snapshot("v2")
     val aMeasureCountV2 = a.measureCount
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
@@ -738,7 +738,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       assertEquals(cMeasureCountV1, cMeasureCountV2)
     }
 
-    verifySnapshot(container.value, "v3")
+    snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
     val bMeasureCountV3 = b.measureCount
     val cMeasureCountV3 = c.measureCount

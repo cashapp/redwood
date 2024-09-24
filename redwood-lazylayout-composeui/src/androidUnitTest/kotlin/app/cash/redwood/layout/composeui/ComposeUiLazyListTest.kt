@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import app.cash.redwood.Modifier as RedwoodModifier
 import androidx.compose.foundation.background
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -27,7 +28,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.Text
@@ -99,11 +99,7 @@ class ComposeUiLazyListTest(
     }
   }
 
-  override fun verifySnapshot(widget: @Composable () -> Unit, name: String?) {
-    paparazzi.snapshot(name) {
-      widget()
-    }
-  }
+  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,

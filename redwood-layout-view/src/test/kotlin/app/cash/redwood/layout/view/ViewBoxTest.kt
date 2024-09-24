@@ -22,6 +22,7 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
+import app.cash.redwood.layout.Snapshotter
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import com.android.resources.LayoutDirection
@@ -56,18 +57,19 @@ class ViewBoxTest(
     return ViewText(paparazzi.context)
   }
 
-  override fun verifySnapshot(widget: View, name: String?) {
+  override fun snapshotter(widget: View): Snapshotter {
+    // Allow children to wrap.
     val container = object : FrameLayout(paparazzi.context) {
       override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // Allow children to wrap.
         super.onMeasure(
           MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
           MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST),
         )
       }
+    }.apply {
+      addView(widget)
     }
-    container.addView(widget)
-    paparazzi.snapshot(view = container, name = name)
-    container.removeView(widget)
+
+    return ViewSnapshotter(paparazzi, container)
   }
 }

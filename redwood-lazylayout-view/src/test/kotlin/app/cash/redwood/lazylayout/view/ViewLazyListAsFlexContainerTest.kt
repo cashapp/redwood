@@ -87,9 +87,7 @@ class ViewLazyListAsFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(widget: View, name: String?) {
-    paparazzi.snapshot(widget, name)
-  }
+  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewLazyList,

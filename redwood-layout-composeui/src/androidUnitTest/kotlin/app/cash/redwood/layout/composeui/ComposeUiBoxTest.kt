@@ -15,11 +15,11 @@
  */
 package app.cash.redwood.layout.composeui
 
+import app.cash.redwood.layout.Color as ColorWidget
 import androidx.compose.runtime.Composable
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
-import app.cash.redwood.layout.Color as ColorWidget
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import com.android.resources.LayoutDirection
@@ -46,7 +46,5 @@ class ComposeUiBoxTest(
 
   override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
 
-  override fun verifySnapshot(widget: @Composable () -> Unit, name: String?) {
-    paparazzi.snapshot(composable = widget, name = name)
-  }
+  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

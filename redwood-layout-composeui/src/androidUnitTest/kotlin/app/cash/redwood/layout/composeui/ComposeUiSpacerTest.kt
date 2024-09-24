@@ -57,7 +57,5 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable () -> Unit>() {
     }
   }
 
-  override fun verifySnapshot(value: @Composable () -> Unit) {
-    paparazzi.snapshot(composable = value)
-  }
+  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

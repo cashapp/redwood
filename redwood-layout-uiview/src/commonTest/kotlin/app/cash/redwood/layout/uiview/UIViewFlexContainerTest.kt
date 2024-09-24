@@ -33,7 +33,6 @@ import kotlin.test.assertEquals
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.readValue
-import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
@@ -62,9 +61,12 @@ class UIViewFlexContainerTest(
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,
   ) : TestFlexContainer<UIView>,
+    ResizableWidget<UIView>,
     FlexContainer<UIView> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
+
+    override var sizeListener: SizeListener? by delegate::sizeListener
 
     override val children: Widget.Children<UIView> = delegate.children
 
@@ -95,25 +97,7 @@ class UIViewFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(widget: UIView, name: String?) {
-    val frame = layoutInFrame(widget)
-
-    callback.verifySnapshot(frame, name)
-    widget.removeFromSuperview()
-  }
-
-  private fun layoutInFrame(widget: UIView): UIView {
-    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    widget.setFrame(screenSize)
-
-    // Snapshot the container on a white background.
-    return UIView().apply {
-      backgroundColor = UIColor.whiteColor
-      setFrame(screenSize)
-      addSubview(widget)
-      layoutIfNeeded()
-    }
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
   /**
    * Confirm that calling [ResizableWidget.SizeListener] is sufficient to trigger a subsequent call
@@ -145,12 +129,14 @@ class UIViewFlexContainerTest(
       add(widget)
     }
 
-    layoutInFrame(container.value)
+    val snapshotter = snapshotter(container.value)
+
+    snapshotter.layoutSubject()
     assertEquals(1, layoutSubviewsCount)
 
     widget.sizeListener?.invalidateSize()
 
-    layoutInFrame(container.value)
+    snapshotter.layoutSubject()
     assertEquals(2, layoutSubviewsCount)
   }
 }

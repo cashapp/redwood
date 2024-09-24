@@ -51,7 +51,5 @@ class UIViewSpacerTest(
     }
   }
 
-  override fun verifySnapshot(value: UIView) {
-    callback.verifySnapshot(value, null)
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter(callback, widget)
 }
