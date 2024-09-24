@@ -27,7 +27,6 @@ import java.net.URLClassLoader
 import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
 import org.jetbrains.kotlin.builtins.StandardNames
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY
 import org.jetbrains.kotlin.cli.common.GroupedKtSources
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -46,6 +45,7 @@ import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.VirtualFileManager
 import org.jetbrains.kotlin.com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.kotlin.config.CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY
 import org.jetbrains.kotlin.config.CommonConfigurationKeys.MODULE_NAME
 import org.jetbrains.kotlin.config.CommonConfigurationKeys.USE_FIR
 import org.jetbrains.kotlin.config.CompilerConfiguration
@@ -151,13 +151,9 @@ public fun parseProtocolSchema(
   val localFileSystem = VirtualFileManager.getInstance().getFileSystem(
     StandardFileSystems.FILE_PROTOCOL,
   )
-  val files = buildList {
-    for (source in sources) {
-      source.walkTopDown().filter { it.isFile }.forEach {
-        this += localFileSystem.findFileByPath(it.absolutePath)!!
-      }
-    }
-  }
+  val files = sources
+    .flatMap { it.walkTopDown().filter(File::isFile) }
+    .map { localFileSystem.findFileByPath(it.absolutePath)!! }
 
   val sourceFiles = files.map(::KtVirtualFileSourceFile).toSet()
   val input = ModuleCompilerInput(
