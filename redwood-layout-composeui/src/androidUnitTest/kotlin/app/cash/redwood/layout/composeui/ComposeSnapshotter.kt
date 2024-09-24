@@ -20,8 +20,8 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.Snapshotter
 
 class ComposeSnapshotter(
-    private val paparazzi: Paparazzi,
-    private val widget: @Composable () -> Unit,
+  private val paparazzi: Paparazzi,
+  private val widget: @Composable () -> Unit,
 ) : Snapshotter {
   override fun snapshot(name: String?) {
     paparazzi.snapshot(composable = widget, name = name)
