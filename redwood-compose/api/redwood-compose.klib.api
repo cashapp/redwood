@@ -96,7 +96,19 @@ final object app.cash.redwood.compose/WindowAnimationFrameClock : androidx.compo
 }
 
 // Targets: [js]
+final val app.cash.redwood.compose/app_cash_redwood_compose_JsArray$stableprop // app.cash.redwood.compose/app_cash_redwood_compose_JsArray$stableprop|#static{}app_cash_redwood_compose_JsArray$stableprop[0]
+
+// Targets: [js]
+final val app.cash.redwood.compose/app_cash_redwood_compose_JsSet$stableprop // app.cash.redwood.compose/app_cash_redwood_compose_JsSet$stableprop|#static{}app_cash_redwood_compose_JsSet$stableprop[0]
+
+// Targets: [js]
 final val app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop // app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop|#static{}app_cash_redwood_compose_WindowAnimationFrameClock$stableprop[0]
+
+// Targets: [js]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_JsArray$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_JsArray$stableprop_getter|app_cash_redwood_compose_JsArray$stableprop_getter(){}[0]
+
+// Targets: [js]
+final fun app.cash.redwood.compose/app_cash_redwood_compose_JsSet$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_JsSet$stableprop_getter|app_cash_redwood_compose_JsSet$stableprop_getter(){}[0]
 
 // Targets: [js]
 final fun app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_WindowAnimationFrameClock$stableprop_getter|app_cash_redwood_compose_WindowAnimationFrameClock$stableprop_getter(){}[0]
