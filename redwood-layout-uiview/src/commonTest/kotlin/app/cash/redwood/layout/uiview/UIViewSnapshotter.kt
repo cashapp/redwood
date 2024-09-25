@@ -27,7 +27,6 @@ class UIViewSnapshotter(
 ) : Snapshotter {
 
   override fun snapshot(name: String?) {
-    layoutSubject()
     callback.verifySnapshot(subject, name)
   }
 

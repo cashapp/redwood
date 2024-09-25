@@ -101,6 +101,7 @@ internal class UIViewFlexContainer(
         // The node was newly-dirty. Propagate that up the tree.
         val sizeListener = this.sizeListener
         if (sizeListener != null) {
+          value.setNeedsLayout()
           sizeListener.invalidateSize()
         } else {
           value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.

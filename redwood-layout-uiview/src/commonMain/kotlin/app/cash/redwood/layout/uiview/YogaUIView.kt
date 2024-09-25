@@ -84,26 +84,14 @@ internal class YogaUIView(
 
     // Layout the nodes based on the calculatedLayouts above.
     for (childNode in rootNode.children) {
-      layoutNodes(childNode)
-    }
-  }
-
-  private fun layoutNodes(node: Node) {
-    val x = node.left.toDouble()
-    val y = node.top.toDouble()
-    val width = node.width.toDouble()
-    val height = node.height.toDouble()
-    node.view.setFrame(CGRectMake(x, y, width, height))
-
-    if (node.view is YogaUIView) {
-      // Optimization: for a YogaUIView nested within another YogaUIView,
-      // there's no need to call layoutNodes for its children here,
-      // as it will happen within its own layoutSubviews() pass.
-      return
-    }
-
-    for (childNode in node.children) {
-      layoutNodes(childNode)
+      childNode.view.setFrame(
+        CGRectMake(
+          x = childNode.left.toDouble(),
+          y = childNode.top.toDouble(),
+          width = childNode.width.toDouble(),
+          height = childNode.height.toDouble(),
+        ),
+      )
     }
   }
 
