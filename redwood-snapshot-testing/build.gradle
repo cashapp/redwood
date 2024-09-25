@@ -17,7 +17,8 @@ kotlin {
     }
     androidMain {
       dependencies {
-        api libs.paparazzi
+        // This library uses Paparazzi types but consumers must install the Paparazzi plugin.
+        compileOnly libs.paparazzi
       }
     }
   }
