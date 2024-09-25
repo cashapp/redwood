@@ -12,6 +12,7 @@ kotlin {
       dependencies {
         api libs.jetbrains.compose.foundation
         api libs.kotlin.test
+        api projects.redwoodWidget
         implementation libs.assertk
       }
     }

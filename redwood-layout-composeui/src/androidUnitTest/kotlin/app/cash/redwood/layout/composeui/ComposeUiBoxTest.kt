@@ -19,10 +19,9 @@ import androidx.compose.runtime.Composable
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
-import app.cash.redwood.layout.Color as ColorWidget
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
+import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -41,11 +40,9 @@ class ComposeUiBoxTest(
     supportsRtl = true,
   )
 
+  override val widgetFactory = ComposeUiTestWidgetFactory
+
   override fun box(): Box<@Composable () -> Unit> = ComposeUiBox(0x88000000.toInt())
-
-  override fun color(): ColorWidget<@Composable () -> Unit> = ComposeUiColor()
-
-  override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

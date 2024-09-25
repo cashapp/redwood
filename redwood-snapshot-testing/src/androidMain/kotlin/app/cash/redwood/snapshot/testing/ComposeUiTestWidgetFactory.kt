@@ -13,22 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.composeui
+package app.cash.redwood.snapshot.testing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp as ComposeDp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.layout.Color as ColorWidget
-import app.cash.redwood.layout.Transparent
+import app.cash.redwood.snapshot.testing.Color as ColorWidget
 import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.toPlatformDp
+
+object ComposeUiTestWidgetFactory : TestWidgetFactory<@Composable () -> Unit> {
+  override fun color(): ColorWidget<@Composable () -> Unit> = ComposeUiColor()
+
+  override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
+}
+
+class ComposeUiText : Text<@Composable () -> Unit> {
+  private var text by mutableStateOf("")
+  private var bgColor by mutableStateOf(Transparent)
+
+  override val value = @Composable {
+    BasicText(
+      text = this.text,
+      style = TextStyle(fontSize = 18.sp, color = Color.Black),
+      modifier = Modifier.background(Color(bgColor)),
+    )
+  }
+
+  override var modifier: RedwoodModifier = RedwoodModifier
+
+  override val measureCount = 0
+
+  override fun text(text: String) {
+    this.text = text
+  }
+
+  override fun bgColor(color: Int) {
+    bgColor = color
+  }
+}
 
 class ComposeUiColor : ColorWidget<@Composable () -> Unit> {
   private var width by mutableStateOf(0.dp)
@@ -52,4 +87,8 @@ class ComposeUiColor : ColorWidget<@Composable () -> Unit> {
   }
 
   override var modifier: RedwoodModifier = RedwoodModifier
+}
+
+internal fun Dp.toDp(): ComposeDp {
+  return ComposeDp(toPlatformDp().toFloat())
 }

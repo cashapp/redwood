@@ -16,11 +16,11 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.AbstractBoxTest
-import app.cash.redwood.layout.Color
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
+import app.cash.redwood.snapshot.testing.isEqualTo
 import assertk.assertThat
 import kotlin.test.Test
 import platform.CoreGraphics.CGSizeMake
@@ -31,18 +31,12 @@ class UIViewBoxTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractBoxTest<UIView>() {
 
+  override val widgetFactory = UIViewTestWidgetFactory
+
   override fun box(): Box<UIView> {
     return UIViewBox().apply {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
     }
-  }
-
-  override fun color(): Color<UIView> {
-    return UIViewColor()
-  }
-
-  override fun text(): Text<UIView> {
-    return UIViewText()
   }
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
