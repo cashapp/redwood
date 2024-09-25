@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ktlint:standard:property-naming")
-
-package app.cash.redwood.lazylayout
+package app.cash.redwood.snapshot.testing
 
 import app.cash.redwood.widget.Widget
 
-const val Green: Int = 0xff00ff00.toInt()
-
-fun argb(
-  alpha: Int,
-  red: Int,
-  green: Int,
-  blue: Int,
-): Int {
-  return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
-}
-
 interface Text<T : Any> : Widget<T> {
+  val measureCount: Int
   fun text(text: String)
   fun bgColor(color: Int)
 }

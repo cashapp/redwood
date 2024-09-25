@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.lazylayout.uiview
+package app.cash.redwood.snapshot.testing
 
-import app.cash.redwood.Modifier
-import app.cash.redwood.lazylayout.Text
-import app.cash.redwood.lazylayout.toUIColor
-import platform.UIKit.UILabel
-import platform.UIKit.UIView
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.widget.Widget
 
-class UIViewText : Text<UIView> {
-  override val value = UILabel().apply {
-    numberOfLines = 0
-    textColor = platform.UIKit.UIColor.blackColor
-  }
-  override var modifier: Modifier = Modifier
-
-  override fun text(text: String) {
-    value.text = text
-  }
-
-  override fun bgColor(color: Int) {
-    value.backgroundColor = color.toUIColor()
-  }
+interface Color<T : Any> : Widget<T> {
+  fun width(width: Dp)
+  fun height(height: Dp)
+  fun color(color: Int)
 }

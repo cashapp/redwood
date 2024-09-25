@@ -18,16 +18,17 @@ package app.cash.redwood.lazylayout.uiview
 import app.cash.redwood.lazylayout.AbstractLazyListTest
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import platform.UIKit.UIView
 
 class UIViewLazyListTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractLazyListTest<UIView>() {
-  private val widgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
+  override val widgetFactory = UIViewTestWidgetFactory
 
-  override fun text() = UIViewText()
+  private val lazyLayoutWidgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
 
-  override fun lazyList(backgroundColor: Int) = widgetFactory.LazyList()
+  override fun lazyList(backgroundColor: Int) = lazyLayoutWidgetFactory.LazyList()
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 }

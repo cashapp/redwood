@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+@file:Suppress("ktlint:standard:property-naming")
 
-import assertk.Assert
-import assertk.assertions.support.fail
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGSize
+package app.cash.redwood.snapshot.testing
 
-fun Assert<CValue<CGSize>>.isEqualTo(width: Double, height: Double) = given { actual ->
-  val (actualWidth, actualHeight) = actual.useContents { width to height }
-  if (width == actualWidth && height == actualHeight) return
-  fail(width to height, actualWidth to actualHeight)
+const val Red: Int = 0xffff0000.toInt()
+const val Green: Int = 0xff00ff00.toInt()
+const val Blue: Int = 0xff0000ff.toInt()
+const val Transparent: Int = 0x00000000
+
+fun argb(
+  alpha: Int,
+  red: Int,
+  green: Int,
+  blue: Int,
+): Int {
+  return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
 }

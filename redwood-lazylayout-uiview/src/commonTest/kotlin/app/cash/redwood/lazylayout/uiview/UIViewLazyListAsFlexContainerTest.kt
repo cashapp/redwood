@@ -15,10 +15,8 @@
  */
 package app.cash.redwood.lazylayout.uiview
 
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
@@ -26,46 +24,28 @@ import app.cash.redwood.lazylayout.toUIColor
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
-import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
-import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
 class UIViewLazyListAsFlexContainerTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
-  private val widgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
+  override val widgetFactory = UIViewTestWidgetFactory
+
+  private val lazyLayoutWidgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
 
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
-  ) = ViewTestFlexContainer(widgetFactory.LazyList(), direction, backgroundColor)
+  ) = ViewTestFlexContainer(lazyLayoutWidgetFactory.LazyList(), direction, backgroundColor)
 
   override fun row() = UIViewRedwoodLayoutWidgetFactory().Row()
 
   override fun column() = UIViewRedwoodLayoutWidgetFactory().Column()
-
-  override fun text(): Text<UIView> = object : Text<UIView>, ResizableWidget<UIView> {
-    override val value = UILabel().apply {
-      numberOfLines = 0
-      textColor = platform.UIKit.UIColor.blackColor
-    }
-    override var modifier: Modifier = Modifier
-    override val measureCount = 0
-    override var sizeListener: ResizableWidget.SizeListener? = null
-
-    override fun text(text: String) {
-      value.text = text
-      sizeListener?.invalidateSize()
-    }
-
-    override fun bgColor(color: Int) {
-      value.backgroundColor = color.toUIColor()
-    }
-  }
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 

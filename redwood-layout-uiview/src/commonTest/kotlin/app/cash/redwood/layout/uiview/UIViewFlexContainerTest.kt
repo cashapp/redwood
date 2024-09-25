@@ -20,10 +20,11 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
+import app.cash.redwood.snapshot.testing.toUIColor
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ResizableWidget
@@ -45,6 +46,8 @@ import platform.UIKit.UIView
 class UIViewFlexContainerTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
+  override val widgetFactory = UIViewTestWidgetFactory
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
@@ -64,8 +67,6 @@ class UIViewFlexContainerTest(
   override fun row() = flexContainer(FlexDirection.Row)
 
   override fun column() = flexContainer(FlexDirection.Column)
-
-  override fun text() = UIViewText()
 
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,

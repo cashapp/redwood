@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+package app.cash.redwood.snapshot.testing
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.layout.Color
-import app.cash.redwood.layout.Text
-import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
@@ -33,6 +30,21 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
+
+object UIViewTestWidgetFactory : TestWidgetFactory<UIView> {
+  override fun color() = UIViewColor()
+
+  override fun text() = UIViewText()
+}
+
+fun Int.toUIColor(): UIColor {
+  return UIColor(
+    red = ((this shr 16) and 0xff) / 255.0,
+    green = ((this shr 8) and 0xff) / 255.0,
+    blue = (this and 0xff) / 255.0,
+    alpha = ((this shr 24) and 0xff) / 255.0,
+  )
+}
 
 class UIViewText :
   Text<UIView>,

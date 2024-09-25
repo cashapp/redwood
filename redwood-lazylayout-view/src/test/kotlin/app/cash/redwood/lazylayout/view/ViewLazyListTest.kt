@@ -15,17 +15,15 @@
  */
 package app.cash.redwood.lazylayout.view
 
-import android.graphics.Color
 import android.view.View
-import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.AbstractLazyListTest
-import app.cash.redwood.lazylayout.Text
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
+import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -40,24 +38,8 @@ class ViewLazyListTest : AbstractLazyListTest<View>() {
     supportsRtl = true,
   )
 
-  override fun text(): Text<View> {
-    return object : Text<View> {
-      override val value = TextView(paparazzi.context).apply {
-        textSize = 18f
-        setTextColor(Color.BLACK)
-      }
-
-      override var modifier: Modifier = Modifier
-
-      override fun text(text: String) {
-        value.text = text
-      }
-
-      override fun bgColor(color: Int) {
-        value.setBackgroundColor(color)
-      }
-    }
-  }
+  override val widgetFactory: TestWidgetFactory<View>
+    get() = ViewTestWidgetFactory(paparazzi.context)
 
   override fun lazyList(backgroundColor: Int): LazyList<View> {
     return ViewLazyList(paparazzi.context).apply {

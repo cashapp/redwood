@@ -16,22 +16,13 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.sp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
-import app.cash.redwood.layout.Transparent
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
@@ -39,6 +30,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
+import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -61,6 +53,8 @@ class ComposeUiLazyListTest(
     supportsRtl = true,
   )
 
+  override val widgetFactory = ComposeUiTestWidgetFactory
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
@@ -74,30 +68,6 @@ class ComposeUiLazyListTest(
 
   override fun column(): Column<@Composable () -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Column()
-  }
-
-  override fun text() = object : Text<@Composable () -> Unit> {
-    private var text by mutableStateOf("")
-    private var bgColor by mutableStateOf(Transparent)
-    override val measureCount = 0
-
-    override val value = @Composable {
-      BasicText(
-        text = this.text,
-        style = TextStyle(fontSize = 18.sp, color = Color.Black),
-        modifier = Modifier.background(Color(bgColor)),
-      )
-    }
-
-    override var modifier: RedwoodModifier = RedwoodModifier
-
-    override fun text(text: String) {
-      this.text = text
-    }
-
-    override fun bgColor(color: Int) {
-      bgColor = color
-    }
   }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
