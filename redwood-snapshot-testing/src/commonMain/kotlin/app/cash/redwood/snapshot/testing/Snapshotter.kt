@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+package app.cash.redwood.snapshot.testing
 
-import platform.UIKit.UIView
-
-interface UIViewSnapshotCallback {
-  fun verifySnapshot(view: UIView, name: String?, delay: Double = 0.0)
+/**
+ * Captures snapshots of a subject view.
+ *
+ * The subject of the view hierarchy must do its own layout invalidation. This is particularly
+ * important for iOS UIView layouts, where the application layer is responsible for tracking layout
+ * changes.
+ */
+interface Snapshotter {
+  fun snapshot(name: String? = null)
 }

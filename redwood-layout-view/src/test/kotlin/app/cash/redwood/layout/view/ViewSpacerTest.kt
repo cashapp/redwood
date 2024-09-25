@@ -24,6 +24,7 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractSpacerTest
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.widget.Widget
 import com.android.ide.common.rendering.api.SessionParams
 import org.junit.Rule

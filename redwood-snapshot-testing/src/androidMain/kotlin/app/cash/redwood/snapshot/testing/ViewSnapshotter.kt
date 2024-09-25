@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.lazylayout.view
+package app.cash.redwood.snapshot.testing
 
 import android.view.View
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.layout.Snapshotter
 
 class ViewSnapshotter(
   private val paparazzi: Paparazzi,

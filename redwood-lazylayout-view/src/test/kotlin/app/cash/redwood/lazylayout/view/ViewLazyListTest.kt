@@ -24,7 +24,8 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.AbstractLazyListTest
 import app.cash.redwood.lazylayout.Text
 import app.cash.redwood.lazylayout.widget.LazyList
-import app.cash.redwood.widget.Widget
+import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -64,7 +65,5 @@ class ViewLazyListTest : AbstractLazyListTest<View>() {
     }
   }
 
-  override fun verifySnapshot(container: Widget<View>, name: String?) {
-    paparazzi.snapshot(container.value, name)
-  }
+  override fun snapshotter(widget: View): Snapshotter = ViewSnapshotter(paparazzi, widget)
 }

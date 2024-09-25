@@ -16,6 +16,7 @@
 package app.cash.redwood.layout
 
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
 import kotlin.test.Test

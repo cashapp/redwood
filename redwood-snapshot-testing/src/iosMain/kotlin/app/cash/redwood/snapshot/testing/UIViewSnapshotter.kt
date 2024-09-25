@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+package app.cash.redwood.snapshot.testing
 
-import app.cash.redwood.layout.Snapshotter
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
@@ -27,7 +28,11 @@ class UIViewSnapshotter(
 ) : Snapshotter {
 
   override fun snapshot(name: String?) {
-    callback.verifySnapshot(subject, name)
+    layoutSubject()
+
+    // Unfortunately even with animations forced off, UITableView's animation system breaks
+    // synchronous snapshots. The simplest workaround is to delay snapshots one frame.
+    callback.verifySnapshot(subject, name, delay = 1.milliseconds.toDouble(DurationUnit.SECONDS))
   }
 
   /** Do layout without taking a snapshot. */

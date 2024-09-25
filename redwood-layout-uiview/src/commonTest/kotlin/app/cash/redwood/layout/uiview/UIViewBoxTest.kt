@@ -19,6 +19,8 @@ import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
+import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
+import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import assertk.assertThat
 import kotlin.test.Test
 import platform.CoreGraphics.CGSizeMake

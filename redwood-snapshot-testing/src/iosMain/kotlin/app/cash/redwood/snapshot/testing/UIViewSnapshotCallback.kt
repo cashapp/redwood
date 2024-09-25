@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.view
+package app.cash.redwood.snapshot.testing
 
-import android.view.View
-import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.layout.Snapshotter
+import platform.UIKit.UIView
 
-class ViewSnapshotter(
-  private val paparazzi: Paparazzi,
-  private val view: View,
-) : Snapshotter {
-  override fun snapshot(name: String?) {
-    paparazzi.snapshot(view = view, name = name)
-  }
+interface UIViewSnapshotCallback {
+  fun verifySnapshot(view: UIView, name: String?, delay: Double = 0.0)
 }
