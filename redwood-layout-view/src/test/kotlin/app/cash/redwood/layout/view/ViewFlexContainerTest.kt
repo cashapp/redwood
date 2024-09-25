@@ -22,6 +22,7 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
+import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
@@ -45,6 +46,9 @@ class ViewFlexContainerTest(
     supportsRtl = true,
   )
 
+  override val widgetFactory: ViewTestWidgetFactory
+    get() = ViewTestWidgetFactory(paparazzi.context)
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
@@ -58,8 +62,6 @@ class ViewFlexContainerTest(
   override fun row() = flexContainer(FlexDirection.Row)
 
   override fun column() = flexContainer(FlexDirection.Column)
-
-  override fun text() = ViewText(paparazzi.context)
 
   override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 

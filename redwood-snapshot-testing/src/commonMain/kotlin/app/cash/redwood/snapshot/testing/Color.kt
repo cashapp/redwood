@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.uiview
+package app.cash.redwood.snapshot.testing
 
-import assertk.Assert
-import assertk.assertions.support.fail
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.useContents
-import platform.CoreGraphics.CGSize
+import app.cash.redwood.ui.Dp
+import app.cash.redwood.widget.Widget
 
-fun Assert<CValue<CGSize>>.isEqualTo(width: Double, height: Double) = given { actual ->
-  val (actualWidth, actualHeight) = actual.useContents { width to height }
-  if (width == actualWidth && height == actualHeight) return
-  fail(width to height, actualWidth to actualHeight)
+interface Color<T : Any> : Widget<T> {
+  fun width(width: Dp)
+  fun height(height: Dp)
+  fun color(color: Int)
 }

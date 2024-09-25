@@ -29,34 +29,7 @@ import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
-import app.cash.redwood.widget.Widget
 import kotlin.test.assertTrue
-
-const val Transparent: Int = 0x00000000
-const val Red: Int = 0xffff0000.toInt()
-const val Green: Int = 0xff00ff00.toInt()
-const val Blue: Int = 0xff0000ff.toInt()
-
-fun argb(
-  alpha: Int,
-  red: Int,
-  green: Int,
-  blue: Int,
-): Int {
-  return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
-}
-
-interface Color<T : Any> : Widget<T> {
-  fun width(width: Dp)
-  fun height(height: Dp)
-  fun color(color: Int)
-}
-
-interface Text<T : Any> : Widget<T> {
-  val measureCount: Int
-  fun text(text: String)
-  fun bgColor(color: Int)
-}
 
 /** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
 fun assumeTrue(b: Boolean) {

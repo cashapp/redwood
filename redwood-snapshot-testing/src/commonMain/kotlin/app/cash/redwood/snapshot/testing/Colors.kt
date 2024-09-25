@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+@file:Suppress("ktlint:standard:property-naming")
 
-import platform.UIKit.UIColor
+package app.cash.redwood.snapshot.testing
 
-fun Int.toUIColor(): UIColor {
-  return UIColor(
-    red = ((this shr 16) and 0xff) / 255.0,
-    green = ((this shr 8) and 0xff) / 255.0,
-    blue = (this and 0xff) / 255.0,
-    alpha = ((this shr 24) and 0xff) / 255.0,
-  )
+const val Red: Int = 0xffff0000.toInt()
+const val Green: Int = 0xff00ff00.toInt()
+const val Blue: Int = 0xff0000ff.toInt()
+const val Transparent: Int = 0x00000000
+
+fun argb(
+  alpha: Int,
+  red: Int,
+  green: Int,
+  blue: Int,
+): Int {
+  return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
 }

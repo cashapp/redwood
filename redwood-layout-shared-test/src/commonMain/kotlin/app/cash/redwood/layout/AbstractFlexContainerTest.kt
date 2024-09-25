@@ -22,7 +22,13 @@ import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.snapshot.testing.Blue
+import app.cash.redwood.snapshot.testing.Green
+import app.cash.redwood.snapshot.testing.Red
 import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.TestWidgetFactory
+import app.cash.redwood.snapshot.testing.argb
+import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
 import app.cash.redwood.ui.dp
@@ -41,6 +47,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
   open val incremental: Boolean
     get() = false
 
+  abstract val widgetFactory: TestWidgetFactory<T>
+
   abstract fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int = argb(51, 0, 0, 255),
@@ -51,20 +59,6 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   /** Returns a non-lazy flex container column, even if the test is for a LazyList. */
   abstract fun column(): Column<T>
-
-  abstract fun text(): Text<T>
-
-  fun text(
-    text: String,
-    modifier: Modifier = Modifier,
-    backgroundColor: Int = Green,
-  ): Text<T> {
-    val widget = text()
-    widget.text(text)
-    widget.bgColor(backgroundColor)
-    widget.modifier = modifier
-    return widget
-  }
 
   abstract fun snapshotter(widget: T): Snapshotter
 
@@ -127,7 +121,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
-    container.add(text(movies.first()))
+    container.add(widgetFactory.text(movies.first()))
     container.onEndChanges()
     snapshotter(container.value).snapshot()
   }
@@ -147,7 +141,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
-      container.add(text(movie))
+      container.add(widgetFactory.text(movie))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -168,7 +162,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
-      container.add(text(movie))
+      container.add(widgetFactory.text(movie))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -197,7 +191,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
         2 -> CrossAxisAlignmentImpl(CrossAxisAlignment.End)
         else -> CrossAxisAlignmentImpl(CrossAxisAlignment.Stretch)
       }
-      container.add(text(movie, modifier))
+      container.add(widgetFactory.text(movie, modifier))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -245,7 +239,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(crossAxisAlignment)
     movies.forEach { movie ->
-      container.add(text(movie))
+      container.add(widgetFactory.text(movie))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -258,7 +252,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Center)
     movies.forEach { movie ->
-      container.add(text(movie))
+      container.add(widgetFactory.text(movie))
     }
     container.onEndChanges()
     snapshotter.snapshot("Center")
@@ -289,7 +283,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.mainAxisAlignment(mainAxisAlignment)
     movies.forEach { movie ->
-      container.add(text(movie))
+      container.add(widgetFactory.text(movie))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -301,7 +295,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(text("$index", WidthImpl(50.dp)))
+      container.add(widgetFactory.text("$index", WidthImpl(50.dp)))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -313,7 +307,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(text("$index", HeightImpl(50.dp)))
+      container.add(widgetFactory.text("$index", HeightImpl(50.dp)))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -325,7 +319,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     repeat(10) { index ->
-      container.add(text("$index", SizeImpl(50.dp, 50.dp)))
+      container.add(widgetFactory.text("$index", SizeImpl(50.dp, 50.dp)))
     }
     container.onEndChanges()
     snapshotter(container.value).snapshot()
@@ -337,7 +331,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
-    val widget = text("")
+    val widget = widgetFactory.text("")
     container.add(widget)
     container.onEndChanges()
     snapshotter.snapshot("initial")
@@ -357,8 +351,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(widgetFactory.text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(widgetFactory.text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -367,8 +361,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
-        add(text("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(widgetFactory.text("first (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(widgetFactory.text("second (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -377,8 +371,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(10.dp))
-        add(text("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
-        add(text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
+        add(widgetFactory.text("first (grow 0.0)", GrowImpl(0.0).then(MarginImpl(5.dp))))
+        add(widgetFactory.text("second (grow 1.0)", GrowImpl(1.0).then(MarginImpl(5.dp))))
       },
     )
 
@@ -392,47 +386,47 @@ abstract class AbstractFlexContainerTest<T : Any> {
       height(Constraint.Fill)
     }
 
-    column.add(text("All rows have a 100 px margin on the right!"))
+    column.add(widgetFactory.text("All rows have a 100 px margin on the right!"))
 
-    column.add(text("1 element + no shrink:"))
+    column.add(widgetFactory.text("1 element + no shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(text("x ".repeat(100), GrowImpl(1.0)))
+        add(widgetFactory.text("x ".repeat(100), GrowImpl(1.0)))
       },
     )
 
-    column.add(text("1 element + shrink:"))
+    column.add(widgetFactory.text("1 element + shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(widgetFactory.text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
       },
     )
 
-    column.add(text("2 elements + no shrink:"))
+    column.add(widgetFactory.text("2 elements + no shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(text("x ".repeat(100), GrowImpl(1.0)))
-        add(text("abcdef", MarginImpl(Margin(start = 10.dp))))
+        add(widgetFactory.text("x ".repeat(100), GrowImpl(1.0)))
+        add(widgetFactory.text("abcdef", MarginImpl(Margin(start = 10.dp))))
       },
     )
 
-    column.add(text("2 elements + shrink:"))
+    column.add(widgetFactory.text("2 elements + shrink:"))
     column.add(
       flexContainer(FlexDirection.Row).apply {
         width(Constraint.Fill)
         height(Constraint.Wrap)
         margin(Margin(end = 100.dp))
-        add(text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
-        add(text("abcdef", MarginImpl(Margin(start = 10.dp))))
+        add(widgetFactory.text("x ".repeat(100), GrowImpl(1.0).then(ShrinkImpl(1.0))))
+        add(widgetFactory.text("abcdef", MarginImpl(Margin(start = 10.dp))))
       },
     )
 
@@ -444,15 +438,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.add(text("A"))
-    container.add(text("B"))
-    container.add(text("D"))
-    container.add(text("E"))
+    container.add(widgetFactory.text("A"))
+    container.add(widgetFactory.text("B"))
+    container.add(widgetFactory.text("D"))
+    container.add(widgetFactory.text("E"))
 
     container.onEndChanges()
     snapshotter.snapshot("ABDE")
 
-    container.addAt(index = 2, widget = text("C"))
+    container.addAt(index = 2, widget = widgetFactory.text("C"))
     container.onEndChanges()
     snapshotter.snapshot("ABCDE")
 
@@ -475,13 +469,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         mainAxisAlignment(MainAxisAlignment.SpaceBetween)
         add(
-          text(
+          widgetFactory.text(
             "A",
             GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
           ),
         )
         add(
-          text(
+          widgetFactory.text(
             "B",
             GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
           ),
@@ -496,14 +490,14 @@ abstract class AbstractFlexContainerTest<T : Any> {
         width(Constraint.Fill)
         mainAxisAlignment(MainAxisAlignment.SpaceBetween)
         add(
-          text(
+          widgetFactory.text(
             "C",
             GrowImpl(1.0)
               .then(CrossAxisAlignmentImpl(CrossAxisAlignment.Start)),
           ),
         )
         add(
-          text(
+          widgetFactory.text(
             "D",
             GrowImpl(1.0).then(CrossAxisAlignmentImpl(CrossAxisAlignment.End)),
           ),
@@ -521,10 +515,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.add(text("REALLY LONG TEXT", FlexImpl(1.0)))
-    container.add(text("SHORTER TEXT", FlexImpl(1.0)))
-    container.add(text("A", FlexImpl(1.0)))
-    container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    container.add(widgetFactory.text("REALLY LONG TEXT", FlexImpl(1.0)))
+    container.add(widgetFactory.text("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(widgetFactory.text("A", FlexImpl(1.0)))
+    container.add(widgetFactory.text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
     snapshotter(container.value).snapshot()
   }
 
@@ -532,10 +526,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
-    container.add(text("REALLY LONG TEXT", FlexImpl(3.0)))
-    container.add(text("SHORTER TEXT", FlexImpl(1.0)))
-    container.add(text("A", FlexImpl(1.0)))
-    container.add(text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
+    container.add(widgetFactory.text("REALLY LONG TEXT", FlexImpl(3.0)))
+    container.add(widgetFactory.text("SHORTER TEXT", FlexImpl(1.0)))
+    container.add(widgetFactory.text("A", FlexImpl(1.0)))
+    container.add(widgetFactory.text("LINE1\nLINE2\nLINE3", FlexImpl(1.0)))
     snapshotter(container.value).snapshot()
   }
 
@@ -548,16 +542,16 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val innerContainer1 = flexContainer(FlexDirection.Column)
     innerContainer1.width(Constraint.Fill)
     innerContainer1.crossAxisAlignment(CrossAxisAlignment.Center)
-    innerContainer1.add(text("INNER CONTAINER 1 TEXT 1"))
-    innerContainer1.add(text("INNER CONTAINER 1 TEXT 2"))
+    innerContainer1.add(widgetFactory.text("INNER CONTAINER 1 TEXT 1"))
+    innerContainer1.add(widgetFactory.text("INNER CONTAINER 1 TEXT 2"))
 
     val innerContainer2 = flexContainer(FlexDirection.Column)
     innerContainer2.width(Constraint.Fill)
     innerContainer2.crossAxisAlignment(CrossAxisAlignment.Center)
     innerContainer2.mainAxisAlignment(MainAxisAlignment.Center)
     innerContainer2.margin(Margin(bottom = 24.dp))
-    innerContainer1.add(text("INNER CONTAINER 2 TEXT 1"))
-    innerContainer1.add(text("INNER CONTAINER 2 TEXT 2"))
+    innerContainer1.add(widgetFactory.text("INNER CONTAINER 2 TEXT 1"))
+    innerContainer1.add(widgetFactory.text("INNER CONTAINER 2 TEXT 2"))
 
     outerContainer.add(innerContainer1)
     outerContainer.add(innerContainer2)
@@ -582,12 +576,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
 
-    val first = text(longText(), backgroundColor = Red)
+    val first = widgetFactory.text(longText(), backgroundColor = Red)
     first.modifier = MarginImpl(30.dp)
 
     container.add(first)
-    container.add(text(mediumText(), backgroundColor = Green))
-    container.add(text(shortText(), backgroundColor = Blue))
+    container.add(widgetFactory.text(mediumText(), backgroundColor = Green))
+    container.add(widgetFactory.text(shortText(), backgroundColor = Blue))
     container.onEndChanges()
     snapshotter.snapshot("Margin")
     first.modifier = Modifier
@@ -605,13 +599,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val snapshotter = snapshotter(container.value)
 
     // Render before calling detach().
-    container.children.insert(0, text(mediumText(), MarginImpl(10.dp), Green))
-    container.children.insert(1, text(shortText(), MarginImpl(0.dp), Blue))
+    container.children.insert(0, widgetFactory.text(mediumText(), MarginImpl(10.dp), Green))
+    container.children.insert(1, widgetFactory.text(shortText(), MarginImpl(0.dp), Blue))
     container.onEndChanges()
     snapshotter.snapshot("Before")
 
     // Detach after changes are applied but before they're rendered.
-    container.children.insert(0, text(longText(), MarginImpl(20.dp), Red))
+    container.children.insert(0, widgetFactory.text(longText(), MarginImpl(20.dp), Red))
     container.onEndChanges()
     container.children.detach()
     snapshotter.snapshot("After")
@@ -648,13 +642,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
     container.height(Constraint.Fill)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
 
-    val a = text("A")
+    val a = widgetFactory.text("A")
       .apply { modifier = HeightImpl(100.dp) }
       .also { container.add(it) }
-    val b = text("B")
+    val b = widgetFactory.text("B")
       .apply { modifier = HeightImpl(100.dp) }
       .also { container.add(it) }
-    val c = text("C")
+    val c = widgetFactory.text("C")
       .apply { modifier = HeightImpl(100.dp) }
       .also { container.add(it) }
     container.onEndChanges()
@@ -712,13 +706,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
         height(Constraint.Wrap)
       }
       .also { container.add(it) }
-    val a = text("A")
+    val a = widgetFactory.text("A")
       .apply { modifier = HeightImpl(100.dp) }
       .also { rowA.children.insert(0, it) }
-    val b = text("B")
+    val b = widgetFactory.text("B")
       .apply { modifier = HeightImpl(100.dp) }
       .also { rowB.children.insert(0, it) }
-    val c = text("C")
+    val c = widgetFactory.text("C")
       .apply { modifier = HeightImpl(100.dp) }
       .also { rowC.children.insert(0, it) }
     container.onEndChanges()
@@ -768,14 +762,14 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
       .also { column.add(it) }
 
-    val rowA1 = text("A1 ".repeat(50))
+    val rowA1 = widgetFactory.text("A1 ".repeat(50))
       .apply { modifier = FlexImpl(1.0) }
       .also { rowA.children.insert(0, it) }
-    val rowA2 = text("A-TWO ".repeat(50))
+    val rowA2 = widgetFactory.text("A-TWO ".repeat(50))
       .apply { modifier = FlexImpl(1.0) }
       .also { rowA.children.insert(1, it) }
 
-    val rowB = text("B1 ".repeat(5))
+    val rowB = widgetFactory.text("B1 ".repeat(5))
       .apply {
         modifier = Modifier
           .then(HorizontalAlignmentImpl(CrossAxisAlignment.Center))

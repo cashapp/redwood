@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout.view
+package app.cash.redwood.snapshot.testing
 
 import android.content.Context
 import android.view.View
 import android.widget.TextView
 import app.cash.redwood.Modifier
-import app.cash.redwood.layout.Color
-import app.cash.redwood.layout.Text
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
+
+class ViewTestWidgetFactory(
+  private val context: Context,
+) : TestWidgetFactory<View> {
+  override fun color() = ViewColor(context)
+
+  override fun text() = ViewText(context)
+}
 
 class ViewText(context: Context) : Text<View> {
   override val value = object : TextView(context) {
