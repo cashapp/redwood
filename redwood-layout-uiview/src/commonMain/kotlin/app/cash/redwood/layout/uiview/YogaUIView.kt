@@ -141,7 +141,7 @@ internal class YogaUIView(
     if (onScroll != null) {
       val offset = scrollView.contentOffset.useContents {
         if (isColumn()) y else x
-      }
+      }.coerceAtLeast(0.0)
       onScroll(Px(offset))
     }
   }
