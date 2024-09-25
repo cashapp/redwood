@@ -16,6 +16,7 @@
 package app.cash.redwood.snapshot.testing
 
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import app.cash.redwood.Modifier
@@ -39,6 +40,7 @@ class ViewText(context: Context) : Text<View> {
   }.apply {
     textSize = 18f
     textDirection = View.TEXT_DIRECTION_LOCALE
+    gravity = Gravity.CENTER_VERTICAL
     setTextColor(android.graphics.Color.BLACK)
   }
   override var modifier: Modifier = Modifier

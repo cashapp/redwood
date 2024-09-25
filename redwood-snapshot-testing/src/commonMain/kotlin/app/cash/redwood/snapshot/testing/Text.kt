@@ -17,6 +17,13 @@ package app.cash.redwood.snapshot.testing
 
 import app.cash.redwood.widget.Widget
 
+/**
+ * A label that wraps across multiple lines if necessary.
+ *
+ * The text is left-aligned on LTR locales and right-aligned on RTL locales.
+ *
+ * The text is centered vertically.
+ */
 interface Text<T : Any> : Widget<T> {
   val measureCount: Int
   fun text(text: String)

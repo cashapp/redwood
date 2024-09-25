@@ -15,7 +15,11 @@
  */
 package app.cash.redwood.snapshot.testing
 
+import androidx.compose.ui.unit.Dp as ComposeDp
+import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.snapshot.testing.Color as ColorWidget
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
@@ -23,14 +27,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp as ComposeDp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.snapshot.testing.Color as ColorWidget
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.toPlatformDp
 
@@ -45,11 +47,15 @@ class ComposeUiText : Text<@Composable () -> Unit> {
   private var bgColor by mutableStateOf(Transparent)
 
   override val value = @Composable {
-    BasicText(
-      text = this.text,
-      style = TextStyle(fontSize = 18.sp, color = Color.Black),
+    Box(
       modifier = Modifier.background(Color(bgColor)),
-    )
+      contentAlignment = Alignment.CenterStart,
+    ) {
+      BasicText(
+        text = text,
+        style = TextStyle(fontSize = 18.sp, color = Color.Black),
+      )
+    }
   }
 
   override var modifier: RedwoodModifier = RedwoodModifier
