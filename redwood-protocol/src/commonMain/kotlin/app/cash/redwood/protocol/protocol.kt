@@ -33,15 +33,35 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 
+/*
+Note: The types in this file are written in a careful way such that their serializable properties
+are scalars which can be serialized directly rather than using value classes are boxed within the
+generated kotlinx.serialization code.
+*/
+
 @Serializable
 @Poko
-public class Event(
-  /** Identifier for the widget from which this event originated. */
-  public val id: Id,
-  /** Identifies which event occurred on the widget with [id]. */
-  public val tag: EventTag,
+public class Event private constructor(
+  @SerialName("id")
+  private val _id: Int,
+  @SerialName("tag")
+  private val _tag: Int,
   public val args: List<JsonElement> = emptyList(),
-)
+) {
+  /** Identifier for the widget from which this event originated. */
+  public val id: Id get() = Id(_id)
+
+  /** Identifies which event occurred on the widget with [id]. */
+  public val tag: EventTag get() = EventTag(_id)
+
+  public companion object {
+    public operator fun invoke(
+      id: Id,
+      tag: EventTag,
+      args: List<JsonElement> = emptyList(),
+    ): Event = Event(id.value, tag.value, args)
+  }
+}
 
 @Serializable
 public sealed interface Change {
@@ -52,30 +72,67 @@ public sealed interface Change {
 @Serializable
 @SerialName("create")
 @Poko
-public class Create(
-  override val id: Id,
-  public val tag: WidgetTag,
-) : Change
+public class Create private constructor(
+  @SerialName("id")
+  private val _id: Int,
+  @SerialName("tag")
+  private val _tag: Int,
+) : Change {
+  override val id: Id get() = Id(_id)
+  public val tag: WidgetTag get() = WidgetTag(_tag)
+
+  public companion object {
+    public operator fun invoke(
+      id: Id,
+      tag: WidgetTag,
+    ): Create = Create(id.value, tag.value)
+  }
+}
 
 public sealed interface ValueChange : Change
 
 @Serializable
 @SerialName("property")
 @Poko
-public class PropertyChange(
-  override val id: Id,
-  /** Identifies which property changed on the widget with [id]. */
-  public val tag: PropertyTag,
+public class PropertyChange private constructor(
+  @SerialName("id")
+  private val _id: Int,
+  @SerialName("tag")
+  private val _tag: Int,
   public val value: JsonElement = JsonNull,
-) : ValueChange
+) : ValueChange {
+  override val id: Id get() = Id(_id)
+
+  /** Identifies which property changed on the widget with [id]. */
+  public val tag: PropertyTag get() = PropertyTag(_tag)
+
+  public companion object {
+    public operator fun invoke(
+      id: Id,
+      /** Identifies which property changed on the widget with [id]. */
+      tag: PropertyTag,
+      value: JsonElement = JsonNull,
+    ): PropertyChange = PropertyChange(id.value, tag.value, value)
+  }
+}
 
 @Serializable
 @SerialName("modifier")
 @Poko
-public class ModifierChange(
-  override val id: Id,
+public class ModifierChange private constructor(
+  @SerialName("id")
+  private val _id: Int,
   public val elements: List<ModifierElement> = emptyList(),
-) : ValueChange
+) : ValueChange {
+  override val id: Id get() = Id(_id)
+
+  public companion object {
+    public operator fun invoke(
+      id: Id,
+      elements: List<ModifierElement> = emptyList(),
+    ): ModifierChange = ModifierChange(id.value, elements)
+  }
+}
 
 @Serializable(with = ModifierElementSerializer::class)
 @Poko
@@ -126,34 +183,80 @@ public sealed interface ChildrenChange : Change {
   @Serializable
   @SerialName("add")
   @Poko
-  public class Add(
-    override val id: Id,
-    override val tag: ChildrenTag,
-    public val childId: Id,
+  public class Add private constructor(
+    @SerialName("id")
+    private val _id: Int,
+    @SerialName("tag")
+    private val _tag: Int,
+    @SerialName("childId")
+    private val _childId: Int,
     public val index: Int,
-  ) : ChildrenChange
+  ) : ChildrenChange {
+    override val id: Id get() = Id(_id)
+    override val tag: ChildrenTag get() = ChildrenTag(_tag)
+    public val childId: Id get() = Id(_childId)
+
+    public companion object {
+      public operator fun invoke(
+        id: Id,
+        tag: ChildrenTag,
+        childId: Id,
+        index: Int,
+      ): Add = Add(id.value, tag.value, childId.value, index)
+    }
+  }
 
   @Serializable
   @SerialName("move")
   @Poko
-  public class Move(
-    override val id: Id,
-    override val tag: ChildrenTag,
+  public class Move private constructor(
+    @SerialName("id")
+    private val _id: Int,
+    @SerialName("tag")
+    private val _tag: Int,
     public val fromIndex: Int,
     public val toIndex: Int,
     public val count: Int,
-  ) : ChildrenChange
+  ) : ChildrenChange {
+    override val id: Id get() = Id(_id)
+    override val tag: ChildrenTag get() = ChildrenTag(_tag)
+
+    public companion object {
+      public operator fun invoke(
+        id: Id,
+        tag: ChildrenTag,
+        fromIndex: Int,
+        toIndex: Int,
+        count: Int,
+      ): Move = Move(id.value, tag.value, fromIndex, toIndex, count)
+    }
+  }
 
   @Serializable
   @SerialName("remove")
   @Poko
-  public class Remove(
-    override val id: Id,
-    override val tag: ChildrenTag,
+  public class Remove private constructor(
+    @SerialName("id")
+    private val _id: Int,
+    @SerialName("tag")
+    private val _tag: Int,
     public val index: Int,
     public val count: Int,
     // TODO Remove this for Redwood 1.0.0.
     @Deprecated("Only sent for compatibility with old hosts. Do not consume.", level = ERROR)
     public val removedIds: List<Id> = emptyList(),
-  ) : ChildrenChange
+  ) : ChildrenChange {
+    override val id: Id get() = Id(_id)
+    override val tag: ChildrenTag get() = ChildrenTag(_tag)
+
+    public companion object {
+      public operator fun invoke(
+        id: Id,
+        tag: ChildrenTag,
+        index: Int,
+        count: Int,
+        removedIds: List<Id> = emptyList(),
+      ): Remove = Remove(id.value, tag.value, index, count, removedIds)
+    }
+  }
 }

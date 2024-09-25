@@ -44,7 +44,7 @@ public class DefaultGuestProtocolAdapter(
   hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter {
+) : GuestProtocolAdapter() {
   private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Int, ProtocolWidget>()
   private val changes = mutableListOf<Change>()

@@ -40,6 +40,7 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Add$$serializer 
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Add$Companion {
+	public final fun invoke-11bgaWM (IIII)Lapp/cash/redwood/protocol/ChildrenChange$Add;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -72,12 +73,12 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Move$$serializer
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Move$Companion {
+	public final fun invoke-HpxY78w (IIIII)Lapp/cash/redwood/protocol/ChildrenChange$Move;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove : app/cash/redwood/protocol/ChildrenChange {
 	public static final field Companion Lapp/cash/redwood/protocol/ChildrenChange$Remove$Companion;
-	public synthetic fun <init> (IIIILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (IIIILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCount ()I
@@ -101,6 +102,8 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializ
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove$Companion {
+	public final fun invoke-HpxY78w (IIIILjava/util/List;)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
+	public static synthetic fun invoke-HpxY78w$default (Lapp/cash/redwood/protocol/ChildrenChange$Remove$Companion;IIIILjava/util/List;ILjava/lang/Object;)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -157,12 +160,12 @@ public synthetic class app/cash/redwood/protocol/Create$$serializer : kotlinx/se
 }
 
 public final class app/cash/redwood/protocol/Create$Companion {
+	public final fun invoke-kyz2zXs (II)Lapp/cash/redwood/protocol/Create;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/Event {
 	public static final field Companion Lapp/cash/redwood/protocol/Event$Companion;
-	public synthetic fun <init> (IILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (IILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArgs ()Ljava/util/List;
@@ -184,6 +187,8 @@ public synthetic class app/cash/redwood/protocol/Event$$serializer : kotlinx/ser
 }
 
 public final class app/cash/redwood/protocol/Event$Companion {
+	public final fun invoke-OtSvs1c (IILjava/util/List;)Lapp/cash/redwood/protocol/Event;
+	public static synthetic fun invoke-OtSvs1c$default (Lapp/cash/redwood/protocol/Event$Companion;IILjava/util/List;ILjava/lang/Object;)Lapp/cash/redwood/protocol/Event;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -254,7 +259,6 @@ public final class app/cash/redwood/protocol/Id$Companion {
 
 public final class app/cash/redwood/protocol/ModifierChange : app/cash/redwood/protocol/ValueChange {
 	public static final field Companion Lapp/cash/redwood/protocol/ModifierChange$Companion;
-	public synthetic fun <init> (ILjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (ILjava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getElements ()Ljava/util/List;
@@ -275,6 +279,8 @@ public synthetic class app/cash/redwood/protocol/ModifierChange$$serializer : ko
 }
 
 public final class app/cash/redwood/protocol/ModifierChange$Companion {
+	public final fun invoke-z3jyS0k (ILjava/util/List;)Lapp/cash/redwood/protocol/ModifierChange;
+	public static synthetic fun invoke-z3jyS0k$default (Lapp/cash/redwood/protocol/ModifierChange$Companion;ILjava/util/List;ILjava/lang/Object;)Lapp/cash/redwood/protocol/ModifierChange;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -320,7 +326,6 @@ public final class app/cash/redwood/protocol/ModifierTag$Companion {
 
 public final class app/cash/redwood/protocol/PropertyChange : app/cash/redwood/protocol/ValueChange {
 	public static final field Companion Lapp/cash/redwood/protocol/PropertyChange$Companion;
-	public synthetic fun <init> (IILkotlinx/serialization/json/JsonElement;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (IILkotlinx/serialization/json/JsonElement;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId-0HhLjSo ()I
@@ -342,6 +347,8 @@ public synthetic class app/cash/redwood/protocol/PropertyChange$$serializer : ko
 }
 
 public final class app/cash/redwood/protocol/PropertyChange$Companion {
+	public final fun invoke-e3iP1vo (IILkotlinx/serialization/json/JsonElement;)Lapp/cash/redwood/protocol/PropertyChange;
+	public static synthetic fun invoke-e3iP1vo$default (Lapp/cash/redwood/protocol/PropertyChange$Companion;IILkotlinx/serialization/json/JsonElement;ILjava/lang/Object;)Lapp/cash/redwood/protocol/PropertyChange;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

@@ -44,6 +44,7 @@ internal object ProtocolGuest {
     ClassName("app.cash.redwood.protocol.guest", "ProtocolMismatchHandler")
   val ProtocolWidget = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidget")
   val ProtocolWidgetChildren = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidgetChildren")
+  val ProtocolWidgetChildrenVisitor = ProtocolWidget.nestedClass("ChildrenVisitor")
   val ProtocolWidgetSystemFactory = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidgetSystemFactory")
 }
 

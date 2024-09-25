@@ -51,7 +51,7 @@ internal class FastGuestProtocolAdapter(
   hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter {
+) : GuestProtocolAdapter() {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
   private val changes = JsArray<Change>()
