@@ -26,6 +26,7 @@ import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
@@ -77,7 +78,7 @@ class UIViewText :
 class UIViewColor : Color<UIView> {
   override val value: UIView = object : UIView(CGRectZero.readValue()) {
     override fun intrinsicContentSize(): CValue<CGSize> {
-      return platform.CoreGraphics.CGSizeMake(width, height)
+      return CGSizeMake(width, height)
     }
   }
   override var modifier: Modifier = Modifier
