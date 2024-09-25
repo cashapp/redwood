@@ -35,7 +35,6 @@ import com.squareup.kotlinpoet.INT_ARRAY
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -43,7 +42,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.joinToCode
 
@@ -502,12 +500,12 @@ internal fun generateProtocolNode(
             addFunction(
               FunSpec.builder("visitIds")
                 .addModifiers(OVERRIDE)
-                .addParameter("block", LambdaTypeName.get(null, Id, returnType = UNIT))
-                .addStatement("block(id)")
+                .addParameter("visitor", ProtocolHost.IdVisitor)
+                .addStatement("visitor.visit(id)")
                 .apply {
                   for (trait in widget.traits) {
                     if (trait is ProtocolChildren) {
-                      addStatement("%N.visitIds(block)", trait.name)
+                      addStatement("%N.visitIds(visitor)", trait.name)
                     }
                   }
                 }

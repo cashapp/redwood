@@ -48,10 +48,6 @@ internal class FakeProtocolNode(
     error("unexpected call")
   }
 
-  override fun visitIds(block: (Id) -> Unit) {
-    block(id)
-  }
-
   override fun detach() {
   }
 

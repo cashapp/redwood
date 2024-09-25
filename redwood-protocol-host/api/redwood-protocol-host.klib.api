@@ -6,6 +6,10 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-protocol-host>
+abstract fun interface app.cash.redwood.protocol.host/IdVisitor { // app.cash.redwood.protocol.host/IdVisitor|null[0]
+    abstract fun visit(app.cash.redwood.protocol/Id) // app.cash.redwood.protocol.host/IdVisitor.visit|visit(app.cash.redwood.protocol.Id){}[0]
+}
+
 abstract fun interface app.cash.redwood.protocol.host/UiEventSink { // app.cash.redwood.protocol.host/UiEventSink|null[0]
     abstract fun sendEvent(app.cash.redwood.protocol.host/UiEvent) // app.cash.redwood.protocol.host/UiEventSink.sendEvent|sendEvent(app.cash.redwood.protocol.host.UiEvent){}[0]
 }
@@ -50,7 +54,7 @@ abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { //
     abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
     abstract fun toString(): kotlin/String // app.cash.redwood.protocol.host/ProtocolNode.toString|toString(){}[0]
     final fun updateModifier(app.cash.redwood/Modifier) // app.cash.redwood.protocol.host/ProtocolNode.updateModifier|updateModifier(app.cash.redwood.Modifier){}[0]
-    open fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
+    open fun visitIds(app.cash.redwood.protocol.host/IdVisitor) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(app.cash.redwood.protocol.host.IdVisitor){}[0]
 }
 
 final class <#A: kotlin/Any> app.cash.redwood.protocol.host/HostProtocolAdapter : app.cash.redwood.protocol/ChangesSink { // app.cash.redwood.protocol.host/HostProtocolAdapter|null[0]
@@ -67,7 +71,7 @@ final class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolChildren { /
         final fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.protocol.host/ProtocolChildren.children.<get-children>|<get-children>(){}[0]
 
     final fun detach() // app.cash.redwood.protocol.host/ProtocolChildren.detach|detach(){}[0]
-    final fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
+    final fun visitIds(app.cash.redwood.protocol.host/IdVisitor) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(app.cash.redwood.protocol.host.IdVisitor){}[0]
 }
 
 final class app.cash.redwood.protocol.host/UiEvent { // app.cash.redwood.protocol.host/UiEvent|null[0]

@@ -10,11 +10,15 @@ public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash
 	public fun sendChanges (Ljava/util/List;)V
 }
 
+public abstract interface class app/cash/redwood/protocol/host/IdVisitor {
+	public abstract fun visit-ou3jOuA (I)V
+}
+
 public final class app/cash/redwood/protocol/host/ProtocolChildren {
 	public fun <init> (Lapp/cash/redwood/widget/Widget$Children;)V
 	public final fun detach ()V
 	public final fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
-	public final fun visitIds (Lkotlin/jvm/functions/Function1;)V
+	public final fun visitIds (Lapp/cash/redwood/protocol/host/IdVisitor;)V
 }
 
 public abstract interface class app/cash/redwood/protocol/host/ProtocolFactory {
@@ -44,7 +48,7 @@ public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 	public final fun setId-ou3jOuA (I)V
 	public abstract fun toString ()Ljava/lang/String;
 	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
-	public fun visitIds (Lkotlin/jvm/functions/Function1;)V
+	public fun visitIds (Lapp/cash/redwood/protocol/host/IdVisitor;)V
 }
 
 public final class app/cash/redwood/protocol/host/UiEvent {
