@@ -10,9 +10,18 @@ redwoodBuild {
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 kotlin {
+  applyDefaultHierarchyTemplate {
+    it.group("common") {
+      it.group("nonJs") {
+        it.group("ios") {}
+        it.withAndroidTarget()
+        it.withJvm()
+      }
+    }
+  }
+
   sourceSets {
     commonMain {
-      kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.compose'))
       dependencies {
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
@@ -35,6 +44,12 @@ kotlin {
     androidMain {
       dependencies {
         implementation libs.androidx.core
+      }
+    }
+    nonJsMain {
+      kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.compose'))
+      dependencies {
+        implementation libs.jetbrains.compose.collection
       }
     }
   }

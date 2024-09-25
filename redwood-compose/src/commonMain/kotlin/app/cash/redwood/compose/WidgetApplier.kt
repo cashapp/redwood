@@ -58,7 +58,7 @@ internal class NodeApplier<W : Any>(
 ) : AbstractApplier<Node<W>>(ChildrenNode(root)),
   RedwoodApplier<W> {
   private var closed = false
-  private val changedWidgets = LinkedHashSet<ChangeListener>()
+  private val changedWidgets = platformSetOf<ChangeListener>()
 
   override fun recordChanged(widget: Widget<W>) {
     if (widget is ChangeListener) {
@@ -69,10 +69,12 @@ internal class NodeApplier<W : Any>(
   override fun onEndChanges() {
     check(!closed)
 
-    for (changedWidget in changedWidgets) {
-      changedWidget.onEndChanges()
+    changedWidgets.let { changedWidgets ->
+      changedWidgets.forEach { changedWidget ->
+        changedWidget.onEndChanges()
+      }
+      changedWidgets.clear()
     }
-    changedWidgets.clear()
 
     onEndChanges.invoke()
   }
@@ -191,7 +193,7 @@ internal class ChildrenNode<W : Any> private constructor(
   constructor(accessor: (Widget<W>) -> Widget.Children<W>) : this(accessor, null, null)
   constructor(children: Widget.Children<W>) : this(null, null, children)
 
-  private val nodes = mutableListOf<WidgetNode<Widget<W>, W>>()
+  private val nodes = platformListOf<WidgetNode<Widget<W>, W>>()
 
   fun insert(index: Int, node: WidgetNode<Widget<W>, W>) {
     nodes.let { nodes ->
