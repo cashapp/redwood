@@ -29,9 +29,6 @@ import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.DurationUnit
-import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
 
@@ -68,23 +65,7 @@ class UIViewLazyListAsFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(widget: UIView, name: String?) {
-    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    widget.setFrame(screenSize)
-
-    // Snapshot the container on a white background.
-    val frame = UIView().apply {
-      backgroundColor = platform.UIKit.UIColor.whiteColor
-      setFrame(screenSize)
-      addSubview(widget)
-      layoutIfNeeded()
-    }
-
-    // Unfortunately even with animations forced off, UITableView's animation system breaks
-    // synchronous snapshots. The simplest workaround is to delay snapshots one frame.
-    callback.verifySnapshot(frame, name, delay = 1.milliseconds.toDouble(DurationUnit.SECONDS))
-    widget.removeFromSuperview()
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
   class ViewTestFlexContainer private constructor(
     private val delegate: LazyList<UIView>,
