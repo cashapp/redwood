@@ -66,8 +66,8 @@ public abstract class ProtocolNode<W : Any>(
   public abstract fun children(tag: ChildrenTag): ProtocolChildren<W>?
 
   /** Recursively visit IDs in this widget's tree, starting with this widget's [id]. */
-  public open fun visitIds(block: (Id) -> Unit) {
-    block(id)
+  public open fun visitIds(visitor: IdVisitor) {
+    visitor.visit(id)
   }
 
   /**
@@ -79,6 +79,12 @@ public abstract class ProtocolNode<W : Any>(
 
   /** Human-readable name of this node along with [id] and [widgetTag]. */
   public abstract override fun toString(): String
+}
+
+/** @suppress */
+@RedwoodCodegenApi
+public fun interface IdVisitor {
+  public fun visit(id: Id)
 }
 
 /**
@@ -136,10 +142,10 @@ public class ProtocolChildren<W : Any>(
     children.move(from, to, count)
   }
 
-  public fun visitIds(block: (Id) -> Unit) {
+  public fun visitIds(visitor: IdVisitor) {
     nodes.let { nodes ->
       for (i in nodes.indices) {
-        nodes[i].visitIds(block)
+        nodes[i].visitIds(visitor)
       }
     }
   }

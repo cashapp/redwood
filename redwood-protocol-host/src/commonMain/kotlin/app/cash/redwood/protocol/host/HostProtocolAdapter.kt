@@ -63,7 +63,7 @@ public class HostProtocolAdapter<W : Any>(
   private val nodes =
     mutableIntObjectMapOf<ProtocolNode<W>>(Id.Root.value, RootProtocolNode(container))
 
-  private val removeNodeById: (Id) -> Unit = { nodes.remove(it.value) }
+  private val removeNodeById = IdVisitor { nodes.remove(it.value) }
 
   private val changedWidgets = mutableScatterSetOf<ChangeListener>()
 
@@ -219,7 +219,7 @@ public class HostProtocolAdapter<W : Any>(
     if (pool.isEmpty()) return changes // Short circuit reuse.
 
     // Find nodes that have Modifier.reuse
-    val idToNode = mutableMapOf<Id, ReuseNode<W>>()
+    val idToNode = mutableIntObjectMapOf<ReuseNode<W>>()
     var lastCreatedId = Id.Root
     for (change in changes) {
       if (change is Create) {
@@ -234,7 +234,7 @@ public class HostProtocolAdapter<W : Any>(
       // Must have a Create node that precedes it.
       if (lastCreatedId != change.id) continue
 
-      idToNode[change.id] = ReuseNode(
+      idToNode[change.id.value] = ReuseNode(
         widgetId = change.id,
         childrenTag = ChildrenTag.Root,
       )
@@ -255,19 +255,19 @@ public class HostProtocolAdapter<W : Any>(
     // If the _shape_ of a reuse candidate matches a pooled node, remove the corresponding changes
     // and use the pooled node.
     val changesAndNulls: Array<Change?> = changes.toTypedArray()
-    for (reuseNode in idToNode.values) {
+    idToNode.forEachValue { reuseNode ->
       // Only look for reuse roots.
-      if (reuseNode.changeIndexForAdd != -1) continue
+      if (reuseNode.changeIndexForAdd != -1) return@forEachValue
 
       // Find a pooled node with the same shape hash.
       val shapeHash = shapeHash(factory, reuseNode)
-      if (shapeHash == 0L) continue // Ineligible for pooling.
+      if (shapeHash == 0L) return@forEachValue // Ineligible for pooling.
       val pooledNodeIndex = pool.indexOfFirst { it.shapeHash == shapeHash }
-      if (pooledNodeIndex == -1) continue // No shape match.
+      if (pooledNodeIndex == -1) return@forEachValue // No shape match.
 
       // Confirm the reuse node has the same shape. (This defends against hash collisions.)
       val pooledNode = pool[pooledNodeIndex]
-      if (!shapesEqual(factory, reuseNode, pooledNode)) continue
+      if (!shapesEqual(factory, reuseNode, pooledNode)) return@forEachValue
 
       // Success! Take the pooled node.
       pool.removeAt(pooledNodeIndex)
@@ -286,14 +286,14 @@ public class HostProtocolAdapter<W : Any>(
    * Returns true if new child nodes were found and added.
    */
   private fun putNodesForChildrenOfNodes(
-    idToNode: MutableMap<Id, ReuseNode<W>>,
+    idToNode: MutableIntObjectMap<ReuseNode<W>>,
     changes: List<Change>,
   ): Boolean {
     var nodesAddedToMap = false
     for ((index, change) in changes.withIndex()) {
       if (change !is Add) continue
-      val parent = idToNode[change.id] ?: continue // Parent isn't reused.
-      if (idToNode[change.childId] != null) continue // Child already created.
+      val parent = idToNode[change.id.value] ?: continue // Parent isn't reused.
+      if (change.childId.value in idToNode) continue // Child already created.
 
       val child = ReuseNode<W>(
         widgetId = change.childId,
@@ -301,7 +301,7 @@ public class HostProtocolAdapter<W : Any>(
         indexInParent = change.index,
         changeIndexForAdd = index,
       )
-      idToNode[change.childId] = child
+      idToNode[change.childId.value] = child
       parent.children += child
       nodesAddedToMap = true
     }
@@ -311,14 +311,14 @@ public class HostProtocolAdapter<W : Any>(
 
   /** Returns true if any nodes were added to the map. */
   private fun populateCreateIndexAndEligibleForReuse(
-    idToNode: Map<Id, ReuseNode<W>>,
+    idToNode: MutableIntObjectMap<ReuseNode<W>>,
     changes: List<Change>,
   ) {
     for ((index, change) in changes.withIndex()) {
       when {
         // Track the Create for each node in the reuse nodes.
         change is Create -> {
-          val node = idToNode[change.id]
+          val node = idToNode[change.id.value]
           if (node != null) {
             node.changeIndexForCreate = index
             node.widgetTag = change.tag
@@ -327,7 +327,7 @@ public class HostProtocolAdapter<W : Any>(
 
         // Any other children change disqualifies this node from reuse.
         change !is Add && change is ChildrenChange -> {
-          val node = idToNode[change.id] ?: continue
+          val node = idToNode[change.id.value] ?: continue
           node.eligibleForReuse = false
         }
       }
@@ -407,8 +407,8 @@ private class RootProtocolNode<W : Any>(
     else -> throw AssertionError("unexpected: $tag")
   }
 
-  override fun visitIds(block: (Id) -> Unit) {
-    throw AssertionError()
+  override fun visitIds(visitor: IdVisitor) {
+    children.visitIds(visitor)
   }
 
   override val widget: Widget<W> get() = this

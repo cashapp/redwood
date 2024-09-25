@@ -48,6 +48,7 @@ internal object ProtocolGuest {
 }
 
 internal object ProtocolHost {
+  val IdVisitor = ClassName("app.cash.redwood.protocol.host", "IdVisitor")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
