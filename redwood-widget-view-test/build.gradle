@@ -1,0 +1,23 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAndroid
+
+redwoodBuild {
+  targets(ToolkitAndroid)
+}
+
+apply plugin: 'app.cash.paparazzi'
+
+dependencies {
+  testImplementation projects.redwoodSnapshotTesting
+  testImplementation projects.redwoodWidgetSharedTest
+  testImplementation libs.androidx.activity
+  testImplementation libs.testParameterInjector
+}
+
+android {
+  namespace 'app.cash.redwood.widget.view'
+
+  buildFeatures {
+    // For Paparazzi, which internally uses resources to set itself up.
+    androidResources = true
+  }
+}
