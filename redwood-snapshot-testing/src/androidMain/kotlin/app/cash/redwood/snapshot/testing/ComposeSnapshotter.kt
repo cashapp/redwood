@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.layout
+package app.cash.redwood.snapshot.testing
 
-/**
- * Captures snapshots of a subject view.
- *
- * The subject of the view hierarchy must do its own layout invalidation. This is particularly
- * important for iOS UIView layouts, where the application layer is responsible for tracking layout
- * changes.
- */
-interface Snapshotter {
-  fun snapshot(name: String? = null)
+import androidx.compose.runtime.Composable
+import app.cash.paparazzi.Paparazzi
+
+class ComposeSnapshotter(
+  private val paparazzi: Paparazzi,
+  private val widget: @Composable () -> Unit,
+) : Snapshotter {
+  override fun snapshot(name: String?) {
+    paparazzi.snapshot(name, widget)
+  }
 }

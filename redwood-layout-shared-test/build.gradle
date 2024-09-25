@@ -12,6 +12,7 @@ kotlin {
         api projects.redwoodLayoutModifiers
         api projects.redwoodLayoutWidget
         api projects.redwoodRuntime
+        api projects.redwoodSnapshotTesting
         api projects.redwoodWidget
         api projects.redwoodYoga
         api libs.kotlin.test

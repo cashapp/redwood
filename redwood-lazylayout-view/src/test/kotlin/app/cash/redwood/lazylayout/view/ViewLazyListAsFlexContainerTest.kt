@@ -31,6 +31,7 @@ import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget

@@ -22,6 +22,7 @@ import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color as ColorWidget
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
+import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector

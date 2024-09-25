@@ -22,9 +22,10 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.Color
-import app.cash.redwood.layout.Snapshotter
 import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
+import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector

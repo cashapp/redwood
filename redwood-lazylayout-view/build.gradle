@@ -17,6 +17,7 @@ dependencies {
   testImplementation projects.redwoodLayoutSharedTest
   testImplementation projects.redwoodLazylayoutSharedTest
   testImplementation projects.redwoodLayoutView
+  testImplementation projects.redwoodSnapshotTesting
   testImplementation libs.testParameterInjector
 }
 

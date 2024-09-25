@@ -24,6 +24,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren

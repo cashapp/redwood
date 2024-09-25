@@ -29,6 +29,7 @@ kotlin {
     commonTest {
       dependencies {
         api projects.redwoodLayoutSharedTest
+        api projects.redwoodSnapshotTesting
         api libs.kotlin.test
         implementation libs.assertk
       }

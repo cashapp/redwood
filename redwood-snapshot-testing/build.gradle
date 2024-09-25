@@ -1,0 +1,29 @@
+import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
+
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+redwoodBuild {
+  targets(CommonWithAndroid)
+}
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        api libs.jetbrains.compose.foundation
+        api libs.kotlin.test
+        implementation libs.assertk
+      }
+    }
+    androidMain {
+      dependencies {
+        // This library uses Paparazzi types but consumers must install the Paparazzi plugin.
+        compileOnly libs.paparazzi
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.snapshot.testing'
+}
