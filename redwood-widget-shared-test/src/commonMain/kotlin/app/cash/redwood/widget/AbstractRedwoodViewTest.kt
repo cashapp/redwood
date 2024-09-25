@@ -28,10 +28,14 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
 
   abstract fun snapshotter(redwoodView: R): Snapshotter
 
+  /**
+   * This test uses a string that wraps to confirm the root view's dimensions aren't unbounded.
+   * https://github.com/cashapp/redwood/issues/2128
+   */
   @Test
   fun testSingleChildElement() {
     val redwoodView = redwoodView()
-    redwoodView.children.insert(0, widgetFactory.text("Hello"))
+    redwoodView.children.insert(0, widgetFactory.text("Hello ".repeat(50)))
     snapshotter(redwoodView).snapshot()
   }
 }
