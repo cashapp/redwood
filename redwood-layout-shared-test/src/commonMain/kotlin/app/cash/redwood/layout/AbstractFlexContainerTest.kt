@@ -38,7 +38,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * currently opt-in, but will soon be the only supported mode.
    */
   open val incremental: Boolean
-    get() = true
+    get() = false
 
   abstract fun flexContainer(
     direction: FlexDirection,
