@@ -99,11 +99,7 @@ class ComposeUiLazyListTest(
     }
   }
 
-  override fun verifySnapshot(widget: @Composable () -> Unit, name: String?) {
-    paparazzi.snapshot(name) {
-      widget()
-    }
-  }
+  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,

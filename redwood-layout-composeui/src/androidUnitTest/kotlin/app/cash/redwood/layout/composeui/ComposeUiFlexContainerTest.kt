@@ -60,11 +60,7 @@ class ComposeUiFlexContainerTest(
 
   override fun text() = ComposeUiText()
 
-  override fun verifySnapshot(widget: @Composable () -> Unit, name: String?) {
-    paparazzi.snapshot(name) {
-      widget()
-    }
-  }
+  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiFlexContainer,

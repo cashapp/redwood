@@ -51,7 +51,5 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
     }
   }
 
-  override fun verifySnapshot(value: View) {
-    paparazzi.snapshot(value)
-  }
+  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 }

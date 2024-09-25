@@ -21,7 +21,6 @@ import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
 import assertk.assertThat
 import kotlin.test.Test
-import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
@@ -44,21 +43,7 @@ class UIViewBoxTest(
     return UIViewText()
   }
 
-  override fun verifySnapshot(widget: UIView, name: String?) {
-    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    widget.setFrame(screenSize)
-
-    // Snapshot the container on a white background.
-    val frame = UIView().apply {
-      backgroundColor = UIColor.whiteColor
-      setFrame(screenSize)
-      addSubview(widget)
-      layoutIfNeeded()
-    }
-
-    callback.verifySnapshot(frame, name)
-    widget.removeFromSuperview()
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
   @Test
   fun maxEachDimension() {

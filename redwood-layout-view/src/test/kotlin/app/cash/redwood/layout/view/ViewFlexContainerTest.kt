@@ -60,9 +60,7 @@ class ViewFlexContainerTest(
 
   override fun text() = ViewText(paparazzi.context)
 
-  override fun verifySnapshot(widget: View, name: String?) {
-    paparazzi.snapshot(widget, name)
-  }
+  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 
   class ViewTestFlexContainer internal constructor(
     private val delegate: ViewFlexContainer,

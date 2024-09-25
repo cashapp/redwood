@@ -38,12 +38,12 @@ abstract class AbstractBoxTest<T : Any> {
     height(height)
   }
 
-  abstract fun verifySnapshot(widget: T, name: String? = null)
+  abstract fun snapshotter(widget: T): Snapshotter
 
   @Test
   fun testEmpty_Defaults() {
     val widget = box()
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -52,7 +52,7 @@ abstract class AbstractBoxTest<T : Any> {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -61,7 +61,7 @@ abstract class AbstractBoxTest<T : Any> {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   // testChildren
@@ -322,7 +322,7 @@ abstract class AbstractBoxTest<T : Any> {
         },
       )
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -345,7 +345,7 @@ abstract class AbstractBoxTest<T : Any> {
         },
       )
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -388,7 +388,7 @@ abstract class AbstractBoxTest<T : Any> {
         },
       )
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -431,7 +431,7 @@ abstract class AbstractBoxTest<T : Any> {
         },
       )
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -444,10 +444,11 @@ abstract class AbstractBoxTest<T : Any> {
       children.insert(1, coloredText(text = mediumText(), color = Blue))
       children.insert(2, coloredText(text = shortText(), color = Green))
     }
-    verifySnapshot(widget.value, "Margin")
+    val snapshotter = snapshotter(widget.value)
+    snapshotter.snapshot("Margin")
     redColor.modifier = Modifier
     widget.children.onModifierUpdated(0, redColor)
-    verifySnapshot(widget.value, "Empty")
+    snapshotter.snapshot("Empty")
   }
 
   /** The view shouldn't crash if its displayed after being detached. */
@@ -459,16 +460,17 @@ abstract class AbstractBoxTest<T : Any> {
       horizontalAlignment(CrossAxisAlignment.Start)
       verticalAlignment(CrossAxisAlignment.Start)
     }
+    val snapshotter = snapshotter(widget.value)
 
     // Render before calling detach().
     widget.children.insert(0, coloredText(MarginImpl(10.dp), mediumText(), Green))
     widget.children.insert(1, coloredText(MarginImpl(0.dp), shortText(), Blue))
-    verifySnapshot(widget.value, "Before")
+    snapshotter.snapshot("Before")
 
     // Detach after changes are applied but before they're rendered.
     widget.children.insert(0, coloredText(MarginImpl(20.dp), longText(), Red))
     widget.children.detach()
-    verifySnapshot(widget.value, "After")
+    snapshotter.snapshot("After")
   }
 
   @Test fun testDynamicWidgetResizing() {
@@ -479,6 +481,7 @@ abstract class AbstractBoxTest<T : Any> {
         horizontalAlignment(CrossAxisAlignment.Start)
         verticalAlignment(CrossAxisAlignment.Start)
       }
+    val snapshotter = snapshotter(container.value)
 
     val a = coloredText(text = "AAA", color = Red)
       .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Start) }
@@ -489,10 +492,10 @@ abstract class AbstractBoxTest<T : Any> {
     val c = coloredText(text = "CCC", color = Green)
       .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.End) }
       .also { container.children.insert(2, it) }
-    verifySnapshot(container.value, "v1")
+    snapshotter.snapshot("v1")
 
     b.text("BBB_v2")
-    verifySnapshot(container.value, "v2")
+    snapshotter.snapshot("v2")
   }
 
   private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
