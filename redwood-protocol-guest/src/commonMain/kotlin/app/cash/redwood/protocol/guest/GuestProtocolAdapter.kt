@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
@@ -36,7 +37,9 @@ import kotlinx.serialization.json.Json
  *
  * This interface is for generated code use only.
  */
-public abstract class GuestProtocolAdapter : EventSink {
+public abstract class GuestProtocolAdapter(
+  hostVersion: RedwoodVersion,
+) : EventSink {
   @RedwoodCodegenApi
   public abstract val json: Json
 
@@ -46,7 +49,7 @@ public abstract class GuestProtocolAdapter : EventSink {
    * on the guest side by synthesizing removes for every node in the subtree.
    */
   @RedwoodCodegenApi
-  public abstract val synthesizeSubtreeRemoval: Boolean
+  public val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   /**
    * The provider of factories of widgets which record property changes and whose children changes

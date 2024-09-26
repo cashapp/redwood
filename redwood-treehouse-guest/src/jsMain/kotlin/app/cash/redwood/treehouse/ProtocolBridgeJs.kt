@@ -51,7 +51,7 @@ internal class FastGuestProtocolAdapter(
   hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter() {
+) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
   private val changes = JsArray<Change>()
@@ -63,8 +63,6 @@ internal class FastGuestProtocolAdapter(
 
   override val root: ProtocolWidgetChildren =
     ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, this)
-
-  override val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   override fun sendEvent(event: Event) {
     val node = widgets[event.id.value]
