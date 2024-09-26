@@ -139,9 +139,12 @@ internal class YogaUIView(
   override fun scrollViewDidScroll(scrollView: UIScrollView) {
     val onScroll = onScroll
     if (onScroll != null) {
+      val max = scrollView.contentSize.useContents {
+        if (isColumn()) height else width
+      }
       val offset = scrollView.contentOffset.useContents {
         if (isColumn()) y else x
-      }.coerceAtLeast(0.0)
+      }.coerceIn(minimumValue = 0.0, maximumValue = max)
       onScroll(Px(offset))
     }
   }
