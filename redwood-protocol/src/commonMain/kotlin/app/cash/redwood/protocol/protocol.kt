@@ -52,7 +52,7 @@ public class Event private constructor(
   public val id: Id get() = Id(_id)
 
   /** Identifies which event occurred on the widget with [id]. */
-  public val tag: EventTag get() = EventTag(_id)
+  public val tag: EventTag get() = EventTag(_tag)
 
   public companion object {
     public operator fun invoke(
