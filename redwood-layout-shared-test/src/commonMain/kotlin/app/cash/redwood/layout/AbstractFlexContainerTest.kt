@@ -45,7 +45,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * currently opt-in, but will soon be the only supported mode.
    */
   open val incremental: Boolean
-    get() = false
+    get() = true
 
   abstract val widgetFactory: TestWidgetFactory<T>
 
