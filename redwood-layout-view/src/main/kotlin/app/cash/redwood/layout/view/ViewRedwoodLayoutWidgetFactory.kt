@@ -26,7 +26,7 @@ import app.cash.redwood.yoga.FlexDirection
 
 public class ViewRedwoodLayoutWidgetFactory(
   private val context: Context,
-  private val incremental: Boolean = false,
+  private val incremental: Boolean = true,
 ) : RedwoodLayoutWidgetFactory<View> {
   override fun Box(): Box<View> = ViewBox(context)
 
