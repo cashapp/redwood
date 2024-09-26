@@ -20,6 +20,7 @@ kotlin {
       dependencies {
         implementation libs.kotlin.test
         implementation libs.assertk
+        implementation projects.redwoodSnapshotTesting
         implementation projects.redwoodWidgetTesting
       }
     }
