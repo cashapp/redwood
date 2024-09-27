@@ -782,6 +782,41 @@ abstract class AbstractFlexContainerTest<T : Any> {
     rowA2.text("A-TWO ".repeat(5))
     snapshotter.snapshot("v2")
   }
+
+  /**
+   * When a child widget's intrinsic size won't fit in the available space, what happens? We can
+   * either let it have its requested size anyway (and overrun the available space) or we confine it
+   * to the space available.
+   */
+  @Test fun testChildIsConstrainedToParentWidth() {
+    // Wrap in a parent column to let us configure an exact width for our subject flex container.
+    // Otherwise we're relying on the platform-specific snapshot library's unspecified frame width.
+    val fullWidthParent = column().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    val alignStart = HorizontalAlignmentImpl(CrossAxisAlignment.Start)
+    flexContainer(FlexDirection.Column)
+      .apply {
+        modifier = WidthImpl(25.dp)
+        add(widgetFactory.text("ok", alignStart)) // This is under 25.dp in width.
+        add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
+        onEndChanges()
+      }
+      .also { fullWidthParent.children.insert(0, it) }
+
+    flexContainer(FlexDirection.Column)
+      .apply {
+        modifier = WidthImpl(25.dp)
+        add(widgetFactory.text("overflows parent", alignStart)) // This is over 25.dp in width.
+        add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
+        onEndChanges()
+      }
+      .also { fullWidthParent.children.insert(1, it) }
+
+    snapshotter(fullWidthParent.value).snapshot()
+  }
 }
 
 interface TestFlexContainer<T : Any> :

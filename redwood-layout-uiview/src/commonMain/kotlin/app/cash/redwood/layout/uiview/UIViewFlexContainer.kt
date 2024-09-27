@@ -76,11 +76,11 @@ internal class UIViewFlexContainer(
   }
 
   override fun width(width: Constraint) {
-    yogaView.width = width
+    yogaView.widthConstraint = width
   }
 
   override fun height(height: Constraint) {
-    yogaView.height = height
+    yogaView.heightConstraint = height
   }
 
   override fun overflow(overflow: Overflow) {
