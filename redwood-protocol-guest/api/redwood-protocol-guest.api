@@ -13,7 +13,6 @@ public final class app/cash/redwood/protocol/guest/DefaultGuestProtocolAdapter :
 	public fun emitChanges ()V
 	public fun getJson ()Lkotlinx/serialization/json/Json;
 	public fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
-	public fun getSynthesizeSubtreeRemoval ()Z
 	public fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 	public fun initChangesSink (Lapp/cash/redwood/protocol/ChangesSink;)V
 	public fun nextId-0HhLjSo ()I
@@ -22,7 +21,9 @@ public final class app/cash/redwood/protocol/guest/DefaultGuestProtocolAdapter :
 	public final fun takeChanges ()Ljava/util/List;
 }
 
-public abstract interface class app/cash/redwood/protocol/guest/GuestProtocolAdapter : app/cash/redwood/protocol/EventSink {
+public abstract class app/cash/redwood/protocol/guest/GuestProtocolAdapter : app/cash/redwood/protocol/EventSink {
+	public static final field $stable I
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun appendAdd-ARs5Qwk (IIILapp/cash/redwood/protocol/guest/ProtocolWidget;)V
 	public abstract fun appendCreate-kyz2zXs (II)V
 	public abstract fun appendModifierChange-z3jyS0k (ILapp/cash/redwood/Modifier;)V
@@ -31,11 +32,11 @@ public abstract interface class app/cash/redwood/protocol/guest/GuestProtocolAda
 	public abstract fun appendPropertyChange-M7EZMwg (III)V
 	public abstract fun appendPropertyChange-e3iP1vo (IIZ)V
 	public abstract fun appendRemove-HpxY78w (IIIILjava/util/List;)V
-	public static synthetic fun appendRemove-HpxY78w$default (Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;IIIILjava/util/List;ILjava/lang/Object;)V
 	public abstract fun emitChanges ()V
+	public final fun getChildrenVisitor ()Lapp/cash/redwood/protocol/guest/ProtocolWidget$ChildrenVisitor;
 	public abstract fun getJson ()Lkotlinx/serialization/json/Json;
 	public abstract fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
-	public abstract fun getSynthesizeSubtreeRemoval ()Z
+	public final fun getSynthesizeSubtreeRemoval ()Z
 	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 	public abstract fun initChangesSink (Lapp/cash/redwood/protocol/ChangesSink;)V
 	public abstract fun nextId-0HhLjSo ()I
@@ -58,7 +59,7 @@ public final class app/cash/redwood/protocol/guest/ProtocolRedwoodCompositionKt 
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget : app/cash/redwood/widget/Widget {
-	public abstract fun depthFirstWalk (Lkotlin/jvm/functions/Function3;)V
+	public abstract fun depthFirstWalk (Lapp/cash/redwood/protocol/guest/ProtocolWidget$ChildrenVisitor;)V
 	public abstract fun getId-0HhLjSo ()I
 	public abstract fun getTag-BlhN7y0 ()I
 	public synthetic fun getValue ()Ljava/lang/Object;
@@ -66,10 +67,14 @@ public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget :
 	public abstract fun sendEvent (Lapp/cash/redwood/protocol/Event;)V
 }
 
+public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidget$ChildrenVisitor {
+	public abstract fun visit-KUkifdM (Lapp/cash/redwood/protocol/guest/ProtocolWidget;ILapp/cash/redwood/protocol/guest/ProtocolWidgetChildren;)V
+}
+
 public final class app/cash/redwood/protocol/guest/ProtocolWidgetChildren : app/cash/redwood/widget/Widget$Children {
 	public static final field $stable I
 	public synthetic fun <init> (IILapp/cash/redwood/protocol/guest/GuestProtocolAdapter;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun depthFirstWalk (Lapp/cash/redwood/protocol/guest/ProtocolWidget;Lkotlin/jvm/functions/Function3;)V
+	public final fun depthFirstWalk (Lapp/cash/redwood/protocol/guest/ProtocolWidget;Lapp/cash/redwood/protocol/guest/ProtocolWidget$ChildrenVisitor;)V
 	public fun detach ()V
 	public fun getWidgets ()Ljava/util/List;
 	public fun insert (ILapp/cash/redwood/widget/Widget;)V

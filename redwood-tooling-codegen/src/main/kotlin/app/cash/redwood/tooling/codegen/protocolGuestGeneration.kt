@@ -40,7 +40,6 @@ import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.KModifier.PUBLIC
 import com.squareup.kotlinpoet.LONG
-import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -429,26 +428,17 @@ internal fun generateProtocolWidget(
         .addFunction(
           FunSpec.builder("depthFirstWalk")
             .addModifiers(OVERRIDE)
-            .addParameter(
-              "block",
-              LambdaTypeName.get(
-                null,
-                ProtocolGuest.ProtocolWidget,
-                Protocol.ChildrenTag,
-                ProtocolGuest.ProtocolWidgetChildren,
-                returnType = UNIT,
-              ),
-            )
+            .addParameter("visitor", ProtocolGuest.ProtocolWidgetChildrenVisitor)
             .apply {
               for (trait in widget.traits) {
                 if (trait is ProtocolChildren) {
                   if (workAroundLazyListPlaceholderRemoveCrash(widget, trait)) {
                     addComment("Work around the LazyList.placeholder remove crash.")
                     beginControlFlow("if (!guestAdapter.synthesizeSubtreeRemoval)")
-                    addStatement("%N.depthFirstWalk(this, block)", trait.name)
+                    addStatement("%N.depthFirstWalk(this, visitor)", trait.name)
                     endControlFlow()
                   } else {
-                    addStatement("%N.depthFirstWalk(this, block)", trait.name)
+                    addStatement("%N.depthFirstWalk(this, visitor)", trait.name)
                   }
                 }
               }

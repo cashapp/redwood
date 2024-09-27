@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
@@ -36,9 +37,11 @@ import kotlinx.serialization.json.Json
  *
  * This interface is for generated code use only.
  */
-public interface GuestProtocolAdapter : EventSink {
+public abstract class GuestProtocolAdapter(
+  hostVersion: RedwoodVersion,
+) : EventSink {
   @RedwoodCodegenApi
-  public val json: Json
+  public abstract val json: Json
 
   /**
    * Host versions prior to 0.10.0 contained a bug where they did not recursively remove widgets
@@ -46,36 +49,36 @@ public interface GuestProtocolAdapter : EventSink {
    * on the guest side by synthesizing removes for every node in the subtree.
    */
   @RedwoodCodegenApi
-  public val synthesizeSubtreeRemoval: Boolean
+  public val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   /**
    * The provider of factories of widgets which record property changes and whose children changes
    * are also recorded. You **must** attach returned widgets to [root] or the children of a widget
    * in the tree beneath [root] in order for it to be tracked.
    */
-  public val widgetSystem: WidgetSystem<Unit>
+  public abstract val widgetSystem: WidgetSystem<Unit>
 
   /**
    * The root of the widget tree onto which [widgetSystem]-produced widgets can be added. Changes to
    * this instance are recorded as changes to [Id.Root] and [ChildrenTag.Root].
    */
-  public val root: Widget.Children<Unit>
+  public abstract val root: Widget.Children<Unit>
 
-  public fun initChangesSink(changesSink: ChangesSink)
+  public abstract fun initChangesSink(changesSink: ChangesSink)
 
-  public fun emitChanges()
-
-  @RedwoodCodegenApi
-  public fun nextId(): Id
+  public abstract fun emitChanges()
 
   @RedwoodCodegenApi
-  public fun appendCreate(
+  public abstract fun nextId(): Id
+
+  @RedwoodCodegenApi
+  public abstract fun appendCreate(
     id: Id,
     tag: WidgetTag,
   )
 
   @RedwoodCodegenApi
-  public fun <T> appendPropertyChange(
+  public abstract fun <T> appendPropertyChange(
     id: Id,
     tag: PropertyTag,
     serializer: KSerializer<T>,
@@ -83,7 +86,7 @@ public interface GuestProtocolAdapter : EventSink {
   )
 
   @RedwoodCodegenApi
-  public fun appendPropertyChange(
+  public abstract fun appendPropertyChange(
     id: Id,
     tag: PropertyTag,
     value: Boolean,
@@ -97,20 +100,20 @@ public interface GuestProtocolAdapter : EventSink {
    * https://github.com/Kotlin/kotlinx.serialization/issues/2713
    */
   @RedwoodCodegenApi
-  public fun appendPropertyChange(
+  public abstract fun appendPropertyChange(
     id: Id,
     tag: PropertyTag,
     value: UInt,
   )
 
   @RedwoodCodegenApi
-  public fun appendModifierChange(
+  public abstract fun appendModifierChange(
     id: Id,
     value: Modifier,
   )
 
   @RedwoodCodegenApi
-  public fun appendAdd(
+  public abstract fun appendAdd(
     id: Id,
     tag: ChildrenTag,
     index: Int,
@@ -118,7 +121,7 @@ public interface GuestProtocolAdapter : EventSink {
   )
 
   @RedwoodCodegenApi
-  public fun appendMove(
+  public abstract fun appendMove(
     id: Id,
     tag: ChildrenTag,
     fromIndex: Int,
@@ -127,14 +130,44 @@ public interface GuestProtocolAdapter : EventSink {
   )
 
   @RedwoodCodegenApi
-  public fun appendRemove(
+  public abstract fun appendRemove(
     id: Id,
     tag: ChildrenTag,
     index: Int,
     count: Int,
-    removedIds: List<Id> = listOf(),
+    removedIds: List<Id>,
   )
 
   @RedwoodCodegenApi
-  public fun removeWidget(id: Id)
+  public abstract fun removeWidget(id: Id)
+
+  @RedwoodCodegenApi
+  public val childrenVisitor: ProtocolWidget.ChildrenVisitor = if (synthesizeSubtreeRemoval) {
+    object : ProtocolWidget.ChildrenVisitor {
+      override fun visit(
+        parent: ProtocolWidget,
+        childrenTag: ChildrenTag,
+        children: ProtocolWidgetChildren,
+      ) {
+        // This boxes Id values. Don't bother optimizing since it only serves very old hosts.
+        val childIds = children.widgets.map(ProtocolWidget::id)
+        for (childId in childIds) {
+          removeWidget(childId)
+        }
+        appendRemove(parent.id, childrenTag, 0, childIds.size, childIds)
+      }
+    }
+  } else {
+    object : ProtocolWidget.ChildrenVisitor {
+      override fun visit(
+        parent: ProtocolWidget,
+        childrenTag: ChildrenTag,
+        children: ProtocolWidgetChildren,
+      ) {
+        for (childWidget in children.widgets) {
+          removeWidget(childWidget.id)
+        }
+      }
+    }
+  }
 }

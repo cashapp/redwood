@@ -70,8 +70,8 @@ class SnapshotChangeListTest {
       |Snapshot change list cannot contain move or remove operations
       |
       |Found:
-      | - Move(id=Id(value=0), tag=ChildrenTag(value=1), fromIndex=1, toIndex=2, count=3)
-      | - Remove(id=Id(value=0), tag=ChildrenTag(value=1), index=1, count=2, removedIds=[Id(value=3), Id(value=4)])
+      | - Move(_id=0, _tag=1, fromIndex=1, toIndex=2, count=3)
+      | - Remove(_id=0, _tag=1, index=1, count=2, removedIds=[Id(value=3), Id(value=4)])
       """.trimMargin(),
     )
   }
