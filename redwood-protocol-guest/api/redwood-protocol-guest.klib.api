@@ -38,18 +38,18 @@ abstract interface app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory {
 }
 
 abstract class app.cash.redwood.protocol.guest/GuestProtocolAdapter : app.cash.redwood.protocol/EventSink { // app.cash.redwood.protocol.guest/GuestProtocolAdapter|null[0]
-    constructor <init>() // app.cash.redwood.protocol.guest/GuestProtocolAdapter.<init>|<init>(){}[0]
+    constructor <init>(app.cash.redwood.protocol/RedwoodVersion) // app.cash.redwood.protocol.guest/GuestProtocolAdapter.<init>|<init>(app.cash.redwood.protocol.RedwoodVersion){}[0]
 
     abstract val json // app.cash.redwood.protocol.guest/GuestProtocolAdapter.json|{}json[0]
         abstract fun <get-json>(): kotlinx.serialization.json/Json // app.cash.redwood.protocol.guest/GuestProtocolAdapter.json.<get-json>|<get-json>(){}[0]
     abstract val root // app.cash.redwood.protocol.guest/GuestProtocolAdapter.root|{}root[0]
         abstract fun <get-root>(): app.cash.redwood.widget/Widget.Children<kotlin/Unit> // app.cash.redwood.protocol.guest/GuestProtocolAdapter.root.<get-root>|<get-root>(){}[0]
-    abstract val synthesizeSubtreeRemoval // app.cash.redwood.protocol.guest/GuestProtocolAdapter.synthesizeSubtreeRemoval|{}synthesizeSubtreeRemoval[0]
-        abstract fun <get-synthesizeSubtreeRemoval>(): kotlin/Boolean // app.cash.redwood.protocol.guest/GuestProtocolAdapter.synthesizeSubtreeRemoval.<get-synthesizeSubtreeRemoval>|<get-synthesizeSubtreeRemoval>(){}[0]
     abstract val widgetSystem // app.cash.redwood.protocol.guest/GuestProtocolAdapter.widgetSystem|{}widgetSystem[0]
         abstract fun <get-widgetSystem>(): app.cash.redwood.widget/WidgetSystem<kotlin/Unit> // app.cash.redwood.protocol.guest/GuestProtocolAdapter.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
     final val childrenVisitor // app.cash.redwood.protocol.guest/GuestProtocolAdapter.childrenVisitor|{}childrenVisitor[0]
         final fun <get-childrenVisitor>(): app.cash.redwood.protocol.guest/ProtocolWidget.ChildrenVisitor // app.cash.redwood.protocol.guest/GuestProtocolAdapter.childrenVisitor.<get-childrenVisitor>|<get-childrenVisitor>(){}[0]
+    final val synthesizeSubtreeRemoval // app.cash.redwood.protocol.guest/GuestProtocolAdapter.synthesizeSubtreeRemoval|{}synthesizeSubtreeRemoval[0]
+        final fun <get-synthesizeSubtreeRemoval>(): kotlin/Boolean // app.cash.redwood.protocol.guest/GuestProtocolAdapter.synthesizeSubtreeRemoval.<get-synthesizeSubtreeRemoval>|<get-synthesizeSubtreeRemoval>(){}[0]
 
     abstract fun <#A1: kotlin/Any?> appendPropertyChange(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization/KSerializer<#A1>, #A1) // app.cash.redwood.protocol.guest/GuestProtocolAdapter.appendPropertyChange|appendPropertyChange(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.KSerializer<0:0>;0:0){0§<kotlin.Any?>}[0]
     abstract fun appendAdd(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, app.cash.redwood.protocol.guest/ProtocolWidget) // app.cash.redwood.protocol.guest/GuestProtocolAdapter.appendAdd|appendAdd(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;app.cash.redwood.protocol.guest.ProtocolWidget){}[0]
@@ -72,8 +72,6 @@ final class app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter : app.ca
         final fun <get-json>(): kotlinx.serialization.json/Json // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.json.<get-json>|<get-json>(){}[0]
     final val root // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.root|{}root[0]
         final fun <get-root>(): app.cash.redwood.widget/Widget.Children<kotlin/Unit> // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.root.<get-root>|<get-root>(){}[0]
-    final val synthesizeSubtreeRemoval // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.synthesizeSubtreeRemoval|{}synthesizeSubtreeRemoval[0]
-        final fun <get-synthesizeSubtreeRemoval>(): kotlin/Boolean // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.synthesizeSubtreeRemoval.<get-synthesizeSubtreeRemoval>|<get-synthesizeSubtreeRemoval>(){}[0]
     final val widgetSystem // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.widgetSystem|{}widgetSystem[0]
         final fun <get-widgetSystem>(): app.cash.redwood.widget/WidgetSystem<kotlin/Unit> // app.cash.redwood.protocol.guest/DefaultGuestProtocolAdapter.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
 
