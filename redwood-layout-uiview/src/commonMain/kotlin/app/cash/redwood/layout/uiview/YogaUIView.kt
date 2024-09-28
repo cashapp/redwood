@@ -44,11 +44,11 @@ internal class YogaUIView(
   }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(Size.UNDEFINED, Size.UNDEFINED)
+    return calculateLayoutWithSize(Size.UNDEFINED, Size.UNDEFINED, exact = false)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    return calculateLayoutWithSize(size)
+    return calculateLayoutWithSize(size = size, exact = false)
   }
 
   override fun layoutSubviews() {
@@ -72,12 +72,12 @@ internal class YogaUIView(
           CGSizeMake(Size.UNDEFINED.toDouble(), height)
         }
       }
-      val contentSize = calculateLayoutWithSize(scrollSize)
+      val contentSize = calculateLayoutWithSize(size = scrollSize, exact = false)
       setContentSize(contentSize)
-      calculateLayoutWithSize(bounds)
+      calculateLayoutWithSize(size = bounds, exact = true)
     } else {
       // If we're not scrolling, the contentSize should equal the size of the view.
-      val containerSize = calculateLayoutWithSize(bounds)
+      val containerSize = calculateLayoutWithSize(size = bounds, exact = true)
       setContentSize(containerSize)
     }
 
@@ -94,24 +94,43 @@ internal class YogaUIView(
     }
   }
 
-  private fun calculateLayoutWithSize(size: CValue<CGSize>): CValue<CGSize> {
+  private fun calculateLayoutWithSize(size: CValue<CGSize>, exact: Boolean): CValue<CGSize> {
     return size.useContents {
-      calculateLayoutWithSize(width.toYoga(), height.toYoga())
+      calculateLayoutWithSize(width.toYoga(), height.toYoga(), exact)
     }
   }
 
-  private fun calculateLayoutWithSize(width: Float, height: Float): CValue<CGSize> {
-    rootNode.requestedWidth = when (widthConstraint) {
-      Constraint.Fill -> width
-      else -> Size.UNDEFINED
-    }
-    rootNode.requestedMaxWidth = width
+  private fun calculateLayoutWithSize(
+    width: Float,
+    height: Float,
+    exact: Boolean,
+  ): CValue<CGSize> {
+    if (exact) {
+      rootNode.requestedMinWidth = Size.UNDEFINED
+      rootNode.requestedWidth = width
+      rootNode.requestedMaxWidth = Size.UNDEFINED
+      rootNode.requestedMinHeight = Size.UNDEFINED
+      rootNode.requestedHeight = height
+      rootNode.requestedMaxHeight = Size.UNDEFINED
 
-    rootNode.requestedHeight = when (heightConstraint) {
-      Constraint.Fill -> height
-      else -> Size.UNDEFINED
+    } else {
+      rootNode.requestedMinWidth = Size.UNDEFINED
+      rootNode.requestedWidth = Size.UNDEFINED
+      rootNode.requestedMaxWidth = Size.UNDEFINED
+      rootNode.requestedMinHeight = Size.UNDEFINED
+      rootNode.requestedHeight = Size.UNDEFINED
+      rootNode.requestedMaxHeight = Size.UNDEFINED
+
+      rootNode.requestedWidth = when (widthConstraint) {
+        Constraint.Fill -> width
+        else -> Size.UNDEFINED
+      }
+
+      rootNode.requestedHeight = when (heightConstraint) {
+        Constraint.Fill -> height
+        else -> Size.UNDEFINED
+      }
     }
-    rootNode.requestedMaxHeight = height
 
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
@@ -121,7 +140,7 @@ internal class YogaUIView(
       rootNode.markEverythingDirty()
     }
 
-    rootNode.measureOnly(width, height)
+    rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)
 
     return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
   }

@@ -799,6 +799,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val alignStart = HorizontalAlignmentImpl(CrossAxisAlignment.Start)
     flexContainer(FlexDirection.Column)
       .apply {
+        width(Constraint.Fill)
         modifier = WidthImpl(25.dp)
         add(widgetFactory.text("ok", alignStart)) // This is under 25.dp in width.
         add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
@@ -808,6 +809,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     flexContainer(FlexDirection.Column)
       .apply {
+        width(Constraint.Fill)
         modifier = WidthImpl(25.dp)
         add(widgetFactory.text("overflows parent", alignStart)) // This is over 25.dp in width.
         add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
