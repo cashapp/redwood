@@ -57,17 +57,19 @@ public interface ProtocolWidget : Widget<Unit> {
    *   }
    * }
    * ```
-   * You will see the following argument values passed to [block] if invoked on the `Split`:
+   * You will see the following argument values passed to [visitor] if invoked on the `Split`:
    * 1. parent: `Row`, childrenTag: 1, children: `[Text+Button]`
    * 2. parent: `Split`, childrenTag: 1, children: `[Row]`
    * 3. parent: `Column`, childrenTag: 1, children: `[Button+Text]`
    * 4. parent: `Split`, childrenTag: 2, children: `[Column]`
    */
-  public fun depthFirstWalk(
-    block: (
+  public fun depthFirstWalk(visitor: ChildrenVisitor)
+
+  public fun interface ChildrenVisitor {
+    public fun visit(
       parent: ProtocolWidget,
       childrenTag: ChildrenTag,
       children: ProtocolWidgetChildren,
-    ) -> Unit,
-  )
+    )
+  }
 }

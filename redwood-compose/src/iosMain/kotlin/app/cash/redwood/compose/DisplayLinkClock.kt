@@ -27,7 +27,7 @@ import platform.darwin.NSObject
 import platform.posix.CLOCK_MONOTONIC_RAW
 import platform.posix.clock_gettime_nsec_np
 
-public actual object DisplayLinkClock : MonotonicFrameClock {
+public object DisplayLinkClock : MonotonicFrameClock {
 
   private val target = SelectorTarget(this)
   private val displayLink = CADisplayLink.displayLinkWithTarget(
@@ -40,7 +40,7 @@ public actual object DisplayLinkClock : MonotonicFrameClock {
     displayLink.addToRunLoop(NSRunLoop.currentRunLoop, NSRunLoop.currentRunLoop.currentMode)
   }
 
-  actual override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
+  override suspend fun <R> withFrameNanos(onFrame: (frameTimeNanos: Long) -> R): R {
     return clock.withFrameNanos(onFrame)
   }
 

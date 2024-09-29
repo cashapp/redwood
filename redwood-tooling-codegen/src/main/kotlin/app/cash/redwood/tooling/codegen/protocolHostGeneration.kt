@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.tooling.codegen.Protocol.ChildrenTag
 import app.cash.redwood.tooling.codegen.Protocol.Id
 import app.cash.redwood.tooling.codegen.Protocol.WidgetTag
 import app.cash.redwood.tooling.schema.ProtocolSchema
@@ -32,12 +31,10 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.INT_ARRAY
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
-import com.squareup.kotlinpoet.LIST
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.MAP
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -45,7 +42,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.joinToCode
 
@@ -56,15 +52,15 @@ public class ExampleProtocolFactory<W : Any>(
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GeneratedProtocolFactory<W> {
-  private val childrenTags: Map<WidgetTag, List<ChildrenTag>> = mapOf(
-        WidgetTag(1) to listOf(ChildrenTag(1)),
-        WidgetTag(3) to listOf(ChildrenTag(1)),
-        WidgetTag(1_000_001) to listOf(ChildrenTag(1), ChildrenTag(2)),
-        WidgetTag(1_000_002) to listOf(ChildrenTag(1)),
-      )
+  private val childrenTags: IntObjectMap<IntArray> = MutableIntObjectMap(4).apply {
+        put(1, intArrayOf(1))
+        put(3, intArrayOf(1))
+        put(1_000_001, intArrayOf(1, 2))
+        put(1_000_002, intArrayOf(1))
+      }
 
-  override fun widgetChildren(tag: WidgetTag): List<ChildrenTag> {
-    return childrenTags[tag] ?: emptyList()
+  override fun widgetChildren(tag: WidgetTag): IntArray? {
+    return childrenTags[tag.value]
   }
 
   override fun createNode(id: Id, tag: WidgetTag): ProtocolNode<W>? = when (tag.value) {
@@ -142,30 +138,34 @@ internal fun generateProtocolFactory(
         .addProperty(
           PropertySpec.builder(
             "childrenTags",
-            MAP.parameterizedBy(WidgetTag, LIST.parameterizedBy(ChildrenTag).copy(nullable = true)),
+            AndroidxCollection.IntObjectMap.parameterizedBy(INT_ARRAY),
             PRIVATE,
           )
             .initializer(
               buildCodeBlock {
-                val mapOf = MemberName("kotlin.collections", "mapOf")
-                val listOf = MemberName("kotlin.collections", "listOf")
-                add("%M(⇥\n", mapOf)
-                for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
-                  for (widget in dependency.widgets.filter { it.traits.any { it is ProtocolChildren } }.sortedBy { it.tag }) {
-                    add(
-                      "%T(%L) to %M(%L),\n",
-                      WidgetTag,
-                      widget.tag,
-                      listOf,
-                      widget.traits
-                        .filterIsInstance<ProtocolChildren>()
-                        .sortedBy { it.tag }
-                        .map { CodeBlock.of("%T(%L)", ChildrenTag, it.tag) }
-                        .joinToCode(),
-                    )
-                  }
+                val allParentWidgets = schemaSet.all
+                  .flatMap { it.widgets }
+                  .filter { it.traits.any { it is ProtocolChildren } }
+                  .sortedBy { it.tag }
+
+                beginControlFlow(
+                  "%T<%T>(%L).apply",
+                  AndroidxCollection.MutableIntObjectMap,
+                  INT_ARRAY,
+                  allParentWidgets.size,
+                )
+                for (parentWidget in allParentWidgets) {
+                  addStatement(
+                    "put(%L, %M(%L))",
+                    parentWidget.tag,
+                    MemberName("kotlin", "intArrayOf"),
+                    parentWidget.traits
+                      .filterIsInstance<ProtocolChildren>()
+                      .sortedBy { it.tag }
+                      .joinToCode { CodeBlock.of("%L", it.tag) },
+                  )
                 }
-                add("⇤)\n")
+                endControlFlow()
               },
             )
             .build(),
@@ -174,8 +174,8 @@ internal fun generateProtocolFactory(
           FunSpec.builder("widgetChildren")
             .addModifiers(OVERRIDE)
             .addParameter("tag", WidgetTag)
-            .returns(LIST.parameterizedBy(ChildrenTag))
-            .addStatement("return childrenTags[tag] ?: emptyList()")
+            .returns(INT_ARRAY.copy(nullable = true))
+            .addStatement("return childrenTags[tag.value]")
             .build(),
         )
         .addFunction(
@@ -183,7 +183,6 @@ internal fun generateProtocolFactory(
             .addModifiers(OVERRIDE)
             .addParameter("id", Id)
             .addParameter("tag", WidgetTag)
-            .addAnnotation(Redwood.RedwoodCodegenApi)
             .returns(
               ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW)
                 .copy(nullable = true),
@@ -252,7 +251,9 @@ internal class ProtocolButton<W : Any>(
   widget: Button<W>,
   private val json: Json,
   private val mismatchHandler: ProtocolMismatchHandler,
-) : ProtocolNode<W>(id, WidgetTag(4)) {
+) : ProtocolNode<W>(id) {
+  override val widgetTag: WidgetTag get() = WidgetTag(4)
+
   private var _widget: Button<W>? = widget
   override val widget: Widget<W> get() = _widget ?: error("detached")
 
@@ -318,7 +319,15 @@ internal fun generateProtocolNode(
             .build(),
         )
         .addSuperclassConstructorParameter("id")
-        .addSuperclassConstructorParameter("%T(%L)", WidgetTag, widget.tag)
+        .addProperty(
+          PropertySpec.builder("widgetTag", WidgetTag, OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return %T(%L)", WidgetTag, widget.tag)
+                .build(),
+            )
+            .build(),
+        )
         .addProperty(
           PropertySpec.builder("_widget", widgetType.copy(nullable = true), PRIVATE)
             .mutable(true)
@@ -486,20 +495,24 @@ internal fun generateProtocolNode(
             }
             .build(),
         )
-        .addFunction(
-          FunSpec.builder("visitIds")
-            .addModifiers(OVERRIDE)
-            .addParameter("block", LambdaTypeName.get(null, Id, returnType = UNIT))
-            .addStatement("block(id)")
-            .apply {
-              for (trait in widget.traits) {
-                if (trait is ProtocolChildren) {
-                  addStatement("%N.visitIds(block)", trait.name)
+        .apply {
+          if (childrens.isNotEmpty()) {
+            addFunction(
+              FunSpec.builder("visitIds")
+                .addModifiers(OVERRIDE)
+                .addParameter("visitor", ProtocolHost.IdVisitor)
+                .addStatement("visitor.visit(id)")
+                .apply {
+                  for (trait in widget.traits) {
+                    if (trait is ProtocolChildren) {
+                      addStatement("%N.visitIds(visitor)", trait.name)
+                    }
+                  }
                 }
-              }
-            }
-            .build(),
-        )
+                .build(),
+            )
+          }
+        }
         .addFunction(
           FunSpec.builder("detach")
             .addModifiers(OVERRIDE)
@@ -524,7 +537,7 @@ internal fun generateProtocolNode(
             .addStatement("""append("(id=")""")
             .addStatement("append(id.value)")
             .addStatement("""append(", tag=")""")
-            .addStatement("append(widgetTag.value)")
+            .addStatement("append(%L)", widget.tag)
             .addStatement("append(')')")
             .endControlFlow()
             .build(),
@@ -555,11 +568,11 @@ private class OnClick(
       UiEvent(
         id,
         EventTag(3),
-        listOf(
+        arrayOf(
           arg0,
           arg1,
         ),
-        listOf(
+        arrayOf(
           serializer_0,
           serializer_1,
         ),
@@ -606,14 +619,14 @@ private fun generateEventHandler(
 
   if (serializers.isEmpty()) {
     invoke.addCode(
-      "eventSink.sendEvent(%T(id, %T(%L)))",
+      "eventSink.sendEvent(%T(id, %T(%L), null, null))",
       ProtocolHost.UiEvent,
       Protocol.EventTag,
       trait.tag,
     )
   } else {
     invoke.addCode(
-      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\nlistOf(⇥\n%L,\n⇤),\nlistOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
+      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\narrayOf(⇥\n%L,\n⇤),\narrayOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
       ProtocolHost.UiEvent,
       Protocol.EventTag,
       trait.tag,

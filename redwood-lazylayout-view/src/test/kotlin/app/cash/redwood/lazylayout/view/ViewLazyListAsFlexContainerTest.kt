@@ -16,21 +16,19 @@
 package app.cash.redwood.lazylayout.view
 
 import android.content.Context
-import android.graphics.Color
 import android.view.View
-import android.widget.TextView
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.snapshot.testing.ViewSnapshotter
+import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
@@ -53,6 +51,9 @@ class ViewLazyListAsFlexContainerTest(
     supportsRtl = true,
   )
 
+  override val widgetFactory: ViewTestWidgetFactory
+    get() = ViewTestWidgetFactory(paparazzi.context)
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
@@ -68,28 +69,7 @@ class ViewLazyListAsFlexContainerTest(
     return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
   }
 
-  override fun text() = object : Text<View> {
-    override val value = TextView(paparazzi.context).apply {
-      textSize = 18f
-      setTextColor(Color.BLACK)
-    }
-
-    override var modifier: Modifier = Modifier
-
-    override val measureCount = 0
-
-    override fun text(text: String) {
-      value.text = text
-    }
-
-    override fun bgColor(color: Int) {
-      value.setBackgroundColor(color)
-    }
-  }
-
-  override fun verifySnapshot(widget: View, name: String?) {
-    paparazzi.snapshot(widget, name)
-  }
+  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewLazyList,

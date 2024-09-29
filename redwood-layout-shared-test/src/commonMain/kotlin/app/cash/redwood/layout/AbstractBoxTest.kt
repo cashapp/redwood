@@ -19,31 +19,29 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.widget.Box
-import app.cash.redwood.ui.Dp
+import app.cash.redwood.snapshot.testing.Blue
+import app.cash.redwood.snapshot.testing.Green
+import app.cash.redwood.snapshot.testing.Red
+import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.TestWidgetFactory
+import app.cash.redwood.snapshot.testing.color
+import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import kotlin.test.Test
 
 abstract class AbstractBoxTest<T : Any> {
 
+  abstract val widgetFactory: TestWidgetFactory<T>
+
   abstract fun box(): Box<T>
 
-  abstract fun color(): Color<T>
-
-  abstract fun text(): Text<T>
-
-  fun color(color: Int, width: Dp, height: Dp) = color().apply {
-    color(color)
-    width(width)
-    height(height)
-  }
-
-  abstract fun verifySnapshot(widget: T, name: String? = null)
+  abstract fun snapshotter(widget: T): Snapshotter
 
   @Test
   fun testEmpty_Defaults() {
     val widget = box()
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -52,7 +50,7 @@ abstract class AbstractBoxTest<T : Any> {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -61,7 +59,7 @@ abstract class AbstractBoxTest<T : Any> {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   // testChildren
@@ -302,27 +300,27 @@ abstract class AbstractBoxTest<T : Any> {
       verticalAlignment(verticalAlignment)
       children.insert(
         0,
-        text().apply {
-          text(longText())
-          bgColor(Red)
-        },
+        widgetFactory.text(
+          text = longText(),
+          backgroundColor = Red,
+        ),
       )
       children.insert(
         1,
-        text().apply {
-          text(mediumText())
-          bgColor(Green)
-        },
+        widgetFactory.text(
+          text = mediumText(),
+          backgroundColor = Green,
+        ),
       )
       children.insert(
         2,
-        text().apply {
-          text(shortText())
-          bgColor(Blue)
-        },
+        widgetFactory.text(
+          text = shortText(),
+          backgroundColor = Blue,
+        ),
       )
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
@@ -339,29 +337,135 @@ abstract class AbstractBoxTest<T : Any> {
 
       children.insert(
         0,
-        color(Red, 100.dp, 100.dp).apply {
-          // Ensure Box honors margins correctly from its children.
-          modifier = MarginImpl(asymmetric)
-        },
+        // Ensure Box honors margins correctly from its children.
+        widgetFactory.color(
+          modifier = MarginImpl(asymmetric),
+          color = Red,
+          width = 100.dp,
+          height = 100.dp,
+        ),
       )
     }
-    verifySnapshot(widget.value)
+    snapshotter(widget.value).snapshot()
+  }
+
+  @Test
+  fun testMarginsAndAlignment() {
+    val widget = box().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+
+      children.insert(
+        0,
+        widgetFactory.text(
+          text = "start x, end y",
+          backgroundColor = Red,
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 20.dp, top = 10.dp, end = 40.dp, bottom = 30.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Start))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.End)),
+        ),
+      )
+      children.insert(
+        1,
+        widgetFactory.text(
+          text = "end x, start y",
+          backgroundColor = Green,
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 40.dp, top = 30.dp, end = 20.dp, bottom = 10.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.End))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Start)),
+        ),
+      )
+      children.insert(
+        2,
+        widgetFactory.text(
+          text = "center both",
+          backgroundColor = Blue,
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 10.dp, top = 50.dp, end = 50.dp, bottom = 10.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Center))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Center)),
+        ),
+      )
+    }
+    snapshotter(widget.value).snapshot()
+  }
+
+  @Test
+  fun testMarginsAndStretch() {
+    val widget = box().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+
+      children.insert(
+        0,
+        widgetFactory.text(
+          text = "stretch both",
+          backgroundColor = Red,
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 20.dp, top = 10.dp, end = 40.dp, bottom = 30.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch)),
+        ),
+      )
+      children.insert(
+        1,
+        widgetFactory.text(
+          text = "end x, stretch y",
+          backgroundColor = Green,
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 40.dp, top = 30.dp, end = 20.dp, bottom = 10.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.End))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch)),
+        ),
+      )
+      children.insert(
+        2,
+        widgetFactory.text(
+          text = "stretch x, end y",
+          backgroundColor = Blue,
+          modifier = Modifier
+            .then(MarginImpl(Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp)))
+            .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+            .then(VerticalAlignmentImpl(CrossAxisAlignment.End)),
+        ),
+      )
+    }
+    snapshotter(widget.value).snapshot()
   }
 
   @Test
   fun testChildrenModifierChanges() {
-    val redColor = coloredText(MarginImpl(30.dp), longText(), Red)
+    val redColor = widgetFactory.text(
+      modifier = MarginImpl(30.dp),
+      text = longText(),
+      backgroundColor = Red,
+    )
     val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
       children.insert(0, redColor)
-      children.insert(1, coloredText(text = mediumText(), color = Blue))
-      children.insert(2, coloredText(text = shortText(), color = Green))
+      children.insert(
+        1,
+        widgetFactory.text(
+          text = mediumText(),
+          backgroundColor = Blue,
+        ),
+      )
+      children.insert(
+        2,
+        widgetFactory.text(
+          text = shortText(),
+          backgroundColor = Green,
+        ),
+      )
     }
-    verifySnapshot(widget.value, "Margin")
+    val snapshotter = snapshotter(widget.value)
+    snapshotter.snapshot("Margin")
     redColor.modifier = Modifier
     widget.children.onModifierUpdated(0, redColor)
-    verifySnapshot(widget.value, "Empty")
+    snapshotter.snapshot("Empty")
   }
 
   /** The view shouldn't crash if its displayed after being detached. */
@@ -373,19 +477,42 @@ abstract class AbstractBoxTest<T : Any> {
       horizontalAlignment(CrossAxisAlignment.Start)
       verticalAlignment(CrossAxisAlignment.Start)
     }
+    val snapshotter = snapshotter(widget.value)
 
     // Render before calling detach().
-    widget.children.insert(0, coloredText(MarginImpl(10.dp), mediumText(), Green))
-    widget.children.insert(1, coloredText(MarginImpl(0.dp), shortText(), Blue))
-    verifySnapshot(widget.value, "Before")
+    widget.children.insert(
+      0,
+      widgetFactory.text(
+        text = mediumText(),
+        backgroundColor = Green,
+        modifier = MarginImpl(10.dp),
+      ),
+    )
+    widget.children.insert(
+      1,
+      widgetFactory.text(
+        text = shortText(),
+        backgroundColor = Blue,
+        modifier = MarginImpl(0.dp),
+      ),
+    )
+    snapshotter.snapshot("Before")
 
     // Detach after changes are applied but before they're rendered.
-    widget.children.insert(0, coloredText(MarginImpl(20.dp), longText(), Red))
+    widget.children.insert(
+      0,
+      widgetFactory.text(
+        text = longText(),
+        backgroundColor = Red,
+        modifier = MarginImpl(20.dp),
+      ),
+    )
     widget.children.detach()
-    verifySnapshot(widget.value, "After")
+    snapshotter.snapshot("After")
   }
 
-  @Test fun testDynamicWidgetResizing() {
+  @Test
+  fun testDynamicWidgetResizing() {
     val container = box()
       .apply {
         width(Constraint.Fill)
@@ -393,25 +520,26 @@ abstract class AbstractBoxTest<T : Any> {
         horizontalAlignment(CrossAxisAlignment.Start)
         verticalAlignment(CrossAxisAlignment.Start)
       }
+    val snapshotter = snapshotter(container.value)
 
-    val a = coloredText(text = "AAA", color = Red)
-      .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Start) }
-      .also { container.children.insert(0, it) }
-    val b = coloredText(text = "BBB", color = Blue)
-      .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Center) }
-      .also { container.children.insert(1, it) }
-    val c = coloredText(text = "CCC", color = Green)
-      .apply { modifier = HorizontalAlignmentImpl(CrossAxisAlignment.End) }
-      .also { container.children.insert(2, it) }
-    verifySnapshot(container.value, "v1")
+    val a = widgetFactory.text(
+      modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Start),
+      text = "AAA",
+      backgroundColor = Red,
+    ).also { container.children.insert(0, it) }
+    val b = widgetFactory.text(
+      modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Center),
+      text = "BBB",
+      backgroundColor = Blue,
+    ).also { container.children.insert(1, it) }
+    val c = widgetFactory.text(
+      modifier = HorizontalAlignmentImpl(CrossAxisAlignment.End),
+      text = "CCC",
+      backgroundColor = Green,
+    ).also { container.children.insert(2, it) }
+    snapshotter.snapshot("v1")
 
     b.text("BBB_v2")
-    verifySnapshot(container.value, "v2")
-  }
-
-  private fun coloredText(modifier: Modifier = Modifier, text: String, color: Int) = text().apply {
-    text(text)
-    bgColor(color)
-    this.modifier = modifier
+    snapshotter.snapshot("v2")
   }
 }

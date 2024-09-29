@@ -10,6 +10,7 @@ kotlin {
       dependencies {
         api projects.redwoodLazylayoutApi
         api projects.redwoodLazylayoutWidget
+        api projects.redwoodSnapshotTesting
         api projects.redwoodRuntime
         api projects.redwoodWidget
         api projects.redwoodYoga

@@ -10,12 +10,14 @@ New:
 - `ResizableWidget` is an interface that `UIView` widgets must use if their intrinsic sizes may change dynamically. It notifies any enclosing parent views to trigger a new layout.
 
 Changed:
-- Nothing yet!
+- Removed Wasm JS target. We are not ready to support it yet.
 
 Fixed:
 - Breaking the last remaining retain cycle in `UIViewLazyList`.
 - Don't leak the `DisplayLink` when a `TreehouseApp` is stopped on iOS.
-- Correctly handle dynamic size changes for child widgets of `Box`.
+- Correctly handle dynamic size changes for child widgets of `Box`, `Column`, and `Row`.
+- Correctly implement margins for `Box` on iOS.
+- Correctly handle dynamic updates to modifiers on `Column` and `Row`.
 
 
 ## [0.14.0] - 2024-08-29

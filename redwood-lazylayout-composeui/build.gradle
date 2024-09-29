@@ -23,6 +23,7 @@ kotlin {
       dependencies {
         implementation projects.redwoodLayoutComposeui
         implementation projects.redwoodLayoutSharedTest
+        implementation projects.redwoodSnapshotTesting
         implementation libs.testParameterInjector
       }
     }

@@ -85,59 +85,120 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
   else -> throw AssertionError()
 }
 
+/**
+ * Updates this Node to match the configuration specified by [parentModifier].
+ *
+ * Note that we must reset properties on [Node] to their default values if they are absent from
+ * [parentModifier]. Otherwise the effects of modifiers persist after the modifiers are removed.
+ *
+ * Also note that we shouldn't mutate properties on a node unless they've actually changed. The
+ * node internally keeps a dirty flag, and we perform a potentially-expensive layout each time the
+ * dirty flag is set. This restriction prevents us from resetting each property to its default value
+ * and then applying each modifier.
+ *
+ * Also also note that `Float.NaN` is used by these properties, and that `Float.NaN != Float.NaN`.
+ * So even deciding whether a value has changed is tricky.
+ */
 internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
+  // Avoid unnecessary mutations to the Node because it marks itself dirty its properties change.
+  var oldMarginStart = marginStart
+  var newMarginStart = Float.NaN
+  var oldMarginEnd = marginEnd
+  var newMarginEnd = Float.NaN
+  var oldMarginTop = marginTop
+  var newMarginTop = Float.NaN
+  var oldMarginBottom = marginBottom
+  var newMarginBottom = Float.NaN
+  var oldAlignSelf = alignSelf
+  var newAlignSelf = AlignSelf.Auto
+  var oldRequestedMinWidth = requestedMinWidth
+  var newRequestedMinWidth = Float.NaN
+  var oldRequestedMaxWidth = requestedMaxWidth
+  var newRequestedMaxWidth = Float.NaN
+  var oldRequestedMinHeight = requestedMinHeight
+  var newRequestedMinHeight = Float.NaN
+  var oldRequestedMaxHeight = requestedMaxHeight
+  var newRequestedMaxHeight = Float.NaN
+  var oldFlexGrow = flexGrow
+  var newFlexGrow = 0f
+  var oldFlexShrink = flexShrink
+  var newFlexShrink = 0f
+  var oldFlexBasis = flexBasis
+  var newFlexBasis = -1f
+
   parentModifier.forEachScoped { childModifier ->
     when (childModifier) {
       is GrowModifier -> {
-        flexGrow = childModifier.value.toFloat()
+        newFlexGrow = childModifier.value.toFloat()
       }
 
       is ShrinkModifier -> {
-        flexShrink = childModifier.value.toFloat()
+        newFlexShrink = childModifier.value.toFloat()
       }
 
       is MarginModifier -> with(density) {
-        marginStart = childModifier.margin.start.toPx().toFloat()
-        marginEnd = childModifier.margin.end.toPx().toFloat()
-        marginTop = childModifier.margin.top.toPx().toFloat()
-        marginBottom = childModifier.margin.bottom.toPx().toFloat()
+        newMarginStart = childModifier.margin.start.toPx().toFloat()
+        newMarginEnd = childModifier.margin.end.toPx().toFloat()
+        newMarginTop = childModifier.margin.top.toPx().toFloat()
+        newMarginBottom = childModifier.margin.bottom.toPx().toFloat()
       }
 
       is HorizontalAlignmentModifier -> {
-        alignSelf = childModifier.alignment.toAlignSelf()
+        newAlignSelf = childModifier.alignment.toAlignSelf()
       }
 
       is VerticalAlignmentModifier -> {
-        alignSelf = childModifier.alignment.toAlignSelf()
+        newAlignSelf = childModifier.alignment.toAlignSelf()
       }
 
       is WidthModifier -> with(density) {
         val width = childModifier.width.toPx().toFloat()
-        requestedMinWidth = width
-        requestedMaxWidth = width
+        newRequestedMinWidth = width
+        newRequestedMaxWidth = width
       }
 
       is HeightModifier -> with(density) {
         val height = childModifier.height.toPx().toFloat()
-        requestedMinHeight = height
-        requestedMaxHeight = height
+        newRequestedMinHeight = height
+        newRequestedMaxHeight = height
       }
 
       is SizeModifier -> with(density) {
         val width = childModifier.width.toPx().toFloat()
-        requestedMinWidth = width
-        requestedMaxWidth = width
+        newRequestedMinWidth = width
+        newRequestedMaxWidth = width
         val height = childModifier.height.toPx().toFloat()
-        requestedMinHeight = height
-        requestedMaxHeight = height
+        newRequestedMinHeight = height
+        newRequestedMaxHeight = height
       }
 
       is FlexModifier -> {
         val flex = childModifier.value.coerceAtLeast(0.0).toFloat()
-        flexGrow = flex
-        flexShrink = 1.0f
-        flexBasis = if (flex > 0) 0.0f else -1.0f
+        newFlexGrow = flex
+        newFlexShrink = 1.0f
+        newFlexBasis = if (flex > 0) 0.0f else -1.0f
       }
     }
   }
+
+  if (newMarginStart neq oldMarginStart) marginStart = newMarginStart
+  if (newMarginEnd neq oldMarginEnd) marginEnd = newMarginEnd
+  if (newMarginTop neq oldMarginTop) marginTop = newMarginTop
+  if (newMarginBottom neq oldMarginBottom) marginBottom = newMarginBottom
+  if (newAlignSelf != oldAlignSelf) alignSelf = newAlignSelf
+  if (newRequestedMinWidth neq oldRequestedMinWidth) requestedMinWidth = newRequestedMinWidth
+  if (newRequestedMaxWidth neq oldRequestedMaxWidth) requestedMaxWidth = newRequestedMaxWidth
+  if (newRequestedMinHeight neq oldRequestedMinHeight) requestedMinHeight = newRequestedMinHeight
+  if (newRequestedMaxHeight neq oldRequestedMaxHeight) requestedMaxHeight = newRequestedMaxHeight
+  if (newFlexGrow neq oldFlexGrow) flexGrow = newFlexGrow
+  if (newFlexShrink neq oldFlexShrink) flexShrink = newFlexShrink
+  if (newFlexBasis neq oldFlexBasis) flexBasis = newFlexBasis
+}
+
+/**
+ * This is like `!=` except that it's reflexive for Float.NaN.
+ * https://en.wikipedia.org/wiki/NaN#Comparison_with_NaN
+ */
+private infix fun Float.neq(other: Float): Boolean {
+  return this != other && (this == this || other == other)
 }

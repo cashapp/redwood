@@ -21,9 +21,10 @@ import android.widget.FrameLayout
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
-import app.cash.redwood.layout.Color
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
+import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.ViewSnapshotter
+import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import com.android.resources.LayoutDirection
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
@@ -42,32 +43,28 @@ class ViewBoxTest(
     supportsRtl = true,
   )
 
+  override val widgetFactory: ViewTestWidgetFactory
+    get() = ViewTestWidgetFactory(paparazzi.context)
+
   override fun box(): Box<View> {
     return ViewBox(paparazzi.context).apply {
       background = ColorDrawable(0x88000000.toInt())
     }
   }
 
-  override fun color(): Color<View> {
-    return ViewColor(paparazzi.context)
-  }
-
-  override fun text(): Text<View> {
-    return ViewText(paparazzi.context)
-  }
-
-  override fun verifySnapshot(widget: View, name: String?) {
+  override fun snapshotter(widget: View): Snapshotter {
+    // Allow children to wrap.
     val container = object : FrameLayout(paparazzi.context) {
       override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // Allow children to wrap.
         super.onMeasure(
           MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
           MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST),
         )
       }
+    }.apply {
+      addView(widget)
     }
-    container.addView(widget)
-    paparazzi.snapshot(view = container, name = name)
-    container.removeView(widget)
+
+    return ViewSnapshotter(paparazzi, container)
   }
 }

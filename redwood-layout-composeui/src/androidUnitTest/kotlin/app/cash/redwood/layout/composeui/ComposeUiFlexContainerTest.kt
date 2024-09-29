@@ -24,6 +24,8 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.snapshot.testing.ComposeSnapshotter
+import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -39,6 +41,8 @@ import org.junit.runner.RunWith
 class ComposeUiFlexContainerTest(
   @TestParameter layoutDirection: LayoutDirection,
 ) : AbstractFlexContainerTest<@Composable () -> Unit>() {
+
+  override val widgetFactory = ComposeUiTestWidgetFactory
 
   @get:Rule
   val paparazzi = Paparazzi(
@@ -58,13 +62,7 @@ class ComposeUiFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun text() = ComposeUiText()
-
-  override fun verifySnapshot(widget: @Composable () -> Unit, name: String?) {
-    paparazzi.snapshot(name) {
-      widget()
-    }
-  }
+  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiFlexContainer,

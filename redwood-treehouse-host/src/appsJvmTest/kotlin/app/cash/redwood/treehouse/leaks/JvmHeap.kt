@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.treehouse.leaks
 
+import androidx.collection.IntObjectMap
+import androidx.collection.ScatterSet
 import app.cash.redwood.treehouse.EventLog
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
@@ -53,16 +55,24 @@ internal object JvmHeap : Heap {
           else -> listOf() // Primitive array.
         }
       }
-      instance is Collection<*> && javaPackageName.isDescendant("java", "kotlin") -> {
+      instance is Collection<*> && javaPackageName.isDescendant("java", "kotlin", "androidx") -> {
         instance.mapIndexed { index, value -> Edge("[$index]", value) }
       }
-      instance is Map<*, *> && javaPackageName.isDescendant("java", "kotlin") -> {
+      instance is Map<*, *> && javaPackageName.isDescendant("java", "kotlin", "androidx") -> {
         references(instance.entries)
       }
-      instance is Map.Entry<*, *> && javaPackageName.isDescendant("java", "kotlin") -> listOf(
-        Edge("key", instance.key),
-        Edge("value", instance.value),
-      )
+      instance is Map.Entry<*, *> && javaPackageName.isDescendant("java", "kotlin", "androidx") -> {
+        listOf(
+          Edge("key", instance.key),
+          Edge("value", instance.value),
+        )
+      }
+      instance is IntObjectMap<*> -> {
+        references(buildList { instance.forEachValue(::add) })
+      }
+      instance is ScatterSet<*> -> {
+        references(instance.asSet())
+      }
       instance is StateFlow<*> -> listOf(
         Edge("value", instance.value),
       )

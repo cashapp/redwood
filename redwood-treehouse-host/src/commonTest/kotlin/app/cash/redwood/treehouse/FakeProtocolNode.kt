@@ -33,23 +33,19 @@ import kotlinx.serialization.json.JsonPrimitive
 @RedwoodCodegenApi
 internal class FakeProtocolNode(
   id: Id,
-  tag: WidgetTag,
-) : ProtocolNode<FakeWidget>(id, tag) {
+  override val widgetTag: WidgetTag,
+) : ProtocolNode<FakeWidget>(id) {
   override val widget = FakeWidget()
 
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {
     widget.label = (change.value as JsonPrimitive).content
     widget.onClick = {
-      eventSink.sendEvent(UiEvent(Id(1), EventTag(1)))
+      eventSink.sendEvent(UiEvent(Id(1), EventTag(1), null, null))
     }
   }
 
   override fun children(tag: ChildrenTag): ProtocolChildren<FakeWidget>? {
     error("unexpected call")
-  }
-
-  override fun visitIds(block: (Id) -> Unit) {
-    block(id)
   }
 
   override fun detach() {

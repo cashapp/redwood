@@ -16,6 +16,8 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.AbstractSpacerTest
+import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
+import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
@@ -51,7 +53,5 @@ class UIViewSpacerTest(
     }
   }
 
-  override fun verifySnapshot(value: UIView) {
-    callback.verifySnapshot(value, null)
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter(callback, widget)
 }

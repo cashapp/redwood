@@ -20,8 +20,11 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.toUIColor
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
+import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
+import app.cash.redwood.snapshot.testing.toUIColor
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ResizableWidget
@@ -33,7 +36,6 @@ import kotlin.test.assertEquals
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.readValue
-import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
@@ -44,12 +46,21 @@ import platform.UIKit.UIView
 class UIViewFlexContainerTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
+  override val widgetFactory = UIViewTestWidgetFactory
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
   ): UIViewTestFlexContainer {
     return UIViewTestFlexContainer(UIViewFlexContainer(direction, incremental)).apply {
       value.backgroundColor = backgroundColor.toUIColor()
+
+      // Install a default SizeListener that doesn't do anything. Otherwise the test subject
+      // benefits from fallback behavior that it might not get in other containers.
+      sizeListener = object : SizeListener {
+        override fun invalidateSize() {
+        }
+      }
     }
   }
 
@@ -57,14 +68,15 @@ class UIViewFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun text() = UIViewText()
-
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,
   ) : TestFlexContainer<UIView>,
+    ResizableWidget<UIView>,
     FlexContainer<UIView> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
+
+    override var sizeListener: SizeListener? by delegate::sizeListener
 
     override val children: Widget.Children<UIView> = delegate.children
 
@@ -95,25 +107,7 @@ class UIViewFlexContainerTest(
     }
   }
 
-  override fun verifySnapshot(widget: UIView, name: String?) {
-    val frame = layoutInFrame(widget)
-
-    callback.verifySnapshot(frame, name)
-    widget.removeFromSuperview()
-  }
-
-  private fun layoutInFrame(widget: UIView): UIView {
-    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    widget.setFrame(screenSize)
-
-    // Snapshot the container on a white background.
-    return UIView().apply {
-      backgroundColor = UIColor.whiteColor
-      setFrame(screenSize)
-      addSubview(widget)
-      layoutIfNeeded()
-    }
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
   /**
    * Confirm that calling [ResizableWidget.SizeListener] is sufficient to trigger a subsequent call
@@ -145,12 +139,14 @@ class UIViewFlexContainerTest(
       add(widget)
     }
 
-    layoutInFrame(container.value)
+    val snapshotter = snapshotter(container.value)
+
+    snapshotter.layoutSubject()
     assertEquals(1, layoutSubviewsCount)
 
     widget.sizeListener?.invalidateSize()
 
-    layoutInFrame(container.value)
+    snapshotter.layoutSubject()
     assertEquals(2, layoutSubviewsCount)
   }
 }

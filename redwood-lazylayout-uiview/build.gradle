@@ -28,6 +28,7 @@ kotlin {
         api projects.redwoodLayoutSharedTest
         api projects.redwoodLayoutUiview
         api projects.redwoodLazylayoutSharedTest
+        api projects.redwoodSnapshotTesting
         api libs.kotlin.test
       }
     }

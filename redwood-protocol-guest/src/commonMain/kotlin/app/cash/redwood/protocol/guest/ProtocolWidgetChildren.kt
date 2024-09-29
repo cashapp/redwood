@@ -38,32 +38,23 @@ public class ProtocolWidgetChildren(
 
   override fun remove(index: Int, count: Int) {
     if (guestAdapter.synthesizeSubtreeRemoval) {
+      // This boxes Id values. Don't bother optimizing since it only serves very old hosts.
       val removedIds = ArrayList<Id>(count)
       for (i in index until index + count) {
         val widget = _widgets[i]
         removedIds += widget.id
         guestAdapter.removeWidget(widget.id)
 
-        widget.depthFirstWalk { parent, childrenTag, children ->
-          val childIds = children.widgets.map(ProtocolWidget::id)
-          for (childId in childIds) {
-            guestAdapter.removeWidget(childId)
-          }
-          guestAdapter.appendRemove(parent.id, childrenTag, 0, childIds.size, childIds)
-        }
+        widget.depthFirstWalk(guestAdapter.childrenVisitor)
       }
       guestAdapter.appendRemove(id, tag, index, count, removedIds)
     } else {
       for (i in index until index + count) {
         val widget = _widgets[i]
         guestAdapter.removeWidget(widget.id)
-        widget.depthFirstWalk { _, _, children ->
-          for (childWidget in children.widgets) {
-            guestAdapter.removeWidget(childWidget.id)
-          }
-        }
+        widget.depthFirstWalk(guestAdapter.childrenVisitor)
       }
-      guestAdapter.appendRemove(id, tag, index, count)
+      guestAdapter.appendRemove(id, tag, index, count, emptyList())
     }
 
     _widgets.remove(index, count)
@@ -79,12 +70,12 @@ public class ProtocolWidgetChildren(
 
   public fun depthFirstWalk(
     parent: ProtocolWidget,
-    block: (ProtocolWidget, ChildrenTag, ProtocolWidgetChildren) -> Unit,
+    visitor: ProtocolWidget.ChildrenVisitor,
   ) {
     for (widget in widgets) {
-      widget.depthFirstWalk(block)
+      widget.depthFirstWalk(visitor)
     }
-    block(parent, tag, this)
+    visitor.visit(parent, tag, this)
   }
 
   override fun detach() {

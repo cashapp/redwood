@@ -16,10 +16,14 @@
 package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.layout.AbstractBoxTest
-import app.cash.redwood.layout.Color
-import app.cash.redwood.layout.Text
 import app.cash.redwood.layout.widget.Box
-import platform.CoreGraphics.CGRectMake
+import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
+import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
+import app.cash.redwood.snapshot.testing.isEqualTo
+import assertk.assertThat
+import kotlin.test.Test
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
@@ -27,33 +31,44 @@ class UIViewBoxTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractBoxTest<UIView>() {
 
+  override val widgetFactory = UIViewTestWidgetFactory
+
   override fun box(): Box<UIView> {
     return UIViewBox().apply {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
     }
   }
 
-  override fun color(): Color<UIView> {
-    return UIViewColor()
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
-  override fun text(): Text<UIView> {
-    return UIViewText()
-  }
+  @Test
+  fun maxEachDimension() {
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(5.0, 10.0),
+        CGSizeMake(8.0, 4.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
 
-  override fun verifySnapshot(widget: UIView, name: String?) {
-    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    widget.setFrame(screenSize)
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(8.0, 4.0),
+        CGSizeMake(5.0, 10.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
 
-    // Snapshot the container on a white background.
-    val frame = UIView().apply {
-      backgroundColor = UIColor.whiteColor
-      setFrame(screenSize)
-      addSubview(widget)
-      layoutIfNeeded()
-    }
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(8.0, 10.0),
+        CGSizeMake(5.0, 4.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
 
-    callback.verifySnapshot(frame, name)
-    widget.removeFromSuperview()
+    assertThat(
+      maxEachDimension(
+        CGSizeMake(5.0, 4.0),
+        CGSizeMake(8.0, 10.0),
+      ),
+    ).isEqualTo(8.0, 10.0)
   }
 }

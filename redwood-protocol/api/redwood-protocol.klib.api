@@ -1,5 +1,5 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, wasmJs]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -29,8 +29,6 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
         abstract fun <get-tag>(): app.cash.redwood.protocol/ChildrenTag // app.cash.redwood.protocol/ChildrenChange.tag.<get-tag>|<get-tag>(){}[0]
 
     final class Add : app.cash.redwood.protocol/ChildrenChange { // app.cash.redwood.protocol/ChildrenChange.Add|null[0]
-        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, app.cash.redwood.protocol/Id, kotlin/Int) // app.cash.redwood.protocol/ChildrenChange.Add.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;app.cash.redwood.protocol.Id;kotlin.Int){}[0]
-
         final val childId // app.cash.redwood.protocol/ChildrenChange.Add.childId|{}childId[0]
             final fun <get-childId>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol/ChildrenChange.Add.childId.<get-childId>|<get-childId>(){}[0]
         final val id // app.cash.redwood.protocol/ChildrenChange.Add.id|{}id[0]
@@ -54,13 +52,12 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
         }
 
         final object Companion { // app.cash.redwood.protocol/ChildrenChange.Add.Companion|null[0]
+            final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, app.cash.redwood.protocol/Id, kotlin/Int): app.cash.redwood.protocol/ChildrenChange.Add // app.cash.redwood.protocol/ChildrenChange.Add.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;app.cash.redwood.protocol.Id;kotlin.Int){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/ChildrenChange.Add> // app.cash.redwood.protocol/ChildrenChange.Add.Companion.serializer|serializer(){}[0]
         }
     }
 
     final class Move : app.cash.redwood.protocol/ChildrenChange { // app.cash.redwood.protocol/ChildrenChange.Move|null[0]
-        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin/Int) // app.cash.redwood.protocol/ChildrenChange.Move.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
-
         final val count // app.cash.redwood.protocol/ChildrenChange.Move.count|{}count[0]
             final fun <get-count>(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Move.count.<get-count>|<get-count>(){}[0]
         final val fromIndex // app.cash.redwood.protocol/ChildrenChange.Move.fromIndex|{}fromIndex[0]
@@ -86,13 +83,12 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
         }
 
         final object Companion { // app.cash.redwood.protocol/ChildrenChange.Move.Companion|null[0]
+            final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin/Int): app.cash.redwood.protocol/ChildrenChange.Move // app.cash.redwood.protocol/ChildrenChange.Move.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/ChildrenChange.Move> // app.cash.redwood.protocol/ChildrenChange.Move.Companion.serializer|serializer(){}[0]
         }
     }
 
     final class Remove : app.cash.redwood.protocol/ChildrenChange { // app.cash.redwood.protocol/ChildrenChange.Remove|null[0]
-        constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id> = ...) // app.cash.redwood.protocol/ChildrenChange.Remove.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
-
         final val count // app.cash.redwood.protocol/ChildrenChange.Remove.count|{}count[0]
             final fun <get-count>(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Remove.count.<get-count>|<get-count>(){}[0]
         final val id // app.cash.redwood.protocol/ChildrenChange.Remove.id|{}id[0]
@@ -120,6 +116,7 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
         final object Companion { // app.cash.redwood.protocol/ChildrenChange.Remove.Companion|null[0]
             final val $childSerializers // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.$childSerializers|{}$childSerializers[0]
 
+            final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id> = ...): app.cash.redwood.protocol/ChildrenChange.Remove // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/ChildrenChange.Remove> // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.serializer|serializer(){}[0]
         }
     }
@@ -133,8 +130,6 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
 sealed interface app.cash.redwood.protocol/ValueChange : app.cash.redwood.protocol/Change // app.cash.redwood.protocol/ValueChange|null[0]
 
 final class app.cash.redwood.protocol/Create : app.cash.redwood.protocol/Change { // app.cash.redwood.protocol/Create|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag) // app.cash.redwood.protocol/Create.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
-
     final val id // app.cash.redwood.protocol/Create.id|{}id[0]
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol/Create.id.<get-id>|<get-id>(){}[0]
     final val tag // app.cash.redwood.protocol/Create.tag|{}tag[0]
@@ -154,13 +149,12 @@ final class app.cash.redwood.protocol/Create : app.cash.redwood.protocol/Change 
     }
 
     final object Companion { // app.cash.redwood.protocol/Create.Companion|null[0]
+        final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag): app.cash.redwood.protocol/Create // app.cash.redwood.protocol/Create.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/Create> // app.cash.redwood.protocol/Create.Companion.serializer|serializer(){}[0]
     }
 }
 
 final class app.cash.redwood.protocol/Event { // app.cash.redwood.protocol/Event|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin.collections/List<kotlinx.serialization.json/JsonElement> = ...) // app.cash.redwood.protocol/Event.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.collections.List<kotlinx.serialization.json.JsonElement>){}[0]
-
     final val args // app.cash.redwood.protocol/Event.args|{}args[0]
         final fun <get-args>(): kotlin.collections/List<kotlinx.serialization.json/JsonElement> // app.cash.redwood.protocol/Event.args.<get-args>|<get-args>(){}[0]
     final val id // app.cash.redwood.protocol/Event.id|{}id[0]
@@ -184,13 +178,12 @@ final class app.cash.redwood.protocol/Event { // app.cash.redwood.protocol/Event
     final object Companion { // app.cash.redwood.protocol/Event.Companion|null[0]
         final val $childSerializers // app.cash.redwood.protocol/Event.Companion.$childSerializers|{}$childSerializers[0]
 
+        final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin.collections/List<kotlinx.serialization.json/JsonElement> = ...): app.cash.redwood.protocol/Event // app.cash.redwood.protocol/Event.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.collections.List<kotlinx.serialization.json.JsonElement>){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/Event> // app.cash.redwood.protocol/Event.Companion.serializer|serializer(){}[0]
     }
 }
 
 final class app.cash.redwood.protocol/ModifierChange : app.cash.redwood.protocol/ValueChange { // app.cash.redwood.protocol/ModifierChange|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, kotlin.collections/List<app.cash.redwood.protocol/ModifierElement> = ...) // app.cash.redwood.protocol/ModifierChange.<init>|<init>(app.cash.redwood.protocol.Id;kotlin.collections.List<app.cash.redwood.protocol.ModifierElement>){}[0]
-
     final val elements // app.cash.redwood.protocol/ModifierChange.elements|{}elements[0]
         final fun <get-elements>(): kotlin.collections/List<app.cash.redwood.protocol/ModifierElement> // app.cash.redwood.protocol/ModifierChange.elements.<get-elements>|<get-elements>(){}[0]
     final val id // app.cash.redwood.protocol/ModifierChange.id|{}id[0]
@@ -212,6 +205,7 @@ final class app.cash.redwood.protocol/ModifierChange : app.cash.redwood.protocol
     final object Companion { // app.cash.redwood.protocol/ModifierChange.Companion|null[0]
         final val $childSerializers // app.cash.redwood.protocol/ModifierChange.Companion.$childSerializers|{}$childSerializers[0]
 
+        final fun invoke(app.cash.redwood.protocol/Id, kotlin.collections/List<app.cash.redwood.protocol/ModifierElement> = ...): app.cash.redwood.protocol/ModifierChange // app.cash.redwood.protocol/ModifierChange.Companion.invoke|invoke(app.cash.redwood.protocol.Id;kotlin.collections.List<app.cash.redwood.protocol.ModifierElement>){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/ModifierChange> // app.cash.redwood.protocol/ModifierChange.Companion.serializer|serializer(){}[0]
     }
 }
@@ -230,8 +224,6 @@ final class app.cash.redwood.protocol/ModifierElement { // app.cash.redwood.prot
 }
 
 final class app.cash.redwood.protocol/PropertyChange : app.cash.redwood.protocol/ValueChange { // app.cash.redwood.protocol/PropertyChange|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization.json/JsonElement = ...) // app.cash.redwood.protocol/PropertyChange.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.json.JsonElement){}[0]
-
     final val id // app.cash.redwood.protocol/PropertyChange.id|{}id[0]
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol/PropertyChange.id.<get-id>|<get-id>(){}[0]
     final val tag // app.cash.redwood.protocol/PropertyChange.tag|{}tag[0]
@@ -253,6 +245,7 @@ final class app.cash.redwood.protocol/PropertyChange : app.cash.redwood.protocol
     }
 
     final object Companion { // app.cash.redwood.protocol/PropertyChange.Companion|null[0]
+        final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization.json/JsonElement = ...): app.cash.redwood.protocol/PropertyChange // app.cash.redwood.protocol/PropertyChange.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.json.JsonElement){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/PropertyChange> // app.cash.redwood.protocol/PropertyChange.Companion.serializer|serializer(){}[0]
     }
 }

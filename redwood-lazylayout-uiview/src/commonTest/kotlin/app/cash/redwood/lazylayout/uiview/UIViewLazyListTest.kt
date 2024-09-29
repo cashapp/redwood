@@ -16,37 +16,19 @@
 package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.lazylayout.AbstractLazyListTest
-import app.cash.redwood.widget.Widget
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.DurationUnit
-import platform.CoreGraphics.CGRectMake
-import platform.UIKit.UIColor
+import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
+import app.cash.redwood.snapshot.testing.UIViewSnapshotter
+import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import platform.UIKit.UIView
 
 class UIViewLazyListTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractLazyListTest<UIView>() {
-  private val widgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
+  override val widgetFactory = UIViewTestWidgetFactory
 
-  override fun text() = UIViewText()
+  private val lazyLayoutWidgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
 
-  override fun lazyList(backgroundColor: Int) = widgetFactory.LazyList()
+  override fun lazyList(backgroundColor: Int) = lazyLayoutWidgetFactory.LazyList()
 
-  override fun verifySnapshot(container: Widget<UIView>, name: String?) {
-    val screenSize = CGRectMake(0.0, 0.0, 390.0, 844.0) // iPhone 14.
-    container.value.setFrame(screenSize)
-
-    // Snapshot the container on a white background.
-    val frame = UIView().apply {
-      backgroundColor = UIColor.whiteColor
-      setFrame(screenSize)
-      addSubview(container.value)
-      layoutIfNeeded()
-    }
-
-    // Unfortunately even with animations forced off, UITableView's animation system breaks
-    // synchronous snapshots. The simplest workaround is to delay snapshots one frame.
-    callback.verifySnapshot(frame, name, delay = 1.milliseconds.toDouble(DurationUnit.SECONDS))
-    container.value.removeFromSuperview()
-  }
+  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 }

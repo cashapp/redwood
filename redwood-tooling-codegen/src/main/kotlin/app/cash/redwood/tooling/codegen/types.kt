@@ -44,10 +44,12 @@ internal object ProtocolGuest {
     ClassName("app.cash.redwood.protocol.guest", "ProtocolMismatchHandler")
   val ProtocolWidget = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidget")
   val ProtocolWidgetChildren = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidgetChildren")
+  val ProtocolWidgetChildrenVisitor = ProtocolWidget.nestedClass("ChildrenVisitor")
   val ProtocolWidgetSystemFactory = ClassName("app.cash.redwood.protocol.guest", "ProtocolWidgetSystemFactory")
 }
 
 internal object ProtocolHost {
+  val IdVisitor = ClassName("app.cash.redwood.protocol.host", "IdVisitor")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
@@ -92,6 +94,11 @@ internal object RedwoodCompose {
 internal object ComposeRuntime {
   val Composable = ClassName("androidx.compose.runtime", "Composable")
   val Stable = ClassName("androidx.compose.runtime", "Stable")
+}
+
+internal object AndroidxCollection {
+  val IntObjectMap = ClassName("androidx.collection", "IntObjectMap")
+  val MutableIntObjectMap = ClassName("androidx.collection", "MutableIntObjectMap")
 }
 
 internal fun composableLambda(

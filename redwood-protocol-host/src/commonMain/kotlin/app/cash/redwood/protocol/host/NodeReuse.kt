@@ -39,7 +39,11 @@ internal fun shapesEqual(
   if (a.widgetTag == UnknownWidgetTag) return false // No 'Create' for this.
   if (b.widgetTag != a.widgetTag) return false // Widget types don't match.
 
-  return factory.widgetChildren(a.widgetTag).all { childrenTag ->
+  val widgetChildren = factory.widgetChildren(a.widgetTag)
+    ?: return true // Widget has no children.
+
+  return widgetChildren.all { childrenTag ->
+    val childrenTag = ChildrenTag(childrenTag)
     childrenEqual(
       factory = factory,
       aChildren = a.children,
@@ -84,11 +88,12 @@ internal fun shapeHash(
   if (node.widgetTag == UnknownWidgetTag) return 0L // No 'Create' for this.
 
   var result = node.widgetTag.value.toLong()
-  for (childrenTag in factory.widgetChildren(node.widgetTag)) {
-    result = (result * 37L) + childrenTag.value
+
+  factory.widgetChildren(node.widgetTag)?.forEach { childrenTag ->
+    result = (result * 37L) + childrenTag
     var childCount = 0
     for (child in node.children) {
-      if (child.childrenTag != childrenTag) continue
+      if (child.childrenTag.value != childrenTag) continue
       if (child.indexInParent != childCount) return 0L // Out of order child?
       childCount++
       result = (result * 41L) + shapeHash(factory, child)
@@ -105,9 +110,10 @@ internal fun shapeHash(
   node: ProtocolNode<*>,
 ): Long {
   var result = node.widgetTag.value.toLong()
-  for (childrenTag in factory.widgetChildren(node.widgetTag)) {
-    result = (result * 37L) + childrenTag.value
-    val children = node.children(childrenTag) ?: continue
+  factory.widgetChildren(node.widgetTag)?.forEach { childrenTag ->
+    result = (result * 37L) + childrenTag
+    val children = node.children(ChildrenTag(childrenTag))
+      ?: return@forEach // This acts like a 'continue'.
     for (child in children.nodes) {
       result = (result * 41L) + shapeHash(factory, child)
     }

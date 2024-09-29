@@ -1,11 +1,15 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, wasmJs]
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-protocol-host>
+abstract fun interface app.cash.redwood.protocol.host/IdVisitor { // app.cash.redwood.protocol.host/IdVisitor|null[0]
+    abstract fun visit(app.cash.redwood.protocol/Id) // app.cash.redwood.protocol.host/IdVisitor.visit|visit(app.cash.redwood.protocol.Id){}[0]
+}
+
 abstract fun interface app.cash.redwood.protocol.host/UiEventSink { // app.cash.redwood.protocol.host/UiEventSink|null[0]
     abstract fun sendEvent(app.cash.redwood.protocol.host/UiEvent) // app.cash.redwood.protocol.host/UiEventSink.sendEvent|sendEvent(app.cash.redwood.protocol.host.UiEvent){}[0]
 }
@@ -13,7 +17,7 @@ abstract fun interface app.cash.redwood.protocol.host/UiEventSink { // app.cash.
 abstract interface <#A: kotlin/Any> app.cash.redwood.protocol.host/GeneratedProtocolFactory : app.cash.redwood.protocol.host/ProtocolFactory<#A> { // app.cash.redwood.protocol.host/GeneratedProtocolFactory|null[0]
     abstract fun createModifier(app.cash.redwood.protocol/ModifierElement): app.cash.redwood/Modifier // app.cash.redwood.protocol.host/GeneratedProtocolFactory.createModifier|createModifier(app.cash.redwood.protocol.ModifierElement){}[0]
     abstract fun createNode(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag): app.cash.redwood.protocol.host/ProtocolNode<#A>? // app.cash.redwood.protocol.host/GeneratedProtocolFactory.createNode|createNode(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
-    abstract fun widgetChildren(app.cash.redwood.protocol/WidgetTag): kotlin.collections/List<app.cash.redwood.protocol/ChildrenTag> // app.cash.redwood.protocol.host/GeneratedProtocolFactory.widgetChildren|widgetChildren(app.cash.redwood.protocol.WidgetTag){}[0]
+    abstract fun widgetChildren(app.cash.redwood.protocol/WidgetTag): kotlin/IntArray? // app.cash.redwood.protocol.host/GeneratedProtocolFactory.widgetChildren|widgetChildren(app.cash.redwood.protocol.WidgetTag){}[0]
 }
 
 abstract interface app.cash.redwood.protocol.host/ProtocolMismatchHandler { // app.cash.redwood.protocol.host/ProtocolMismatchHandler|null[0]
@@ -34,12 +38,12 @@ sealed interface <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolFactory
 }
 
 abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { // app.cash.redwood.protocol.host/ProtocolNode|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag) // app.cash.redwood.protocol.host/ProtocolNode.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag){}[0]
+    constructor <init>(app.cash.redwood.protocol/Id) // app.cash.redwood.protocol.host/ProtocolNode.<init>|<init>(app.cash.redwood.protocol.Id){}[0]
 
     abstract val widget // app.cash.redwood.protocol.host/ProtocolNode.widget|{}widget[0]
         abstract fun <get-widget>(): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.protocol.host/ProtocolNode.widget.<get-widget>|<get-widget>(){}[0]
-    final val widgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag|{}widgetTag[0]
-        final fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
+    abstract val widgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag|{}widgetTag[0]
+        abstract fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
 
     final var id // app.cash.redwood.protocol.host/ProtocolNode.id|{}id[0]
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/ProtocolNode.id.<get-id>|<get-id>(){}[0]
@@ -49,8 +53,8 @@ abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { //
     abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
     abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
     abstract fun toString(): kotlin/String // app.cash.redwood.protocol.host/ProtocolNode.toString|toString(){}[0]
-    abstract fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
     final fun updateModifier(app.cash.redwood/Modifier) // app.cash.redwood.protocol.host/ProtocolNode.updateModifier|updateModifier(app.cash.redwood.Modifier){}[0]
+    open fun visitIds(app.cash.redwood.protocol.host/IdVisitor) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(app.cash.redwood.protocol.host.IdVisitor){}[0]
 }
 
 final class <#A: kotlin/Any> app.cash.redwood.protocol.host/HostProtocolAdapter : app.cash.redwood.protocol/ChangesSink { // app.cash.redwood.protocol.host/HostProtocolAdapter|null[0]
@@ -67,25 +71,22 @@ final class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolChildren { /
         final fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.protocol.host/ProtocolChildren.children.<get-children>|<get-children>(){}[0]
 
     final fun detach() // app.cash.redwood.protocol.host/ProtocolChildren.detach|detach(){}[0]
-    final fun visitIds(kotlin/Function1<app.cash.redwood.protocol/Id, kotlin/Unit>) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(kotlin.Function1<app.cash.redwood.protocol.Id,kotlin.Unit>){}[0]
+    final fun visitIds(app.cash.redwood.protocol.host/IdVisitor) // app.cash.redwood.protocol.host/ProtocolChildren.visitIds|visitIds(app.cash.redwood.protocol.host.IdVisitor){}[0]
 }
 
 final class app.cash.redwood.protocol.host/UiEvent { // app.cash.redwood.protocol.host/UiEvent|null[0]
-    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin.collections/List<kotlin/Any?> = ..., kotlin.collections/List<kotlinx.serialization/SerializationStrategy<kotlin/Any?>> = ...) // app.cash.redwood.protocol.host/UiEvent.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.collections.List<kotlin.Any?>;kotlin.collections.List<kotlinx.serialization.SerializationStrategy<kotlin.Any?>>){}[0]
+    constructor <init>(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/EventTag, kotlin/Array<kotlin/Any?>?, kotlin/Array<kotlinx.serialization/SerializationStrategy<kotlin/Any?>>?) // app.cash.redwood.protocol.host/UiEvent.<init>|<init>(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.EventTag;kotlin.Array<kotlin.Any?>?;kotlin.Array<kotlinx.serialization.SerializationStrategy<kotlin.Any?>>?){}[0]
 
     final val args // app.cash.redwood.protocol.host/UiEvent.args|{}args[0]
-        final fun <get-args>(): kotlin.collections/List<kotlin/Any?> // app.cash.redwood.protocol.host/UiEvent.args.<get-args>|<get-args>(){}[0]
+        final fun <get-args>(): kotlin/Array<kotlin/Any?>? // app.cash.redwood.protocol.host/UiEvent.args.<get-args>|<get-args>(){}[0]
     final val id // app.cash.redwood.protocol.host/UiEvent.id|{}id[0]
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/UiEvent.id.<get-id>|<get-id>(){}[0]
     final val serializationStrategies // app.cash.redwood.protocol.host/UiEvent.serializationStrategies|{}serializationStrategies[0]
-        final fun <get-serializationStrategies>(): kotlin.collections/List<kotlinx.serialization/SerializationStrategy<kotlin/Any?>> // app.cash.redwood.protocol.host/UiEvent.serializationStrategies.<get-serializationStrategies>|<get-serializationStrategies>(){}[0]
+        final fun <get-serializationStrategies>(): kotlin/Array<kotlinx.serialization/SerializationStrategy<kotlin/Any?>>? // app.cash.redwood.protocol.host/UiEvent.serializationStrategies.<get-serializationStrategies>|<get-serializationStrategies>(){}[0]
     final val tag // app.cash.redwood.protocol.host/UiEvent.tag|{}tag[0]
         final fun <get-tag>(): app.cash.redwood.protocol/EventTag // app.cash.redwood.protocol.host/UiEvent.tag.<get-tag>|<get-tag>(){}[0]
 
-    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol.host/UiEvent.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // app.cash.redwood.protocol.host/UiEvent.hashCode|hashCode(){}[0]
     final fun toProtocol(kotlinx.serialization.json/Json): app.cash.redwood.protocol/Event // app.cash.redwood.protocol.host/UiEvent.toProtocol|toProtocol(kotlinx.serialization.json.Json){}[0]
-    final fun toString(): kotlin/String // app.cash.redwood.protocol.host/UiEvent.toString|toString(){}[0]
 }
 
 final val app.cash.redwood.protocol.host/hostRedwoodVersion // app.cash.redwood.protocol.host/hostRedwoodVersion|{}hostRedwoodVersion[0]

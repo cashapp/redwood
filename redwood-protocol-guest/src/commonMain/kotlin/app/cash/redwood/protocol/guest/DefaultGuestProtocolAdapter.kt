@@ -44,7 +44,7 @@ public class DefaultGuestProtocolAdapter(
   hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter {
+) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Int, ProtocolWidget>()
   private val changes = mutableListOf<Change>()
@@ -55,8 +55,6 @@ public class DefaultGuestProtocolAdapter(
 
   public override val root: Widget.Children<Unit> =
     ProtocolWidgetChildren(Id.Root, ChildrenTag.Root, this)
-
-  public override val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   override fun sendEvent(event: Event) {
     val node = widgets[event.id.value]

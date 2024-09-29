@@ -58,7 +58,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -69,6 +69,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 private const val REDWOOD_GROUP_ID = "app.cash.redwood"
@@ -212,8 +213,8 @@ class RedwoodBuildPlugin : Plugin<Project> {
   }
 
   private fun Project.configureCommonKotlin() {
-    tasks.withType(KotlinCompile::class.java).configureEach {
-      it.kotlinOptions.freeCompilerArgs += listOf(
+    tasks.withType(KotlinCompilationTask::class.java).configureEach {
+      it.compilerOptions.freeCompilerArgs.addAll(
         // https://kotlinlang.org/docs/whatsnew13.html#progressive-mode
         "-progressive",
         "-Xexpect-actual-classes",
@@ -222,9 +223,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
     val javaVersion = JavaVersion.VERSION_1_8
     tasks.withType(KotlinJvmCompile::class.java).configureEach {
-      it.kotlinOptions {
-        jvmTarget = javaVersion.toString()
-        freeCompilerArgs += listOf(
+      it.compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
+        freeCompilerArgs.addAll(
           "-Xjvm-default=all",
         )
       }
@@ -274,7 +275,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
       kotlin.targets.withType(KotlinNativeTarget::class.java) { target ->
         target.binaries.configureEach {
           if (it.buildType == NativeBuildType.RELEASE) {
-            it.linkTask.enabled = false
+            it.linkTaskProvider.configure {
+              it.enabled = false
+            }
           }
         }
       }
@@ -286,7 +289,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     }
 
     tasks.withType(KotlinJsCompile::class.java) {
-      it.kotlinOptions.freeCompilerArgs += listOf(
+      it.compilerOptions.freeCompilerArgs.addAll(
         // https://github.com/JetBrains/compose-multiplatform/issues/3421
         "-Xpartial-linkage=disable",
         // https://github.com/JetBrains/compose-multiplatform/issues/3418
@@ -307,7 +310,6 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           iosTargets()
           modifiedGroup[JsTests, NodeJs].applyTo(js())
           jvm()
-          wasmJs().nodejs()
         }
         // Needed for lint in downstream Android projects to analyze this dependency.
         project.plugins.apply("com.android.lint")
@@ -319,7 +321,6 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
           iosTargets()
           modifiedGroup[JsTests, NodeJs].applyTo(js())
           jvm()
-          wasmJs().nodejs()
         }
       }
       Tooling -> {

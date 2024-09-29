@@ -2,7 +2,7 @@ import RedwoodLazylayoutUIViewTestKt
 import SnapshotTesting
 import UIKit
 
-final class SnapshotTestingCallback : UIViewSnapshotCallback {
+final class SnapshotTestingCallback : Redwood_snapshot_testingUIViewSnapshotCallback {
     private let testName: String
     private let fileName: StaticString
 

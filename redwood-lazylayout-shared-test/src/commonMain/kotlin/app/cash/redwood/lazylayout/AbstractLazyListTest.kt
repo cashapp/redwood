@@ -15,29 +15,21 @@
  */
 package app.cash.redwood.lazylayout
 
-import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.snapshot.testing.Snapshotter
+import app.cash.redwood.snapshot.testing.TestWidgetFactory
+import app.cash.redwood.snapshot.testing.argb
+import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
-import app.cash.redwood.widget.Widget
 import kotlin.test.Test
 
 abstract class AbstractLazyListTest<T : Any> {
-  abstract fun text(): Text<T>
-
-  private fun coloredText(
-    modifier: Modifier = Modifier,
-    text: String,
-    backgroundColor: Int = Green,
-  ) = text().apply {
-    this.modifier = modifier
-    text(text)
-    bgColor(backgroundColor)
-  }
+  abstract val widgetFactory: TestWidgetFactory<T>
 
   abstract fun lazyList(
     backgroundColor: Int = argb(51, 0, 0, 255),
@@ -46,7 +38,7 @@ abstract class AbstractLazyListTest<T : Any> {
   private fun defaultLazyList(): LazyList<T> {
     val result = lazyList()
     for (i in 0 until 10) {
-      result.placeholder.insert(i, coloredText(text = "..."))
+      result.placeholder.insert(i, widgetFactory.text("..."))
     }
     result.isVertical(true)
     result.itemsBefore(0)
@@ -59,62 +51,63 @@ abstract class AbstractLazyListTest<T : Any> {
     return result
   }
 
-  abstract fun verifySnapshot(
-    container: Widget<T>,
-    name: String? = null,
-  )
+  abstract fun snapshotter(widget: T): Snapshotter
 
-  @Test fun testHappyPath() {
+  @Test
+  fun testHappyPath() {
     val lazyList = defaultLazyList()
 
     for ((index, value) in movies.take(5).withIndex()) {
-      lazyList.items.insert(index, coloredText(text = value))
+      lazyList.items.insert(index, widgetFactory.text(value))
     }
     (lazyList as? ChangeListener)?.onEndChanges()
 
-    verifySnapshot(lazyList)
+    snapshotter(lazyList.value).snapshot()
   }
 
-  @Test fun testPlaceholderToLoadedAndLoadedToPlaceholder() {
+  @Test
+  fun testPlaceholderToLoadedAndLoadedToPlaceholder() {
     val lazyList = defaultLazyList()
+    val snapshotter = snapshotter(lazyList.value)
 
     (lazyList as? ChangeListener)?.onEndChanges()
-    verifySnapshot(lazyList, "0 empty")
+    snapshotter.snapshot("0 empty")
 
     lazyList.itemsBefore(0)
     lazyList.itemsAfter(10)
     (lazyList as? ChangeListener)?.onEndChanges()
-    verifySnapshot(lazyList, "1 placeholders")
+    snapshotter.snapshot("1 placeholders")
 
     lazyList.itemsBefore(0)
     lazyList.itemsAfter(0)
     for ((index, value) in movies.take(10).withIndex()) {
-      lazyList.items.insert(index, coloredText(text = value))
+      lazyList.items.insert(index, widgetFactory.text(value))
     }
     (lazyList as? ChangeListener)?.onEndChanges()
-    verifySnapshot(lazyList, "2 loaded")
+    snapshotter.snapshot("2 loaded")
 
     lazyList.itemsBefore(0)
     lazyList.itemsAfter(10)
     lazyList.items.remove(0, 10)
     (lazyList as? ChangeListener)?.onEndChanges()
-    verifySnapshot(lazyList, "3 placeholders")
+    snapshotter.snapshot("3 placeholders")
 
     lazyList.itemsBefore(0)
     lazyList.itemsAfter(0)
     (lazyList as? ChangeListener)?.onEndChanges()
-    verifySnapshot(lazyList, "4 empty")
+    snapshotter.snapshot("4 empty")
   }
 
-  @Test fun testPlaceholdersExhausted() {
+  @Test
+  fun testPlaceholdersExhausted() {
     val lazyList = defaultLazyList()
 
     lazyList.itemsBefore(11)
     for ((index, value) in movies.take(1).withIndex()) {
-      lazyList.items.insert(index, coloredText(text = value))
+      lazyList.items.insert(index, widgetFactory.text(value))
     }
     (lazyList as? ChangeListener)?.onEndChanges()
-    verifySnapshot(lazyList)
+    snapshotter(lazyList.value).snapshot()
   }
 }
 

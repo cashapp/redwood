@@ -16,6 +16,7 @@ kotlin {
         api projects.redwoodProtocol
         api projects.redwoodWidget
         api projects.redwoodLeakDetector
+        implementation libs.jetbrains.compose.collection
       }
     }
     commonTest {
