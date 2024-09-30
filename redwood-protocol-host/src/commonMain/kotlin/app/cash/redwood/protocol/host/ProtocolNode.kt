@@ -37,6 +37,8 @@ public abstract class ProtocolNode<W : Any>(
 ) {
   public abstract val widgetTag: WidgetTag
 
+  public abstract val widgetName: String
+
   public abstract val widget: Widget<W>
 
   /** The index of [widget] within its parent [container]. */
@@ -78,7 +80,14 @@ public abstract class ProtocolNode<W : Any>(
   public abstract fun detach()
 
   /** Human-readable name of this node along with [id] and [widgetTag]. */
-  public abstract override fun toString(): String
+  public final override fun toString(): String = buildString {
+    append(widgetName)
+    append("(id=")
+    append(id.value)
+    append(", tag=")
+    append(widgetTag.value)
+    append(")")
+  }
 }
 
 /** @suppress */
