@@ -17,6 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.codegen.Protocol.Id
 import app.cash.redwood.tooling.codegen.Protocol.WidgetTag
+import app.cash.redwood.tooling.schema.ProtocolModifier
 import app.cash.redwood.tooling.schema.ProtocolSchema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
@@ -189,13 +190,13 @@ internal fun generateProtocolFactory(
             )
             .beginControlFlow("return when (tag.value)")
             .apply {
-              for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
-                for (widget in dependency.widgets.sortedBy { it.tag }) {
+              for (widgetSchema in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
+                for (widget in widgetSchema.widgets.sortedBy { it.tag }) {
                   addStatement(
                     "%L -> %T(id, widgetSystem.%N.%N(), json, mismatchHandler)",
                     widget.tag,
-                    dependency.protocolNodeType(widget, schema),
-                    dependency.type.flatName,
+                    schema.protocolNodeType(widget, widgetSchema),
+                    widgetSchema.type.flatName,
                     widget.type.flatName,
                   )
                 }
@@ -218,8 +219,8 @@ internal fun generateProtocolFactory(
               if (modifiers.isNotEmpty()) {
                 beginControlFlow("val serializer = when (element.tag.value)")
                 val host = schemaSet.schema
-                for ((localSchema, modifier) in modifiers) {
-                  val typeName = ClassName(localSchema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
+                for ((modifierSchema, modifier) in modifiers) {
+                  val typeName = schema.modifierImplType(modifier, modifierSchema)
                   if (modifier.properties.isEmpty()) {
                     addStatement("%L -> return %T", modifier.tag, typeName)
                   } else {
@@ -294,21 +295,22 @@ internal class ProtocolButton<W : Any>(
 }
 */
 internal fun generateProtocolNode(
-  schema: ProtocolSchema,
+  generatingSchema: ProtocolSchema,
+  widgetSchema: ProtocolSchema,
   widget: ProtocolWidget,
-  host: ProtocolSchema = schema,
 ): FileSpec {
-  val type = schema.protocolNodeType(widget, host)
-  val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
-  val protocolType = ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW)
+  val type = generatingSchema.protocolNodeType(widget, widgetSchema)
+  val widgetType = widgetSchema.widgetType(widget).parameterizedBy(typeVariableW)
+
   val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
+
   return buildFileSpec(type) {
     addAnnotation(suppressDeprecations)
     addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
-        .superclass(protocolType)
+        .superclass(ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW))
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
@@ -665,17 +667,18 @@ private fun addConstructorParameterAndProperty(
 }
 
 internal fun generateProtocolModifierImpls(
-  schema: ProtocolSchema,
-  host: ProtocolSchema = schema,
+  generatingSchema: ProtocolSchema,
+  modifierSchema: ProtocolSchema,
 ): FileSpec? {
-  if (schema.modifiers.isEmpty()) {
+  if (modifierSchema.modifiers.isEmpty()) {
     return null
   }
-  return buildFileSpec(schema.hostProtocolPackage(host), "modifierImpls") {
+  val targetPackage = generatingSchema.hostProtocolPackage(modifierSchema)
+  return buildFileSpec(targetPackage, "modifierImpls") {
     addAnnotation(suppressDeprecations)
 
-    for (modifier in schema.modifiers) {
-      val typeName = ClassName(schema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
+    for (modifier in modifierSchema.modifiers) {
+      val typeName = generatingSchema.modifierImplType(modifier, modifierSchema)
       val typeBuilder = if (modifier.properties.isEmpty()) {
         TypeSpec.objectBuilder(typeName)
       } else {
@@ -706,8 +709,8 @@ internal fun generateProtocolModifierImpls(
       addType(
         typeBuilder
           .addModifiers(INTERNAL)
-          .addSuperinterface(schema.modifierType(modifier))
-          .addFunction(modifierEquals(schema, modifier))
+          .addSuperinterface(modifierSchema.modifierType(modifier))
+          .addFunction(modifierEquals(modifierSchema, modifier))
           .addFunction(modifierHashCode(modifier))
           .addFunction(modifierToString(modifier))
           .build(),
@@ -716,6 +719,10 @@ internal fun generateProtocolModifierImpls(
   }
 }
 
-private fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(hostProtocolPackage(host), "Protocol${widget.type.flatName}")
+private fun Schema.protocolNodeType(widget: Widget, widgetSchema: ProtocolSchema): ClassName {
+  return ClassName(hostProtocolPackage(widgetSchema), "Protocol${widget.type.flatName}")
+}
+
+private fun Schema.modifierImplType(modifier: ProtocolModifier, modifierSchema: ProtocolSchema): ClassName {
+  return ClassName(hostProtocolPackage(modifierSchema), "${modifier.type.flatName}Impl")
 }

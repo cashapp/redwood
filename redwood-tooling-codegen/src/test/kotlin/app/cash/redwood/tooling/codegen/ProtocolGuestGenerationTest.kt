@@ -40,7 +40,7 @@ class ProtocolGuestGenerationTest {
   @Test fun `id property does not collide`() {
     val schema = parseTestSchema(IdPropertyNameCollisionSchema::class).schema
 
-    val fileSpec = generateProtocolWidget(schema, schema.widgets.single())
+    val fileSpec = generateProtocolWidget(schema, schema, schema.widgets.single())
     assertThat(fileSpec.toString()).contains(
       """
       |  override fun id(id: String) {

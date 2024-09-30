@@ -38,10 +38,10 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
       Guest -> {
         add(generateProtocolWidgetSystemFactory(this@generateFileSpecs))
         for (dependency in all) {
-          add(generateProtocolWidgetFactory(dependency, host = schema))
-          generateProtocolModifierSerializers(dependency, host = schema)?.let { add(it) }
+          add(generateProtocolWidgetFactory(schema, dependency))
+          generateProtocolModifierSerializers(schema, dependency)?.let { add(it) }
           for (widget in dependency.widgets) {
-            add(generateProtocolWidget(dependency, widget, host = schema))
+            add(generateProtocolWidget(schema, dependency, widget))
           }
         }
       }
@@ -49,9 +49,9 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
       Host -> {
         add(generateProtocolFactory(this@generateFileSpecs))
         for (dependency in all) {
-          generateProtocolModifierImpls(dependency, host = schema)?.let { add(it) }
+          generateProtocolModifierImpls(schema, dependency)?.let { add(it) }
           for (widget in dependency.widgets) {
-            add(generateProtocolNode(dependency, widget, host = schema))
+            add(generateProtocolNode(schema, dependency, widget))
           }
         }
       }
