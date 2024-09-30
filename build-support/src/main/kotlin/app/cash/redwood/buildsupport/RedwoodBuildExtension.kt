@@ -93,11 +93,23 @@ enum class JsTests : TargetModifier {
 
   fun applyTo(dsl: KotlinJsTargetDsl) {
     when (this) {
-      Browser -> dsl.browser()
-      NodeJs -> dsl.nodejs()
-      Both -> dsl.apply {
-        browser()
-        nodejs()
+      Browser -> dsl.browser {
+        testTask {
+          it.useMocha {
+            timeout = "5s"
+          }
+        }
+      }
+      NodeJs -> dsl.nodejs {
+        testTask {
+          it.useMocha {
+            timeout = "5s"
+          }
+        }
+      }
+      Both -> {
+        Browser.applyTo(dsl)
+        NodeJs.applyTo(dsl)
       }
     }
   }
