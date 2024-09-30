@@ -16,6 +16,7 @@ Fixed:
 - Breaking the last remaining retain cycle in `UIViewLazyList`.
 - Don't leak the `DisplayLink` when a `TreehouseApp` is stopped on iOS.
 - Correctly handle dynamic size changes for child widgets of `Box`, `Column`, and `Row`.
+- Don't clip elements of `Column` and `Row` layouts whose unbounded size exceeds the container size.
 - Correctly implement margins for `Box` on iOS.
 - Correctly handle dynamic updates to modifiers on `Column` and `Row`.
 

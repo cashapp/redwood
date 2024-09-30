@@ -30,8 +30,8 @@ internal class YogaUIView(
 ) : UIScrollView(cValue { CGRectZero }), UIScrollViewDelegateProtocol {
   val rootNode = Node()
 
-  var width = Constraint.Wrap
-  var height = Constraint.Wrap
+  var widthConstraint = Constraint.Wrap
+  var heightConstraint = Constraint.Wrap
 
   var onScroll: ((Px) -> Unit)? = null
 
@@ -44,12 +44,11 @@ internal class YogaUIView(
   }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(CGSizeMake(Size.UNDEFINED.toDouble(), Size.UNDEFINED.toDouble()))
+    return calculateLayoutWithSize(Size.UNDEFINED, Size.UNDEFINED)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    val constrainedSize = size.useContents { sizeForConstraints(this) }
-    return calculateLayoutWithSize(constrainedSize)
+    return calculateLayoutWithSize(size)
   }
 
   override fun layoutSubviews() {
@@ -58,7 +57,7 @@ internal class YogaUIView(
     // Based on the constraints of Fill or Wrap, we
     // calculate a size that the container should fit in.
     val bounds = bounds.useContents {
-      sizeForConstraints(size)
+      CGSizeMake(size.width, size.height)
     }
 
     if (scrollEnabled) {
@@ -96,6 +95,24 @@ internal class YogaUIView(
   }
 
   private fun calculateLayoutWithSize(size: CValue<CGSize>): CValue<CGSize> {
+    return size.useContents {
+      calculateLayoutWithSize(width.toYoga(), height.toYoga())
+    }
+  }
+
+  private fun calculateLayoutWithSize(width: Float, height: Float): CValue<CGSize> {
+    rootNode.requestedWidth = when (widthConstraint) {
+      Constraint.Fill -> width
+      else -> Size.UNDEFINED
+    }
+    rootNode.requestedMaxWidth = width
+
+    rootNode.requestedHeight = when (heightConstraint) {
+      Constraint.Fill -> height
+      else -> Size.UNDEFINED
+    }
+    rootNode.requestedMaxHeight = height
+
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
     }
@@ -104,23 +121,16 @@ internal class YogaUIView(
       rootNode.markEverythingDirty()
     }
 
-    size.useContents { rootNode.measureOnly(width.toFloat(), height.toFloat()) }
+    rootNode.measureOnly(width, height)
 
     return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
   }
 
-  private fun sizeForConstraints(size: CGSize): CValue<CGSize> {
-    return CGSizeMake(
-      width = sizeForConstraintsDimension(width, size.width),
-      height = sizeForConstraintsDimension(height, size.height),
-    )
-  }
-
-  private fun sizeForConstraintsDimension(constraint: Constraint, dimension: Double): Double {
-    if (constraint == Constraint.Wrap || dimension == UIViewNoIntrinsicMetric) {
-      return Size.UNDEFINED.toDouble()
-    } else {
-      return dimension
+  /** Convert a UIView dimension (a double) to a Yoga dimension (a float). */
+  private fun Double.toYoga(): Float {
+    return when (this) {
+      UIViewNoIntrinsicMetric -> Size.UNDEFINED
+      else -> this.toFloat()
     }
   }
 
