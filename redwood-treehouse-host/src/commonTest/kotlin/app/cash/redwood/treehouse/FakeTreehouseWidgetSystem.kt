@@ -22,5 +22,5 @@ internal class FakeTreehouseWidgetSystem : TreehouseView.WidgetSystem<FakeWidget
   override fun widgetFactory(
     json: Json,
     protocolMismatchHandler: ProtocolMismatchHandler,
-  ) = FakeProtocolNodeFactory()
+  ) = FakeHostProtocol()
 }

@@ -31,7 +31,7 @@ import app.cash.redwood.protocol.host.HostProtocolAdapter.ReuseNode
  */
 @OptIn(RedwoodCodegenApi::class)
 internal fun shapesEqual(
-  factory: GeneratedProtocolFactory<*>,
+  factory: GeneratedHostProtocol<*>,
   a: ReuseNode<*>,
   b: ProtocolNode<*>,
 ): Boolean {
@@ -39,7 +39,8 @@ internal fun shapesEqual(
   if (a.widgetTag == UnknownWidgetTag) return false // No 'Create' for this.
   if (b.widgetTag != a.widgetTag) return false // Widget types don't match.
 
-  val widgetChildren = factory.widgetChildren(a.widgetTag)
+  val widgetChildren = factory.widget(a.widgetTag)
+    ?.childrenTags
     ?: return true // Widget has no children.
 
   return widgetChildren.all { childrenTag ->
@@ -59,7 +60,7 @@ internal fun shapesEqual(
  */
 @OptIn(RedwoodCodegenApi::class)
 private fun childrenEqual(
-  factory: GeneratedProtocolFactory<*>,
+  factory: GeneratedHostProtocol<*>,
   aChildren: List<ReuseNode<*>>,
   bChildren: List<ProtocolNode<*>>,
   childrenTag: ChildrenTag,
@@ -81,7 +82,7 @@ private fun childrenEqual(
 /** Returns a hash of this node, or 0L if this node isn't eligible for reuse. */
 @OptIn(RedwoodCodegenApi::class)
 internal fun shapeHash(
-  factory: GeneratedProtocolFactory<*>,
+  factory: GeneratedHostProtocol<*>,
   node: ReuseNode<*>,
 ): Long {
   if (!node.eligibleForReuse) return 0L // This node is ineligible.
@@ -89,7 +90,7 @@ internal fun shapeHash(
 
   var result = node.widgetTag.value.toLong()
 
-  factory.widgetChildren(node.widgetTag)?.forEach { childrenTag ->
+  factory.widget(node.widgetTag)?.childrenTags?.forEach { childrenTag ->
     result = (result * 37L) + childrenTag
     var childCount = 0
     for (child in node.children) {
@@ -106,11 +107,11 @@ internal fun shapeHash(
 /** Returns the same hash as [shapeHash], but on an already-built [ProtocolNode]. */
 @OptIn(RedwoodCodegenApi::class)
 internal fun shapeHash(
-  factory: GeneratedProtocolFactory<*>,
+  factory: GeneratedHostProtocol<*>,
   node: ProtocolNode<*>,
 ): Long {
   var result = node.widgetTag.value.toLong()
-  factory.widgetChildren(node.widgetTag)?.forEach { childrenTag ->
+  factory.widget(node.widgetTag)?.childrenTags?.forEach { childrenTag ->
     result = (result * 37L) + childrenTag
     val children = node.children(ChildrenTag(childrenTag))
       ?: return@forEach // This acts like a 'continue'.

@@ -15,50 +15,14 @@
  */
 package app.cash.redwood.tooling.codegen
 
-import app.cash.redwood.schema.Property
-import app.cash.redwood.schema.Schema
-import app.cash.redwood.schema.Widget
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
-import app.cash.redwood.tooling.schema.parseTestSchema
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.contains
-import assertk.assertions.containsMatch
 import com.example.redwood.testapp.TestSchema
-import kotlin.text.RegexOption.MULTILINE
 import org.junit.Test
 
 class WidgetProtocolGenerationTest {
-  @Schema(
-    [
-      Node12::class,
-      Node1::class,
-      Node3::class,
-      Node2::class,
-    ],
-  )
-  interface SortedByTagSchema
-
-  @Widget(1)
-  data class Node1(@Property(1) val text: String)
-
-  @Widget(2)
-  data class Node2(@Property(1) val text: String)
-
-  @Widget(3)
-  data class Node3(@Property(1) val text: String)
-
-  @Widget(12)
-  data class Node12(@Property(1) val text: String)
-
-  @Test fun `names are sorted by their node tags`() {
-    val schema = parseTestSchema(SortedByTagSchema::class)
-
-    val fileSpec = generateProtocolFactory(schema)
-    assertThat(fileSpec.toString())
-      .containsMatch(Regex("1 ->[^2]+2 ->[^3]+3 ->[^1]+12 ->", MULTILINE))
-  }
-
   @Test fun `dependency layout modifier are included in serialization`() {
     val schema = ProtocolSchemaSet.load(TestSchema::class)
 

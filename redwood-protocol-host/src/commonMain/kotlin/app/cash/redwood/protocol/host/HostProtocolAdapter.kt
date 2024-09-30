@@ -57,7 +57,7 @@ public class HostProtocolAdapter<W : Any>(
   private val leakDetector: LeakDetector,
 ) : ChangesSink {
   private val factory = when (factory) {
-    is GeneratedProtocolFactory -> factory
+    is GeneratedHostProtocol -> factory
   }
 
   private val nodes =
@@ -83,7 +83,8 @@ public class HostProtocolAdapter<W : Any>(
       val id = change.id
       when (change) {
         is Create -> {
-          val node = factory.createNode(id, change.tag) ?: continue
+          val widgetProtocol = factory.widget(change.tag) ?: continue
+          val node = widgetProtocol.createNode(id)
           val old = nodes.put(change.id.value, node)
           require(old == null) {
             "Insert attempted to replace existing widget with ID ${change.id.value}"
