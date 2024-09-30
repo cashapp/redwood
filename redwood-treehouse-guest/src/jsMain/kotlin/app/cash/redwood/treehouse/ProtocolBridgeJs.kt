@@ -200,8 +200,13 @@ internal class FastGuestProtocolAdapter(
     val tag = tag
     val index = index
     val count = count
-    val removedIds = Json.encodeToDynamic(removedIds)
-    changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count,"removedIds":removedIds}]"""))
+
+    val removedIdsArray = js("[]")
+    for (i in removedIds.indices) {
+      removedIdsArray.push(removedIds[i].value)
+    }
+
+    changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count,"removedIds":removedIdsArray}]"""))
   }
 
   override fun emitChanges() {
