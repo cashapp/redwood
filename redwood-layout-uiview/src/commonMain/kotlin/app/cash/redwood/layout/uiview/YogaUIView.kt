@@ -14,6 +14,7 @@ import app.cash.redwood.yoga.Size
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -43,12 +44,15 @@ internal class YogaUIView(
     contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever
   }
 
-  override fun intrinsicContentSize(): CValue<CGSize> {
-    return calculateLayoutWithSize(Size.UNDEFINED, Size.UNDEFINED)
-  }
+  override fun intrinsicContentSize(): CValue<CGSize> = calculateLayout()
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    return calculateLayoutWithSize(size)
+    return size.useContents<CGSize, CValue<CGSize>> {
+      calculateLayout(
+        width = width.toYogaWithWidthConstraint(),
+        height = height.toYogaWithHeightConstraint(),
+      )
+    }
   }
 
   override fun layoutSubviews() {
@@ -56,30 +60,27 @@ internal class YogaUIView(
 
     // Based on the constraints of Fill or Wrap, we
     // calculate a size that the container should fit in.
-    val bounds = bounds.useContents {
+    val boundsSize = bounds.useContents {
       CGSizeMake(size.width, size.height)
     }
 
-    if (scrollEnabled) {
+    val contentSize = when {
+      // If we're not scrolling, the contentSize should equal the size of the view.
+      !scrollEnabled -> boundsSize
+
       // When scrolling is enabled, we want to calculate and apply the contentSize
       // separately and have it grow a much as needed in the flexDirection.
       // This duplicates the calculation we're doing above, and should be
       // combined into one call.
-      val scrollSize = bounds.useContents {
-        if (isColumn()) {
-          CGSizeMake(width, Size.UNDEFINED.toDouble())
-        } else {
-          CGSizeMake(Size.UNDEFINED.toDouble(), height)
-        }
-      }
-      val contentSize = calculateLayoutWithSize(scrollSize)
-      setContentSize(contentSize)
-      calculateLayoutWithSize(bounds)
-    } else {
-      // If we're not scrolling, the contentSize should equal the size of the view.
-      val containerSize = calculateLayoutWithSize(bounds)
-      setContentSize(containerSize)
+      isColumn() -> calculateLayout(width = boundsSize.useContents { width.toYoga() })
+      else -> calculateLayout(height = boundsSize.useContents { height.toYoga() })
     }
+
+    setContentSize(contentSize)
+    calculateLayout(
+      width = contentSize.useContents { width.toYoga() },
+      height = contentSize.useContents { height.toYoga() },
+    )
 
     // Layout the nodes based on the calculatedLayouts above.
     for (childNode in rootNode.children) {
@@ -94,24 +95,12 @@ internal class YogaUIView(
     }
   }
 
-  private fun calculateLayoutWithSize(size: CValue<CGSize>): CValue<CGSize> {
-    return size.useContents {
-      calculateLayoutWithSize(width.toYoga(), height.toYoga())
-    }
-  }
-
-  private fun calculateLayoutWithSize(width: Float, height: Float): CValue<CGSize> {
-    rootNode.requestedWidth = when (widthConstraint) {
-      Constraint.Fill -> width
-      else -> Size.UNDEFINED
-    }
-    rootNode.requestedMaxWidth = width
-
-    rootNode.requestedHeight = when (heightConstraint) {
-      Constraint.Fill -> height
-      else -> Size.UNDEFINED
-    }
-    rootNode.requestedMaxHeight = height
+  private fun calculateLayout(
+    width: Float = Size.UNDEFINED,
+    height: Float = Size.UNDEFINED,
+  ): CValue<CGSize> {
+    rootNode.requestedWidth = width
+    rootNode.requestedHeight = height
 
     for ((index, node) in rootNode.children.withIndex()) {
       applyModifier(node, index)
@@ -121,13 +110,23 @@ internal class YogaUIView(
       rootNode.markEverythingDirty()
     }
 
-    rootNode.measureOnly(width, height)
+    rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)
 
     return CGSizeMake(rootNode.width.toDouble(), rootNode.height.toDouble())
   }
 
-  /** Convert a UIView dimension (a double) to a Yoga dimension (a float). */
-  private fun Double.toYoga(): Float {
+  private fun CGFloat.toYogaWithWidthConstraint() = when (widthConstraint) {
+    Constraint.Wrap -> Size.UNDEFINED
+    else -> toYoga()
+  }
+
+  private fun CGFloat.toYogaWithHeightConstraint() = when (heightConstraint) {
+    Constraint.Wrap -> Size.UNDEFINED
+    else -> toYoga()
+  }
+
+  /** Convert a UIView dimension (a Double) to a Yoga dimension (a Float). */
+  private fun CGFloat.toYoga(): Float {
     return when (this) {
       UIViewNoIntrinsicMetric -> Size.UNDEFINED
       else -> this.toFloat()

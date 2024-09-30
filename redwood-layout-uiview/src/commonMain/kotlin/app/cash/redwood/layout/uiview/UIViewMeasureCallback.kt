@@ -24,6 +24,7 @@ import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
   override fun measure(
@@ -34,11 +35,11 @@ internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
     heightMode: MeasureMode,
   ): Size {
     val constrainedWidth = when (widthMode) {
-      MeasureMode.Undefined -> 0.0
+      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> width.toDouble()
     }
     val constrainedHeight = when (heightMode) {
-      MeasureMode.Undefined -> 0.0
+      MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> height.toDouble()
     }
 
@@ -54,20 +55,9 @@ internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
     }
 
     return Size(
-      width = sanitizeMeasurement(constrainedWidth, sizeThatFits.width, widthMode),
-      height = sanitizeMeasurement(constrainedHeight, sizeThatFits.height, heightMode),
+      width = sizeThatFits.width,
+      height = sizeThatFits.height,
     )
-  }
-
-  private fun sanitizeMeasurement(
-    constrainedSize: Double,
-    measuredSize: Float,
-    measureMode: MeasureMode,
-  ): Float = when (measureMode) {
-    MeasureMode.Exactly -> constrainedSize.toFloat()
-    MeasureMode.AtMost -> measuredSize
-    MeasureMode.Undefined -> measuredSize
-    else -> throw AssertionError()
   }
 }
 
