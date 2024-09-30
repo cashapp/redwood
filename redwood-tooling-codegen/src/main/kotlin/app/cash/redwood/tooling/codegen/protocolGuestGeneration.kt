@@ -94,7 +94,7 @@ internal fun generateProtocolWidgetSystemFactory(
             .apply {
               val arguments = buildList {
                 for (dependency in schemaSet.all) {
-                  add(CodeBlock.of("%N = %T(guestAdapter, mismatchHandler)", dependency.type.flatName, dependency.protocolWidgetFactoryType(schema)))
+                  add(CodeBlock.of("%N = %T(guestAdapter, mismatchHandler)", dependency.type.flatName, schema.protocolWidgetFactoryType(dependency)))
                 }
               }
               addStatement("return %T(\n%L)", schema.getWidgetSystemType(), arguments.joinToCode(separator = ",\n"))
@@ -130,16 +130,16 @@ internal class ProtocolExampleWidgetFactory(
 }
 */
 internal fun generateProtocolWidgetFactory(
-  schema: ProtocolSchema,
-  host: ProtocolSchema = schema,
+  generatingSchema: ProtocolSchema,
+  widgetSchema: ProtocolSchema,
 ): FileSpec {
-  val type = schema.protocolWidgetFactoryType(host)
+  val type = generatingSchema.protocolWidgetFactoryType(widgetSchema)
   return buildFileSpec(type) {
     addAnnotation(suppressDeprecations)
     addType(
       TypeSpec.classBuilder(type)
         .addModifiers(INTERNAL)
-        .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(protocolViewType))
+        .addSuperinterface(widgetSchema.getWidgetFactoryType().parameterizedBy(protocolViewType))
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
@@ -158,26 +158,26 @@ internal fun generateProtocolWidgetFactory(
             .build(),
         )
         .apply {
-          for (widget in schema.widgets) {
+          for (widget in widgetSchema.widgets) {
             addFunction(
               FunSpec.builder(widget.type.flatName)
                 .addModifiers(OVERRIDE)
-                .returns(schema.widgetType(widget).parameterizedBy(protocolViewType))
+                .returns(widgetSchema.widgetType(widget).parameterizedBy(protocolViewType))
                 .addStatement(
                   "val widget = %T(guestAdapter, mismatchHandler)",
-                  schema.protocolWidgetType(widget, host),
+                  generatingSchema.protocolWidgetType(widget, widgetSchema),
                 )
                 .addStatement("guestAdapter.appendCreate(widget.id, widget.tag)")
                 .addStatement("return widget")
                 .build(),
             )
           }
-          for (modifier in schema.unscopedModifiers) {
+          for (modifier in widgetSchema.unscopedModifiers) {
             addFunction(
               FunSpec.builder(modifier.type.flatName)
                 .addModifiers(OVERRIDE)
                 .addParameter("value", protocolViewType)
-                .addParameter("modifier", schema.modifierType(modifier))
+                .addParameter("modifier", widgetSchema.modifierType(modifier))
                 .build(),
             )
           }
@@ -230,12 +230,12 @@ internal class ProtocolButton(
 }
 */
 internal fun generateProtocolWidget(
-  schema: ProtocolSchema,
+  generatingSchema: ProtocolSchema,
+  widgetSchema: ProtocolSchema,
   widget: ProtocolWidget,
-  host: ProtocolSchema = schema,
 ): FileSpec {
-  val type = schema.protocolWidgetType(widget, host)
-  val widgetName = schema.widgetType(widget)
+  val type = generatingSchema.protocolWidgetType(widget, widgetSchema)
+  val widgetName = widgetSchema.widgetType(widget)
   return buildFileSpec(type) {
     addAnnotation(suppressDeprecations)
     addType(
@@ -489,18 +489,18 @@ internal val GrowTagAndSerializer: Pair<ModifierTag, SerializationStrategy<Grow>
 }
 */
 internal fun generateProtocolModifierSerializers(
-  schema: ProtocolSchema,
-  host: ProtocolSchema,
+  generatingSchema: ProtocolSchema,
+  modifierSchema: ProtocolSchema,
 ): FileSpec? {
-  if (schema.modifiers.isEmpty()) {
+  if (modifierSchema.modifiers.isEmpty()) {
     return null
   }
-  return buildFileSpec(schema.guestProtocolPackage(host), "modifierSerializers") {
+  return buildFileSpec(generatingSchema.guestProtocolPackage(modifierSchema), "modifierSerializers") {
     addAnnotation(suppressDeprecations)
 
-    for (modifier in schema.modifiers) {
-      val serializerTagAndSerializer = schema.modifierTagAndSerializer(modifier, host)
-      val modifierType = schema.modifierType(modifier)
+    for (modifier in modifierSchema.modifiers) {
+      val serializerTagAndSerializer = generatingSchema.modifierTagAndSerializer(modifier, modifierSchema)
+      val modifierType = modifierSchema.modifierType(modifier)
 
       var nextSerializerId = 0
       val serializerIds = mutableMapOf<TypeName, Int>()
@@ -716,12 +716,12 @@ internal fun modifierTagAndSerializationStrategy(
     .returns(returnType)
     .addCode("return when·(element)·{⇥\n")
     .apply {
-      for ((localSchema, modifier) in allModifiers) {
-        val modifierType = localSchema.modifierType(modifier)
+      for ((modifierSchema, modifier) in allModifiers) {
+        val modifierType = modifierSchema.modifierType(modifier)
         addStatement(
           "is %T -> %M",
           modifierType,
-          localSchema.modifierTagAndSerializer(modifier, schema),
+          schema.modifierTagAndSerializer(modifier, modifierSchema),
         )
       }
     }
@@ -730,14 +730,14 @@ internal fun modifierTagAndSerializationStrategy(
     .build()
 }
 
-private fun Schema.protocolWidgetFactoryType(host: Schema): ClassName {
-  return ClassName(guestProtocolPackage(host), "Protocol${type.flatName}WidgetFactory")
+private fun Schema.protocolWidgetFactoryType(otherSchema: Schema): ClassName {
+  return ClassName(guestProtocolPackage(otherSchema), "Protocol${type.flatName}WidgetFactory")
 }
 
-private fun Schema.protocolWidgetType(widget: Widget, host: Schema): ClassName {
-  return ClassName(guestProtocolPackage(host), "Protocol${widget.type.flatName}")
+private fun Schema.protocolWidgetType(widget: Widget, widgetSchema: Schema): ClassName {
+  return ClassName(guestProtocolPackage(widgetSchema), "Protocol${widget.type.flatName}")
 }
 
-private fun Schema.modifierTagAndSerializer(modifier: Modifier, host: Schema): MemberName {
-  return MemberName(guestProtocolPackage(host), modifier.type.flatName + "TagAndSerializer")
+private fun Schema.modifierTagAndSerializer(modifier: Modifier, modifierSchema: Schema): MemberName {
+  return MemberName(guestProtocolPackage(modifierSchema), modifier.type.flatName + "TagAndSerializer")
 }
