@@ -1,7 +1,20 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.15.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.15.0] - 2024-09-30
+[0.15.0]: https://github.com/cashapp/redwood/releases/tag/0.15.0
 
 New:
 - Default expressions can now be used directly in the schema rather than using the `@Default` annotation. The annotation has been deprecated, and will be removed in the next release.
