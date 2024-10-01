@@ -46,6 +46,9 @@ interface RedwoodBuildExtension {
   fun TaskContainer.generateComposeHelpers(packageName: String): TaskProvider<CopyPastaTask>
 
   fun TaskContainer.generateFlexboxHelpers(packageName: String): TaskProvider<CopyPastaTask>
+
+  /** Confirm all snapshot `@Test` functions also have names starting with `test`. */
+  fun sharedSnapshotTests()
 }
 
 enum class TargetGroup {
