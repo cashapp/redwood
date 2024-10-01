@@ -325,6 +325,27 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
+  @Test fun testRowWithFixedWidthHasChildWithFixedHeight() {
+    val container = flexContainer(FlexDirection.Row).apply {
+      crossAxisAlignment(CrossAxisAlignment.Start)
+      modifier = WidthImpl(200.dp)
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    widgetFactory.text("A ".repeat(10)).apply {
+      modifier = HeightImpl(50.dp)
+      container.children.insert(0, this)
+    }
+
+    widgetFactory.text("B ".repeat(100)).apply {
+      container.children.insert(1, this)
+    }
+
+    container.onEndChanges()
+    snapshotter(container.value).snapshot()
+  }
+
   @Test fun testChildWithUpdatedProperty() {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotter(container.value)
