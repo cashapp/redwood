@@ -21,6 +21,7 @@ import androidx.compose.runtime.ComposeNode
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisallowComposableCalls
+import androidx.compose.runtime.ExplicitGroupsComposable
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.Updater
@@ -187,6 +188,7 @@ public interface RedwoodApplier<W : Any> {
  */
 @Composable
 @RedwoodCodegenApi
+@ExplicitGroupsComposable
 public inline fun <O : WidgetFactoryOwner<V>, W : Widget<V>, V : Any> RedwoodComposeNode(
   crossinline factory: (O) -> W,
   update: @DisallowComposableCalls Updater<WidgetNode<W, V>>.() -> Unit,
