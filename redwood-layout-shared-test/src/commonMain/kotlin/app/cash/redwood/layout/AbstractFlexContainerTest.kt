@@ -245,7 +245,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun columnWithUpdatedCrossAxisAlignment() {
+  @Test fun testColumnWithUpdatedCrossAxisAlignment() {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
