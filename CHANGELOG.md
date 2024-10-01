@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
 
 
 ## [0.15.0] - 2024-09-30
@@ -32,7 +32,6 @@ Fixed:
 - Don't clip elements of `Column` and `Row` layouts whose unbounded size exceeds the container size.
 - Correctly implement margins for `Box` on iOS.
 - Correctly handle dynamic updates to modifiers on `Column` and `Row`.
-- Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
 
 
 ## [0.14.0] - 2024-08-29
