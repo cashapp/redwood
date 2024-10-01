@@ -647,6 +647,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       it.packageName.set(packageName)
     }
   }
+
+  override fun sharedSnapshotTests() {
+    project.plugins.apply("com.google.devtools.ksp")
+    project.dependencies.add("kspJvm", project.project(":build-support-ksp-processor"))
+  }
 }
 
 private val ziplineAttribute = Attribute.of("zipline", String::class.java)
