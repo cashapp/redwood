@@ -1,3 +1,8 @@
+public final class app/cash/redwood/compose/ActualsKt {
+	public static final fun redwoodApplier (Landroidx/compose/runtime/Composer;)Lapp/cash/redwood/compose/RedwoodApplier;
+	public static final fun widgetSystem (Lapp/cash/redwood/compose/RedwoodApplier;)Lapp/cash/redwood/widget/WidgetFactoryOwner;
+}
+
 public final class app/cash/redwood/compose/BackHandlerKt {
 	public static final fun BackHandler (ZLkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;II)V
 	public static final fun getCurrent (Lapp/cash/redwood/ui/OnBackPressedDispatcher$Companion;Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/ui/OnBackPressedDispatcher;

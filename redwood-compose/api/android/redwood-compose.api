@@ -1,3 +1,8 @@
+public final class app/cash/redwood/compose/ActualsKt {
+	public static final fun redwoodApplier (Landroidx/compose/runtime/Composer;)Lapp/cash/redwood/compose/RedwoodApplier;
+	public static final fun widgetSystem (Lapp/cash/redwood/compose/RedwoodApplier;)Lapp/cash/redwood/widget/WidgetFactoryOwner;
+}
+
 public final class app/cash/redwood/compose/AndroidUiDispatcher : kotlinx/coroutines/CoroutineDispatcher {
 	public static final field $stable I
 	public static final field Companion Lapp/cash/redwood/compose/AndroidUiDispatcher$Companion;
