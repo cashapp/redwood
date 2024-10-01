@@ -333,7 +333,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       height(Constraint.Fill)
     }
 
-    widgetFactory.text("A ".repeat(100)).apply {
+    widgetFactory.text("A ".repeat(10)).apply {
       modifier = HeightImpl(50.dp)
       container.children.insert(0, this)
     }
