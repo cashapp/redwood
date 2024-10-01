@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
 
 
 ## [0.15.0] - 2024-09-30
