@@ -1745,15 +1745,17 @@ internal object Yoga {
         mode = childWidthMeasureMode,
         size = childWidthRef,
       )
+      childWidth = childWidthRef.argValue
+      val childHeightRef = RefObject(childHeight)
       YGConstrainMaxSizeForMode(
         node = child,
         axis = YGFlexDirection.YGFlexDirectionColumn,
         ownerAxisSize = ownerHeight,
         ownerWidth = ownerWidth,
         mode = childHeightMeasureMode,
-        size = childWidthRef,
+        size = childHeightRef,
       )
-      childWidth = childWidthRef.argValue
+      childHeight = childHeightRef.argValue
       YGLayoutNodeInternal(
         node = child,
         availableWidth = childWidth,
