@@ -331,6 +331,15 @@ internal fun generateProtocolNode(
             .build(),
         )
         .addProperty(
+          PropertySpec.builder("widgetName", STRING, OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return %S", widget.type.flatName)
+                .build(),
+            )
+            .build(),
+        )
+        .addProperty(
           PropertySpec.builder("_widget", widgetType.copy(nullable = true), PRIVATE)
             .mutable(true)
             .initializer("widget")
@@ -526,22 +535,6 @@ internal fun generateProtocolNode(
               }
             }
             .addStatement("_widget = null")
-            .build(),
-        )
-        .addFunction(
-          FunSpec.builder("toString")
-            .addModifiers(OVERRIDE)
-            .returns(STRING)
-            // This explicit string builder usage allows sharing of strings in dex.
-            // See https://jakewharton.com/the-economics-of-generated-code/#string-duplication.
-            .beginControlFlow("return buildString")
-            .addStatement("append(%S)", type.simpleName)
-            .addStatement("""append("(id=")""")
-            .addStatement("append(id.value)")
-            .addStatement("""append(", tag=")""")
-            .addStatement("append(%L)", widget.tag)
-            .addStatement("append(')')")
-            .endControlFlow()
             .build(),
         )
         .build(),
