@@ -48,6 +48,8 @@ abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { //
 
     abstract val widget // app.cash.redwood.protocol.host/ProtocolNode.widget|{}widget[0]
         abstract fun <get-widget>(): app.cash.redwood.widget/Widget<#A> // app.cash.redwood.protocol.host/ProtocolNode.widget.<get-widget>|<get-widget>(){}[0]
+    abstract val widgetName // app.cash.redwood.protocol.host/ProtocolNode.widgetName|{}widgetName[0]
+        abstract fun <get-widgetName>(): kotlin/String // app.cash.redwood.protocol.host/ProtocolNode.widgetName.<get-widgetName>|<get-widgetName>(){}[0]
     abstract val widgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag|{}widgetTag[0]
         abstract fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol.host/ProtocolNode.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
 
@@ -58,7 +60,7 @@ abstract class <#A: kotlin/Any> app.cash.redwood.protocol.host/ProtocolNode { //
     abstract fun apply(app.cash.redwood.protocol/PropertyChange, app.cash.redwood.protocol.host/UiEventSink) // app.cash.redwood.protocol.host/ProtocolNode.apply|apply(app.cash.redwood.protocol.PropertyChange;app.cash.redwood.protocol.host.UiEventSink){}[0]
     abstract fun children(app.cash.redwood.protocol/ChildrenTag): app.cash.redwood.protocol.host/ProtocolChildren<#A>? // app.cash.redwood.protocol.host/ProtocolNode.children|children(app.cash.redwood.protocol.ChildrenTag){}[0]
     abstract fun detach() // app.cash.redwood.protocol.host/ProtocolNode.detach|detach(){}[0]
-    abstract fun toString(): kotlin/String // app.cash.redwood.protocol.host/ProtocolNode.toString|toString(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.protocol.host/ProtocolNode.toString|toString(){}[0]
     final fun updateModifier(app.cash.redwood/Modifier) // app.cash.redwood.protocol.host/ProtocolNode.updateModifier|updateModifier(app.cash.redwood.Modifier){}[0]
     open fun visitIds(app.cash.redwood.protocol.host/IdVisitor) // app.cash.redwood.protocol.host/ProtocolNode.visitIds|visitIds(app.cash.redwood.protocol.host.IdVisitor){}[0]
 }

@@ -43,9 +43,10 @@ public abstract class app/cash/redwood/protocol/host/ProtocolNode {
 	public abstract fun detach ()V
 	public final fun getId-0HhLjSo ()I
 	public abstract fun getWidget ()Lapp/cash/redwood/widget/Widget;
+	public abstract fun getWidgetName ()Ljava/lang/String;
 	public abstract fun getWidgetTag-BlhN7y0 ()I
 	public final fun setId-ou3jOuA (I)V
-	public abstract fun toString ()Ljava/lang/String;
+	public final fun toString ()Ljava/lang/String;
 	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
 	public fun visitIds (Lapp/cash/redwood/protocol/host/IdVisitor;)V
 }

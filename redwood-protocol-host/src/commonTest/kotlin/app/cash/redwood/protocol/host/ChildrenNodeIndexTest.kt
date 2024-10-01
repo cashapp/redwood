@@ -128,6 +128,7 @@ class ChildrenNodeIndexTest {
 @OptIn(RedwoodCodegenApi::class)
 private class WidgetNode(override val widget: StringWidget) : ProtocolNode<String>(Id(1)) {
   override val widgetTag: WidgetTag get() = WidgetTag(1)
+  override val widgetName: String get() = "WidgetNode"
 
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {
     throw UnsupportedOperationException()
@@ -139,8 +140,6 @@ private class WidgetNode(override val widget: StringWidget) : ProtocolNode<Strin
 
   override fun detach() {
   }
-
-  override fun toString() = "WidgetNode"
 }
 
 private class StringWidget(override val value: String) : Widget<String> {

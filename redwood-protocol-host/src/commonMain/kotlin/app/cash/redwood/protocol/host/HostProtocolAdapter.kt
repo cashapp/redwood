@@ -397,6 +397,8 @@ private class RootProtocolNode<W : Any>(
   Widget<W> {
   override val widgetTag: WidgetTag get() = UnknownWidgetTag
 
+  override val widgetName: String get() = "RootProtocolNode"
+
   private val children = ProtocolChildren(children)
 
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {
@@ -425,8 +427,6 @@ private class RootProtocolNode<W : Any>(
   override fun detach() {
     children.detach()
   }
-
-  override fun toString() = "RootProtocolNode"
 }
 
 private const val REUSE_MODIFIER_TAG = -4_543_827
