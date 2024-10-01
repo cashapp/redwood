@@ -54,9 +54,10 @@ internal object ProtocolHost {
     ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
   val ProtocolChildren = ClassName("app.cash.redwood.protocol.host", "ProtocolChildren")
-  val GeneratedProtocolFactory = ClassName("app.cash.redwood.protocol.host", "GeneratedProtocolFactory")
+  val GeneratedProtocolHost = ClassName("app.cash.redwood.protocol.host", "GeneratedHostProtocol")
   val UiEvent = ClassName("app.cash.redwood.protocol.host", "UiEvent")
   val UiEventSink = ClassName("app.cash.redwood.protocol.host", "UiEventSink")
+  val WidgetHostProtocol = ClassName("app.cash.redwood.protocol.host", "WidgetHostProtocol")
 }
 
 internal object Redwood {

@@ -1,7 +1,6 @@
-public abstract interface class app/cash/redwood/protocol/host/GeneratedProtocolFactory : app/cash/redwood/protocol/host/ProtocolFactory {
+public abstract interface class app/cash/redwood/protocol/host/GeneratedHostProtocol : app/cash/redwood/protocol/host/ProtocolFactory {
 	public abstract fun createModifier (Lapp/cash/redwood/protocol/ModifierElement;)Lapp/cash/redwood/Modifier;
-	public abstract fun createNode-kyz2zXs (II)Lapp/cash/redwood/protocol/host/ProtocolNode;
-	public abstract fun widgetChildren-WCEpcRY (I)[I
+	public abstract fun widget-WCEpcRY (I)Lapp/cash/redwood/protocol/host/WidgetHostProtocol;
 }
 
 public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash/redwood/protocol/ChangesSink {
@@ -67,5 +66,10 @@ public abstract interface class app/cash/redwood/protocol/host/UiEventSink {
 
 public final class app/cash/redwood/protocol/host/VersionKt {
 	public static final fun getHostRedwoodVersion ()Ljava/lang/String;
+}
+
+public abstract interface class app/cash/redwood/protocol/host/WidgetHostProtocol {
+	public abstract fun createNode-ou3jOuA (I)Lapp/cash/redwood/protocol/host/ProtocolNode;
+	public abstract fun getChildrenTags ()[I
 }
 

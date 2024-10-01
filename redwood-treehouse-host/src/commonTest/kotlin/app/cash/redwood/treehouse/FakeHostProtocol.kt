@@ -20,14 +20,22 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.protocol.host.GeneratedProtocolFactory
+import app.cash.redwood.protocol.host.GeneratedHostProtocol
 import app.cash.redwood.protocol.host.ProtocolNode
+import app.cash.redwood.protocol.host.WidgetHostProtocol
 import app.cash.redwood.widget.WidgetSystem
 
 @OptIn(RedwoodCodegenApi::class)
-internal class FakeProtocolNodeFactory : GeneratedProtocolFactory<FakeWidget> {
+internal class FakeHostProtocol : GeneratedHostProtocol<FakeWidget> {
   override val widgetSystem: WidgetSystem<FakeWidget> = FakeWidgetSystem()
-  override fun createNode(id: Id, tag: WidgetTag): ProtocolNode<FakeWidget> = FakeProtocolNode(id, tag)
+  override fun widget(tag: WidgetTag): WidgetHostProtocol<FakeWidget>? = FakeWidgetHostProtocol(tag)
   override fun createModifier(element: ModifierElement): Modifier = Modifier
-  override fun widgetChildren(tag: WidgetTag): IntArray? = null
+}
+
+@OptIn(RedwoodCodegenApi::class)
+private class FakeWidgetHostProtocol(
+  private val tag: WidgetTag,
+) : WidgetHostProtocol<FakeWidget> {
+  override fun createNode(id: Id): ProtocolNode<FakeWidget> = FakeProtocolNode(id, tag)
+  override val childrenTags: IntArray? get() = null
 }
