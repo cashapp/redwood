@@ -63,7 +63,7 @@ class GuestProtocolAdapterTest {
 
     val expected = listOf(
       Create(Id(1), WidgetTag(5)),
-      PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")),
+      PropertyChange(Id(1), WidgetTag(5), PropertyTag(2), JsonPrimitive("PT10S")),
     )
     assertThat(guestAdapter.takeChanges()).isEqualTo(expected)
   }

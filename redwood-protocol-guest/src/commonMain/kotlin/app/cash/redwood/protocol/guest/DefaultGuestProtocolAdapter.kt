@@ -86,28 +86,31 @@ public class DefaultGuestProtocolAdapter(
 
   public override fun <T> appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     serializer: KSerializer<T>,
     value: T,
   ) {
-    changes.add(PropertyChange(id, tag, json.encodeToJsonElement(serializer, value)))
+    changes.add(PropertyChange(id, widgetTag, propertyTag, json.encodeToJsonElement(serializer, value)))
   }
 
   public override fun appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     value: Boolean,
   ) {
-    changes.add(PropertyChange(id, tag, JsonPrimitive(value)))
+    changes.add(PropertyChange(id, widgetTag, propertyTag, JsonPrimitive(value)))
   }
 
   @OptIn(ExperimentalSerializationApi::class)
   override fun appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     value: UInt,
   ) {
-    changes.add(PropertyChange(id, tag, JsonPrimitive(value)))
+    changes.add(PropertyChange(id, widgetTag, propertyTag, JsonPrimitive(value)))
   }
 
   override fun appendModifierChange(id: Id, value: Modifier) {

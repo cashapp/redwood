@@ -257,7 +257,7 @@ class ProtocolFactoryTest {
     val textInput = factory.widget(WidgetTag(5))!!.createNode(Id(1))
 
     val throwingEventSink = UiEventSink { error(it) }
-    textInput.apply(PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
+    textInput.apply(PropertyChange(Id(1), WidgetTag(5), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
 
     assertThat((textInput.widget.value as TextInputValue).customType).isEqualTo(10.seconds)
   }
@@ -272,7 +272,7 @@ class ProtocolFactoryTest {
     )
     val button = factory.widget(WidgetTag(4))!!.createNode(Id(1))
 
-    val change = PropertyChange(Id(1), PropertyTag(345432))
+    val change = PropertyChange(Id(1), WidgetTag(4), PropertyTag(345432))
     val eventSink = UiEventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(change, eventSink)
@@ -292,7 +292,7 @@ class ProtocolFactoryTest {
     )
     val button = factory.widget(WidgetTag(4))!!.createNode(Id(1))
 
-    button.apply(PropertyChange(Id(1), PropertyTag(345432))) { throw UnsupportedOperationException() }
+    button.apply(PropertyChange(Id(1), WidgetTag(4), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
     assertThat(handler.events.single()).isEqualTo("Unknown property 345432 for 4")
   }
@@ -314,7 +314,7 @@ class ProtocolFactoryTest {
     val textInput = factory.widget(WidgetTag(5))!!.createNode(Id(1))
 
     val eventSink = RecordingUiEventSink()
-    textInput.apply(PropertyChange(Id(1), PropertyTag(4), JsonPrimitive(true)), eventSink)
+    textInput.apply(PropertyChange(Id(1), WidgetTag(5), PropertyTag(4), JsonPrimitive(true)), eventSink)
 
     (textInput.widget.value as TextInputValue).onChangeCustomType!!.invoke(10.seconds)
 

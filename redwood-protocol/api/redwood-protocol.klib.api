@@ -226,10 +226,12 @@ final class app.cash.redwood.protocol/ModifierElement { // app.cash.redwood.prot
 final class app.cash.redwood.protocol/PropertyChange : app.cash.redwood.protocol/ValueChange { // app.cash.redwood.protocol/PropertyChange|null[0]
     final val id // app.cash.redwood.protocol/PropertyChange.id|{}id[0]
         final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol/PropertyChange.id.<get-id>|<get-id>(){}[0]
-    final val tag // app.cash.redwood.protocol/PropertyChange.tag|{}tag[0]
-        final fun <get-tag>(): app.cash.redwood.protocol/PropertyTag // app.cash.redwood.protocol/PropertyChange.tag.<get-tag>|<get-tag>(){}[0]
+    final val propertyTag // app.cash.redwood.protocol/PropertyChange.propertyTag|{}propertyTag[0]
+        final fun <get-propertyTag>(): app.cash.redwood.protocol/PropertyTag // app.cash.redwood.protocol/PropertyChange.propertyTag.<get-propertyTag>|<get-propertyTag>(){}[0]
     final val value // app.cash.redwood.protocol/PropertyChange.value|{}value[0]
         final fun <get-value>(): kotlinx.serialization.json/JsonElement // app.cash.redwood.protocol/PropertyChange.value.<get-value>|<get-value>(){}[0]
+    final val widgetTag // app.cash.redwood.protocol/PropertyChange.widgetTag|{}widgetTag[0]
+        final fun <get-widgetTag>(): app.cash.redwood.protocol/WidgetTag // app.cash.redwood.protocol/PropertyChange.widgetTag.<get-widgetTag>|<get-widgetTag>(){}[0]
 
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.protocol/PropertyChange.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.protocol/PropertyChange.hashCode|hashCode(){}[0]
@@ -245,7 +247,7 @@ final class app.cash.redwood.protocol/PropertyChange : app.cash.redwood.protocol
     }
 
     final object Companion { // app.cash.redwood.protocol/PropertyChange.Companion|null[0]
-        final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization.json/JsonElement = ...): app.cash.redwood.protocol/PropertyChange // app.cash.redwood.protocol/PropertyChange.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.json.JsonElement){}[0]
+        final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/WidgetTag, app.cash.redwood.protocol/PropertyTag, kotlinx.serialization.json/JsonElement = ...): app.cash.redwood.protocol/PropertyChange // app.cash.redwood.protocol/PropertyChange.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.WidgetTag;app.cash.redwood.protocol.PropertyTag;kotlinx.serialization.json.JsonElement){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/PropertyChange> // app.cash.redwood.protocol/PropertyChange.Companion.serializer|serializer(){}[0]
     }
 }

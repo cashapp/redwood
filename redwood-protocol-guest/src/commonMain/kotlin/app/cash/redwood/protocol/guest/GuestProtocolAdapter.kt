@@ -80,7 +80,8 @@ public abstract class GuestProtocolAdapter(
   @RedwoodCodegenApi
   public abstract fun <T> appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     serializer: KSerializer<T>,
     value: T,
   )
@@ -88,7 +89,8 @@ public abstract class GuestProtocolAdapter(
   @RedwoodCodegenApi
   public abstract fun appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     value: Boolean,
   )
 
@@ -102,7 +104,8 @@ public abstract class GuestProtocolAdapter(
   @RedwoodCodegenApi
   public abstract fun appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     value: UInt,
   )
 
