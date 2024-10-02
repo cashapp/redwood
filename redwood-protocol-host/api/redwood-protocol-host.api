@@ -1,23 +1,7 @@
-public abstract interface class app/cash/redwood/protocol/host/GeneratedHostProtocol : app/cash/redwood/protocol/host/ProtocolFactory {
-	public abstract fun createModifier (Lapp/cash/redwood/protocol/ModifierElement;)Lapp/cash/redwood/Modifier;
-	public abstract fun widget-WCEpcRY (I)Lapp/cash/redwood/protocol/host/WidgetHostProtocol;
-}
-
 public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash/redwood/protocol/ChangesSink {
 	public synthetic fun <init> (Ljava/lang/String;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/ProtocolFactory;Lapp/cash/redwood/protocol/host/UiEventSink;Lapp/cash/redwood/leaks/LeakDetector;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun close ()V
 	public fun sendChanges (Ljava/util/List;)V
-}
-
-public abstract interface class app/cash/redwood/protocol/host/IdVisitor {
-	public abstract fun visit-ou3jOuA (I)V
-}
-
-public final class app/cash/redwood/protocol/host/ProtocolChildren {
-	public fun <init> (Lapp/cash/redwood/widget/Widget$Children;)V
-	public final fun detach ()V
-	public final fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
-	public final fun visitIds (Lapp/cash/redwood/protocol/host/IdVisitor;)V
 }
 
 public abstract interface class app/cash/redwood/protocol/host/ProtocolFactory {
@@ -36,21 +20,6 @@ public abstract interface class app/cash/redwood/protocol/host/ProtocolMismatchH
 public final class app/cash/redwood/protocol/host/ProtocolMismatchHandler$Companion {
 }
 
-public abstract class app/cash/redwood/protocol/host/ProtocolNode {
-	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun apply (Lapp/cash/redwood/protocol/PropertyChange;Lapp/cash/redwood/protocol/host/UiEventSink;)V
-	public abstract fun children-dBpC-2Y (I)Lapp/cash/redwood/protocol/host/ProtocolChildren;
-	public abstract fun detach ()V
-	public final fun getId-0HhLjSo ()I
-	public abstract fun getWidget ()Lapp/cash/redwood/widget/Widget;
-	public abstract fun getWidgetName ()Ljava/lang/String;
-	public abstract fun getWidgetTag-BlhN7y0 ()I
-	public final fun setId-ou3jOuA (I)V
-	public final fun toString ()Ljava/lang/String;
-	public final fun updateModifier (Lapp/cash/redwood/Modifier;)V
-	public fun visitIds (Lapp/cash/redwood/protocol/host/IdVisitor;)V
-}
-
 public final class app/cash/redwood/protocol/host/UiEvent {
 	public synthetic fun <init> (II[Ljava/lang/Object;[Lkotlinx/serialization/SerializationStrategy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getArgs ()[Ljava/lang/Object;
@@ -66,10 +35,5 @@ public abstract interface class app/cash/redwood/protocol/host/UiEventSink {
 
 public final class app/cash/redwood/protocol/host/VersionKt {
 	public static final fun getHostRedwoodVersion ()Ljava/lang/String;
-}
-
-public abstract interface class app/cash/redwood/protocol/host/WidgetHostProtocol {
-	public abstract fun createNode-ou3jOuA (I)Lapp/cash/redwood/protocol/host/ProtocolNode;
-	public abstract fun getChildrenTags ()[I
 }
 

@@ -242,6 +242,7 @@ public class RedwoodComposeContent<out W : Widget<*>> {
     )
   }
 
+  @RedwoodCodegenApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val Instance: RedwoodComposeContent<Nothing> = RedwoodComposeContent()
   }

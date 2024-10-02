@@ -524,6 +524,8 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         klib.strictValidation = isCiEnvironment
 
         nonPublicMarkers += listOf(
+          // Codegen-specific API only supports the exact same version as which did the generation.
+          "app.cash.redwood.RedwoodCodegenApi",
           // The yoga module is an implementation detail of our layouts.
           "app.cash.redwood.yoga.RedwoodYogaApi",
         )

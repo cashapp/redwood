@@ -34,15 +34,6 @@ public abstract interface class app/cash/redwood/layout/widget/RedwoodLayoutWidg
 	public abstract fun Spacer ()Lapp/cash/redwood/layout/widget/Spacer;
 }
 
-public abstract interface class app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner : app/cash/redwood/widget/WidgetFactoryOwner {
-	public static final field Companion Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner$Companion;
-	public abstract fun getRedwoodLayout ()Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;
-}
-
-public final class app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner$Companion {
-	public final fun apply (Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;Ljava/lang/Object;Lapp/cash/redwood/Modifier$UnscopedElement;)V
-}
-
 public final class app/cash/redwood/layout/widget/RedwoodLayoutWidgetSystem : app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
 	public static final field Companion Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetSystem$Companion;
 	public fun <init> (Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;)V
