@@ -40,8 +40,6 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/Widget { // app.cash
     }
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.widget/WidgetFactoryOwner // app.cash.redwood.widget/WidgetFactoryOwner|null[0]
-
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/WidgetSystem { // app.cash.redwood.widget/WidgetSystem|null[0]
     abstract fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.widget/WidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
 }

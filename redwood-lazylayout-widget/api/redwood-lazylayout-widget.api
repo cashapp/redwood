@@ -56,15 +56,6 @@ public abstract interface class app/cash/redwood/lazylayout/widget/RedwoodLazyLa
 	public abstract fun RefreshableLazyList ()Lapp/cash/redwood/lazylayout/widget/RefreshableLazyList;
 }
 
-public abstract interface class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner : app/cash/redwood/widget/WidgetFactoryOwner {
-	public static final field Companion Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner$Companion;
-	public abstract fun getRedwoodLazyLayout ()Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;
-}
-
-public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner$Companion {
-	public final fun apply (Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;Ljava/lang/Object;Lapp/cash/redwood/Modifier$UnscopedElement;)V
-}
-
 public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSystem : app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
 	public static final field Companion Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSystem$Companion;
 	public fun <init> (Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;)V

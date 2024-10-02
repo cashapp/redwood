@@ -151,6 +151,7 @@ public class WidgetNode<out W : Widget<V>, V : Any>(
   /** The index of [widget] within its parent [container] when attached. */
   public var index: Int = -1
 
+  @RedwoodCodegenApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val SetModifiers: WidgetNode<Widget<Any>, Any>.(Modifier) -> Unit = {
       recordChanged()

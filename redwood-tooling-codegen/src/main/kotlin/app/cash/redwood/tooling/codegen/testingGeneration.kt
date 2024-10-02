@@ -122,7 +122,6 @@ internal fun generateTester(schemaSet: SchemaSet): FileSpec {
 }
 
 /*
-@RedwoodCodegenApi
 public class EmojiSearchTestingWidgetFactory : EmojiSearchWidgetFactory<WidgetValue> {
   public override fun Text(): Text<WidgetValue> = MutableText()
   public override fun Button(): Button<WidgetValue> = MutableButton()
@@ -135,7 +134,6 @@ internal fun generateMutableWidgetFactory(schema: Schema): FileSpec {
     addType(
       TypeSpec.classBuilder(mutableWidgetFactoryType)
         .addSuperinterface(schema.getWidgetFactoryType().parameterizedBy(RedwoodTesting.WidgetValue))
-        .addAnnotation(Redwood.RedwoodCodegenApi)
         .apply {
           for (widget in schema.widgets) {
             addFunction(
