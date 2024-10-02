@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.view
 
-import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.util.LayoutDirection
@@ -28,6 +27,7 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
