@@ -15,10 +15,7 @@ import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
 
 @SuppressLint("ViewConstructor")
-internal class YogaLayout(
-  context: Context,
-  private val applyModifier: (Node, Int) -> Unit,
-) : ViewGroup(context) {
+internal class YogaLayout(context: Context) : ViewGroup(context) {
   val rootNode = Node()
 
   private fun applyLayout(node: Node, xOffset: Float, yOffset: Float) {
@@ -83,11 +80,6 @@ internal class YogaLayout(
       MeasureSpec.EXACTLY -> rootNode.requestedHeight = heightSize
       MeasureSpec.AT_MOST -> rootNode.requestedMaxHeight = heightSize
       MeasureSpec.UNSPECIFIED -> {}
-    }
-
-    // This must be applied immediately before measure.
-    for ((index, node) in rootNode.children.withIndex()) {
-      applyModifier(node, index)
     }
 
     // Sync widget layout requests to the Yoga node tree.

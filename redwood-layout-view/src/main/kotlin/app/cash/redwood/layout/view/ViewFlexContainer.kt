@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.view
 
+import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.util.LayoutDirection
@@ -27,7 +28,6 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
-import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
@@ -45,12 +45,7 @@ internal class ViewFlexContainer(
   private val direction: FlexDirection,
 ) : YogaFlexContainer<View>,
   ChangeListener {
-  private val yogaLayout: YogaLayout = YogaLayout(
-    context,
-    applyModifier = { node, index ->
-      node.applyModifier(children.widgets[index].modifier, density)
-    },
-  )
+  private val yogaLayout: YogaLayout = YogaLayout(context)
   override val rootNode: Node get() = yogaLayout.rootNode
   override val density = Density(context.resources)
 
@@ -59,13 +54,25 @@ internal class ViewFlexContainer(
 
   override val children = ViewGroupChildren(
     yogaLayout,
-    insert = { index, view ->
-      yogaLayout.rootNode.children.add(index, view.asNode())
+    insert = { index, widget ->
+      val view = widget.value
+
+      val node = view.asNode()
+      yogaLayout.rootNode.children.add(index, node)
+
+      // Always apply changes *after* adding a node to its parent.
+      node.applyModifier(widget.modifier, density)
+
       yogaLayout.addView(view, index)
     },
     remove = { index, count ->
       yogaLayout.rootNode.children.remove(index, count)
       yogaLayout.removeViews(index, count)
+    },
+    onModifierUpdated = { index, widget ->
+      val node = yogaLayout.rootNode.children[index]
+      node.applyModifier(widget.modifier, density)
+      yogaLayout.requestLayout()
     },
   )
 
