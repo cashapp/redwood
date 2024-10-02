@@ -25,9 +25,7 @@ import platform.UIKit.UIScrollViewDelegateProtocol
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-internal class YogaUIView(
-  private val applyModifier: (Node, Int) -> Unit,
-) : UIScrollView(cValue { CGRectZero }), UIScrollViewDelegateProtocol {
+internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDelegateProtocol {
   val rootNode = Node()
 
   var widthConstraint = Constraint.Wrap
@@ -100,10 +98,6 @@ internal class YogaUIView(
   ): CValue<CGSize> {
     rootNode.requestedWidth = width
     rootNode.requestedHeight = height
-
-    for ((index, node) in rootNode.children.withIndex()) {
-      applyModifier(node, index)
-    }
 
     rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)
 

@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.widget
 
-import app.cash.redwood.Modifier
 import kotlinx.cinterop.convert
 import platform.UIKit.UIStackView
 import platform.UIKit.UIView
@@ -24,40 +23,48 @@ import platform.darwin.NSInteger
 @ObjCName("UIViewChildren", exact = true)
 public class UIViewChildren(
   private val container: UIView,
-  private val insert: (Widget<UIView>, UIView, Modifier, Int) -> Unit = when (container) {
-    is UIStackView -> { _, view, _, index -> container.insertArrangedSubview(view, index.convert()) }
-    else -> { _, view, _, index -> container.insertSubview(view, index.convert<NSInteger>()) }
+  private val insert: (index: Int, widget: Widget<UIView>) -> Unit = when (container) {
+    is UIStackView -> { index, widget ->
+      container.insertArrangedSubview(widget.value, index.convert())
+    }
+    else -> { index, widget ->
+      container.insertSubview(widget.value, index.convert<NSInteger>())
+    }
   },
-  private val remove: (index: Int, count: Int) -> Array<UIView> = when (container) {
-    is UIStackView -> { index, count -> container.typedArrangedSubviews.remove(index, count) }
-    else -> { index, count -> container.typedSubviews.remove(index, count) }
+  private val remove: (index: Int, count: Int) -> Unit = when (container) {
+    is UIStackView -> { index, count ->
+      container.typedArrangedSubviews.removeFromSuperview(index, count)
+    }
+    else -> { index, count ->
+      container.typedSubviews.removeFromSuperview(index, count)
+    }
   },
-  private val updateModifier: (Modifier, Int) -> Unit = { _, _ -> },
   private val invalidateSize: () -> Unit = { (container.superview ?: container).setNeedsLayout() },
+  private val onModifierUpdated: (index: Int, widget: Widget<UIView>) -> Unit = { _, _ ->
+    invalidateSize()
+  },
 ) : Widget.Children<UIView> {
   private val _widgets = ArrayList<Widget<UIView>>()
   override val widgets: List<Widget<UIView>> get() = _widgets
 
   override fun insert(index: Int, widget: Widget<UIView>) {
     _widgets.add(index, widget)
-    insert(widget, widget.value, widget.modifier, index)
+    insert.invoke(index, widget)
     invalidateSize()
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
 
-    val subviews = remove.invoke(fromIndex, count)
+    remove.invoke(fromIndex, count)
 
     val newIndex = if (toIndex > fromIndex) {
       toIndex - count
     } else {
       toIndex
     }
-    subviews.forEachIndexed { offset, view ->
-      val subviewIndex = newIndex + offset
-      val widget = widgets[subviewIndex]
-      insert(widget, view, widget.modifier, subviewIndex)
+    for (i in newIndex until newIndex + count) {
+      insert.invoke(i, widgets[i])
     }
     invalidateSize()
   }
@@ -76,8 +83,7 @@ public class UIViewChildren(
   }
 
   override fun onModifierUpdated(index: Int, widget: Widget<UIView>) {
-    updateModifier(widget.modifier, index)
-    invalidateSize()
+    onModifierUpdated.invoke(index, widget)
   }
 
   override fun detach() {
@@ -92,8 +98,8 @@ public class UIViewChildren(
   }
 }
 
-private fun List<UIView>.remove(index: Int, count: Int): Array<UIView> {
-  return Array(count) { offset ->
-    this[index + offset].also(UIView::removeFromSuperview)
+private fun List<UIView>.removeFromSuperview(index: Int, count: Int) {
+  for (i in index until index + count) {
+    this[index].removeFromSuperview()
   }
 }
