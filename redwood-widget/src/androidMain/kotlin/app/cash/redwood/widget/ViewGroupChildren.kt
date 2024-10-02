@@ -20,11 +20,14 @@ import android.view.ViewGroup
 
 public class ViewGroupChildren(
   private val container: ViewGroup,
-  private val insert: (index: Int, view: View) -> Unit = { index, view ->
-    container.addView(view, index)
+  private val insert: (index: Int, widget: Widget<View>) -> Unit = { index, widget ->
+    container.addView(widget.value, index)
   },
   private val remove: (index: Int, count: Int) -> Unit = { index, count ->
     container.removeViews(index, count)
+  },
+  private val onModifierUpdated: (index: Int, widget: Widget<View>) -> Unit = { _, _ ->
+    container.requestLayout()
   },
 ) : Widget.Children<View> {
   private val _widgets = ArrayList<Widget<View>>()
@@ -32,15 +35,12 @@ public class ViewGroupChildren(
 
   override fun insert(index: Int, widget: Widget<View>) {
     _widgets.add(index, widget)
-    insert(index, widget.value)
+    insert.invoke(index, widget)
   }
 
   override fun move(fromIndex: Int, toIndex: Int, count: Int) {
     _widgets.move(fromIndex, toIndex, count)
 
-    val views = Array(count) { offset ->
-      container.getChildAt(fromIndex + offset)
-    }
     remove.invoke(fromIndex, count)
 
     val newIndex = if (toIndex > fromIndex) {
@@ -48,8 +48,8 @@ public class ViewGroupChildren(
     } else {
       toIndex
     }
-    views.forEachIndexed { offset, view ->
-      insert(newIndex + offset, view)
+    for (i in newIndex until newIndex + count) {
+      insert.invoke(i, _widgets[i])
     }
   }
 
@@ -59,7 +59,7 @@ public class ViewGroupChildren(
   }
 
   override fun onModifierUpdated(index: Int, widget: Widget<View>) {
-    container.requestLayout()
+    onModifierUpdated.invoke(index, widget)
   }
 
   override fun detach() {
