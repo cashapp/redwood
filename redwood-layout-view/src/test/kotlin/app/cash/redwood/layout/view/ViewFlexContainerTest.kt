@@ -53,7 +53,7 @@ class ViewFlexContainerTest(
     direction: FlexDirection,
     backgroundColor: Int,
   ): ViewTestFlexContainer {
-    val delegate = ViewFlexContainer(paparazzi.context, direction, incremental).apply {
+    val delegate = ViewFlexContainer(paparazzi.context, direction).apply {
       value.setBackgroundColor(backgroundColor)
     }
     return ViewTestFlexContainer(delegate)

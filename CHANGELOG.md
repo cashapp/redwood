@@ -7,7 +7,7 @@ New:
 - Nothing yet!
 
 Changed:
-- Nothing yet!
+- Drop support for non-incremental layouts in `Row` and `Column`.
 
 Fixed:
 - Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
