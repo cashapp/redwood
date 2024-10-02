@@ -18,7 +18,6 @@ import kotlin.math.roundToInt
 internal class YogaLayout(
   context: Context,
   private val applyModifier: (Node, Int) -> Unit,
-  private val incremental: Boolean,
 ) : ViewGroup(context) {
   val rootNode = Node()
 
@@ -92,14 +91,10 @@ internal class YogaLayout(
     }
 
     // Sync widget layout requests to the Yoga node tree.
-    if (incremental) {
-      for (node in rootNode.children) {
-        if (node.view?.isLayoutRequested == true) {
-          node.markDirty()
-        }
+    for (node in rootNode.children) {
+      if (node.view?.isLayoutRequested == true) {
+        node.markDirty()
       }
-    } else {
-      rootNode.markEverythingDirty()
     }
 
     rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)

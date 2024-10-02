@@ -24,13 +24,9 @@ import app.cash.redwood.yoga.FlexDirection
 import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodLayoutWidgetFactory", exact = true)
-public class UIViewRedwoodLayoutWidgetFactory(
-  private val incremental: Boolean,
-) : RedwoodLayoutWidgetFactory<UIView> {
-  public constructor() : this(false)
-
+public class UIViewRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<UIView> {
   override fun Box(): Box<UIView> = UIViewBox()
-  override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column, incremental)
-  override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row, incremental)
+  override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
+  override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row)
   override fun Spacer(): Spacer<UIView> = UIViewSpacer()
 }

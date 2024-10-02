@@ -33,7 +33,6 @@ import platform.darwin.NSInteger
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
-  private val incremental: Boolean,
 ) : YogaFlexContainer<UIView>,
   ResizableWidget<UIView>,
   ChangeListener {
@@ -41,7 +40,6 @@ internal class UIViewFlexContainer(
     applyModifier = { node, _ ->
       node.applyModifier(node.context as Modifier, Density.Default)
     },
-    incremental = incremental,
   )
   override val rootNode: Node get() = yogaView.rootNode
   override val density: Density get() = Density.Default
@@ -96,21 +94,16 @@ internal class UIViewFlexContainer(
   }
 
   internal fun invalidateSize() {
-    if (incremental) {
-      if (rootNode.markDirty()) {
-        // The node was newly-dirty. Propagate that up the tree.
-        val sizeListener = this.sizeListener
-        if (sizeListener != null) {
-          value.setNeedsLayout()
-          sizeListener.invalidateSize()
-        } else {
-          value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
-          value.setNeedsLayout() // Update layout of subviews.
-        }
+    if (rootNode.markDirty()) {
+      // The node was newly-dirty. Propagate that up the tree.
+      val sizeListener = this.sizeListener
+      if (sizeListener != null) {
+        value.setNeedsLayout()
+        sizeListener.invalidateSize()
+      } else {
+        value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
+        value.setNeedsLayout() // Update layout of subviews.
       }
-    } else {
-      value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
-      value.setNeedsLayout() // Update layout of subviews.
     }
   }
 }

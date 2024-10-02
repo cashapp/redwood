@@ -40,13 +40,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 abstract class AbstractFlexContainerTest<T : Any> {
-  /**
-   * Returns true if the FlexContainer implementation implements incremental layouts. This is
-   * currently opt-in, but will soon be the only supported mode.
-   */
-  open val incremental: Boolean
-    get() = true
-
   abstract val widgetFactory: TestWidgetFactory<T>
 
   abstract fun flexContainer(
@@ -683,23 +676,21 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val aMeasureCountV2 = a.measureCount
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
-    if (incremental) {
-      // Only 'b' is measured again.
-      assertEquals(aMeasureCountV1, aMeasureCountV2)
-      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
-      assertEquals(cMeasureCountV1, cMeasureCountV2)
-    }
+
+    // Only 'b' is measured again.
+    assertEquals(aMeasureCountV1, aMeasureCountV2)
+    assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+    assertEquals(cMeasureCountV1, cMeasureCountV2)
 
     snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
     val bMeasureCountV3 = b.measureCount
     val cMeasureCountV3 = c.measureCount
-    if (incremental) {
-      // Nothing is measured again.
-      assertEquals(aMeasureCountV2, aMeasureCountV3)
-      assertEquals(bMeasureCountV2, bMeasureCountV3)
-      assertEquals(cMeasureCountV2, cMeasureCountV3)
-    }
+
+    // Nothing is measured again.
+    assertEquals(aMeasureCountV2, aMeasureCountV3)
+    assertEquals(bMeasureCountV2, bMeasureCountV3)
+    assertEquals(cMeasureCountV2, cMeasureCountV3)
   }
 
   @Test fun testRecursiveLayoutIsIncremental() {
@@ -747,23 +738,21 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val aMeasureCountV2 = a.measureCount
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
-    if (incremental) {
-      // Only 'b' is measured again.
-      assertEquals(aMeasureCountV1, aMeasureCountV2)
-      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
-      assertEquals(cMeasureCountV1, cMeasureCountV2)
-    }
+
+    // Only 'b' is measured again.
+    assertEquals(aMeasureCountV1, aMeasureCountV2)
+    assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+    assertEquals(cMeasureCountV1, cMeasureCountV2)
 
     snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
     val bMeasureCountV3 = b.measureCount
     val cMeasureCountV3 = c.measureCount
-    if (incremental) {
-      // Nothing is measured again.
-      assertEquals(aMeasureCountV2, aMeasureCountV3)
-      assertEquals(bMeasureCountV2, bMeasureCountV3)
-      assertEquals(cMeasureCountV2, cMeasureCountV3)
-    }
+
+    // Nothing is measured again.
+    assertEquals(aMeasureCountV2, aMeasureCountV3)
+    assertEquals(bMeasureCountV2, bMeasureCountV3)
+    assertEquals(cMeasureCountV2, cMeasureCountV3)
   }
 
   /** Confirm that child element size changes propagate up the view hierarchy. */

@@ -52,7 +52,7 @@ class UIViewFlexContainerTest(
     direction: FlexDirection,
     backgroundColor: Int,
   ): UIViewTestFlexContainer {
-    return UIViewTestFlexContainer(UIViewFlexContainer(direction, incremental)).apply {
+    return UIViewTestFlexContainer(UIViewFlexContainer(direction)).apply {
       value.backgroundColor = backgroundColor.toUIColor()
 
       // Install a default SizeListener that doesn't do anything. Otherwise the test subject
