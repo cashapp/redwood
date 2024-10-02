@@ -36,32 +36,35 @@ internal class UIViewFlexContainer(
 ) : YogaFlexContainer<UIView>,
   ResizableWidget<UIView>,
   ChangeListener {
-  private val yogaView: YogaUIView = YogaUIView(
-    applyModifier = { node, _ ->
-      node.applyModifier(node.context as Modifier, Density.Default)
-    },
-  )
+  private val yogaView: YogaUIView = YogaUIView()
   override val rootNode: Node get() = yogaView.rootNode
   override val density: Density get() = Density.Default
   override val value: UIView get() = yogaView
   override val children: UIViewChildren = UIViewChildren(
     container = value,
-    insert = { widget, view, modifier, index ->
-      val node = view.asNode(context = modifier)
+    insert = { index, widget ->
+      val view = widget.value
+      val node = view.asNode()
       if (widget is ResizableWidget<*>) {
         widget.sizeListener = NodeSizeListener(node, view, this@UIViewFlexContainer)
       }
       yogaView.rootNode.children.add(index, node)
+
+      // Always apply changes *after* adding a node to its parent.
+      node.applyModifier(widget.modifier, density)
+
       value.insertSubview(view, index.convert<NSInteger>())
     },
     remove = { index, count ->
       yogaView.rootNode.children.remove(index, count)
-      Array(count) {
-        value.typedSubviews[index].also(UIView::removeFromSuperview)
+      for (i in index until index + count) {
+        value.typedSubviews[index].removeFromSuperview()
       }
     },
-    updateModifier = { modifier, index ->
-      yogaView.rootNode.children[index].context = modifier
+    onModifierUpdated = { index, widget ->
+      val node = yogaView.rootNode.children[index]
+      val nodeBecameDirty = node.applyModifier(widget.modifier, density)
+      invalidateSize(nodeBecameDirty = nodeBecameDirty)
     },
     invalidateSize = ::invalidateSize,
   )
@@ -93,8 +96,8 @@ internal class UIViewFlexContainer(
     invalidateSize()
   }
 
-  internal fun invalidateSize() {
-    if (rootNode.markDirty()) {
+  internal fun invalidateSize(nodeBecameDirty: Boolean = false) {
+    if (rootNode.markDirty() || nodeBecameDirty) {
       // The node was newly-dirty. Propagate that up the tree.
       val sizeListener = this.sizeListener
       if (sizeListener != null) {
@@ -108,10 +111,9 @@ internal class UIViewFlexContainer(
   }
 }
 
-private fun UIView.asNode(context: Any?): Node {
+private fun UIView.asNode(): Node {
   val childNode = Node()
   childNode.measureCallback = UIViewMeasureCallback(this)
-  childNode.context = context
   return childNode
 }
 
