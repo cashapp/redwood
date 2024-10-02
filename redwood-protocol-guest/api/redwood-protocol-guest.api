@@ -6,9 +6,9 @@ public final class app/cash/redwood/protocol/guest/DefaultGuestProtocolAdapter :
 	public fun appendCreate-kyz2zXs (II)V
 	public fun appendModifierChange-z3jyS0k (ILapp/cash/redwood/Modifier;)V
 	public fun appendMove-HpxY78w (IIIII)V
-	public fun appendPropertyChange-DxQz5cw (IILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
-	public fun appendPropertyChange-M7EZMwg (III)V
-	public fun appendPropertyChange-e3iP1vo (IIZ)V
+	public fun appendPropertyChange-13Ob0Yo (IIILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
+	public fun appendPropertyChange-ITsWdOQ (IIIZ)V
+	public fun appendPropertyChange-hzhmVHk (IIII)V
 	public fun appendRemove-HpxY78w (IIIILjava/util/List;)V
 	public fun emitChanges ()V
 	public fun getJson ()Lkotlinx/serialization/json/Json;

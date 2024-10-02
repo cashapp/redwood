@@ -243,7 +243,7 @@ private class ButtonProtocolNode<W : Any>(
 
   public override fun apply(change: PropertyChange, eventSink: UiEventSink): Unit {
     val widget = _widget ?: error("detached")
-    when (change.tag.value) {
+    when (change.propertyTag.value) {
       1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
       2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
@@ -254,7 +254,7 @@ private class ButtonProtocolNode<W : Any>(
         }
         widget.onClick(onClick)
       }
-      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.tag)
+      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.propertyTag)
     }
   }
 
@@ -425,7 +425,7 @@ internal fun generateProtocolNode(
                 if (properties.isNotEmpty()) {
                   addStatement("val widget = _widget ?: error(%S)", "detached")
                 }
-                beginControlFlow("when (change.tag.value)")
+                beginControlFlow("when (change.propertyTag.value)")
                 for (trait in properties) {
                   when (trait) {
                     is ProtocolProperty -> {
@@ -500,7 +500,7 @@ internal fun generateProtocolNode(
                 }
               }
               .addStatement(
-                "else -> mismatchHandler.onUnknownProperty(%T(%L), change.tag)",
+                "else -> mismatchHandler.onUnknownProperty(%T(%L), change.propertyTag)",
                 Protocol.WidgetTag,
                 widget.tag,
               )

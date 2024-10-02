@@ -120,7 +120,7 @@ class ProtocolTest {
         // Text
         Create(Id(2), WidgetTag(3)),
         // text
-        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hey")),
+        PropertyChange(Id(2), WidgetTag(3), PropertyTag(1), JsonPrimitive("hey")),
         ModifierChange(Id(2)),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
         // Row
@@ -129,7 +129,7 @@ class ProtocolTest {
         // Text
         Create(Id(4), WidgetTag(3)),
         // text
-        PropertyChange(Id(4), PropertyTag(1), JsonPrimitive("hello")),
+        PropertyChange(Id(4), WidgetTag(3), PropertyTag(1), JsonPrimitive("hello")),
         ModifierChange(Id(4)),
         ChildrenChange.Add(Id(3), ChildrenTag(1), Id(4), 0),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(3), 1),
@@ -151,29 +151,29 @@ class ProtocolTest {
         // Button
         Create(Id(1), WidgetTag(4)),
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("hi")),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(2), JsonPrimitive(false)),
         // color
-        PropertyChange(Id(1), PropertyTag(3), JsonPrimitive(0u)),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(3), JsonPrimitive(0u)),
         ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
         // Button
         Create(Id(2), WidgetTag(4)),
         // text
-        PropertyChange(Id(2), PropertyTag(1), JsonPrimitive("hi")),
+        PropertyChange(Id(2), WidgetTag(4), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
-        PropertyChange(Id(2), PropertyTag(2), JsonPrimitive(true)),
+        PropertyChange(Id(2), WidgetTag(4), PropertyTag(2), JsonPrimitive(true)),
         // color
-        PropertyChange(Id(2), PropertyTag(3), JsonPrimitive(0u)),
+        PropertyChange(Id(2), WidgetTag(4), PropertyTag(3), JsonPrimitive(0u)),
         ModifierChange(Id(2)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
         // Button2
         Create(Id(3), WidgetTag(7)),
         // text
-        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hi")),
+        PropertyChange(Id(3), WidgetTag(7), PropertyTag(1), JsonPrimitive("hi")),
         // onClick
-        PropertyChange(Id(3), PropertyTag(2), JsonPrimitive(true)),
+        PropertyChange(Id(3), WidgetTag(7), PropertyTag(2), JsonPrimitive(true)),
         ModifierChange(Id(3)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(3), 2),
       ),
@@ -214,11 +214,11 @@ class ProtocolTest {
         // Button
         Create(Id(1), WidgetTag(4)),
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(1), JsonPrimitive("state: 0")),
         // onClick
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(2), JsonPrimitive(true)),
         // color
-        PropertyChange(Id(1), PropertyTag(3), JsonPrimitive(0u)),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(3), JsonPrimitive(0u)),
         ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
@@ -230,7 +230,7 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
     )
 
@@ -240,9 +240,9 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 2")),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(1), JsonPrimitive("state: 2")),
         // text
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(false)),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(2), JsonPrimitive(false)),
       ),
     )
 
@@ -252,7 +252,7 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 3")),
+        PropertyChange(Id(1), WidgetTag(4), PropertyTag(1), JsonPrimitive("state: 3")),
       ),
     )
   }
@@ -283,9 +283,9 @@ class ProtocolTest {
         // Button2
         Create(Id(1), WidgetTag(7)),
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 0")),
+        PropertyChange(Id(1), WidgetTag(7), PropertyTag(1), JsonPrimitive("state: 0")),
         // onClick
-        PropertyChange(Id(1), PropertyTag(2), JsonPrimitive(true)),
+        PropertyChange(Id(1), WidgetTag(7), PropertyTag(2), JsonPrimitive(true)),
         ModifierChange(Id(1)),
         ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
@@ -297,7 +297,7 @@ class ProtocolTest {
     assertThat(composition.awaitSnapshot()).isEqualTo(
       listOf(
         // text
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("state: 1")),
+        PropertyChange(Id(1), WidgetTag(7), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
     )
   }

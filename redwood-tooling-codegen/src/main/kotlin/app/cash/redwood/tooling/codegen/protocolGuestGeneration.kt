@@ -207,13 +207,13 @@ internal class ProtocolButton(
     }
 
   override fun text(text: String?) {
-    this.guestAdapter.appendPropertyChange(this.id, PropertyTag(1), serializer_0, text)
+    this.guestAdapter.appendPropertyChange(this.id, WidgetTag(3), PropertyTag(1), serializer_0, text)
   }
 
   override fun onClick(onClick: (() -> Unit)?) {
     val onClickSet = onClick != null
     if (onClickSet != (this.onClick != null)) {
-      guestAdapter.appendPropertyChange(this.id, PropertyTag(3), onClickSet)
+      guestAdapter.appendPropertyChange(this.id, WidgetTag(3), PropertyTag(3), onClickSet)
     }
     this.onClick = onClick
   }
@@ -290,7 +290,9 @@ internal fun generateProtocolWidget(
                       // Work around https://github.com/Kotlin/kotlinx.serialization/issues/2713.
                       if (traitTypeName == U_INT) {
                         addStatement(
-                          "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %N)",
+                          "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %T(%L), %N)",
+                          Protocol.WidgetTag,
+                          widget.tag,
                           Protocol.PropertyTag,
                           trait.tag,
                           trait.name,
@@ -300,7 +302,9 @@ internal fun generateProtocolWidget(
                           nextSerializerId++
                         }
                         addStatement(
-                          "this.guestAdapter.appendPropertyChange(this.id, %T(%L), serializer_%L, %N)",
+                          "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %T(%L), serializer_%L, %N)",
+                          Protocol.WidgetTag,
+                          widget.tag,
                           Protocol.PropertyTag,
                           trait.tag,
                           serializerId,
@@ -342,7 +346,9 @@ internal fun generateProtocolWidget(
                         "true"
                       }
                       addStatement(
-                        "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %L)",
+                        "this.guestAdapter.appendPropertyChange(this.id, %T(%L), %T(%L), %L)",
+                        Protocol.WidgetTag,
+                        widget.tag,
                         Protocol.PropertyTag,
                         trait.tag,
                         newValue,

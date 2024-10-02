@@ -108,32 +108,42 @@ internal class FastGuestProtocolAdapter(
 
   override fun <T> appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     serializer: KSerializer<T>,
     value: T,
   ) {
     val id = id
-    val tag = tag
+    val widget = widgetTag
+    val tag = propertyTag
     val encodedValue = value?.let { json.encodeToDynamic(serializer, it) }
-    changes.push(js("""["property",{"id":id,"tag":tag,"value":encodedValue}]"""))
+    changes.push(js("""["property",{"id":id,"widget":widget,"tag":tag,"value":encodedValue}]"""))
   }
 
   override fun appendPropertyChange(
     id: Id,
-    tag: PropertyTag,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
     value: Boolean,
   ) {
     val id = id
-    val tag = tag
+    val widget = widgetTag
+    val tag = propertyTag
     val value = value
-    changes.push(js("""["property",{"id":id,"tag":tag,"value":value}]"""))
+    changes.push(js("""["property",{"id":id,"widget":widget,"tag":tag,"value":value}]"""))
   }
 
-  override fun appendPropertyChange(id: Id, tag: PropertyTag, value: UInt) {
+  override fun appendPropertyChange(
+    id: Id,
+    widgetTag: WidgetTag,
+    propertyTag: PropertyTag,
+    value: UInt,
+  ) {
     val id = id
-    val tag = tag
+    val widget = widgetTag
+    val tag = propertyTag
     val value = value.toDouble()
-    changes.push(js("""["property",{"id":id,"tag":tag,"value":value}]"""))
+    changes.push(js("""["property",{"id":id,"widget":widget,"tag":tag,"value":value}]"""))
   }
 
   override fun appendModifierChange(id: Id, value: Modifier) {
