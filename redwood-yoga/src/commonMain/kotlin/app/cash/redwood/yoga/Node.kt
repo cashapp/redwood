@@ -114,6 +114,8 @@ public class Node internal constructor(
     return true
   }
 
+  public fun isDirty(): Boolean = native.isDirty()
+
   public fun markEverythingDirty() {
     native.markDirtyAndPropogateDownwards()
   }
