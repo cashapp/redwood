@@ -26,6 +26,7 @@ import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
@@ -67,6 +68,13 @@ class ViewLazyListAsFlexContainerTest(
 
   override fun column(): Column<View> {
     return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
+  }
+
+  override fun spacer(backgroundColor: Int): Spacer<View> {
+    return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Spacer()
+      .apply {
+        value.setBackgroundColor(backgroundColor)
+      }
   }
 
   override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)

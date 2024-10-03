@@ -21,6 +21,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.ui.Px
@@ -62,6 +63,13 @@ class ViewFlexContainerTest(
   override fun row() = flexContainer(FlexDirection.Row)
 
   override fun column() = flexContainer(FlexDirection.Column)
+
+  override fun spacer(backgroundColor: Int): Spacer<View> {
+    return ViewSpacer(paparazzi.context)
+      .apply {
+        setBackgroundColor(backgroundColor)
+      }
+  }
 
   override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 

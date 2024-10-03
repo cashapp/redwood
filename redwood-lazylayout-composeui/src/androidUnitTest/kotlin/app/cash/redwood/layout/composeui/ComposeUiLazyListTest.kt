@@ -27,6 +27,7 @@ import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
@@ -68,6 +69,11 @@ class ComposeUiLazyListTest(
 
   override fun column(): Column<@Composable () -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Column()
+  }
+
+  override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
+    // TODO: honor backgroundColor.
+    return ComposeUiRedwoodLayoutWidgetFactory().Spacer()
   }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)

@@ -20,6 +20,7 @@ import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.lazylayout.toUIColor
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
@@ -46,6 +47,13 @@ class UIViewLazyListAsFlexContainerTest(
   override fun row() = UIViewRedwoodLayoutWidgetFactory().Row()
 
   override fun column() = UIViewRedwoodLayoutWidgetFactory().Column()
+
+  override fun spacer(backgroundColor: Int): Spacer<UIView> {
+    return UIViewRedwoodLayoutWidgetFactory().Spacer()
+      .apply {
+        value.backgroundColor = backgroundColor.toUIColor()
+      }
+  }
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 

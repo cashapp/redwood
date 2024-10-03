@@ -21,6 +21,7 @@ import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
@@ -67,6 +68,13 @@ class UIViewFlexContainerTest(
   override fun row() = flexContainer(FlexDirection.Row)
 
   override fun column() = flexContainer(FlexDirection.Column)
+
+  override fun spacer(backgroundColor: Int): Spacer<UIView> {
+    return UIViewRedwoodLayoutWidgetFactory().Spacer()
+      .apply {
+        value.backgroundColor = backgroundColor.toUIColor()
+      }
+  }
 
   class UIViewTestFlexContainer internal constructor(
     private val delegate: UIViewFlexContainer,
