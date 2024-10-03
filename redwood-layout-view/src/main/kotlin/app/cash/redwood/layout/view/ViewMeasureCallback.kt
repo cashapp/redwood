@@ -22,7 +22,7 @@ import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
 
-internal class ViewMeasureCallback(val view: View) : MeasureCallback {
+internal object ViewMeasureCallback : MeasureCallback {
   override fun measure(
     node: Node,
     width: Float,
@@ -30,6 +30,7 @@ internal class ViewMeasureCallback(val view: View) : MeasureCallback {
     height: Float,
     heightMode: MeasureMode,
   ): Size {
+    val view = node.context as View
     val safeWidth = if (width.isFinite()) width.roundToInt() else 0
     val safeHeight = if (height.isFinite()) height.roundToInt() else 0
     val widthSpec = View.MeasureSpec.makeMeasureSpec(safeWidth, widthMode.toAndroid())

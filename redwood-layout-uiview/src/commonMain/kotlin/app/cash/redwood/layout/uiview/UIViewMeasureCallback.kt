@@ -26,7 +26,7 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
-internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
+internal object UIViewMeasureCallback : MeasureCallback {
   override fun measure(
     node: Node,
     width: Float,
@@ -34,6 +34,7 @@ internal class UIViewMeasureCallback(val view: UIView) : MeasureCallback {
     height: Float,
     heightMode: MeasureMode,
   ): Size {
+    val view = node.context as UIView
     val constrainedWidth = when (widthMode) {
       MeasureMode.Undefined -> UIViewNoIntrinsicMetric
       else -> width.toDouble()

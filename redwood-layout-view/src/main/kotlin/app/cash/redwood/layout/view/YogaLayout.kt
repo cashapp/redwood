@@ -17,10 +17,13 @@ import kotlin.math.roundToInt
 @SuppressLint("ViewConstructor")
 internal class YogaLayout(context: Context) : ViewGroup(context) {
   val rootNode = Node()
+    .apply {
+      this.context = this@YogaLayout
+    }
 
   private fun applyLayout(node: Node, xOffset: Float, yOffset: Float) {
-    val view = node.view
-    if (view != null && view !== this) {
+    val view = node.context as View
+    if (view !== this) {
       if (view.visibility == GONE) return
 
       val width = node.width.roundToInt()
@@ -84,7 +87,7 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
 
     // Sync widget layout requests to the Yoga node tree.
     for (node in rootNode.children) {
-      if (node.view?.isLayoutRequested == true) {
+      if ((node.context as View).isLayoutRequested) {
         node.markDirty()
       }
     }
@@ -92,6 +95,3 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)
   }
 }
-
-private val Node.view: View?
-  get() = (measureCallback as ViewMeasureCallback?)?.view

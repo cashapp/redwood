@@ -57,7 +57,7 @@ internal class ViewFlexContainer(
     insert = { index, widget ->
       val view = widget.value
 
-      val node = view.asNode()
+      val node = Node(view)
       yogaLayout.rootNode.children.add(index, node)
 
       // Always apply changes *after* adding a node to its parent.
@@ -183,8 +183,9 @@ internal class ViewFlexContainer(
   }
 }
 
-private fun View.asNode(): Node {
-  return Node().apply {
-    measureCallback = ViewMeasureCallback(this@asNode)
-  }
+private fun Node(view: View): Node {
+  val result = Node()
+  result.measureCallback = ViewMeasureCallback
+  result.context = view
+  return result
 }

@@ -44,7 +44,7 @@ internal class UIViewFlexContainer(
     container = value,
     insert = { index, widget ->
       val view = widget.value
-      val node = view.asNode()
+      val node = Node(view)
       if (widget is ResizableWidget<*>) {
         widget.sizeListener = NodeSizeListener(node, view, this@UIViewFlexContainer)
       }
@@ -111,10 +111,11 @@ internal class UIViewFlexContainer(
   }
 }
 
-private fun UIView.asNode(): Node {
-  val childNode = Node()
-  childNode.measureCallback = UIViewMeasureCallback(this)
-  return childNode
+private fun Node(view: UIView): Node {
+  val result = Node()
+  result.measureCallback = UIViewMeasureCallback
+  result.context = view
+  return result
 }
 
 private class NodeSizeListener(

@@ -27,6 +27,9 @@ import platform.UIKit.UIViewNoIntrinsicMetric
 
 internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDelegateProtocol {
   val rootNode = Node()
+    .apply {
+      this.context = this@YogaUIView
+    }
 
   var widthConstraint = Constraint.Wrap
   var heightConstraint = Constraint.Wrap
@@ -81,7 +84,7 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
 
     // Layout the nodes based on the calculatedLayouts above.
     for (childNode in rootNode.children) {
-      childNode.view.setFrame(
+      (childNode.context as UIView).setFrame(
         CGRectMake(
           x = childNode.left.toDouble(),
           y = childNode.top.toDouble(),
@@ -151,6 +154,3 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
     return rootNode.flexDirection == FlexDirection.Column
   }
 }
-
-private val Node.view: UIView
-  get() = (measureCallback as UIViewMeasureCallback).view
