@@ -21,11 +21,8 @@ import android.util.LayoutDirection
 import android.view.View
 import android.view.View.OnScrollChangeListener
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
-import androidx.core.view.updateLayoutParams
+import androidx.core.view.children
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import app.cash.redwood.Modifier
@@ -90,15 +87,11 @@ internal class ViewFlexContainer(
   }
 
   override fun width(width: Constraint) {
-    hostView.updateLayoutParams {
-      this.width = if (width == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
-    }
+    yogaLayout.widthConstraint = width
   }
 
   override fun height(height: Constraint) {
-    hostView.updateLayoutParams {
-      this.height = if (height == Constraint.Fill) MATCH_PARENT else WRAP_CONTENT
-    }
+    yogaLayout.heightConstraint = height
   }
 
   override fun overflow(overflow: Overflow) {
@@ -121,7 +114,7 @@ internal class ViewFlexContainer(
     yogaLayout.requestLayout()
   }
 
-  private inner class HostView : FrameLayout(context) {
+  private inner class HostView : ViewGroup(context) {
     var scrollEnabled = false
       set(new) {
         val old = field
@@ -135,8 +128,24 @@ internal class ViewFlexContainer(
     private var onScrollListener: Any? = null
 
     init {
-      layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
       updateViewHierarchy()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+      for (child in children) {
+        child.layout(0, 0, right - left, bottom - top)
+      }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+      var maxWidth = 0
+      var maxHeight = 0
+      for (child in children) {
+        child.measure(widthMeasureSpec, heightMeasureSpec)
+        maxWidth = maxOf(maxWidth, child.measuredWidth)
+        maxHeight = maxOf(maxHeight, child.measuredHeight)
+      }
+      setMeasuredDimension(maxWidth, maxHeight)
     }
 
     fun attachOrDetachScrollListeners() {
