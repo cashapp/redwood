@@ -100,6 +100,6 @@ public class UIViewChildren(
 
 private fun List<UIView>.removeFromSuperview(index: Int, count: Int) {
   for (i in index until index + count) {
-    this[index].removeFromSuperview()
+    this[i].removeFromSuperview()
   }
 }
