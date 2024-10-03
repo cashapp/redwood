@@ -40,12 +40,10 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
       // otherwise it won't apply gravity correctly.
       val width = right - left
       val height = bottom - top
-      if (width != view.measuredWidth || height != view.measuredHeight) {
-        view.measure(
-          MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-          MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
-        )
-      }
+      view.measure(
+        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+      )
       view.layout(left, top, right, bottom)
     }
 
