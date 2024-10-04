@@ -98,7 +98,7 @@ public class PropertyChange private constructor(
   @SerialName("id")
   private val _id: Int,
   @SerialName("widget")
-  private val _widgetTag: Int,
+  private val _widgetTag: Int = -1,
   @SerialName("tag")
   private val _tag: Int,
   public val value: JsonElement = JsonNull,
