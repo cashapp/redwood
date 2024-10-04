@@ -871,6 +871,44 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     snapshotter(root.value).snapshot()
   }
+
+  /**
+   * CrossAxisAlignment.Start forces child to wrap its size on Android
+   * https://github.com/cashapp/redwood/issues/2093
+   */
+  @Test fun testCrossAxisAlignmentStart() {
+    val root = flexContainer(FlexDirection.Column).apply {
+      width(Constraint.Fill)
+      crossAxisAlignment(CrossAxisAlignment.Start)
+    }
+
+    val row = row().apply {
+      width(Constraint.Fill)
+      horizontalAlignment(MainAxisAlignment.SpaceBetween)
+      root.add(this)
+    }
+
+    row.children.insert(0, widgetFactory.text("Something"))
+    row.children.insert(1, widgetFactory.text("Something else"))
+
+    snapshotter(root.value).snapshot()
+  }
+
+  /**
+   * Text not wrapping inside a row.
+   * https://github.com/cashapp/redwood/issues/2011
+   */
+  @Test fun testTextWrapsInsideRow() {
+    val root = flexContainer(FlexDirection.Row)
+
+    root.add(
+      widgetFactory.text(
+        "This is a long piece of text that will wrap the screen. ".repeat(3),
+      ),
+    )
+
+    snapshotter(root.value).snapshot()
+  }
 }
 
 interface TestFlexContainer<T : Any> :
