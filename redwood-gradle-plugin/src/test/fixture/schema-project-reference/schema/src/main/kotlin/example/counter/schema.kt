@@ -16,7 +16,6 @@
 package example.counter
 
 import app.cash.redwood.schema.Children
-import app.cash.redwood.schema.Default
 import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Widget
@@ -38,12 +37,12 @@ data class CounterBox(
 @Widget(2)
 data class CounterText(
   @Property(1) val text: String?,
-  @Property(2) @Default("\"black\"") val color: String,
+  @Property(2) val color: String = "black",
 )
 
 @Widget(3)
 data class CounterButton(
   @Property(1) val text: String?,
-  @Property(2) @Default("true") val enabled: Boolean,
+  @Property(2) val enabled: Boolean = true,
   @Property(3) val onClick: () -> Unit,
 )
