@@ -11,6 +11,7 @@ Changed:
 
 Fixed:
 - Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
+- Fix inconsistencies between iOS and Android for `Column` and `Row` layouts.
 
 
 ## [0.15.0] - 2024-09-30

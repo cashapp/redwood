@@ -10,6 +10,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import kotlin.math.roundToInt
@@ -17,74 +18,88 @@ import kotlin.math.roundToInt
 @SuppressLint("ViewConstructor")
 internal class YogaLayout(context: Context) : ViewGroup(context) {
   val rootNode = Node()
+    .apply {
+      this.context = this@YogaLayout
+    }
+
+  internal var widthConstraint = Constraint.Wrap
+  internal var heightConstraint = Constraint.Wrap
 
   private fun applyLayout(node: Node, xOffset: Float, yOffset: Float) {
-    val view = node.view
-    if (view != null && view !== this) {
+    val view = node.context as View
+    if (view !== this) {
       if (view.visibility == GONE) return
-
-      val width = node.width.roundToInt()
-      val height = node.height.roundToInt()
-      val widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
-      val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-      view.measure(widthSpec, heightSpec)
 
       val left = (xOffset + node.left).roundToInt()
       val top = (yOffset + node.top).roundToInt()
-      val right = left + view.measuredWidth
-      val bottom = top + view.measuredHeight
+      val right = left + node.width.roundToInt()
+      val bottom = top + node.height.roundToInt()
+
+      // We already know how big we want this view to be. But we measure it to trigger side-effects
+      // that the view needs to render itself correctly. In particular, `TextView` needs this
+      // otherwise it won't apply gravity correctly.
+      val width = right - left
+      val height = bottom - top
+      view.measure(
+        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+      )
       view.layout(left, top, right, bottom)
     }
 
-    if (view === this) {
-      for (child in node.children) {
-        applyLayout(child, xOffset, yOffset)
-      }
-    } else if (view !is YogaLayout) {
-      for (child in node.children) {
-        val left = xOffset + node.left
-        val top = yOffset + node.top
-        applyLayout(child, left, top)
-      }
+    for (child in node.children) {
+      applyLayout(
+        node = child,
+        xOffset = xOffset + node.left,
+        yOffset = yOffset + node.top,
+      )
     }
   }
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-    val widthSpec = MeasureSpec.makeMeasureSpec(right - left, MeasureSpec.EXACTLY)
-    val heightSpec = MeasureSpec.makeMeasureSpec(bottom - top, MeasureSpec.EXACTLY)
-    calculateLayout(widthSpec, heightSpec)
-    applyLayout(rootNode, 0f, 0f)
+    calculateLayout(
+      requestedWidth = (right - left).toFloat(),
+      requestedHeight = (bottom - top).toFloat(),
+    )
+    applyLayout(rootNode, left.toFloat(), top.toFloat())
   }
 
   override fun onMeasure(widthSpec: Int, heightSpec: Int) {
-    calculateLayout(widthSpec, heightSpec)
+    val widthSize = MeasureSpec.getSize(widthSpec)
+    val widthMode = MeasureSpec.getMode(widthSpec)
+    val heightSize = MeasureSpec.getSize(heightSpec)
+    val heightMode = MeasureSpec.getMode(heightSpec)
+
+    calculateLayout(
+      requestedWidth = when {
+        widthMode == MeasureSpec.EXACTLY -> widthSize.toFloat()
+        widthConstraint == Constraint.Fill -> widthSize.toFloat()
+        else -> Size.UNDEFINED
+      },
+      requestedHeight = when {
+        heightMode == MeasureSpec.EXACTLY -> heightSize.toFloat()
+        heightConstraint == Constraint.Fill -> heightSize.toFloat()
+        else -> Size.UNDEFINED
+      },
+    )
+
     val width = rootNode.width.roundToInt()
     val height = rootNode.height.roundToInt()
     setMeasuredDimension(width, height)
   }
 
-  private fun calculateLayout(widthSpec: Int, heightSpec: Int) {
-    rootNode.requestedWidth = Size.UNDEFINED
+  private fun calculateLayout(
+    requestedWidth: Float,
+    requestedHeight: Float,
+  ) {
+    rootNode.requestedWidth = requestedWidth
     rootNode.requestedMaxWidth = Size.UNDEFINED
-    rootNode.requestedHeight = Size.UNDEFINED
+    rootNode.requestedHeight = requestedHeight
     rootNode.requestedMaxHeight = Size.UNDEFINED
-
-    val widthSize = MeasureSpec.getSize(widthSpec).toFloat()
-    when (MeasureSpec.getMode(widthSpec)) {
-      MeasureSpec.EXACTLY -> rootNode.requestedWidth = widthSize
-      MeasureSpec.AT_MOST -> rootNode.requestedMaxWidth = widthSize
-      MeasureSpec.UNSPECIFIED -> {}
-    }
-    val heightSize = MeasureSpec.getSize(heightSpec).toFloat()
-    when (MeasureSpec.getMode(heightSpec)) {
-      MeasureSpec.EXACTLY -> rootNode.requestedHeight = heightSize
-      MeasureSpec.AT_MOST -> rootNode.requestedMaxHeight = heightSize
-      MeasureSpec.UNSPECIFIED -> {}
-    }
 
     // Sync widget layout requests to the Yoga node tree.
     for (node in rootNode.children) {
-      if (node.view?.isLayoutRequested == true) {
+      if ((node.context as View).isLayoutRequested) {
         node.markDirty()
       }
     }
@@ -92,6 +107,3 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)
   }
 }
-
-private val Node.view: View?
-  get() = (measureCallback as ViewMeasureCallback?)?.view
