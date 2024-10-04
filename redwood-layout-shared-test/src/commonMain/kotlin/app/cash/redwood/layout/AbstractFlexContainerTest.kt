@@ -893,6 +893,22 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     snapshotter(root.value).snapshot()
   }
+
+  /**
+   * Text not wrapping inside a row.
+   * https://github.com/cashapp/redwood/issues/2011
+   */
+  @Test fun testTextWrapsInsideRow() {
+    val root = flexContainer(FlexDirection.Row)
+
+    root.add(
+      widgetFactory.text(
+        "This is a long piece of text that will wrap the screen. ".repeat(3),
+      ),
+    )
+
+    snapshotter(root.value).snapshot()
+  }
 }
 
 interface TestFlexContainer<T : Any> :
