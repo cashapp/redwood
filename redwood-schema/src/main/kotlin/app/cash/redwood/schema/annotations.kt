@@ -184,23 +184,6 @@ public annotation class Children(
 )
 
 /**
- * Annotates a [Property] with an associated default expression. The [expression] is not
- * type-checked and will be used verbatim in the generated code.
- *
- * ```
- * @Widget(1)
- * data class Button(
- *   @Property(1) val text: String,
- *   @Property(2) @Default("true") val enabled: Boolean,
- * )
- * ```
- */
-@Retention(RUNTIME)
-@Target(PROPERTY)
-@Deprecated("Migrate to normal default parameter expressions")
-public annotation class Default(val expression: String)
-
-/**
  * Annotates a data class which represents a modifier for a [Widget].
  *
  * Each modifier in a [Schema] must have a unique [tag] among all [Modifier] annotations in the
