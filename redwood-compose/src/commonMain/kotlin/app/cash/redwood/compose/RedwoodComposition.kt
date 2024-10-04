@@ -18,9 +18,11 @@ package app.cash.redwood.compose
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import androidx.compose.runtime.Composer
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisallowComposableCalls
+import androidx.compose.runtime.ExplicitGroupsComposable
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.Updater
@@ -179,6 +181,14 @@ public interface RedwoodApplier<W : Any> {
   public fun recordChanged(widget: Widget<W>)
 }
 
+@PublishedApi
+@RedwoodCodegenApi
+internal expect inline fun <V : Any> Composer.redwoodApplier(): RedwoodApplier<V>
+
+@PublishedApi
+@RedwoodCodegenApi
+internal expect inline fun <O : WidgetFactoryOwner<V>, V : Any> RedwoodApplier<V>.widgetSystem(): O
+
 /**
  * A version of [ComposeNode] which exposes the applier to the [factory] function. Through this
  * we expose the owner type [O] to our factory function so the correct widget can be created.
@@ -187,6 +197,7 @@ public interface RedwoodApplier<W : Any> {
  */
 @Composable
 @RedwoodCodegenApi
+@ExplicitGroupsComposable
 public inline fun <O : WidgetFactoryOwner<V>, W : Widget<V>, V : Any> RedwoodComposeNode(
   crossinline factory: (O) -> W,
   update: @DisallowComposableCalls Updater<WidgetNode<W, V>>.() -> Unit,
@@ -197,19 +208,9 @@ public inline fun <O : WidgetFactoryOwner<V>, W : Widget<V>, V : Any> RedwoodCom
   currentComposer.startNode()
 
   if (currentComposer.inserting) {
-    // Perform an explicit !! on the return value to avoid the Kotlin compiler inserting a huge
-    // string into the output as an error message for an otherwise implicit null check.
-    @Suppress(
-      // Safe so long as you use generated composition function.
-      "UNCHECKED_CAST",
-      "UNNECESSARY_NOT_NULL_ASSERTION",
-    )
-    val applier = currentComposer.applier!! as RedwoodApplier<V>
-
+    val applier = currentComposer.redwoodApplier<V>()
     currentComposer.createNode {
-      // Safe so long as you use generated composition function.
-      @Suppress("UNCHECKED_CAST")
-      WidgetNode(applier, factory(applier.widgetSystem as O))
+      WidgetNode(applier, factory(applier.widgetSystem()))
     }
   } else {
     currentComposer.useNode()
@@ -241,6 +242,7 @@ public class RedwoodComposeContent<out W : Widget<*>> {
     )
   }
 
+  @RedwoodCodegenApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public companion object {
     public val Instance: RedwoodComposeContent<Nothing> = RedwoodComposeContent()
   }

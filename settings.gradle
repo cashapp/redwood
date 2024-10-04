@@ -43,6 +43,7 @@ enableFeaturePreview('TYPESAFE_PROJECT_ACCESSORS')
 
 rootProject.name = 'redwood'
 
+include ':build-support-ksp-processor'
 include ':redwood-bom'
 include ':redwood-compose'
 include ':redwood-composeui'

@@ -75,7 +75,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 private const val REDWOOD_GROUP_ID = "app.cash.redwood"
 
 // HEY! If you change the major version update release.yaml doc folder.
-private const val REDWOOD_VERSION = "0.15.0-SNAPSHOT"
+private const val REDWOOD_VERSION = "0.16.0-SNAPSHOT"
 
 private val isCiEnvironment = System.getenv("CI") == "true"
 
@@ -524,6 +524,8 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         klib.strictValidation = isCiEnvironment
 
         nonPublicMarkers += listOf(
+          // Codegen-specific API only supports the exact same version as which did the generation.
+          "app.cash.redwood.RedwoodCodegenApi",
           // The yoga module is an implementation detail of our layouts.
           "app.cash.redwood.yoga.RedwoodYogaApi",
         )
@@ -646,6 +648,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       it.fileName.set(fileName)
       it.packageName.set(packageName)
     }
+  }
+
+  override fun sharedSnapshotTests() {
+    project.plugins.apply("com.google.devtools.ksp")
+    project.dependencies.add("kspJvm", project.project(":build-support-ksp-processor"))
   }
 }
 

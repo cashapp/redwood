@@ -7,50 +7,9 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-compose>
-abstract interface <#A: kotlin/Any> app.cash.redwood.compose/RedwoodApplier { // app.cash.redwood.compose/RedwoodApplier|null[0]
-    abstract val widgetSystem // app.cash.redwood.compose/RedwoodApplier.widgetSystem|{}widgetSystem[0]
-        abstract fun <get-widgetSystem>(): app.cash.redwood.widget/WidgetSystem<#A> // app.cash.redwood.compose/RedwoodApplier.widgetSystem.<get-widgetSystem>|<get-widgetSystem>(){}[0]
-
-    abstract fun recordChanged(app.cash.redwood.widget/Widget<#A>) // app.cash.redwood.compose/RedwoodApplier.recordChanged|recordChanged(app.cash.redwood.widget.Widget<1:0>){}[0]
-}
-
 abstract interface app.cash.redwood.compose/RedwoodComposition { // app.cash.redwood.compose/RedwoodComposition|null[0]
     abstract fun cancel() // app.cash.redwood.compose/RedwoodComposition.cancel|cancel(){}[0]
     abstract fun setContent(kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>) // app.cash.redwood.compose/RedwoodComposition.setContent|setContent(kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>){}[0]
-}
-
-sealed interface <#A: kotlin/Any> app.cash.redwood.compose/Node // app.cash.redwood.compose/Node|null[0]
-
-final class <#A: out app.cash.redwood.widget/Widget<#B>, #B: kotlin/Any> app.cash.redwood.compose/WidgetNode : app.cash.redwood.compose/Node<#B> { // app.cash.redwood.compose/WidgetNode|null[0]
-    constructor <init>(app.cash.redwood.compose/RedwoodApplier<#B>, #A) // app.cash.redwood.compose/WidgetNode.<init>|<init>(app.cash.redwood.compose.RedwoodApplier<1:1>;1:0){}[0]
-
-    final val widget // app.cash.redwood.compose/WidgetNode.widget|{}widget[0]
-        final fun <get-widget>(): #A // app.cash.redwood.compose/WidgetNode.widget.<get-widget>|<get-widget>(){}[0]
-
-    final var container // app.cash.redwood.compose/WidgetNode.container|{}container[0]
-        final fun <get-container>(): app.cash.redwood.widget/Widget.Children<#B>? // app.cash.redwood.compose/WidgetNode.container.<get-container>|<get-container>(){}[0]
-        final fun <set-container>(app.cash.redwood.widget/Widget.Children<#B>?) // app.cash.redwood.compose/WidgetNode.container.<set-container>|<set-container>(app.cash.redwood.widget.Widget.Children<1:1>?){}[0]
-    final var index // app.cash.redwood.compose/WidgetNode.index|{}index[0]
-        final fun <get-index>(): kotlin/Int // app.cash.redwood.compose/WidgetNode.index.<get-index>|<get-index>(){}[0]
-        final fun <set-index>(kotlin/Int) // app.cash.redwood.compose/WidgetNode.index.<set-index>|<set-index>(kotlin.Int){}[0]
-
-    final fun recordChanged() // app.cash.redwood.compose/WidgetNode.recordChanged|recordChanged(){}[0]
-
-    final object Companion { // app.cash.redwood.compose/WidgetNode.Companion|null[0]
-        final val SetModifiers // app.cash.redwood.compose/WidgetNode.Companion.SetModifiers|{}SetModifiers[0]
-            final fun <get-SetModifiers>(): kotlin/Function2<app.cash.redwood.compose/WidgetNode<app.cash.redwood.widget/Widget<kotlin/Any>, kotlin/Any>, app.cash.redwood/Modifier, kotlin/Unit> // app.cash.redwood.compose/WidgetNode.Companion.SetModifiers.<get-SetModifiers>|<get-SetModifiers>(){}[0]
-    }
-}
-
-final class <#A: out app.cash.redwood.widget/Widget<*>> app.cash.redwood.compose/RedwoodComposeContent { // app.cash.redwood.compose/RedwoodComposeContent|null[0]
-    constructor <init>() // app.cash.redwood.compose/RedwoodComposeContent.<init>|<init>(){}[0]
-
-    final fun Children(kotlin/Function1<#A, app.cash.redwood.widget/Widget.Children<*>>, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // app.cash.redwood.compose/RedwoodComposeContent.Children|Children(kotlin.Function1<1:0,app.cash.redwood.widget.Widget.Children<*>>;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
-
-    final object Companion { // app.cash.redwood.compose/RedwoodComposeContent.Companion|null[0]
-        final val Instance // app.cash.redwood.compose/RedwoodComposeContent.Companion.Instance|{}Instance[0]
-            final fun <get-Instance>(): app.cash.redwood.compose/RedwoodComposeContent<kotlin/Nothing> // app.cash.redwood.compose/RedwoodComposeContent.Companion.Instance.<get-Instance>|<get-Instance>(){}[0]
-    }
 }
 
 final val app.cash.redwood.compose/LocalOnBackPressedDispatcher // app.cash.redwood.compose/LocalOnBackPressedDispatcher|{}LocalOnBackPressedDispatcher[0]
@@ -77,7 +36,6 @@ final fun app.cash.redwood.compose/app_cash_redwood_compose_ChildrenNode$stablep
 final fun app.cash.redwood.compose/app_cash_redwood_compose_NodeApplier$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_NodeApplier$stableprop_getter|app_cash_redwood_compose_NodeApplier$stableprop_getter(){}[0]
 final fun app.cash.redwood.compose/app_cash_redwood_compose_RedwoodComposeContent$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_RedwoodComposeContent$stableprop_getter|app_cash_redwood_compose_RedwoodComposeContent$stableprop_getter(){}[0]
 final fun app.cash.redwood.compose/app_cash_redwood_compose_WidgetNode$stableprop_getter(): kotlin/Int // app.cash.redwood.compose/app_cash_redwood_compose_WidgetNode$stableprop_getter|app_cash_redwood_compose_WidgetNode$stableprop_getter(){}[0]
-final inline fun <#A: app.cash.redwood.widget/WidgetFactoryOwner<#C>, #B: app.cash.redwood.widget/Widget<#C>, #C: kotlin/Any> app.cash.redwood.compose/RedwoodComposeNode(crossinline kotlin/Function1<#A, #B>, kotlin/Function1<androidx.compose.runtime/Updater<app.cash.redwood.compose/WidgetNode<#B, #C>>, kotlin/Unit>, kotlin/Function3<app.cash.redwood.compose/RedwoodComposeContent<#B>, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int) // app.cash.redwood.compose/RedwoodComposeNode|RedwoodComposeNode(kotlin.Function1<0:0,0:1>;kotlin.Function1<androidx.compose.runtime.Updater<app.cash.redwood.compose.WidgetNode<0:1,0:2>>,kotlin.Unit>;kotlin.Function3<app.cash.redwood.compose.RedwoodComposeContent<0:1>,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int){0§<app.cash.redwood.widget.WidgetFactoryOwner<0:2>>;1§<app.cash.redwood.widget.Widget<0:2>>;2§<kotlin.Any>}[0]
 
 // Targets: [ios]
 final object app.cash.redwood.compose/DisplayLinkClock : androidx.compose.runtime/MonotonicFrameClock { // app.cash.redwood.compose/DisplayLinkClock|null[0]

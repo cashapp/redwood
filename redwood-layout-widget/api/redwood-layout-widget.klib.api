@@ -46,15 +46,6 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayout
     abstract fun Spacer(): app.cash.redwood.layout.widget/Spacer<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Spacer|Spacer(){}[0]
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner : app.cash.redwood.widget/WidgetFactoryOwner<#A> { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner|null[0]
-    abstract val RedwoodLayout // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.RedwoodLayout|{}RedwoodLayout[0]
-        abstract fun <get-RedwoodLayout>(): app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.RedwoodLayout.<get-RedwoodLayout>|<get-RedwoodLayout>(){}[0]
-
-    final object Companion { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.Companion|null[0]
-        final fun <#A2: kotlin/Any> apply(app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A2>, #A2, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner.Companion.apply|apply(app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory<0:0>;0:0;app.cash.redwood.Modifier.UnscopedElement){0§<kotlin.Any>}[0]
-    }
-}
-
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Row|null[0]
     abstract val children // app.cash.redwood.layout.widget/Row.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Row.children.<get-children>|<get-children>(){}[0]

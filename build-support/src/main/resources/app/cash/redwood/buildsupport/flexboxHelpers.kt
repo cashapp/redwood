@@ -98,32 +98,36 @@ internal fun CrossAxisAlignment.toAlignSelf() = when (this) {
  *
  * Also also note that `Float.NaN` is used by these properties, and that `Float.NaN != Float.NaN`.
  * So even deciding whether a value has changed is tricky.
+ *
+ * Returns true if the node became dirty as a consequence of this call.
  */
-internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
+internal fun Node.applyModifier(parentModifier: Modifier, density: Density): Boolean {
+  val wasDirty = isDirty()
+
   // Avoid unnecessary mutations to the Node because it marks itself dirty its properties change.
-  var oldMarginStart = marginStart
+  val oldMarginStart = marginStart
   var newMarginStart = Float.NaN
-  var oldMarginEnd = marginEnd
+  val oldMarginEnd = marginEnd
   var newMarginEnd = Float.NaN
-  var oldMarginTop = marginTop
+  val oldMarginTop = marginTop
   var newMarginTop = Float.NaN
-  var oldMarginBottom = marginBottom
+  val oldMarginBottom = marginBottom
   var newMarginBottom = Float.NaN
-  var oldAlignSelf = alignSelf
+  val oldAlignSelf = alignSelf
   var newAlignSelf = AlignSelf.Auto
-  var oldRequestedMinWidth = requestedMinWidth
+  val oldRequestedMinWidth = requestedMinWidth
   var newRequestedMinWidth = Float.NaN
-  var oldRequestedMaxWidth = requestedMaxWidth
+  val oldRequestedMaxWidth = requestedMaxWidth
   var newRequestedMaxWidth = Float.NaN
-  var oldRequestedMinHeight = requestedMinHeight
+  val oldRequestedMinHeight = requestedMinHeight
   var newRequestedMinHeight = Float.NaN
-  var oldRequestedMaxHeight = requestedMaxHeight
+  val oldRequestedMaxHeight = requestedMaxHeight
   var newRequestedMaxHeight = Float.NaN
-  var oldFlexGrow = flexGrow
+  val oldFlexGrow = flexGrow
   var newFlexGrow = 0f
-  var oldFlexShrink = flexShrink
+  val oldFlexShrink = flexShrink
   var newFlexShrink = 0f
-  var oldFlexBasis = flexBasis
+  val oldFlexBasis = flexBasis
   var newFlexBasis = -1f
 
   parentModifier.forEachScoped { childModifier ->
@@ -193,6 +197,8 @@ internal fun Node.applyModifier(parentModifier: Modifier, density: Density) {
   if (newFlexGrow neq oldFlexGrow) flexGrow = newFlexGrow
   if (newFlexShrink neq oldFlexShrink) flexShrink = newFlexShrink
   if (newFlexBasis neq oldFlexBasis) flexBasis = newFlexBasis
+
+  return !wasDirty && isDirty()
 }
 
 /**

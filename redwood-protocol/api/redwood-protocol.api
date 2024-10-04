@@ -326,11 +326,12 @@ public final class app/cash/redwood/protocol/ModifierTag$Companion {
 
 public final class app/cash/redwood/protocol/PropertyChange : app/cash/redwood/protocol/ValueChange {
 	public static final field Companion Lapp/cash/redwood/protocol/PropertyChange$Companion;
-	public synthetic fun <init> (IILkotlinx/serialization/json/JsonElement;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIILkotlinx/serialization/json/JsonElement;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId-0HhLjSo ()I
-	public final fun getTag-VGAaYLs ()I
+	public final fun getPropertyTag-VGAaYLs ()I
 	public final fun getValue ()Lkotlinx/serialization/json/JsonElement;
+	public final fun getWidgetTag-BlhN7y0 ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -347,8 +348,8 @@ public synthetic class app/cash/redwood/protocol/PropertyChange$$serializer : ko
 }
 
 public final class app/cash/redwood/protocol/PropertyChange$Companion {
-	public final fun invoke-e3iP1vo (IILkotlinx/serialization/json/JsonElement;)Lapp/cash/redwood/protocol/PropertyChange;
-	public static synthetic fun invoke-e3iP1vo$default (Lapp/cash/redwood/protocol/PropertyChange$Companion;IILkotlinx/serialization/json/JsonElement;ILjava/lang/Object;)Lapp/cash/redwood/protocol/PropertyChange;
+	public final fun invoke-ITsWdOQ (IIILkotlinx/serialization/json/JsonElement;)Lapp/cash/redwood/protocol/PropertyChange;
+	public static synthetic fun invoke-ITsWdOQ$default (Lapp/cash/redwood/protocol/PropertyChange$Companion;IIILkotlinx/serialization/json/JsonElement;ILjava/lang/Object;)Lapp/cash/redwood/protocol/PropertyChange;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

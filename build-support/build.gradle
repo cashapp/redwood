@@ -28,6 +28,7 @@ apply plugin: 'com.android.lint'
 dependencies {
   compileOnly gradleApi()
   implementation libs.kotlin.gradlePlugin
+  implementation libs.kotlin.kspGradlePlugin
   implementation libs.gradleMavenPublishPlugin
   implementation libs.dokkaPlugin
   implementation libs.spotlessPlugin

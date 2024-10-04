@@ -2,6 +2,7 @@ import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAllWithoutAndroid
 
 redwoodBuild {
   targets(ToolkitAllWithoutAndroid)
+  sharedSnapshotTests()
 }
 
 kotlin {

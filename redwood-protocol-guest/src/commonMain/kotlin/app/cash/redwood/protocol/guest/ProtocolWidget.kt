@@ -65,6 +65,7 @@ public interface ProtocolWidget : Widget<Unit> {
    */
   public fun depthFirstWalk(visitor: ChildrenVisitor)
 
+  @RedwoodCodegenApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
   public fun interface ChildrenVisitor {
     public fun visit(
       parent: ProtocolWidget,

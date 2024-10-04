@@ -32,7 +32,7 @@ class SnapshotChangeListTest {
       listOf(
         Create(Id(1), WidgetTag(1)),
         ModifierChange(Id(1), emptyList()),
-        PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("Hello")),
+        PropertyChange(Id(1), WidgetTag(1), PropertyTag(1), JsonPrimitive("Hello")),
         Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       ),
     )
@@ -43,7 +43,7 @@ class SnapshotChangeListTest {
       |[
       |{"type":"create","id":1,"tag":1},
       |{"type":"modifier","id":1},
-      |{"type":"property","id":1,"tag":1,"value":"Hello"},
+      |{"type":"property","id":1,"widget":1,"tag":1,"value":"Hello"},
       |{"type":"add","id":0,"tag":1,"childId":1,"index":0}
       |]
       """.trimMargin().replace("\n", ""),
@@ -60,7 +60,7 @@ class SnapshotChangeListTest {
           Create(Id(1), WidgetTag(1)),
           ModifierChange(Id(1), emptyList()),
           Move(Id.Root, ChildrenTag.Root, 1, 2, 3),
-          PropertyChange(Id(1), PropertyTag(1), JsonPrimitive("Hello")),
+          PropertyChange(Id(1), WidgetTag(1), PropertyTag(1), JsonPrimitive("Hello")),
           Add(Id.Root, ChildrenTag.Root, Id(1), 0),
           Remove(Id.Root, ChildrenTag.Root, 1, 2, listOf(Id(3), Id(4))),
         ),

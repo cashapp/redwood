@@ -97,22 +97,29 @@ public sealed interface ValueChange : Change
 public class PropertyChange private constructor(
   @SerialName("id")
   private val _id: Int,
+  @SerialName("widget")
+  private val _widgetTag: Int,
   @SerialName("tag")
   private val _tag: Int,
   public val value: JsonElement = JsonNull,
 ) : ValueChange {
   override val id: Id get() = Id(_id)
 
-  /** Identifies which property changed on the widget with [id]. */
-  public val tag: PropertyTag get() = PropertyTag(_tag)
+  /** Identifies the widget on which the property changed. */
+  public val widgetTag: WidgetTag get() = WidgetTag(_widgetTag)
+
+  /** Identifies which property changed on the widget. */
+  public val propertyTag: PropertyTag get() = PropertyTag(_tag)
 
   public companion object {
     public operator fun invoke(
       id: Id,
-      /** Identifies which property changed on the widget with [id]. */
-      tag: PropertyTag,
+      /** Identifies the widget on which the property changed. */
+      widgetTag: WidgetTag,
+      /** Identifies which property changed on the widget. */
+      propertyTag: PropertyTag,
       value: JsonElement = JsonNull,
-    ): PropertyChange = PropertyChange(id.value, tag.value, value)
+    ): PropertyChange = PropertyChange(id.value, widgetTag.value, propertyTag.value, value)
   }
 }
 

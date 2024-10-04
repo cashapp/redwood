@@ -1,7 +1,20 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.15.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Drop support for non-incremental layouts in `Row` and `Column`.
+
+Fixed:
+- Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
+
+
+## [0.15.0] - 2024-09-30
+[0.15.0]: https://github.com/cashapp/redwood/releases/tag/0.15.0
 
 New:
 - Default expressions can now be used directly in the schema rather than using the `@Default` annotation. The annotation has been deprecated, and will be removed in the next release.
@@ -16,6 +29,7 @@ Fixed:
 - Breaking the last remaining retain cycle in `UIViewLazyList`.
 - Don't leak the `DisplayLink` when a `TreehouseApp` is stopped on iOS.
 - Correctly handle dynamic size changes for child widgets of `Box`, `Column`, and `Row`.
+- Don't clip elements of `Column` and `Row` layouts whose unbounded size exceeds the container size.
 - Correctly implement margins for `Box` on iOS.
 - Correctly handle dynamic updates to modifiers on `Column` and `Row`.
 

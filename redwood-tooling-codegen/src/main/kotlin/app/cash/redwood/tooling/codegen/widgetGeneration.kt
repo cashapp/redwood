@@ -170,6 +170,8 @@ internal fun generateWidgetSystem(schemaSet: SchemaSet): FileSpec {
         .addProperty(schema.type.flatName, schema.getWidgetFactoryType().parameterizedBy(typeVariableW))
         .addType(
           TypeSpec.companionObjectBuilder()
+            // Needed because https://github.com/Kotlin/binary-compatibility-validator/issues/91
+            .addAnnotation(Redwood.RedwoodCodegenApi)
             .addFunction(
               FunSpec.builder("apply")
                 .addTypeVariable(typeVariableW)

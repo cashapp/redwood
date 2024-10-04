@@ -84,8 +84,8 @@ class ProtocolTest {
           ),
         ),
       ),
-      PropertyChange(Id(1), PropertyTag(2), JsonPrimitive("hello")),
-      PropertyChange(Id(1), PropertyTag(2), JsonNull),
+      PropertyChange(Id(1), WidgetTag(2), PropertyTag(2), JsonPrimitive("hello")),
+      PropertyChange(Id(1), WidgetTag(2), PropertyTag(2), JsonNull),
     )
     val json = "" +
       "[" +
@@ -95,8 +95,8 @@ class ProtocolTest {
       """["remove",{"id":4,"tag":3,"index":2,"count":1}],""" +
       """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}],""" +
       """["modifier",{"id":1,"elements":[[1,{}],[2,3],[3,[]],[4],[5]]}],""" +
-      """["property",{"id":1,"tag":2,"value":"hello"}],""" +
-      """["property",{"id":1,"tag":2}]""" +
+      """["property",{"id":1,"widget":2,"tag":2,"value":"hello"}],""" +
+      """["property",{"id":1,"widget":2,"tag":2}]""" +
       "]"
     assertJsonRoundtrip(ListSerializer(Change.serializer()), changes, json)
   }

@@ -35,6 +35,8 @@ internal class FakeProtocolNode(
   id: Id,
   override val widgetTag: WidgetTag,
 ) : ProtocolNode<FakeWidget>(id) {
+  override val widgetName: String get() = "FakeProtocolNode"
+
   override val widget = FakeWidget()
 
   override fun apply(change: PropertyChange, eventSink: UiEventSink) {
@@ -50,6 +52,4 @@ internal class FakeProtocolNode(
 
   override fun detach() {
   }
-
-  override fun toString() = "FakeProtocolNode(id=${id.value}, tag=${widgetTag.value})"
 }

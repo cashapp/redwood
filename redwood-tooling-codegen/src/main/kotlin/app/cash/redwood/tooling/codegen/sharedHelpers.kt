@@ -72,11 +72,11 @@ internal fun Schema.modifierPackage() = type.names[0] + ".modifier"
 internal fun Schema.testingPackage() = type.names[0] + ".testing"
 internal fun Schema.widgetPackage() = type.names[0] + ".widget"
 
-internal fun Schema.guestProtocolPackage(host: Schema? = null) = protocolPackage("guest", host)
-internal fun Schema.hostProtocolPackage(host: Schema? = null) = protocolPackage("host", host)
-private fun Schema.protocolPackage(name: String, host: Schema?): String {
-  val base = (host ?: this).type.names[0] + ".protocol." + name
-  return if (host != null) "$base.${type.flatName.lowercase()}" else base
+internal fun Schema.guestProtocolPackage(otherSchema: Schema? = null) = protocolPackage("guest", otherSchema)
+internal fun Schema.hostProtocolPackage(otherSchema: Schema? = null) = protocolPackage("host", otherSchema)
+private fun Schema.protocolPackage(name: String, otherSchema: Schema?): String {
+  val base = type.names[0] + ".protocol." + name
+  return if (otherSchema != null) "$base.${otherSchema.type.flatName.lowercase()}" else base
 }
 
 internal fun Schema.widgetType(widget: Widget): ClassName {

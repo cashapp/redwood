@@ -126,7 +126,8 @@ class HostProtocolAdapterTest {
         // Set Button's required color property.
         PropertyChange(
           id = Id(1),
-          tag = PropertyTag(3),
+          widgetTag = WidgetTag(4),
+          propertyTag = PropertyTag(3),
           value = JsonPrimitive(0),
         ),
         Add(
@@ -155,8 +156,9 @@ class HostProtocolAdapterTest {
     val updateButtonText = listOf(
       PropertyChange(
         id = Id(1),
+        widgetTag = WidgetTag(4),
         // text
-        tag = PropertyTag(1),
+        propertyTag = PropertyTag(1),
         value = JsonPrimitive("hello"),
       ),
     )
@@ -230,7 +232,7 @@ class HostProtocolAdapterTest {
         ModifierChange(Id(2)),
         // Text
         Create(Id(3), WidgetTag(3)),
-        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hello")),
+        PropertyChange(Id(3), WidgetTag(3), PropertyTag(1), JsonPrimitive("hello")),
         ModifierChange(Id(3)),
         Add(Id(2), ChildrenTag(1), Id(3), 0),
         Add(Id(1), ChildrenTag(1), Id(2), 0),
@@ -241,7 +243,7 @@ class HostProtocolAdapterTest {
     // Validate we're tracking ID=3.
     host.sendChanges(
       listOf(
-        PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("hey")),
+        PropertyChange(Id(3), WidgetTag(3), PropertyTag(1), JsonPrimitive("hey")),
       ),
     )
 
@@ -255,7 +257,7 @@ class HostProtocolAdapterTest {
     assertFailure {
       host.sendChanges(
         listOf(
-          PropertyChange(Id(3), PropertyTag(1), JsonPrimitive("sup")),
+          PropertyChange(Id(3), WidgetTag(3), PropertyTag(1), JsonPrimitive("sup")),
         ),
       )
     }.isInstanceOf<IllegalStateException>()

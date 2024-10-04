@@ -40,13 +40,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 abstract class AbstractFlexContainerTest<T : Any> {
-  /**
-   * Returns true if the FlexContainer implementation implements incremental layouts. This is
-   * currently opt-in, but will soon be the only supported mode.
-   */
-  open val incremental: Boolean
-    get() = true
-
   abstract val widgetFactory: TestWidgetFactory<T>
 
   abstract fun flexContainer(
@@ -245,7 +238,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun columnWithUpdatedCrossAxisAlignment() {
+  @Test fun testColumnWithUpdatedCrossAxisAlignment() {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotter(container.value)
     container.width(Constraint.Fill)
@@ -321,6 +314,27 @@ abstract class AbstractFlexContainerTest<T : Any> {
     repeat(10) { index ->
       container.add(widgetFactory.text("$index", SizeImpl(50.dp, 50.dp)))
     }
+    container.onEndChanges()
+    snapshotter(container.value).snapshot()
+  }
+
+  @Test fun testRowWithFixedWidthHasChildWithFixedHeight() {
+    val container = flexContainer(FlexDirection.Row).apply {
+      crossAxisAlignment(CrossAxisAlignment.Start)
+      modifier = WidthImpl(200.dp)
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    widgetFactory.text("A ".repeat(10)).apply {
+      modifier = HeightImpl(50.dp)
+      container.children.insert(0, this)
+    }
+
+    widgetFactory.text("B ".repeat(100)).apply {
+      container.children.insert(1, this)
+    }
+
     container.onEndChanges()
     snapshotter(container.value).snapshot()
   }
@@ -662,23 +676,21 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val aMeasureCountV2 = a.measureCount
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
-    if (incremental) {
-      // Only 'b' is measured again.
-      assertEquals(aMeasureCountV1, aMeasureCountV2)
-      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
-      assertEquals(cMeasureCountV1, cMeasureCountV2)
-    }
+
+    // Only 'b' is measured again.
+    assertEquals(aMeasureCountV1, aMeasureCountV2)
+    assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+    assertEquals(cMeasureCountV1, cMeasureCountV2)
 
     snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
     val bMeasureCountV3 = b.measureCount
     val cMeasureCountV3 = c.measureCount
-    if (incremental) {
-      // Nothing is measured again.
-      assertEquals(aMeasureCountV2, aMeasureCountV3)
-      assertEquals(bMeasureCountV2, bMeasureCountV3)
-      assertEquals(cMeasureCountV2, cMeasureCountV3)
-    }
+
+    // Nothing is measured again.
+    assertEquals(aMeasureCountV2, aMeasureCountV3)
+    assertEquals(bMeasureCountV2, bMeasureCountV3)
+    assertEquals(cMeasureCountV2, cMeasureCountV3)
   }
 
   @Test fun testRecursiveLayoutIsIncremental() {
@@ -726,23 +738,21 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val aMeasureCountV2 = a.measureCount
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
-    if (incremental) {
-      // Only 'b' is measured again.
-      assertEquals(aMeasureCountV1, aMeasureCountV2)
-      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
-      assertEquals(cMeasureCountV1, cMeasureCountV2)
-    }
+
+    // Only 'b' is measured again.
+    assertEquals(aMeasureCountV1, aMeasureCountV2)
+    assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+    assertEquals(cMeasureCountV1, cMeasureCountV2)
 
     snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
     val bMeasureCountV3 = b.measureCount
     val cMeasureCountV3 = c.measureCount
-    if (incremental) {
-      // Nothing is measured again.
-      assertEquals(aMeasureCountV2, aMeasureCountV3)
-      assertEquals(bMeasureCountV2, bMeasureCountV3)
-      assertEquals(cMeasureCountV2, cMeasureCountV3)
-    }
+
+    // Nothing is measured again.
+    assertEquals(aMeasureCountV2, aMeasureCountV3)
+    assertEquals(bMeasureCountV2, bMeasureCountV3)
+    assertEquals(cMeasureCountV2, cMeasureCountV3)
   }
 
   /** Confirm that child element size changes propagate up the view hierarchy. */
@@ -781,6 +791,43 @@ abstract class AbstractFlexContainerTest<T : Any> {
     rowA1.text("A1 ".repeat(5))
     rowA2.text("A-TWO ".repeat(5))
     snapshotter.snapshot("v2")
+  }
+
+  /**
+   * When a child widget's intrinsic size won't fit in the available space, what happens? We can
+   * either let it have its requested size anyway (and overrun the available space) or we confine it
+   * to the space available.
+   */
+  @Test fun testChildIsConstrainedToParentWidth() {
+    // Wrap in a parent column to let us configure an exact width for our subject flex container.
+    // Otherwise we're relying on the platform-specific snapshot library's unspecified frame width.
+    val fullWidthParent = column().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    val alignStart = HorizontalAlignmentImpl(CrossAxisAlignment.Start)
+    flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        modifier = WidthImpl(25.dp)
+        add(widgetFactory.text("ok", alignStart)) // This is under 25.dp in width.
+        add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
+        onEndChanges()
+      }
+      .also { fullWidthParent.children.insert(0, it) }
+
+    flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        modifier = WidthImpl(25.dp)
+        add(widgetFactory.text("overflows parent", alignStart)) // This is over 25.dp in width.
+        add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
+        onEndChanges()
+      }
+      .also { fullWidthParent.children.insert(1, it) }
+
+    snapshotter(fullWidthParent.value).snapshot()
   }
 }
 

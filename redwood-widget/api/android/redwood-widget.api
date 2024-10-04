@@ -75,8 +75,8 @@ public abstract interface class app/cash/redwood/widget/SavedStateRegistry {
 }
 
 public final class app/cash/redwood/widget/ViewGroupChildren : app/cash/redwood/widget/Widget$Children {
-	public fun <init> (Landroid/view/ViewGroup;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
-	public synthetic fun <init> (Landroid/view/ViewGroup;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/view/ViewGroup;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Landroid/view/ViewGroup;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun detach ()V
 	public fun getWidgets ()Ljava/util/List;
 	public fun insert (ILapp/cash/redwood/widget/Widget;)V
@@ -98,9 +98,6 @@ public abstract interface class app/cash/redwood/widget/Widget$Children {
 	public abstract fun move (III)V
 	public abstract fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
 	public abstract fun remove (II)V
-}
-
-public abstract interface class app/cash/redwood/widget/WidgetFactoryOwner {
 }
 
 public abstract interface class app/cash/redwood/widget/WidgetSystem {

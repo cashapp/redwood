@@ -97,7 +97,7 @@ internal class UIViewBox :
 
     val children = UIViewChildren(
       container = this,
-      insert = { widget, view, _, index ->
+      insert = { index, widget ->
         if (widget is ResizableWidget<*>) {
           widget.sizeListener = object : ResizableWidget.SizeListener {
             override fun invalidateSize() {
@@ -105,13 +105,12 @@ internal class UIViewBox :
             }
           }
         }
-        insertSubview(view, index.convert<NSInteger>())
+        insertSubview(widget.value, index.convert<NSInteger>())
       },
       remove = { index, count ->
-        val views = Array(count) {
-          typedSubviews[index].also(UIView::removeFromSuperview)
+        for (i in index until index + count) {
+          typedSubviews[index].removeFromSuperview()
         }
-        return@UIViewChildren views
       },
       invalidateSize = ::invalidateSize,
     )

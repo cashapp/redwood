@@ -17,6 +17,7 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.codegen.Protocol.Id
 import app.cash.redwood.tooling.codegen.Protocol.WidgetTag
+import app.cash.redwood.tooling.schema.ProtocolModifier
 import app.cash.redwood.tooling.schema.ProtocolSchema
 import app.cash.redwood.tooling.schema.ProtocolSchemaSet
 import app.cash.redwood.tooling.schema.ProtocolWidget
@@ -51,27 +52,19 @@ public class ExampleProtocolFactory<W : Any>(
   override val widgetSystem: ExampleWidgetSystem<W>,
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GeneratedProtocolFactory<W> {
-  private val childrenTags: IntObjectMap<IntArray> = MutableIntObjectMap(4).apply {
-        put(1, intArrayOf(1))
-        put(3, intArrayOf(1))
-        put(1_000_001, intArrayOf(1, 2))
-        put(1_000_002, intArrayOf(1))
+) : GeneratedHostProtocol<W> {
+  private val widgets: IntObjectMap<WidgetHostProtocol> =
+      MutableIntObjectMap(4).apply {
+        put(1, ButtonHostProtocol(widgetSystem, json, mismatchHandler))
+        put(3, TextHostProtocol(widgetSystem, json, mismatchHandler))
+        put(1_000_001, RowHostProtocol(widgetSystem, json, mismatchHandler))
+        put(1_000_002, ColumnHostProtocol(widgetSystem, json, mismatchHandler))
       }
 
-  override fun widgetChildren(tag: WidgetTag): IntArray? {
-    return childrenTags[tag.value]
-  }
-
-  override fun createNode(id: Id, tag: WidgetTag): ProtocolNode<W>? = when (tag.value) {
-    1 -> TextProtocolNode(id, delegate.Sunspot.Text(), json, mismatchHandler)
-    2 -> ButtonProtocolNode(id, delegate.Sunspot.Button(), json, mismatchHandler)
-    1_000_001 -> RedwoodLayoutRowProtocolNode(id, delegate.RedwoodLayout.Row(), json, mismatchHandler)
-    1_000_002 -> RedwoodLayoutColumnProtocolNode(id, delegate.RedwoodLayout.Column(), json, mismatchHandler)
-    else -> {
-      mismatchHandler.onUnknownWidget(tag)
-      null
-    }
+  override fun widget(tag: WidgetTag): WidgetHostProtocol? {
+    widgets[tag.value]?.let { return it }
+    mismatchHandler.onUnknownWidget(tag)
+    return null
   }
 
   override fun createModifier(element: ModifierElement): Modifier {
@@ -97,7 +90,7 @@ internal fun generateProtocolFactory(
     addType(
       TypeSpec.classBuilder(type)
         .addTypeVariable(typeVariableW)
-        .addSuperinterface(ProtocolHost.GeneratedProtocolFactory.parameterizedBy(typeVariableW))
+        .addSuperinterface(ProtocolHost.GeneratedProtocolHost.parameterizedBy(typeVariableW))
         .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
@@ -137,32 +130,31 @@ internal fun generateProtocolFactory(
         )
         .addProperty(
           PropertySpec.builder(
-            "childrenTags",
-            AndroidxCollection.IntObjectMap.parameterizedBy(INT_ARRAY),
+            "widgets",
+            AndroidxCollection.IntObjectMap
+              .parameterizedBy(
+                ProtocolHost.WidgetHostProtocol
+                  .parameterizedBy(typeVariableW),
+              ),
             PRIVATE,
           )
             .initializer(
               buildCodeBlock {
-                val allParentWidgets = schemaSet.all
-                  .flatMap { it.widgets }
-                  .filter { it.traits.any { it is ProtocolChildren } }
-                  .sortedBy { it.tag }
+                val allWidgets = schemaSet.all
+                  .flatMap { schema -> schema.widgets.map { it to schema } }
+                  .sortedBy { it.first.tag }
 
                 beginControlFlow(
                   "%T<%T>(%L).apply",
                   AndroidxCollection.MutableIntObjectMap,
-                  INT_ARRAY,
-                  allParentWidgets.size,
+                  ProtocolHost.WidgetHostProtocol.parameterizedBy(typeVariableW),
+                  allWidgets.size,
                 )
-                for (parentWidget in allParentWidgets) {
+                for ((widget, widgetSchema) in allWidgets) {
                   addStatement(
-                    "put(%L, %M(%L))",
-                    parentWidget.tag,
-                    MemberName("kotlin", "intArrayOf"),
-                    parentWidget.traits
-                      .filterIsInstance<ProtocolChildren>()
-                      .sortedBy { it.tag }
-                      .joinToCode { CodeBlock.of("%L", it.tag) },
+                    "put(%L, %T(widgetSystem, json, mismatchHandler))",
+                    widget.tag,
+                    schema.widgetHostProtocolType(widget, widgetSchema),
                   )
                 }
                 endControlFlow()
@@ -171,41 +163,16 @@ internal fun generateProtocolFactory(
             .build(),
         )
         .addFunction(
-          FunSpec.builder("widgetChildren")
+          FunSpec.builder("widget")
             .addModifiers(OVERRIDE)
-            .addParameter("tag", WidgetTag)
-            .returns(INT_ARRAY.copy(nullable = true))
-            .addStatement("return childrenTags[tag.value]")
-            .build(),
-        )
-        .addFunction(
-          FunSpec.builder("createNode")
-            .addModifiers(OVERRIDE)
-            .addParameter("id", Id)
             .addParameter("tag", WidgetTag)
             .returns(
-              ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW)
+              ProtocolHost.WidgetHostProtocol.parameterizedBy(typeVariableW)
                 .copy(nullable = true),
             )
-            .beginControlFlow("return when (tag.value)")
-            .apply {
-              for (dependency in schemaSet.all.sortedBy { it.widgets.firstOrNull()?.tag ?: 0 }) {
-                for (widget in dependency.widgets.sortedBy { it.tag }) {
-                  addStatement(
-                    "%L -> %T(id, widgetSystem.%N.%N(), json, mismatchHandler)",
-                    widget.tag,
-                    dependency.protocolNodeType(widget, schema),
-                    dependency.type.flatName,
-                    widget.type.flatName,
-                  )
-                }
-              }
-            }
-            .beginControlFlow("else ->")
+            .addStatement("widgets[tag.value]?.let { return it }")
             .addStatement("mismatchHandler.onUnknownWidget(tag)")
-            .addStatement("null")
-            .endControlFlow()
-            .endControlFlow()
+            .addStatement("return null")
             .build(),
         )
         .addFunction(
@@ -218,8 +185,8 @@ internal fun generateProtocolFactory(
               if (modifiers.isNotEmpty()) {
                 beginControlFlow("val serializer = when (element.tag.value)")
                 val host = schemaSet.schema
-                for ((localSchema, modifier) in modifiers) {
-                  val typeName = ClassName(localSchema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
+                for ((modifierSchema, modifier) in modifiers) {
+                  val typeName = schema.modifierImplType(modifier, modifierSchema)
                   if (modifier.properties.isEmpty()) {
                     addStatement("%L -> return %T", modifier.tag, typeName)
                   } else {
@@ -246,7 +213,21 @@ internal fun generateProtocolFactory(
 }
 
 /*
-internal class ProtocolButton<W : Any>(
+internal class ButtonHostProtocol<W : Any>(
+  private val widgetSystem: EmojiSearchWidgetSystem<W>,
+  private val json: Json,
+  private val mismatchHandler: ProtocolMismatchHandler,
+) : WidgetHostProtocol<W> {
+  override val childrenTags: IntArray?
+    get() = null
+
+  override fun createNode(id: Id): ProtocolNode<W> {
+    val widget = widgetSystem.RedwoodLayout.Box()
+    return BoxProtocolNode(id, widget, json, mismatchHandler)
+  }
+}
+
+private class ButtonProtocolNode<W : Any>(
   id: Id,
   widget: Button<W>,
   private val json: Json,
@@ -262,7 +243,7 @@ internal class ProtocolButton<W : Any>(
 
   public override fun apply(change: PropertyChange, eventSink: UiEventSink): Unit {
     val widget = _widget ?: error("detached")
-    when (change.tag.value) {
+    when (change.propertyTag.value) {
       1 -> widget.text(json.decodeFromJsonElement(serializer_0, change.value))
       2 -> widget.enabled(json.decodeFromJsonElement(serializer_1, change.value))
       3 -> {
@@ -273,7 +254,7 @@ internal class ProtocolButton<W : Any>(
         }
         widget.onClick(onClick)
       }
-      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.tag)
+      else -> mismatchHandler.onUnknownProperty(WidgetTag(12), change.propertyTag)
     }
   }
 
@@ -294,21 +275,84 @@ internal class ProtocolButton<W : Any>(
 }
 */
 internal fun generateProtocolNode(
-  schema: ProtocolSchema,
+  generatingSchema: ProtocolSchema,
+  widgetSchema: ProtocolSchema,
   widget: ProtocolWidget,
-  host: ProtocolSchema = schema,
 ): FileSpec {
-  val type = schema.protocolNodeType(widget, host)
-  val widgetType = schema.widgetType(widget).parameterizedBy(typeVariableW)
-  val protocolType = ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW)
+  val widgetType = widgetSchema.widgetType(widget).parameterizedBy(typeVariableW)
+  val widgetSystem = generatingSchema.getWidgetSystemType().parameterizedBy(typeVariableW)
+  val widgetProtocolType = generatingSchema.widgetHostProtocolType(widget, widgetSchema)
+  val widgetNodeType = widgetProtocolType.peerClass("${widget.type.flatName}ProtocolNode")
+
   val (childrens, properties) = widget.traits.partition { it is ProtocolChildren }
-  return buildFileSpec(type) {
+
+  return buildFileSpec(widgetProtocolType) {
     addAnnotation(suppressDeprecations)
     addType(
-      TypeSpec.classBuilder(type)
+      TypeSpec.classBuilder(widgetProtocolType)
         .addModifiers(INTERNAL)
         .addTypeVariable(typeVariableW)
-        .superclass(protocolType)
+        .addSuperinterface(ProtocolHost.WidgetHostProtocol.parameterizedBy(typeVariableW))
+        .addAnnotation(Redwood.RedwoodCodegenApi)
+        .primaryConstructor(
+          FunSpec.constructorBuilder()
+            .addParameter("widgetSystem", widgetSystem)
+            .addParameter("json", KotlinxSerialization.Json)
+            .addParameter("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("widgetSystem", widgetSystem, PRIVATE)
+            .initializer("widgetSystem")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
+            .initializer("json")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, PRIVATE)
+            .initializer("mismatchHandler")
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("childrenTags", INT_ARRAY.copy(nullable = true), OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .apply {
+                  val childrens = widget.traits.filterIsInstance<ProtocolChildren>()
+                  if (childrens.isEmpty()) {
+                    addStatement("return null")
+                  } else {
+                    addStatement(
+                      "return %M(%L)",
+                      MemberName("kotlin", "intArrayOf"),
+                      childrens.joinToCode { CodeBlock.of("%L", it.tag) },
+                    )
+                  }
+                }
+                .build(),
+            )
+            .build(),
+        )
+        .addFunction(
+          FunSpec.builder("createNode")
+            .addModifiers(OVERRIDE)
+            .addParameter("id", Protocol.Id)
+            .returns(ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW))
+            .addStatement("val widget = widgetSystem.%L.%L()", widgetSchema.type.flatName, widget.type.flatName)
+            .addStatement("return %T(id, widget, json, mismatchHandler)", widgetNodeType)
+            .build(),
+        )
+        .build(),
+
+    )
+    addType(
+      TypeSpec.classBuilder(widgetNodeType)
+        .addModifiers(PRIVATE)
+        .addTypeVariable(typeVariableW)
+        .superclass(ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW))
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
@@ -324,6 +368,15 @@ internal fun generateProtocolNode(
             .getter(
               FunSpec.getterBuilder()
                 .addStatement("return %T(%L)", WidgetTag, widget.tag)
+                .build(),
+            )
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("widgetName", STRING, OVERRIDE)
+            .getter(
+              FunSpec.getterBuilder()
+                .addStatement("return %S", widget.type.flatName)
                 .build(),
             )
             .build(),
@@ -372,7 +425,7 @@ internal fun generateProtocolNode(
                 if (properties.isNotEmpty()) {
                   addStatement("val widget = _widget ?: error(%S)", "detached")
                 }
-                beginControlFlow("when (change.tag.value)")
+                beginControlFlow("when (change.propertyTag.value)")
                 for (trait in properties) {
                   when (trait) {
                     is ProtocolProperty -> {
@@ -447,7 +500,7 @@ internal fun generateProtocolNode(
                 }
               }
               .addStatement(
-                "else -> mismatchHandler.onUnknownProperty(%T(%L), change.tag)",
+                "else -> mismatchHandler.onUnknownProperty(%T(%L), change.propertyTag)",
                 Protocol.WidgetTag,
                 widget.tag,
               )
@@ -524,22 +577,6 @@ internal fun generateProtocolNode(
               }
             }
             .addStatement("_widget = null")
-            .build(),
-        )
-        .addFunction(
-          FunSpec.builder("toString")
-            .addModifiers(OVERRIDE)
-            .returns(STRING)
-            // This explicit string builder usage allows sharing of strings in dex.
-            // See https://jakewharton.com/the-economics-of-generated-code/#string-duplication.
-            .beginControlFlow("return buildString")
-            .addStatement("append(%S)", type.simpleName)
-            .addStatement("""append("(id=")""")
-            .addStatement("append(id.value)")
-            .addStatement("""append(", tag=")""")
-            .addStatement("append(%L)", widget.tag)
-            .addStatement("append(')')")
-            .endControlFlow()
             .build(),
         )
         .build(),
@@ -665,17 +702,18 @@ private fun addConstructorParameterAndProperty(
 }
 
 internal fun generateProtocolModifierImpls(
-  schema: ProtocolSchema,
-  host: ProtocolSchema = schema,
+  generatingSchema: ProtocolSchema,
+  modifierSchema: ProtocolSchema,
 ): FileSpec? {
-  if (schema.modifiers.isEmpty()) {
+  if (modifierSchema.modifiers.isEmpty()) {
     return null
   }
-  return buildFileSpec(schema.hostProtocolPackage(host), "modifierImpls") {
+  val targetPackage = generatingSchema.hostProtocolPackage(modifierSchema)
+  return buildFileSpec(targetPackage, "modifierImpls") {
     addAnnotation(suppressDeprecations)
 
-    for (modifier in schema.modifiers) {
-      val typeName = ClassName(schema.hostProtocolPackage(host), modifier.type.flatName + "Impl")
+    for (modifier in modifierSchema.modifiers) {
+      val typeName = generatingSchema.modifierImplType(modifier, modifierSchema)
       val typeBuilder = if (modifier.properties.isEmpty()) {
         TypeSpec.objectBuilder(typeName)
       } else {
@@ -706,8 +744,8 @@ internal fun generateProtocolModifierImpls(
       addType(
         typeBuilder
           .addModifiers(INTERNAL)
-          .addSuperinterface(schema.modifierType(modifier))
-          .addFunction(modifierEquals(schema, modifier))
+          .addSuperinterface(modifierSchema.modifierType(modifier))
+          .addFunction(modifierEquals(modifierSchema, modifier))
           .addFunction(modifierHashCode(modifier))
           .addFunction(modifierToString(modifier))
           .build(),
@@ -716,6 +754,10 @@ internal fun generateProtocolModifierImpls(
   }
 }
 
-private fun Schema.protocolNodeType(widget: Widget, host: Schema): ClassName {
-  return ClassName(hostProtocolPackage(host), "Protocol${widget.type.flatName}")
+private fun Schema.widgetHostProtocolType(widget: Widget, widgetSchema: ProtocolSchema): ClassName {
+  return ClassName(hostProtocolPackage(widgetSchema), "${widget.type.flatName}HostProtocol")
+}
+
+private fun Schema.modifierImplType(modifier: ProtocolModifier, modifierSchema: ProtocolSchema): ClassName {
+  return ClassName(hostProtocolPackage(modifierSchema), "${modifier.type.flatName}Impl")
 }

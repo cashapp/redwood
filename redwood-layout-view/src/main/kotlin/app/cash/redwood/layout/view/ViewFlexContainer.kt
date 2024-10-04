@@ -43,16 +43,9 @@ import app.cash.redwood.yoga.isHorizontal
 internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
-  incremental: Boolean = false,
 ) : YogaFlexContainer<View>,
   ChangeListener {
-  private val yogaLayout: YogaLayout = YogaLayout(
-    context,
-    applyModifier = { node, index ->
-      node.applyModifier(children.widgets[index].modifier, density)
-    },
-    incremental = incremental,
-  )
+  private val yogaLayout: YogaLayout = YogaLayout(context)
   override val rootNode: Node get() = yogaLayout.rootNode
   override val density = Density(context.resources)
 
@@ -61,13 +54,25 @@ internal class ViewFlexContainer(
 
   override val children = ViewGroupChildren(
     yogaLayout,
-    insert = { index, view ->
-      yogaLayout.rootNode.children.add(index, view.asNode())
+    insert = { index, widget ->
+      val view = widget.value
+
+      val node = view.asNode()
+      yogaLayout.rootNode.children.add(index, node)
+
+      // Always apply changes *after* adding a node to its parent.
+      node.applyModifier(widget.modifier, density)
+
       yogaLayout.addView(view, index)
     },
     remove = { index, count ->
       yogaLayout.rootNode.children.remove(index, count)
       yogaLayout.removeViews(index, count)
+    },
+    onModifierUpdated = { index, widget ->
+      val node = yogaLayout.rootNode.children[index]
+      node.applyModifier(widget.modifier, density)
+      yogaLayout.requestLayout()
     },
   )
 
