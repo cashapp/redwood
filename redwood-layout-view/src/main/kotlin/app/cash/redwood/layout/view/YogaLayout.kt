@@ -73,11 +73,13 @@ internal class YogaLayout(context: Context) : ViewGroup(context) {
     calculateLayout(
       requestedWidth = when {
         widthMode == MeasureSpec.EXACTLY -> widthSize.toFloat()
+        widthMode == MeasureSpec.UNSPECIFIED -> Size.UNDEFINED
         widthConstraint == Constraint.Fill -> widthSize.toFloat()
         else -> Size.UNDEFINED
       },
       requestedHeight = when {
         heightMode == MeasureSpec.EXACTLY -> heightSize.toFloat()
+        heightMode == MeasureSpec.UNSPECIFIED -> Size.UNDEFINED
         heightConstraint == Constraint.Fill -> heightSize.toFloat()
         else -> Size.UNDEFINED
       },

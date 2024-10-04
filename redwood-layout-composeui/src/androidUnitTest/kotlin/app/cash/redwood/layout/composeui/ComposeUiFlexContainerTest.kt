@@ -24,6 +24,7 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
@@ -61,6 +62,11 @@ class ComposeUiFlexContainerTest(
   override fun row() = flexContainer(FlexDirection.Row)
 
   override fun column() = flexContainer(FlexDirection.Column)
+
+  override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
+    // TODO: honor backgroundColor.
+    return ComposeUiRedwoodLayoutWidgetFactory().Spacer()
+  }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 

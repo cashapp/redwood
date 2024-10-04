@@ -22,6 +22,7 @@ import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.Blue
 import app.cash.redwood.snapshot.testing.Green
 import app.cash.redwood.snapshot.testing.Red
@@ -52,6 +53,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   /** Returns a non-lazy flex container column, even if the test is for a LazyList. */
   abstract fun column(): Column<T>
+
+  abstract fun spacer(
+    backgroundColor: Int = argb(17, 0, 0, 0),
+  ): Spacer<T>
 
   abstract fun snapshotter(widget: T): Snapshotter
 
@@ -828,6 +833,43 @@ abstract class AbstractFlexContainerTest<T : Any> {
       .also { fullWidthParent.children.insert(1, it) }
 
     snapshotter(fullWidthParent.value).snapshot()
+  }
+
+  /**
+   * We were incorrectly collapsing the dimensions of the widget.
+   * https://github.com/cashapp/redwood/issues/2018
+   */
+  @Test fun testWidgetWithFlexModifierNestedInRowAndColumn() {
+    val root = flexContainer(FlexDirection.Column).apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      margin(Margin(top = 24.dp))
+      modifier = Modifier
+    }
+
+    val rootChild0 = row().apply {
+      width(Constraint.Fill)
+      horizontalAlignment(MainAxisAlignment.Center)
+      root.children.insert(0, this)
+    }
+
+    val rootChild0Child0 = column().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      horizontalAlignment(CrossAxisAlignment.Stretch)
+      modifier = Modifier
+        .then(MarginImpl(Margin(start = 24.dp, end = 24.dp)))
+        .then(FlexImpl(1.0))
+      rootChild0.children.insert(0, this)
+    }
+
+    val rootChild0Child0Child0 = spacer().apply {
+      width(48.dp)
+      height(48.dp)
+      rootChild0Child0.children.insert(0, this)
+    }
+
+    snapshotter(root.value).snapshot()
   }
 }
 
