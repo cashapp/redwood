@@ -128,6 +128,12 @@ class ProtocolTest {
     assertThat(three).hasMessage("ModifierElement array may only have 1 or 2 values. Found: 3")
   }
 
+  @Test fun propertyChangeMissingWidgetTag() {
+    val expected = PropertyChange(Id(1), WidgetTag(-1), PropertyTag(2), JsonPrimitive("hello"))
+    val json = """["property",{"id":1,"tag":2,"value":"hello"}]"""
+    assertThat(format.decodeFromString(Change.serializer(), json)).isEqualTo(expected)
+  }
+
   private fun <T> assertJsonRoundtrip(serializer: KSerializer<T>, model: T, json: String) {
     assertThat(format.encodeToString(serializer, model)).isEqualTo(json)
     assertThat(format.decodeFromString(serializer, json)).isEqualTo(model)
