@@ -8,6 +8,7 @@ New:
 
 Changed:
 - Drop support for non-incremental layouts in `Row` and `Column`.
+- Support for `@Default` annotation has now been removed, as detailed in the 0.15.0 release.
 
 Fixed:
 - Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.

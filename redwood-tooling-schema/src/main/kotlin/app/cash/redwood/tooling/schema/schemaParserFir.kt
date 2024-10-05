@@ -413,7 +413,7 @@ private fun FirContext.parseWidget(
 
       val propertyAnnotation = findPropertyAnnotation(property.annotations)
       val childrenAnnotation = findChildrenAnnotation(property.annotations)
-      val defaultExpression = findDefaultExpression(memberType, parameter, property)
+      val defaultExpression = findDefaultExpression(parameter)
       val deprecation = findDeprecationAnnotation(property.annotations)
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
@@ -582,7 +582,7 @@ private fun FirContext.parseModifier(
       val parameterType = parameter.resolvedReturnType.toFqType()
       val property = firClass.declarations.filterIsInstance<FirProperty>().single { it.name == parameter.name }
 
-      val defaultExpression = findDefaultExpression(memberType, parameter, property)
+      val defaultExpression = findDefaultExpression(parameter)
       val deprecation = findDeprecationAnnotation(property.annotations)
         ?.toDeprecation { "$memberType.$name" }
       val documentation = parameter.source?.findAndParseKDoc()
@@ -776,28 +776,13 @@ private data class ChildrenAnnotation(
 )
 
 private fun FirContext.findDefaultExpression(
-  memberType: FqType,
   parameter: FirValueParameterSymbol,
-  property: FirProperty,
 ): String? {
-  val annotation = property.annotations.find { it.fqName(firSession) == FqNames.Default }
-    ?.let { annotation ->
-      annotation.argumentMapping
-        .mapping[Name.identifier("expression")] as? FirLiteralExpression
-        ?: throw AssertionError(annotation.source?.text)
-    }
-    ?.value as String?
-
-  val expression = parameter.defaultValueSource?.let { defaultValue ->
+  return parameter.defaultValueSource?.let { defaultValue ->
     defaultValue.treeStructure
       .toString(defaultValue.lighterASTNode)
       .toString()
   }
-
-  check(annotation == null || expression == null) {
-    "Only @Default or a default expression may be present–not both: $memberType.${parameter.name}"
-  }
-  return expression ?: annotation
 }
 
 private fun FirContext.findModifierAnnotation(
@@ -921,7 +906,6 @@ private fun ClassId.toFqType() = FqType(
 
 private object FqNames {
   val Children = FqName("app.cash.redwood.schema.Children")
-  val Default = FqName("app.cash.redwood.schema.Default")
   val Deprecated = FqName("kotlin.Deprecated")
   val Modifier = FqName("app.cash.redwood.schema.Modifier")
   val Property = FqName("app.cash.redwood.schema.Property")
