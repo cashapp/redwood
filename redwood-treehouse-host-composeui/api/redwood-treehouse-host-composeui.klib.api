@@ -6,7 +6,24 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-treehouse-host-composeui>
+open class app.cash.redwood.treehouse.composeui/ComposeUiRoot : app.cash.redwood.widget/RedwoodView.Root<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> { // app.cash.redwood.treehouse.composeui/ComposeUiRoot|null[0]
+    constructor <init>() // app.cash.redwood.treehouse.composeui/ComposeUiRoot.<init>|<init>(){}[0]
+
+    open val children // app.cash.redwood.treehouse.composeui/ComposeUiRoot.children|{}children[0]
+        open fun <get-children>(): app.cash.redwood.widget.compose/ComposeWidgetChildren // app.cash.redwood.treehouse.composeui/ComposeUiRoot.children.<get-children>|<get-children>(){}[0]
+    open val value // app.cash.redwood.treehouse.composeui/ComposeUiRoot.value|{}value[0]
+        open fun <get-value>(): kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit> // app.cash.redwood.treehouse.composeui/ComposeUiRoot.value.<get-value>|<get-value>(){}[0]
+
+    open var modifier // app.cash.redwood.treehouse.composeui/ComposeUiRoot.modifier|{}modifier[0]
+        open fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.treehouse.composeui/ComposeUiRoot.modifier.<get-modifier>|<get-modifier>(){}[0]
+        open fun <set-modifier>(app.cash.redwood/Modifier) // app.cash.redwood.treehouse.composeui/ComposeUiRoot.modifier.<set-modifier>|<set-modifier>(app.cash.redwood.Modifier){}[0]
+
+    open fun Render(androidx.compose.runtime/Composer?, kotlin/Int) // app.cash.redwood.treehouse.composeui/ComposeUiRoot.Render|Render(androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+    open fun contentState(kotlin/Int, kotlin/Boolean, kotlin/Throwable?) // app.cash.redwood.treehouse.composeui/ComposeUiRoot.contentState|contentState(kotlin.Int;kotlin.Boolean;kotlin.Throwable?){}[0]
+    open fun restart(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.treehouse.composeui/ComposeUiRoot.restart|restart(kotlin.Function0<kotlin.Unit>?){}[0]
+}
+
 final val app.cash.redwood.treehouse.composeui/app_cash_redwood_treehouse_composeui_ComposeUiRoot$stableprop // app.cash.redwood.treehouse.composeui/app_cash_redwood_treehouse_composeui_ComposeUiRoot$stableprop|#static{}app_cash_redwood_treehouse_composeui_ComposeUiRoot$stableprop[0]
 
-final fun <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse.composeui/TreehouseContent(app.cash.redwood.treehouse/TreehouseApp<#A>, app.cash.redwood.treehouse/TreehouseView.WidgetSystem<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>, app.cash.redwood.treehouse/TreehouseContentSource<#A>, androidx.compose.ui/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.treehouse.composeui/TreehouseContent|TreehouseContent(app.cash.redwood.treehouse.TreehouseApp<0:0>;app.cash.redwood.treehouse.TreehouseView.WidgetSystem<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>;app.cash.redwood.treehouse.TreehouseContentSource<0:0>;androidx.compose.ui.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){0§<app.cash.redwood.treehouse.AppService>}[0]
+final fun <#A: app.cash.redwood.treehouse/AppService> app.cash.redwood.treehouse.composeui/TreehouseContent(app.cash.redwood.treehouse/TreehouseApp<#A>, app.cash.redwood.treehouse/TreehouseView.WidgetSystem<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>, app.cash.redwood.treehouse/TreehouseContentSource<#A>, androidx.compose.ui/Modifier?, kotlin/Function1<kotlinx.coroutines/CoroutineScope, app.cash.redwood.widget/RedwoodView.Root<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>>?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.treehouse.composeui/TreehouseContent|TreehouseContent(app.cash.redwood.treehouse.TreehouseApp<0:0>;app.cash.redwood.treehouse.TreehouseView.WidgetSystem<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>;app.cash.redwood.treehouse.TreehouseContentSource<0:0>;androidx.compose.ui.Modifier?;kotlin.Function1<kotlinx.coroutines.CoroutineScope,app.cash.redwood.widget.RedwoodView.Root<kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>>?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){0§<app.cash.redwood.treehouse.AppService>}[0]
 final fun app.cash.redwood.treehouse.composeui/app_cash_redwood_treehouse_composeui_ComposeUiRoot$stableprop_getter(): kotlin/Int // app.cash.redwood.treehouse.composeui/app_cash_redwood_treehouse_composeui_ComposeUiRoot$stableprop_getter|app_cash_redwood_treehouse_composeui_ComposeUiRoot$stableprop_getter(){}[0]

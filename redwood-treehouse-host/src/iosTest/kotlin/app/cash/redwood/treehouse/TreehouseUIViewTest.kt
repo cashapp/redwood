@@ -19,7 +19,6 @@ import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.widget.UIViewChildren
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -44,10 +43,10 @@ class TreehouseUIViewTest {
     val layout = TreehouseUIView(throwingWidgetSystem)
 
     val view = UIView()
-    layout.children.insert(0, viewWidget(view))
-    assertThat(layout.view.subviews).hasSize(1)
+    layout.root.children.insert(0, viewWidget(view))
+    assertThat(layout.root.value.subviews).hasSize(1)
     // For some reason `assertSame` fails on these references.
-    assertThat(layout.view.subviews[0].objcPtr()).isEqualTo(view.objcPtr())
+    assertThat(layout.root.value.subviews[0].objcPtr()).isEqualTo(view.objcPtr())
   }
 
   @Test fun attachAndDetachSendsStateChange() {
@@ -58,34 +57,11 @@ class TreehouseUIViewTest {
     layout.readyForContentChangeListener = listener
     assertThat(listener.count).isEqualTo(0)
 
-    parent.addSubview(layout.view)
+    parent.addSubview(layout.root.value)
     assertThat(listener.count).isEqualTo(1)
 
-    layout.view.removeFromSuperview()
+    layout.root.value.removeFromSuperview()
     assertThat(listener.count).isEqualTo(2)
-  }
-
-  @Test fun resetClearsUntrackedChildren() {
-    val layout = TreehouseUIView(throwingWidgetSystem)
-
-    layout.view.addSubview(UIView())
-    assertThat(layout.view.subviews).hasSize(1)
-
-    layout.reset()
-    assertThat(layout.view.subviews).hasSize(0)
-  }
-
-  @Test fun resetClearsTrackedWidgets() {
-    val layout = TreehouseUIView(throwingWidgetSystem)
-
-    // Needed to access internal state which cannot be reasonably observed through the public API.
-    val children = layout.children as UIViewChildren
-
-    children.insert(0, viewWidget(UIView()))
-    assertThat(children.widgets).hasSize(1)
-
-    layout.reset()
-    assertThat(children.widgets).hasSize(0)
   }
 
   @Test
@@ -94,7 +70,7 @@ class TreehouseUIViewTest {
     parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.view)
+    parent.addSubview(layout.root.value)
 
     assertThat(layout.uiConfiguration.value.darkMode).isTrue()
   }
@@ -103,7 +79,7 @@ class TreehouseUIViewTest {
     val parent = UIWindow()
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.view)
+    parent.addSubview(layout.root.value)
 
     layout.uiConfiguration.test {
       assertThat(awaitItem().darkMode).isFalse()
@@ -127,7 +103,7 @@ class TreehouseUIViewTest {
     }
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.view)
+    parent.addSubview(layout.root.value)
 
     assertThat(layout.uiConfiguration.value.safeAreaInsets).isEqualTo(expectedInsets)
   }
@@ -137,7 +113,7 @@ class TreehouseUIViewTest {
     val parent = UIWindow()
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.view)
+    parent.addSubview(layout.root.value)
 
     val expectedLayoutDirection = when (val direction = parent.effectiveUserInterfaceLayoutDirection) {
       UIUserInterfaceLayoutDirectionLeftToRight -> LayoutDirection.Ltr

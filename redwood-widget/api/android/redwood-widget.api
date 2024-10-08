@@ -49,8 +49,8 @@ public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwoo
 }
 
 public class app/cash/redwood/widget/RedwoodLayout : android/widget/FrameLayout, app/cash/redwood/widget/RedwoodView {
-	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/widget/RedwoodView$Root;Landroidx/activity/OnBackPressedDispatcher;)V
-	public synthetic fun <init> (Landroid/content/Context;Lapp/cash/redwood/widget/RedwoodView$Root;Landroidx/activity/OnBackPressedDispatcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/content/Context;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;)V
+	public synthetic fun <init> (Landroid/content/Context;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
 	public final fun getRoot ()Lapp/cash/redwood/widget/RedwoodView$Root;
 	public fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;

@@ -34,7 +34,7 @@ public class TreehouseLayout(
   root: RedwoodView.Root<View>,
   override val widgetSystem: WidgetSystem<View>,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
-) : RedwoodLayout(context, root, androidOnBackPressedDispatcher),
+) : RedwoodLayout(context, androidOnBackPressedDispatcher, root),
   TreehouseView<View> {
   override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
     set(value) {

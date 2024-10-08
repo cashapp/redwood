@@ -37,8 +37,8 @@ import kotlinx.coroutines.flow.StateFlow
 @SuppressLint("ViewConstructor")
 public open class RedwoodLayout(
   context: Context,
-  public final override val root: RedwoodView.Root<View> = ViewRoot(context),
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
+  public final override val root: RedwoodView.Root<View> = ViewRoot(context),
 ) : FrameLayout(context),
   RedwoodView<View> {
   init {
