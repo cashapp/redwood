@@ -22,11 +22,9 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp
-import app.cash.redwood.widget.Widget.Children
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
 import org.w3c.dom.events.Event
@@ -39,10 +37,9 @@ public fun HTMLElement.asRedwoodView(): RedwoodView<HTMLElement> {
 }
 
 private class RedwoodHTMLElementView(
-  private val element: HTMLElement,
+  element: HTMLElement,
 ) : RedwoodView<HTMLElement> {
-  private val _children = HTMLElementChildren(element)
-  override val children: Children<HTMLElement> get() = _children
+  override val root = HTMLRoot(element)
 
   private var pixelRatioQueryRemover: (() -> Unit)? = null
 
@@ -119,13 +116,6 @@ private class RedwoodHTMLElementView(
         layoutDirection = old.layoutDirection,
       )
     }
-  }
-
-  override fun reset() {
-    _children.remove(0, _children.widgets.size)
-
-    // Ensure any out-of-band nodes are also removed.
-    element.clear()
   }
 
   private fun updateUiConfiguration(updater: (UiConfiguration) -> UiConfiguration) {

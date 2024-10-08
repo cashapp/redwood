@@ -20,20 +20,21 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
+import app.cash.redwood.widget.RedwoodView
 import app.cash.treehouse.host.R
 import java.util.UUID
 
 @SuppressLint("ViewConstructor")
 public class TreehouseLayout(
   context: Context,
+  root: RedwoodView.Root<View>,
   override val widgetSystem: WidgetSystem<View>,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
-) : RedwoodLayout(context, androidOnBackPressedDispatcher),
+) : RedwoodLayout(context, root, androidOnBackPressedDispatcher),
   TreehouseView<View> {
   override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
     set(value) {
@@ -69,9 +70,6 @@ public class TreehouseLayout(
     readyForContent = false
     readyForContentChangeListener?.onReadyForContentChanged(this)
   }
-
-  override fun generateDefaultLayoutParams(): LayoutParams =
-    LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
   override fun onSaveInstanceState(): Parcelable? {
     val id = UUID.randomUUID().toString()

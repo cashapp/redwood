@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Square, Inc.
+ * Copyright (C) 2024 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.widget
 
-internal interface CodeEventPublisher {
-  fun onInitialCodeLoading(
-    view: TreehouseView<*>,
-  )
+import app.cash.redwood.Modifier
+import org.w3c.dom.HTMLElement
 
-  fun onCodeLoaded(
-    view: TreehouseView<*>,
-    initial: Boolean,
-  )
+public class HTMLRoot(
+  override val value: HTMLElement,
+) : RedwoodView.Root<HTMLElement> {
+  override val children: Widget.Children<HTMLElement> = HTMLElementChildren(value)
+  override var modifier: Modifier = Modifier
 
-  fun onCodeDetached(
-    view: TreehouseView<*>,
-    exception: Throwable?,
-  )
+  override fun contentState(loadCount: Int, attached: Boolean, uncaughtException: Throwable?) {
+  }
+
+  override fun restart(restart: (() -> Unit)?) {
+  }
 }

@@ -19,16 +19,16 @@ import app.cash.redwood.compose.DisplayLinkClock
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.widget.RedwoodUIView
+import app.cash.redwood.widget.UIViewRoot
 import com.example.redwood.counter.presenter.Counter
 import com.example.redwood.counter.widget.SchemaWidgetSystem
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.plus
-import platform.UIKit.UIStackView
 
 @Suppress("unused") // Called from Swift.
 class CounterViewControllerDelegate(
-  root: UIStackView,
+  root: UIViewRoot,
 ) {
   private val scope = MainScope() + DisplayLinkClock
 

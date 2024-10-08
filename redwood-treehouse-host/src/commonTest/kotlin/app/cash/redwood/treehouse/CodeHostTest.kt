@@ -40,7 +40,6 @@ class CodeHostTest {
     dispatchers = dispatchers,
     appScope = appScope,
   )
-  private val codeEventPublisher = FakeCodeEventPublisher(eventLog)
   private val onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog)
 
   @AfterTest
@@ -55,9 +54,9 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -65,7 +64,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -78,9 +77,9 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.restart(EventListener.NONE)
+    codeHost.restart()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -88,7 +87,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -101,27 +100,27 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates2.collect()")
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates2.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.stop()")
 
@@ -134,19 +133,19 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeListener.onCodeDetached(kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
-    codeHost.restart(EventListener.NONE)
+    codeHost.restart()
     eventLog.takeEvent("codeHostUpdates1.close()")
     eventLog.takeEvent("codeHostUpdates2.collect()")
     codeHost.startCodeSession("codeSessionB")
@@ -154,7 +153,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates2.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.stop()")
 
@@ -167,15 +166,15 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeListener.onCodeDetached(kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -184,7 +183,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
     eventLog.takeEvent("codeSessionB.stop()")
 
@@ -197,15 +196,15 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeSessionA.handleUncaughtException(Exception("boom!"))
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, kotlin.Exception: boom!)")
+    eventLog.takeEvent("codeListener.onCodeDetached(kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -221,13 +220,13 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     eventLog.assertNoEvents()
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.assertNoEvents()
 
     codeHost.startCodeSession("codeSessionA")
@@ -235,7 +234,7 @@ class CodeHostTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -248,20 +247,20 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.assertNoEvents()
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -274,9 +273,9 @@ class CodeHostTest {
     val content = treehouseAppContent()
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading(view1)")
+    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
 
-    codeHost.start(EventListener.NONE)
+    codeHost.start()
     eventLog.takeEvent("codeHostUpdates1.collect()")
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -284,7 +283,7 @@ class CodeHostTest {
 
     codeHost.stop()
     eventLog.takeEvent("codeHostUpdates1.close()")
-    eventLog.takeEvent("codeListener.onCodeDetached(view1, null)")
+    eventLog.takeEvent("codeListener.onCodeDetached(null)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -297,13 +296,16 @@ class CodeHostTest {
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      codeEventPublisher = codeEventPublisher,
       source = { app -> app.newUi() },
       leakDetector = LeakDetector.none(),
     )
   }
 
   private fun treehouseView(name: String): FakeTreehouseView {
-    return FakeTreehouseView(name, onBackPressedDispatcher)
+    return FakeTreehouseView(
+      name = name,
+      eventLog = eventLog,
+      onBackPressedDispatcher = onBackPressedDispatcher,
+    )
   }
 }

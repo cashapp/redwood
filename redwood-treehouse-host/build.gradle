@@ -40,6 +40,7 @@ kotlin {
         implementation libs.jetbrains.compose.collection
         implementation projects.redwoodLayoutTesting
         implementation projects.redwoodLazylayoutTesting
+        implementation projects.redwoodWidget
         implementation projects.testApp.schema.protocolHost
         implementation projects.testApp.schema.testing
       }

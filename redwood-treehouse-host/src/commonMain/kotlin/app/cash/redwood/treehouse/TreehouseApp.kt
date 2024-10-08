@@ -65,7 +65,6 @@ public abstract class TreehouseApp<A : AppService> : AutoCloseable {
    */
   public abstract fun createContent(
     source: TreehouseContentSource<A>,
-    codeListener: CodeListener = CodeListener(),
   ): Content
 
   /**

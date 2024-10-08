@@ -18,20 +18,14 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
-import kotlinx.cinterop.cValue
-import platform.CoreGraphics.CGRectZero
-import platform.UIKit.UILayoutConstraintAxisVertical
-import platform.UIKit.UIStackView
-import platform.UIKit.UIStackViewAlignmentFill
-import platform.UIKit.UIStackViewDistributionFillEqually
-import platform.UIKit.UITraitCollection
+import app.cash.redwood.widget.UIViewRoot
 import platform.UIKit.UIView
 
 @ObjCName("TreehouseUIView", exact = true)
-public class TreehouseUIView private constructor(
+public class TreehouseUIView(
   override val widgetSystem: WidgetSystem<UIView>,
-  view: RootUiView,
-) : RedwoodUIView(view),
+  root: UIViewRoot,
+) : RedwoodUIView(root),
   TreehouseView<UIView> {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
@@ -43,52 +37,11 @@ public class TreehouseUIView private constructor(
     }
 
   override val readyForContent: Boolean
-    get() = view.superview != null
+    get() = root.value.superview != null
 
-  public constructor(widgetSystem: WidgetSystem<UIView>) : this(widgetSystem, RootUiView())
+  public constructor(widgetSystem: WidgetSystem<UIView>) : this(widgetSystem, UIViewRoot())
 
-  init {
-    view.treehouseView = this
-  }
-
-  private fun superviewChanged() {
+  override fun superviewChanged() {
     readyForContentChangeListener?.onReadyForContentChanged(this)
-  }
-
-  /**
-   * The root view is just a vertical stack.
-   *
-   * In practice we expect this to contain either zero child subviews (especially when
-   * newly-initialized) or one child subview, which will usually be a layout container.
-   *
-   * This could just as easily be a horizontal stack. A box would be even better, but there's no
-   * such built-in component and implementing it manually is difficult if we want to react to
-   * content resizes.
-   */
-  private class RootUiView : UIStackView(cValue { CGRectZero }) {
-    lateinit var treehouseView: TreehouseUIView
-
-    init {
-      this.axis = UILayoutConstraintAxisVertical
-      this.alignment = UIStackViewAlignmentFill // Fill horizontal.
-      this.distribution = UIStackViewDistributionFillEqually // Fill vertical.
-    }
-
-    override fun layoutSubviews() {
-      super.layoutSubviews()
-
-      // Bounds likely changed. Report new size.
-      treehouseView.updateUiConfiguration()
-    }
-
-    override fun didMoveToSuperview() {
-      super.didMoveToSuperview()
-      treehouseView.superviewChanged()
-    }
-
-    override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-      super.traitCollectionDidChange(previousTraitCollection)
-      treehouseView.updateUiConfiguration()
-    }
   }
 }

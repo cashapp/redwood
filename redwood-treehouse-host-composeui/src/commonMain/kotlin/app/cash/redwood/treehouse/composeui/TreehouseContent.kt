@@ -17,13 +17,18 @@ package app.cash.redwood.treehouse.composeui
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -31,7 +36,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.composeui.safeAreaInsets
 import app.cash.redwood.treehouse.AppService
-import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.StateSnapshot
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
@@ -45,9 +49,14 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
+import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.SavedStateRegistry
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 public fun <A : AppService> TreehouseContent(
@@ -55,9 +64,9 @@ public fun <A : AppService> TreehouseContent(
   widgetSystem: WidgetSystem<@Composable () -> Unit>,
   contentSource: TreehouseContentSource<A>,
   modifier: Modifier = Modifier,
-  codeListener: CodeListener = remember { CodeListener() },
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
+  val scope = rememberCoroutineScope()
 
   var viewportSize: Size? by remember { mutableStateOf(null) }
   val density = LocalDensity.current
@@ -71,10 +80,9 @@ public fun <A : AppService> TreehouseContent(
       LayoutDirection.Rtl -> RedwoodLayoutDirection.Rtl
     },
   )
-
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView<@Composable () -> Unit> {
-      override val children = ComposeWidgetChildren()
+      override val root: RedwoodView.Root<@Composable () -> Unit> = ComposeUiRoot(scope = scope)
       override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
 
@@ -86,14 +94,13 @@ public fun <A : AppService> TreehouseContent(
       override var readyForContentChangeListener: ReadyForContentChangeListener<@Composable () -> Unit>? = null
       override var saveCallback: TreehouseView.SaveCallback? = null
       override val stateSnapshotId = StateSnapshot.Id(null)
-      override fun reset() = children.remove(0, children.widgets.size)
     }
   }
   LaunchedEffect(treehouseView, uiConfiguration) {
     treehouseView.uiConfiguration.value = uiConfiguration
   }
-  DisposableEffect(treehouseView, contentSource, codeListener) {
-    val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp, codeListener)
+  DisposableEffect(treehouseView, contentSource) {
+    val closeable = contentSource.bindWhenReady(treehouseView, treehouseApp)
     onDispose {
       closeable.close()
     }
@@ -106,8 +113,72 @@ public fun <A : AppService> TreehouseContent(
       }
     },
   ) {
-    treehouseView.children.Render()
+    treehouseView.root.value()
   }
+}
+
+internal class ComposeUiRoot(
+  private val scope: CoroutineScope,
+) : RedwoodView.Root<@Composable () -> Unit> {
+  private var loadCount by mutableIntStateOf(0)
+  private var attached by mutableStateOf(false)
+  private var uncaughtException by mutableStateOf<Throwable?>(null)
+  private var restart: (() -> Unit)? = null
+
+  override val children = ComposeWidgetChildren()
+
+  override fun contentState(
+    loadCount: Int,
+    attached: Boolean,
+    uncaughtException: Throwable?,
+  ) {
+    this.loadCount = loadCount
+    this.attached = attached
+    this.uncaughtException = uncaughtException
+
+    if (uncaughtException != null) {
+      scope.launch {
+        delay(2_000.milliseconds)
+        restart?.invoke()
+      }
+    }
+  }
+
+  override fun restart(restart: (() -> Unit)?) {
+    this.restart = restart
+  }
+
+  override val value: @Composable () -> Unit = {
+    Render()
+  }
+
+  @Composable
+  fun Render(modifier: Modifier = Modifier) {
+    val uncaughtException = this.uncaughtException
+    if (uncaughtException != null) {
+      Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+      ) {
+        BasicText(uncaughtException.stackTraceToString())
+      }
+      return
+    }
+
+    if (!attached) {
+      Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+      ) {
+        BasicText("loading...")
+      }
+      return
+    }
+
+    children.Render()
+  }
+
+  override var modifier: app.cash.redwood.Modifier = app.cash.redwood.Modifier
 }
 
 @Composable

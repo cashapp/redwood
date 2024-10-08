@@ -148,13 +148,13 @@ internal class TreehouseTester(
   fun content(treehouseApp: TreehouseApp<TestAppPresenter>): Content {
     return treehouseApp.createContent(
       source = { app -> app.launchForTester() },
-      codeListener = FakeCodeListener(eventLog),
     )
   }
 
   fun view(): FakeTreehouseView {
     return FakeTreehouseView(
       name = "view",
+      eventLog = eventLog,
       onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog),
     )
   }
