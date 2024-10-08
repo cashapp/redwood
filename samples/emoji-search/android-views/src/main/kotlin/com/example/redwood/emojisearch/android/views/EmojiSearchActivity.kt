@@ -95,7 +95,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
     val viewRoot = EmojiSearchViewRoot(context, scope)
 
-    treehouseLayout = TreehouseLayout(this, viewRoot, widgetSystem, onBackPressedDispatcher).apply {
+    treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher, viewRoot).apply {
       treehouseContentSource.bindWhenReady(this, treehouseApp)
     }
     setContentView(treehouseLayout)

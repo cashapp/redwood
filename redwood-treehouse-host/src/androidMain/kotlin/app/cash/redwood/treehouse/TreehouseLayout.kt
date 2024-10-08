@@ -25,15 +25,16 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
 import app.cash.redwood.widget.RedwoodView
+import app.cash.redwood.widget.ViewRoot
 import app.cash.treehouse.host.R
 import java.util.UUID
 
 @SuppressLint("ViewConstructor")
 public class TreehouseLayout(
   context: Context,
-  root: RedwoodView.Root<View>,
   override val widgetSystem: WidgetSystem<View>,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
+  root: RedwoodView.Root<View> = ViewRoot(context),
 ) : RedwoodLayout(context, androidOnBackPressedDispatcher, root),
   TreehouseView<View> {
   override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
