@@ -51,11 +51,12 @@ class TreehouseLayoutTest {
 
   @Test fun widgetsAddChildViews() {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val rootView = layout.root.value as ViewGroup
 
     val view = View(activity)
     layout.root.children.insert(0, viewWidget(view))
-    assertThat(layout.childCount).isEqualTo(1)
-    assertThat(layout.getChildAt(0)).isSameInstanceAs(view)
+    assertThat(rootView.childCount).isEqualTo(1)
+    assertThat(rootView.getChildAt(0)).isSameInstanceAs(view)
   }
 
   @Test fun attachAndDetachSendsStateChange() {
