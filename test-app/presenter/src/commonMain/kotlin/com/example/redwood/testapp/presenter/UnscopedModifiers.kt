@@ -27,7 +27,6 @@ import app.cash.redwood.layout.compose.Row
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.backgroundColor
 import kotlin.random.Random
-import kotlin.random.nextUInt
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
@@ -39,14 +38,14 @@ private const val COLS = 3
 fun UnscopedModifiers(modifier: Modifier = Modifier) {
   val colors = remember {
     // https://issuetracker.google.com/issues/330350695
-    List(ROWS * COLS) { Random.nextUInt() }.toMutableStateList()
+    List(ROWS * COLS) { Random.nextInt() }.toMutableStateList()
   }
   LaunchedEffect(Unit) {
     while (true) {
       delay(1.seconds)
 
       val randomIndex = Random.nextInt(colors.size)
-      colors[randomIndex] = Random.nextUInt()
+      colors[randomIndex] = Random.nextInt()
     }
   }
 

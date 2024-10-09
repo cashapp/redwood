@@ -56,7 +56,7 @@ class FastGuestProtocolAdapterTest {
 
       val textInput = widgetSystem.TestSchema.TextInput()
       root.insert(1, textInput)
-      textInput.modifier = Modifier.backgroundColor(0xff0000u)
+      textInput.modifier = Modifier.backgroundColor(0xff0000)
       textInput.text("hello")
 
       root.move(0, 1, 1)
@@ -69,7 +69,7 @@ class FastGuestProtocolAdapterTest {
       with(object : TestScope {}) {
         val button = widgetSystem.TestSchema.Button()
         button.modifier = Modifier
-          .backgroundColor(0xff0000u)
+          .backgroundColor(0xff0000)
           .customType(5.seconds)
           .customTypeWithDefault(10.seconds, "sup")
           .customTypeStateless()
