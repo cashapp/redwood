@@ -47,9 +47,10 @@ import org.w3c.dom.events.EventListener
 public class HTMLElementRedwoodLayoutWidgetFactory(
   private val document: Document,
 ) : RedwoodLayoutWidgetFactory<HTMLElement> {
-  override fun Box(): Box<HTMLElement> {
-    TODO("Not yet implemented")
-  }
+  override fun Box(): Box<HTMLElement> =
+    HTMLBoxContainer(
+      value = document.createElement("div") as HTMLDivElement,
+    )
 
   override fun Column(): Column<HTMLElement> =
     HTMLFlexContainer(
@@ -69,6 +70,41 @@ public class HTMLElementRedwoodLayoutWidgetFactory(
     HTMLSpacer(
       value = document.createElement("div") as HTMLDivElement,
     )
+}
+
+private class HTMLBoxContainer(
+  override val value: HTMLDivElement
+) : Box<HTMLElement> {
+  override val children: Widget.Children<HTMLElement> = HTMLBoxChildren(value)
+
+  override fun width(width: Constraint) {
+    value.style.width = width.toCss()
+  }
+
+  override fun height(height: Constraint) {
+    value.style.height = height.toCss()
+  }
+
+  override fun margin(margin: Margin) {
+    value.style.apply {
+      marginInlineStart = margin.start.toPxString()
+      marginInlineEnd = margin.end.toPxString()
+      marginTop = margin.top.toPxString()
+      marginBottom = margin.bottom.toPxString()
+    }
+  }
+
+  // TODO: Make CrossAxisAlignment.Stretch work
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    value.style.justifyContent = horizontalAlignment.toCss()
+  }
+
+  // TODO: Make CrossAxisAlignment.Stretch work
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    value.style.alignItems = verticalAlignment.toCss()
+  }
+
+  override var modifier: Modifier = Modifier
 }
 
 private class HTMLFlexContainer(
@@ -152,6 +188,37 @@ private class HTMLSpacer(
   override var modifier: Modifier = Modifier
 }
 
+private class HTMLBoxChildren(
+  private val container: HTMLElement,
+  private val delegate: HTMLElementChildren = HTMLElementChildren(container),
+) : Widget.Children<HTMLElement> by delegate {
+  override fun insert(index: Int, widget: Widget<HTMLElement>) {
+    widget.applyModifiers(clearStyles = false)
+    // Use absolute positioning as a hack to make items overlap
+    widget.value.style.position = "absolute"
+    delegate.insert(index, widget)
+  }
+
+  override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
+    widget.applyModifiers(clearStyles = true)
+    delegate.onModifierUpdated(index, widget)
+  }
+
+  private fun Widget<HTMLElement>.applyModifiers(clearStyles: Boolean) {
+    if (clearStyles) {
+      value.removeModifierStyles()
+    }
+
+    modifier.forEachScoped { element ->
+      when (element) {
+        is MarginModifier -> {
+          element.applyTo(value)
+        }
+      }
+    }
+  }
+}
+
 private class HTMLFlexElementChildren(
   private val container: HTMLElement,
   private val delegate: HTMLElementChildren = HTMLElementChildren(container),
@@ -168,28 +235,13 @@ private class HTMLFlexElementChildren(
 
   private fun Widget<HTMLElement>.applyModifiers(clearStyles: Boolean) {
     if (clearStyles) {
-      value.style.apply {
-        removeProperty("margin-inline-start")
-        removeProperty("margin-inline-end")
-        removeProperty("margin-top")
-        removeProperty("margin-bottom")
-        removeProperty("flex-grow")
-        removeProperty("flex-shrink")
-        removeProperty("flex")
-        removeProperty("width")
-        removeProperty("height")
-      }
+      value.removeModifierStyles()
     }
 
     modifier.forEachScoped { element ->
       when (element) {
         is MarginModifier -> {
-          value.style.apply {
-            marginInlineStart = element.margin.start.toPxString()
-            marginInlineEnd = element.margin.end.toPxString()
-            marginTop = element.margin.top.toPxString()
-            marginBottom = element.margin.bottom.toPxString()
-          }
+          element.applyTo(value)
         }
         is Grow -> value.style.apply {
           flexGrow = element.value.toString()
@@ -216,5 +268,31 @@ private class HTMLFlexElementChildren(
 
   override fun detach() {
     delegate.detach()
+  }
+}
+
+private fun MarginModifier.applyTo(element: HTMLElement) {
+  val theMargin = margin
+  with (margin) {
+    element.style.apply {
+      marginInlineStart = theMargin.start.toPxString()
+      marginInlineEnd = theMargin.end.toPxString()
+      marginTop = theMargin.top.toPxString()
+      marginBottom = theMargin.bottom.toPxString()
+    }
+  }
+}
+
+private fun HTMLElement.removeModifierStyles() {
+  style.apply {
+    removeProperty("margin-inline-start")
+    removeProperty("margin-inline-end")
+    removeProperty("margin-top")
+    removeProperty("margin-bottom")
+    removeProperty("flex-grow")
+    removeProperty("flex-shrink")
+    removeProperty("flex")
+    removeProperty("width")
+    removeProperty("height")
   }
 }
