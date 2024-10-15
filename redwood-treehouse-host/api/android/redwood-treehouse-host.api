@@ -117,7 +117,8 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers 
 }
 
 public final class app/cash/redwood/treehouse/TreehouseLayout : app/cash/redwood/widget/RedwoodLayout, app/cash/redwood/treehouse/TreehouseView {
-	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/widget/RedwoodView$Root;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;)V
+	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;)V
+	public synthetic fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getReadyForContent ()Z
 	public fun getReadyForContentChangeListener ()Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;
 	public fun getSaveCallback ()Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;
