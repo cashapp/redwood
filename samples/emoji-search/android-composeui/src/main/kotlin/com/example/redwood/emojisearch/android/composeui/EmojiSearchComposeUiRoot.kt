@@ -82,5 +82,7 @@ internal class EmojiSearchComposeUiRoot(
       }
       return
     }
+
+    super.Render()
   }
 }
