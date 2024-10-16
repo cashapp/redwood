@@ -2,7 +2,7 @@
 kotlin = "2.0.21"
 kotlinx-coroutines = "1.9.0"
 kotlinx-serialization = "1.7.3"
-androidx-activity = "1.9.2"
+androidx-activity = "1.9.3"
 androidx-compose-ui = "1.7.3"
 jbCompose = "1.7.0"
 ksp = "2.0.21-1.0.25"
