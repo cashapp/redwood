@@ -8,6 +8,7 @@ redwoodBuild {
 }
 
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'app.cash.burst'
 
 kotlin {
   applyDefaultHierarchyTemplate {

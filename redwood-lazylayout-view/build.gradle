@@ -6,6 +6,7 @@ redwoodBuild {
 }
 
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.burst'
 apply plugin: 'app.cash.paparazzi'
 
 dependencies {
@@ -14,11 +15,11 @@ dependencies {
   implementation libs.androidx.recyclerview
   implementation libs.androidx.swipeRefreshLayout
   implementation libs.kotlinx.coroutines.android
+  testImplementation libs.burst
   testImplementation projects.redwoodLayoutSharedTest
   testImplementation projects.redwoodLazylayoutSharedTest
   testImplementation projects.redwoodLayoutView
   testImplementation projects.redwoodSnapshotTesting
-  testImplementation libs.testParameterInjector
 }
 
 android {

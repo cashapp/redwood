@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.view
 
 import android.view.View
+import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
@@ -30,14 +31,11 @@ import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
+@Burst
 class ViewFlexContainerTest(
-  @TestParameter layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection,
 ) : AbstractFlexContainerTest<View>() {
 
   @get:Rule

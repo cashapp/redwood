@@ -17,6 +17,7 @@ package app.cash.redwood.widget.view
 
 import android.view.View
 import androidx.activity.OnBackPressedDispatcher
+import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
@@ -25,14 +26,11 @@ import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.widget.AbstractRedwoodViewTest
 import app.cash.redwood.widget.RedwoodLayout
 import com.android.resources.LayoutDirection
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
+@Burst
 class ViewRedwoodViewTest(
-  @TestParameter layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection,
 ) : AbstractRedwoodViewTest<View, RedwoodLayout>() {
   @get:Rule
   val paparazzi = Paparazzi(

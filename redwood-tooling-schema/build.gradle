@@ -20,6 +20,5 @@ dependencies {
   testImplementation projects.testApp.schema
   testImplementation libs.junit
   testImplementation libs.assertk
-  testImplementation libs.testParameterInjector
   testImplementation libs.jimfs
 }

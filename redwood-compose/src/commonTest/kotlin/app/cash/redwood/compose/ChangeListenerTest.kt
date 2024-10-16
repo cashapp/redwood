@@ -18,8 +18,8 @@ package app.cash.redwood.compose
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import app.cash.burst.Burst
 import app.cash.redwood.Modifier
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
@@ -47,44 +47,65 @@ import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 
-class DirectChangeListenerTest : AbstractChangeListenerTest() {
-  override fun <T> CoroutineScope.launchComposition(
-    widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
-    snapshot: () -> T,
-  ) = TestRedwoodComposition(this, widgetSystem, MutableListChildren(), createSnapshot = snapshot)
-}
-
-class ProtocolChangeListenerTest : AbstractChangeListenerTest() {
-  override fun <T> CoroutineScope.launchComposition(
-    widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
-    snapshot: () -> T,
-  ): TestRedwoodComposition<T> {
-    val guestAdapter = DefaultGuestProtocolAdapter(
-      hostVersion = hostRedwoodVersion,
-      widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
-    )
-    val hostAdapter = HostProtocolAdapter(
-      guestVersion = guestRedwoodVersion,
+enum class ComposeLauncher {
+  Direct {
+    override fun <T> launchComposition(
+      scope: CoroutineScope,
+      widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
+      snapshot: () -> T,
+    ) = TestRedwoodComposition(
+      scope = scope,
+      widgetSystem = widgetSystem,
       container = MutableListChildren(),
-      factory = TestSchemaProtocolFactory(widgetSystem),
-      eventSink = { throw AssertionError() },
-      leakDetector = LeakDetector.none(),
+      createSnapshot = snapshot,
     )
-    guestAdapter.initChangesSink(hostAdapter)
-    return TestRedwoodComposition(this, guestAdapter.widgetSystem, guestAdapter.root) {
-      guestAdapter.emitChanges()
-      snapshot()
-    }
-  }
-}
+  },
 
-@OptIn(RedwoodCodegenApi::class)
-abstract class AbstractChangeListenerTest {
-  // There is no test parameter injector in multiplatform, so we fake it with subtypes.
-  abstract fun <T> CoroutineScope.launchComposition(
+  Protocol {
+    override fun <T> launchComposition(
+      scope: CoroutineScope,
+      widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
+      snapshot: () -> T,
+    ): TestRedwoodComposition<T> {
+      val guestAdapter = DefaultGuestProtocolAdapter(
+        hostVersion = hostRedwoodVersion,
+        widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+      )
+      val hostAdapter = HostProtocolAdapter(
+        guestVersion = guestRedwoodVersion,
+        container = MutableListChildren(),
+        factory = TestSchemaProtocolFactory(widgetSystem),
+        eventSink = { throw AssertionError() },
+        leakDetector = LeakDetector.none(),
+      )
+      guestAdapter.initChangesSink(hostAdapter)
+      return TestRedwoodComposition(
+        scope = scope,
+        widgetSystem = guestAdapter.widgetSystem,
+        container = guestAdapter.root,
+      ) {
+        guestAdapter.emitChanges()
+        snapshot()
+      }
+    }
+  },
+  ;
+
+  abstract fun <T> launchComposition(
+    scope: CoroutineScope,
     widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
     snapshot: () -> T,
   ): TestRedwoodComposition<T>
+}
+
+@Burst
+class ChangeListenerTest(
+  private val launcher: ComposeLauncher,
+) {
+  private fun <T> CoroutineScope.launchComposition(
+    widgetSystem: TestSchemaWidgetSystem<WidgetValue>,
+    snapshot: () -> T,
+  ): TestRedwoodComposition<T> = launcher.launchComposition(this, widgetSystem, snapshot)
 
   @Test
   fun propertyChangeNotifiesWidget() = runTest {

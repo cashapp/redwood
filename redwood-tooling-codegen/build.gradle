@@ -6,6 +6,8 @@ redwoodBuild {
   cliApplication('redwood-codegen', 'app.cash.redwood.tooling.codegen.Main')
 }
 
+apply plugin: 'app.cash.burst'
+
 dependencies {
   api projects.redwoodToolingSchema
   implementation libs.kotlinPoet
@@ -16,5 +18,4 @@ dependencies {
   testImplementation projects.testApp.schema.compose
   testImplementation libs.junit
   testImplementation libs.assertk
-  testImplementation libs.testParameterInjector
 }

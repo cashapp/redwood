@@ -4,6 +4,7 @@ buildscript {
     classpath libs.kotlin.serializationPlugin
     classpath libs.atomicFuPlugin
     classpath libs.buildConfigPlugin
+    classpath libs.burst.gradle.plugin
     classpath libs.zipline.gradlePlugin
     classpath libs.paparazzi.gradlePlugin
     classpath libs.poko.gradlePlugin
