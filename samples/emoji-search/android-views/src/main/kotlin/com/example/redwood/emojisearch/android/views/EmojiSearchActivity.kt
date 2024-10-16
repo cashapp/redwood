@@ -116,7 +116,7 @@ class EmojiSearchActivity : ComponentActivity() {
     ) {
       if (uncaughtException != null) {
         scope.launch {
-          delay(2_000.milliseconds)
+          delay(2.seconds)
           restart?.invoke()
         }
       }
