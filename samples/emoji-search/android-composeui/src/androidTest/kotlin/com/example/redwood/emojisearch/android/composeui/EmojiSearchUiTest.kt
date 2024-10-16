@@ -17,5 +17,11 @@ package com.example.redwood.emojisearch.android.composeui
 
 import com.example.redwood.emojisearch.android.composeui.BuildConfig.APPLICATION_ID
 import com.example.redwood.emojisearch.android.tests.AbstractEmojiSearchUiTest
+import org.junit.Test
 
-class EmojiSearchUiTest : AbstractEmojiSearchUiTest(APPLICATION_ID)
+class EmojiSearchUiTest : AbstractEmojiSearchUiTest(APPLICATION_ID) {
+  @Test
+  fun searchTrees2() {
+    searchTrees()
+  }
+}

@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
-import androidx.core.view.children as viewGroupChildren
+import androidx.core.view.iterator
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
@@ -46,7 +46,6 @@ import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
 import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
@@ -121,9 +120,11 @@ class EmojiSearchActivity : ComponentActivity() {
         }
       }
 
-      for (child in viewGroupChildren) {
+      val i = iterator()
+      while (i.hasNext()) {
+        val child = i.next()
         if (child is ExceptionView || child is LoadingView) {
-          removeView(child)
+          i.remove()
         }
       }
       if (loadCount == 0) {
