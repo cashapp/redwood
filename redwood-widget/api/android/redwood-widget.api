@@ -49,22 +49,29 @@ public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwoo
 }
 
 public class app/cash/redwood/widget/RedwoodLayout : android/widget/FrameLayout, app/cash/redwood/widget/RedwoodView {
-	public fun <init> (Landroid/content/Context;Landroidx/activity/OnBackPressedDispatcher;)V
-	public fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public fun <init> (Landroid/content/Context;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;)V
+	public synthetic fun <init> (Landroid/content/Context;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
+	public final fun getRoot ()Lapp/cash/redwood/widget/RedwoodView$Root;
 	public fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;
 	protected fun onConfigurationChanged (Landroid/content/res/Configuration;)V
 	protected fun onLayout (ZIIII)V
-	public fun reset ()V
+	protected fun onMeasure (II)V
 }
 
 public abstract interface class app/cash/redwood/widget/RedwoodView {
-	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
+	public abstract fun getRoot ()Lapp/cash/redwood/widget/RedwoodView$Root;
 	public abstract fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public abstract fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;
-	public abstract fun reset ()V
+}
+
+public abstract interface class app/cash/redwood/widget/RedwoodView$Root : app/cash/redwood/widget/Widget {
+	public abstract fun contentState (IZLjava/lang/Throwable;)V
+	public static synthetic fun contentState$default (Lapp/cash/redwood/widget/RedwoodView$Root;IZLjava/lang/Throwable;ILjava/lang/Object;)V
+	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun restart (Lkotlin/jvm/functions/Function0;)V
 }
 
 public abstract interface class app/cash/redwood/widget/SavedStateRegistry {
@@ -83,6 +90,19 @@ public final class app/cash/redwood/widget/ViewGroupChildren : app/cash/redwood/
 	public fun move (III)V
 	public fun onModifierUpdated (ILapp/cash/redwood/widget/Widget;)V
 	public fun remove (II)V
+}
+
+public class app/cash/redwood/widget/ViewRoot : android/view/ViewGroup, app/cash/redwood/widget/RedwoodView$Root {
+	public fun <init> (Landroid/content/Context;)V
+	public fun contentState (IZLjava/lang/Throwable;)V
+	public final fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public final fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getValue ()Landroid/view/View;
+	public synthetic fun getValue ()Ljava/lang/Object;
+	protected fun onLayout (ZIIII)V
+	protected fun onMeasure (II)V
+	public fun restart (Lkotlin/jvm/functions/Function0;)V
+	public final fun setModifier (Lapp/cash/redwood/Modifier;)V
 }
 
 public abstract interface class app/cash/redwood/widget/Widget {

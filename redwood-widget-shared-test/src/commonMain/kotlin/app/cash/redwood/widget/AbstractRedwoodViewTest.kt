@@ -35,7 +35,7 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
   @Test
   fun testSingleChildElement() {
     val redwoodView = redwoodView()
-    redwoodView.children.insert(0, widgetFactory.text("Hello ".repeat(50)))
+    redwoodView.root.children.insert(0, widgetFactory.text("Hello ".repeat(50)))
     snapshotter(redwoodView).snapshot()
   }
 }

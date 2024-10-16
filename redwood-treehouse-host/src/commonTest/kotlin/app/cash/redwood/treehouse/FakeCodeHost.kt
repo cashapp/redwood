@@ -29,6 +29,7 @@ internal class FakeCodeHost(
   dispatchers = dispatchers,
   appScope = appScope,
   stateStore = MemoryStateStore(),
+  eventListenerFactory = EventListener.NONE,
 ) {
   private var codeSessions: Channel<CodeSession<FakeAppService>>? = null
   private var nextCollectId = 1

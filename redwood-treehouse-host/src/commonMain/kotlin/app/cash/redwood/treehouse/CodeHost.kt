@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import okio.Closeable
 
 /**
  * Manages loading and hot-reloading a series of code sessions.
@@ -51,8 +52,9 @@ import kotlinx.coroutines.launch
 internal abstract class CodeHost<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val appScope: CoroutineScope,
+  eventListenerFactory: EventListener.Factory,
   val stateStore: StateStore,
-) {
+) : Closeable {
   /** Contents that this app is currently responsible for. */
   private val listeners = mutableListOf<Listener<A>>()
 
@@ -85,12 +87,15 @@ internal abstract class CodeHost<A : AppService>(
   val codeSession: CodeSession<A>?
     get() = state.codeSession
 
+  private var eventListenerFactory: EventListener.Factory? = eventListenerFactory
+
   /** Returns a flow that emits a new [CodeSession] each time we should load fresh code. */
   abstract fun codeUpdatesFlow(
     eventListenerFactory: EventListener.Factory,
   ): Flow<CodeSession<A>>
 
-  fun start(eventListenerFactory: EventListener.Factory) {
+  fun start() {
+    val eventListenerFactory = this.eventListenerFactory ?: error("closed")
     dispatchers.checkUi()
 
     val previous = state
@@ -118,7 +123,8 @@ internal abstract class CodeHost<A : AppService>(
     mutableZipline.value = null
   }
 
-  fun restart(eventListenerFactory: EventListener.Factory) {
+  fun restart() {
+    val eventListenerFactory = this.eventListenerFactory ?: error("closed")
     dispatchers.checkUi()
 
     val previous = state
@@ -142,6 +148,10 @@ internal abstract class CodeHost<A : AppService>(
   fun removeListener(listener: Listener<A>) {
     dispatchers.checkUi()
     listeners -= listener
+  }
+
+  override fun close() {
+    eventListenerFactory = null // Break a reference cycle.
   }
 
   private fun newCodeUpdatesScope() =

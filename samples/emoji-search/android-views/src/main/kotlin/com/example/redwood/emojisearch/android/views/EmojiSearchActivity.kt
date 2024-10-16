@@ -16,17 +16,16 @@
 package com.example.redwood.emojisearch.android.views
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.iterator
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
-import app.cash.redwood.treehouse.CodeListener
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -34,6 +33,7 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.redwood.widget.ViewRoot
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -50,7 +50,9 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okio.FileSystem
@@ -92,25 +94,49 @@ class EmojiSearchActivity : ComponentActivity() {
       )
     }
 
-    treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
-      treehouseContentSource.bindWhenReady(this, treehouseApp, codeListener)
+    val viewRoot = EmojiSearchViewRoot(context, scope)
+
+    treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher, viewRoot).apply {
+      treehouseContentSource.bindWhenReady(this, treehouseApp)
     }
     setContentView(treehouseLayout)
   }
 
-  private val codeListener: CodeListener = object : CodeListener() {
-    override fun onCodeDetached(
-      app: TreehouseApp<*>,
-      view: TreehouseView<*>,
-      exception: Throwable?,
+  private class EmojiSearchViewRoot(
+    context: Context,
+    private val scope: CoroutineScope,
+  ) : ViewRoot(context) {
+    private var restart: (() -> Unit)? = null
+
+    override fun contentState(
+      loadCount: Int,
+      attached: Boolean,
+      uncaughtException: Throwable?,
     ) {
-      if (exception != null) {
-        treehouseLayout.reset()
-        treehouseLayout.addView(
-          ExceptionView(treehouseLayout, exception),
-          LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT),
-        )
+      if (uncaughtException != null) {
+        scope.launch {
+          delay(2.seconds)
+          restart?.invoke()
+        }
       }
+
+      val i = iterator()
+      while (i.hasNext()) {
+        val child = i.next()
+        if (child is ExceptionView || child is LoadingView) {
+          i.remove()
+        }
+      }
+      if (loadCount == 0) {
+        addView(LoadingView(context))
+      }
+      if (uncaughtException != null) {
+        addView(ExceptionView(context, uncaughtException))
+      }
+    }
+
+    override fun restart(restart: (() -> Unit)?) {
+      this.restart = restart
     }
   }
 

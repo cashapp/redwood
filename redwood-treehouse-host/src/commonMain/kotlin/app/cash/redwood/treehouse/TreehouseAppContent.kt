@@ -66,11 +66,14 @@ private sealed interface ViewState {
 }
 
 private sealed interface CodeState<A : AppService> {
+  val loadCount: Int
+
   class Idle<A : AppService>(
-    val isInitialLaunch: Boolean,
+    override val loadCount: Int = 0,
   ) : CodeState<A>
 
   class Running<A : AppService>(
+    override val loadCount: Int = 0,
     val viewContentCodeBinding: ViewContentCodeBinding<A>,
     val changesAwaitingInitViewSize: Int = 0,
     val deliveredChangeCount: Int = 0,
@@ -83,14 +86,13 @@ private sealed interface CodeState<A : AppService> {
 internal class TreehouseAppContent<A : AppService>(
   private val codeHost: CodeHost<A>,
   private val dispatchers: TreehouseDispatchers,
-  private val codeEventPublisher: CodeEventPublisher,
   private val source: TreehouseContentSource<A>,
   private val leakDetector: LeakDetector,
 ) : Content,
   CodeHost.Listener<A>,
   CodeSession.Listener<A> {
   private val stateFlow = MutableStateFlow<State<A>>(
-    State(ViewState.None, CodeState.Idle(isInitialLaunch = true)),
+    State(ViewState.None, CodeState.Idle()),
   )
 
   override fun preload(
@@ -100,7 +102,10 @@ internal class TreehouseAppContent<A : AppService>(
     dispatchers.checkUi()
     val previousState = stateFlow.value
 
-    if (previousState.viewState == ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)) return // Idempotent.
+    if (previousState.viewState == ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)) {
+      return // Idempotent.
+    }
+
     check(previousState.viewState is ViewState.None)
 
     val nextViewState = ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)
@@ -109,10 +114,12 @@ internal class TreehouseAppContent<A : AppService>(
     val codeSession = codeHost.codeSession
     val nextCodeState = when {
       previousState.codeState is CodeState.Idle && codeSession != null -> {
+        val newLoadCount = previousState.codeState.loadCount + 1
         CodeState.Running(
-          startViewCodeContentBinding(
+          loadCount = newLoadCount,
+          viewContentCodeBinding = startViewCodeContentBinding(
             codeSession = codeSession,
-            isInitialLaunch = true,
+            loadCount = newLoadCount,
             onBackPressedDispatcher = onBackPressedDispatcher,
             firstUiConfiguration = uiConfiguration,
           ),
@@ -133,6 +140,8 @@ internal class TreehouseAppContent<A : AppService>(
 
     if (stateFlow.value.viewState == ViewState.Bound(view)) return // Idempotent.
 
+    view.root.restart(codeHost::restart)
+
     preload(view.onBackPressedDispatcher, view.uiConfiguration)
 
     val previousState = stateFlow.value
@@ -146,7 +155,12 @@ internal class TreehouseAppContent<A : AppService>(
     // Make sure we're showing something in the view; either loaded code or a spinner to show that
     // code is coming.
     when (nextCodeState) {
-      is CodeState.Idle -> codeEventPublisher.onInitialCodeLoading(view)
+      is CodeState.Idle -> {
+        view.root.contentState(
+          loadCount = nextCodeState.loadCount,
+          attached = false,
+        )
+      }
       is CodeState.Running -> nextCodeState.viewContentCodeBinding.initView(view)
     }
 
@@ -168,16 +182,22 @@ internal class TreehouseAppContent<A : AppService>(
 
     val previousState = stateFlow.value
     val previousViewState = previousState.viewState
+    val previousCodeState = previousState.codeState
 
     if (previousViewState is ViewState.None) return // Idempotent.
 
+    if (previousViewState is ViewState.Bound) {
+      previousViewState.view.root.restart(null) // Break a reference cycle.
+    }
     val nextViewState = ViewState.None
-    val nextCodeState = CodeState.Idle<A>(isInitialLaunch = true)
+    val nextCodeState = CodeState.Idle<A>(
+      loadCount = previousCodeState.loadCount,
+    )
 
     // Cancel the code if necessary.
     codeHost.removeListener(this)
-    if (previousState.codeState is CodeState.Running) {
-      val binding = previousState.codeState.viewContentCodeBinding
+    if (previousCodeState is CodeState.Running) {
+      val binding = previousCodeState.viewContentCodeBinding
       binding.cancel(null)
       binding.codeSession.removeListener(this)
     }
@@ -204,10 +224,12 @@ internal class TreehouseAppContent<A : AppService>(
       else -> error("unexpected receiveCodeSession with no view bound and no preload")
     }
 
+    val newLoadCount = previousCodeState.loadCount + 1
     val nextCodeState = CodeState.Running(
-      startViewCodeContentBinding(
+      loadCount = newLoadCount,
+      viewContentCodeBinding = startViewCodeContentBinding(
         codeSession = next,
-        isInitialLaunch = (previousCodeState as? CodeState.Idle)?.isInitialLaunch == true,
+        loadCount = newLoadCount,
         onBackPressedDispatcher = onBackPressedDispatcher,
         firstUiConfiguration = uiConfiguration,
       ),
@@ -255,14 +277,16 @@ internal class TreehouseAppContent<A : AppService>(
     binding.cancel(exception)
     binding.codeSession.removeListener(this)
 
-    val nextCodeState = CodeState.Idle<A>(isInitialLaunch = false)
+    val nextCodeState = CodeState.Idle<A>(
+      loadCount = previousCodeState.loadCount,
+    )
     stateFlow.value = State(viewState, nextCodeState)
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   private fun startViewCodeContentBinding(
     codeSession: CodeSession<A>,
-    isInitialLaunch: Boolean,
+    loadCount: Int,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     firstUiConfiguration: StateFlow<UiConfiguration>,
   ): ViewContentCodeBinding<A> {
@@ -274,10 +298,9 @@ internal class TreehouseAppContent<A : AppService>(
       dispatchers = dispatchers,
       eventPublisher = codeSession.eventPublisher,
       contentSource = source,
-      codeEventPublisher = codeEventPublisher,
       stateFlow = stateFlow,
       codeSession = codeSession,
-      isInitialLaunch = isInitialLaunch,
+      loadCount = loadCount,
       onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
       leakDetector = leakDetector,
@@ -304,10 +327,9 @@ private class ViewContentCodeBinding<A : AppService>(
   val dispatchers: TreehouseDispatchers,
   val eventPublisher: EventPublisher,
   contentSource: TreehouseContentSource<A>,
-  val codeEventPublisher: CodeEventPublisher,
   val stateFlow: MutableStateFlow<State<A>>,
   val codeSession: CodeSession<A>,
-  private val isInitialLaunch: Boolean,
+  private val loadCount: Int,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
   private val leakDetector: LeakDetector,
@@ -402,7 +424,7 @@ private class ViewContentCodeBinding<A : AppService>(
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
       hostAdapter = HostProtocolAdapter(
         guestVersion = codeSession.guestProtocolVersion,
-        container = view.children as Widget.Children<Any>,
+        container = view.root.children as Widget.Children<Any>,
         factory = view.widgetSystem.widgetFactory(
           json = codeSession.json,
           protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
@@ -414,8 +436,11 @@ private class ViewContentCodeBinding<A : AppService>(
     }
 
     if (deliveredChangeCount++ == 0) {
-      view.reset()
-      codeEventPublisher.onCodeLoaded(view, isInitialLaunch)
+      view.root.children.remove(0, view.root.children.widgets.size)
+      view.root.contentState(
+        loadCount = loadCount,
+        attached = true,
+      )
     }
     updateChangeCount()
 
@@ -512,7 +537,11 @@ private class ViewContentCodeBinding<A : AppService>(
     canceled = true
 
     viewOrNull?.let { view ->
-      codeEventPublisher.onCodeDetached(view, exception)
+      view.root.contentState(
+        loadCount = loadCount,
+        attached = false,
+        uncaughtException = exception,
+      )
       view.saveCallback = null
     }
     viewOrNull = null

@@ -49,6 +49,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     dispatchers = dispatchers,
     appScope = appScope,
     stateStore = factory.stateStore,
+    eventListenerFactory = eventListenerFactory,
   ) {
     override fun codeUpdatesFlow(
       eventListenerFactory: EventListener.Factory,
@@ -74,24 +75,19 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   override val zipline: StateFlow<Zipline?>
     get() = codeHost.zipline
 
-  override fun createContent(
-    source: TreehouseContentSource<A>,
-    codeListener: CodeListener,
-  ): Content {
+  override fun createContent(source: TreehouseContentSource<A>): Content {
     start()
 
     return TreehouseAppContent(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      codeEventPublisher = RealCodeEventPublisher(codeListener, this),
       source = source,
       leakDetector = leakDetector,
     )
   }
 
   override fun start() {
-    val eventListenerFactory = eventListenerFactory ?: error("closed")
-    codeHost.start(eventListenerFactory)
+    codeHost.start()
   }
 
   override fun stop() {
@@ -99,8 +95,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
   }
 
   override fun restart() {
-    val eventListenerFactory = eventListenerFactory ?: error("closed")
-    codeHost.restart(eventListenerFactory)
+    codeHost.restart()
   }
 
   /**
@@ -174,6 +169,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
 
     closed = true
     spec = null
+    codeHost.close()
     eventListenerFactory?.close()
     eventListenerFactory = null
     stop()

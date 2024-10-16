@@ -36,12 +36,11 @@ class TestAppViewController : UIViewController {
         let widgetSystem = TestSchemaTreehouseWidgetSystem()
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
-            source: TestAppContent(),
-            codeListener: CodeListener()
+            source: TestAppContent()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
 
-        let tv = treehouseView.view
+        let tv = treehouseView.root.value
         tv.translatesAutoresizingMaskIntoConstraints = false
 
         self.view.addSubview(tv)

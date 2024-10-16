@@ -38,17 +38,16 @@ import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 
 public open class RedwoodUIView(
-  public val view: UIView,
+  final override val root: UIViewRoot,
 ) : RedwoodView<UIView> {
-  private val _children = UIViewChildren(view)
-  override val children: Widget.Children<UIView> get() = _children
+  public constructor() : this(UIViewRoot())
 
   private val mutableUiConfiguration =
     MutableStateFlow(
       computeUiConfiguration(
-        traitCollection = view.traitCollection,
-        layoutDirection = view.effectiveUserInterfaceLayoutDirection,
-        bounds = view.bounds,
+        traitCollection = root.value.traitCollection,
+        layoutDirection = root.value.effectiveUserInterfaceLayoutDirection,
+        bounds = root.value.bounds,
       ),
     )
 
@@ -66,20 +65,19 @@ public open class RedwoodUIView(
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
-  override fun reset() {
-    _children.remove(0, _children.widgets.size)
-
-    // Ensure any out-of-band views are also removed.
-    @Suppress("UNCHECKED_CAST") // Correct generic lost by cinterop.
-    (view.subviews as List<UIView>).forEach(UIView::removeFromSuperview)
+  init {
+    root.valueRootView.redwoodUIView = this
   }
 
-  protected fun updateUiConfiguration() {
+  public fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
-      traitCollection = view.traitCollection,
-      layoutDirection = view.effectiveUserInterfaceLayoutDirection,
-      bounds = view.bounds,
+      traitCollection = root.value.traitCollection,
+      layoutDirection = root.value.effectiveUserInterfaceLayoutDirection,
+      bounds = root.value.bounds,
     )
+  }
+
+  public open fun superviewChanged() {
   }
 }
 

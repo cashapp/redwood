@@ -3,13 +3,6 @@ public final class app/cash/redwood/treehouse/ChangeListRenderer {
 	public final fun render-rqC_l18 (Lapp/cash/redwood/treehouse/TreehouseView;Ljava/util/List;)V
 }
 
-public class app/cash/redwood/treehouse/CodeListener {
-	public fun <init> ()V
-	public fun onCodeDetached (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;Ljava/lang/Throwable;)V
-	public fun onCodeLoaded (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;Z)V
-	public fun onInitialCodeLoading (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView;)V
-}
-
 public abstract interface class app/cash/redwood/treehouse/Content {
 	public abstract fun awaitContent (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun awaitContent$default (Lapp/cash/redwood/treehouse/Content;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -20,8 +13,7 @@ public abstract interface class app/cash/redwood/treehouse/Content {
 
 public final class app/cash/redwood/treehouse/ContentBindingKt {
 	public static final fun bindWhenReady (Lapp/cash/redwood/treehouse/Content;Lapp/cash/redwood/treehouse/TreehouseView;)Ljava/io/Closeable;
-	public static final fun bindWhenReady (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/TreehouseView;Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/CodeListener;)Ljava/io/Closeable;
-	public static synthetic fun bindWhenReady$default (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/TreehouseView;Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/CodeListener;ILjava/lang/Object;)Ljava/io/Closeable;
+	public static final fun bindWhenReady (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/TreehouseView;Lapp/cash/redwood/treehouse/TreehouseApp;)Ljava/io/Closeable;
 }
 
 public class app/cash/redwood/treehouse/EventListener {
@@ -82,8 +74,7 @@ public abstract interface class app/cash/redwood/treehouse/StateStore {
 public abstract class app/cash/redwood/treehouse/TreehouseApp : java/lang/AutoCloseable {
 	public fun <init> ()V
 	public abstract fun close ()V
-	public abstract fun createContent (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;)Lapp/cash/redwood/treehouse/Content;
-	public static synthetic fun createContent$default (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/CodeListener;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/Content;
+	public abstract fun createContent (Lapp/cash/redwood/treehouse/TreehouseContentSource;)Lapp/cash/redwood/treehouse/Content;
 	public abstract fun getDispatchers ()Lapp/cash/redwood/treehouse/TreehouseDispatchers;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getZipline ()Lkotlinx/coroutines/flow/StateFlow;
@@ -126,8 +117,8 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers 
 }
 
 public final class app/cash/redwood/treehouse/TreehouseLayout : app/cash/redwood/widget/RedwoodLayout, app/cash/redwood/treehouse/TreehouseView {
-	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;)V
-	public synthetic fun generateDefaultLayoutParams ()Landroid/view/ViewGroup$LayoutParams;
+	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;)V
+	public synthetic fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getReadyForContent ()Z
 	public fun getReadyForContentChangeListener ()Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;
 	public fun getSaveCallback ()Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;

@@ -38,15 +38,14 @@ import kotlinx.coroutines.flow.StateFlow
 public open class RedwoodLayout(
   context: Context,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
+  public final override val root: RedwoodView.Root<View> = ViewRoot(context),
 ) : FrameLayout(context),
   RedwoodView<View> {
   init {
     // The view needs to have an ID to participate in instance state saving.
     id = R.id.redwood_layout
+    super.addView(root.value)
   }
-
-  private val _children = ViewGroupChildren(this)
-  override val children: Widget.Children<View> get() = _children
 
   private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
 
@@ -77,23 +76,21 @@ public open class RedwoodLayout(
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
 
-  override fun reset() {
-    _children.remove(0, _children.widgets.size)
-
-    // Ensure any out-of-band views are also removed.
-    removeAllViews()
-  }
-
   init {
     setOnWindowInsetsChangeListener { insets ->
       mutableUiConfiguration.value = computeUiConfiguration(insets = insets.safeDrawing)
     }
   }
 
+  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+    root.value.measure(widthMeasureSpec, heightMeasureSpec)
+    setMeasuredDimension(root.value.measuredWidth, root.value.measuredHeight)
+  }
+
   @SuppressLint("DrawAllocation") // It's only on layout.
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
     mutableUiConfiguration.value = computeUiConfiguration()
-    super.onLayout(changed, left, top, right, bottom)
+    root.value.layout(0, 0, right - left, bottom - top)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {

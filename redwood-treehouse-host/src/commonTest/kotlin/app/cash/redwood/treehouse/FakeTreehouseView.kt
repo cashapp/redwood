@@ -22,7 +22,6 @@ import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
 import app.cash.redwood.widget.Widget
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
@@ -39,14 +38,15 @@ import kotlinx.coroutines.flow.StateFlow
  */
 internal class FakeTreehouseView(
   private val name: String,
+  eventLog: EventLog,
   override val onBackPressedDispatcher: OnBackPressedDispatcher,
   override val uiConfiguration: StateFlow<UiConfiguration> = MutableStateFlow(UiConfiguration()),
 ) : TreehouseView<WidgetValue> {
-  private val mutableListChildren = MutableListChildren<WidgetValue>()
-  private val mutableViews = mutableListOf<WidgetValue>()
+  override val root = FakeRoot(eventLog)
 
+  @Deprecated("inline this?")
   val views: List<WidgetValue>
-    get() = mutableViews
+    get() = root.children.widgets.map { it.value }
 
   @OptIn(RedwoodCodegenApi::class)
   override val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
@@ -72,27 +72,7 @@ internal class FakeTreehouseView(
 
   override val stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
-  override val children = object : Widget.Children<WidgetValue> by mutableListChildren {
-    override fun insert(index: Int, widget: Widget<WidgetValue>) {
-      mutableViews.add(index, widget.value)
-      mutableListChildren.insert(index, widget)
-    }
-
-    override fun remove(index: Int, count: Int) {
-      mutableViews.subList(index, index + count).clear()
-      mutableListChildren.remove(index, count)
-    }
-
-    override fun onModifierUpdated(index: Int, widget: Widget<WidgetValue>) {
-    }
-  }
-
   override val savedStateRegistry: SavedStateRegistry? = null
-
-  override fun reset() {
-    mutableViews.clear()
-    mutableListChildren.clear()
-  }
 
   override fun toString() = name
 }

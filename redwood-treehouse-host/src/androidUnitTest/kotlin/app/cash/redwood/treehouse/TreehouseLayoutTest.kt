@@ -29,11 +29,9 @@ import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 import app.cash.turbine.test
 import assertk.assertThat
-import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isSameInstanceAs
@@ -53,11 +51,12 @@ class TreehouseLayoutTest {
 
   @Test fun widgetsAddChildViews() {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val rootView = layout.root.value as ViewGroup
 
     val view = View(activity)
-    layout.children.insert(0, viewWidget(view))
-    assertThat(layout.childCount).isEqualTo(1)
-    assertThat(layout.getChildAt(0)).isSameInstanceAs(view)
+    layout.root.children.insert(0, viewWidget(view))
+    assertThat(rootView.childCount).isEqualTo(1)
+    assertThat(rootView.getChildAt(0)).isSameInstanceAs(view)
   }
 
   @Test fun attachAndDetachSendsStateChange() {
@@ -73,29 +72,6 @@ class TreehouseLayoutTest {
 
     parent.removeView(layout)
     assertThat(listener.count).isEqualTo(2)
-  }
-
-  @Test fun resetClearsUntrackedChildren() {
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
-
-    layout.addView(View(activity))
-    assertThat(layout.childCount).isEqualTo(1)
-
-    layout.reset()
-    assertThat(layout.childCount).isEqualTo(0)
-  }
-
-  @Test fun resetClearsTrackedWidgets() {
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
-
-    // Needed to access internal state which cannot be reasonably observed through the public API.
-    val children = layout.children as ViewGroupChildren
-
-    children.insert(0, viewWidget(View(activity)))
-    assertThat(children.widgets).hasSize(1)
-
-    layout.reset()
-    assertThat(children.widgets).hasSize(0)
   }
 
   @Test fun uiConfigurationReflectsInitialUiMode() {

@@ -48,8 +48,7 @@ public fun <W : Any> Content.bindWhenReady(view: TreehouseView<W>): Closeable {
 public fun <A : AppService, W : Any> TreehouseContentSource<A>.bindWhenReady(
   view: TreehouseView<W>,
   app: TreehouseApp<A>,
-  codeListener: CodeListener = CodeListener(),
 ): Closeable {
-  val content = app.createContent(this, codeListener)
+  val content = app.createContent(this)
   return content.bindWhenReady(view)
 }

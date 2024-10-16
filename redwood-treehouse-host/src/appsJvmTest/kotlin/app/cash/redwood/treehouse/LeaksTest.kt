@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.treehouse.leaks.LeakWatcher
 import app.cash.zipline.Zipline
 import assertk.assertThat
@@ -45,7 +46,7 @@ class LeaksTest {
     assertThat(textInputValue.text).isEqualTo("what would you like to see?")
 
     val widgetLeakWatcher = LeakWatcher {
-      view.children.widgets.single()
+      view.root.children.widgets.single()
     }
 
     // While the widget is in the UI, it's expected to be in a reference cycle.
@@ -158,7 +159,6 @@ class LeaksTest {
 
       val content = treehouseApp.createContent(
         source = contentSource,
-        codeListener = FakeCodeListener(tester.eventLog),
       )
 
       return@run content to LeakWatcher { contentSource }
@@ -166,12 +166,12 @@ class LeaksTest {
 
     // After we bind the content, it'll be in a retain cycle.
     content.bind(view)
-    tester.eventLog.takeEvent("onCodeLoaded(test_app, view, initial = true)", skipOthers = true)
+    tester.eventLog.takeEvent("codeListener.onCodeLoaded(1)", skipOthers = true)
     contentSourceLeakWatcher.assertObjectInReferenceCycle()
 
     // Unbind it, and it's no longer retained.
     content.unbind()
-    tester.eventLog.takeEvent("onCodeDetached(test_app, view, null)", skipOthers = true)
+    tester.eventLog.takeEvent("codeListener.onCodeDetached(null)", skipOthers = true)
     treehouseApp.dispatchers.awaitLaunchedTasks()
     contentSourceLeakWatcher.assertNotLeaked()
 
@@ -179,31 +179,30 @@ class LeaksTest {
   }
 
   @Test
-  fun codeListenerNotLeaked() = runTest {
+  fun redwoodViewNotLeaked() = runTest {
     val tester = TreehouseTester(this)
     val treehouseApp = tester.loadApp()
-    val view = tester.view()
+    var view: TreehouseView<WidgetValue>? = tester.view()
 
-    var codeListener: CodeListener? = RetainEverythingCodeListener(tester.eventLog)
     val content = treehouseApp.createContent(
       source = { app -> app.launchForTester() },
-      codeListener = codeListener!!,
     )
-    val codeListenerLeakWatcher = LeakWatcher { codeListener }
+    val viewLeakWatcher = LeakWatcher {
+      view
+    }
 
-    // Stop referencing the CodeListener from our test harness.
-    codeListener = null
+    // One content is bound, the view is in a reference cycle.
+    content.bind(view!!)
+    tester.eventLog.takeEvent("codeListener.onCodeLoaded(1)", skipOthers = true)
+    viewLeakWatcher.assertObjectInReferenceCycle()
 
-    // One a view is bound, the code listener is in a reference cycle.
-    content.bind(view)
-    tester.eventLog.takeEvent("onCodeLoaded", skipOthers = true)
-    codeListenerLeakWatcher.assertObjectInReferenceCycle()
+    // Stop referencing the view from our test harness.
+    view = null
 
-    // When the view is unbound, the code listener is no longer reachable.
+    // When content is unbound, the view is no longer reachable.
     content.unbind()
-    tester.eventLog.takeEvent("onCodeDetached", skipOthers = true)
     treehouseApp.dispatchers.awaitLaunchedTasks()
-    codeListenerLeakWatcher.assertNotLeaked()
+    viewLeakWatcher.assertNotLeaked()
 
     treehouseApp.stop()
   }
@@ -248,6 +247,38 @@ class LeaksTest {
     assertThat(treehouseTester.openTreehouseDispatchersCount).isEqualTo(1)
     app.close()
     assertThat(treehouseTester.openTreehouseDispatchersCount).isEqualTo(0)
+  }
+
+  /**
+   * Confirm we don't hold an object beyond its required lifecycle. Confirming no cycles exist is
+   * more strict than we require for this object: we only need the content to be unreachable.
+   */
+  @Test
+  fun contentNotHeldAfterUnbind() = runTest {
+    val tester = TreehouseTester(this)
+    val treehouseApp = tester.loadApp()
+    val view = tester.view()
+
+    var content: Content? = tester.content(treehouseApp)
+    val contentLeakWatcher = LeakWatcher {
+      content
+    }
+
+    // After we bind the content, it'll be in a retain cycle.
+    content!!.bind(view)
+    tester.eventLog.takeEvent("codeListener.onCodeLoaded(1)", skipOthers = true)
+    contentLeakWatcher.assertObjectInReferenceCycle()
+
+    // Unbind it and stop referencing it in our test harness.
+    content.unbind()
+    content = null
+
+    // The content is no longer retained.
+    tester.eventLog.takeEvent("codeListener.onCodeDetached(null)", skipOthers = true)
+    treehouseApp.dispatchers.awaitLaunchedTasks()
+    contentLeakWatcher.assertNotLeaked()
+
+    treehouseApp.stop()
   }
 
   /**

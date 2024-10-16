@@ -38,13 +38,15 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
         let widgetSystem = EmojiSearchTreehouseWidgetSystem(treehouseApp: treehouseApp)
-        let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
+        let treehouseView = TreehouseUIView(
+            widgetSystem: widgetSystem,
+            root: EmojiSearchUIViewRoot()
+        )
         let content = treehouseApp.createContent(
-            source: EmojiSearchContent(),
-            codeListener: EmojiSearchCodeListener(treehouseView)
+            source: EmojiSearchContent()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
-        view = treehouseView.view
+        view = treehouseView.root.value
     }
 
     func codeLoadFailed() {
@@ -71,27 +73,32 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     }
 }
 
-class EmojiSearchCodeListener : CodeListener {
-    let treehouseView: TreehouseUIView
+class EmojiSearchUIViewRoot : UIViewRoot {
+    override func contentState(
+        loadCount: Int32,
+        attached: Bool,
+        uncaughtException: KotlinThrowable?
+    ) {
+        for view in value.subviews {
+            if let exceptionView = view as? ExceptionView {
+                exceptionView.removeFromSuperview()
+            }
+        }
 
-    init(_ treehouseView: TreehouseUIView) {
-        self.treehouseView = treehouseView
-    }
-
-    override func onCodeDetached(app: TreehouseApp<AnyObject>, view: TreehouseView, exception: KotlinThrowable?) {
-        if (exception != nil) {
-            treehouseView.reset()
-
-            let exceptionView = ExceptionView(exception!)
+        if uncaughtException != nil {
+            let exceptionView = ExceptionView(uncaughtException!)
             exceptionView.translatesAutoresizingMaskIntoConstraints = false
-            treehouseView.view.addSubview(exceptionView)
+            value.addSubview(exceptionView)
             NSLayoutConstraint.activate([
-                exceptionView.topAnchor.constraint(equalTo: treehouseView.view.topAnchor),
-                exceptionView.leftAnchor.constraint(equalTo: treehouseView.view.leftAnchor),
-                exceptionView.rightAnchor.constraint(equalTo: treehouseView.view.rightAnchor),
-                exceptionView.bottomAnchor.constraint(equalTo: treehouseView.view.bottomAnchor),
+                exceptionView.topAnchor.constraint(equalTo: value.topAnchor),
+                exceptionView.leftAnchor.constraint(equalTo: value.leftAnchor),
+                exceptionView.rightAnchor.constraint(equalTo: value.rightAnchor),
+                exceptionView.bottomAnchor.constraint(equalTo: value.bottomAnchor),
             ])
         }
+    }
+
+    override func restart(restart: (() -> Void)? = nil) {
     }
 }
 

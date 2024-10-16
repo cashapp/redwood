@@ -20,9 +20,6 @@ import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import app.cash.redwood.widget.AbstractRedwoodViewTest
 import app.cash.redwood.widget.RedwoodUIView
-import kotlinx.cinterop.cValue
-import platform.CoreGraphics.CGRectZero
-import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
 class UIViewRedwoodViewTest(
@@ -30,8 +27,8 @@ class UIViewRedwoodViewTest(
 ) : AbstractRedwoodViewTest<UIView, RedwoodUIView>() {
   override val widgetFactory = UIViewTestWidgetFactory
 
-  override fun redwoodView() = RedwoodUIView(UIStackView(cValue { CGRectZero }))
+  override fun redwoodView() = RedwoodUIView()
 
   override fun snapshotter(redwoodView: RedwoodUIView) =
-    UIViewSnapshotter.framed(callback, redwoodView.view)
+    UIViewSnapshotter.framed(callback, redwoodView.root.value)
 }

@@ -14,6 +14,9 @@ Fixed:
 - Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
 - Fix inconsistencies between iOS and Android for `Column` and `Row` layouts.
 
+Breaking:
+- Replace `CodeListener` with `RedwoodView.Root`. This puts the loading/error/ready state with the UI that displays that state.
+
 
 ## [0.15.0] - 2024-09-30
 [0.15.0]: https://github.com/cashapp/redwood/releases/tag/0.15.0
