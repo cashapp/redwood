@@ -58,6 +58,7 @@ class ViewLazyListAsFlexContainerTest(
     backgroundColor: Int,
   ): TestFlexContainer<View> {
     return ViewTestFlexContainer(paparazzi.context, direction, backgroundColor)
+      .apply { applyDefaults() }
   }
 
   override fun row(): Row<View> {

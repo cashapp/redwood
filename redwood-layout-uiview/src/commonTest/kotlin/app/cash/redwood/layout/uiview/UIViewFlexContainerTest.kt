@@ -62,6 +62,8 @@ class UIViewFlexContainerTest(
         override fun invalidateSize() {
         }
       }
+
+      applyDefaults()
     }
   }
 

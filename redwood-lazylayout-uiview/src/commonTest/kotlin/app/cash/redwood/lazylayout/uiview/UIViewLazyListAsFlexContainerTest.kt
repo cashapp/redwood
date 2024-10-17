@@ -43,6 +43,7 @@ class UIViewLazyListAsFlexContainerTest(
     direction: FlexDirection,
     backgroundColor: Int,
   ) = ViewTestFlexContainer(lazyLayoutWidgetFactory.LazyList(), direction, backgroundColor)
+    .apply { applyDefaults() }
 
   override fun row() = UIViewRedwoodLayoutWidgetFactory().Row()
 

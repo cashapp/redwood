@@ -59,6 +59,7 @@ class ComposeUiLazyListTest(
     backgroundColor: Int,
   ): ComposeTestFlexContainer {
     return ComposeTestFlexContainer(direction, backgroundColor)
+      .apply { applyDefaults() }
   }
 
   override fun row(): Row<@Composable () -> Unit> {
