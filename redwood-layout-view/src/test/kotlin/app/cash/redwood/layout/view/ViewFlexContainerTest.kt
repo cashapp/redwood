@@ -56,6 +56,7 @@ class ViewFlexContainerTest(
       value.setBackgroundColor(backgroundColor)
     }
     return ViewTestFlexContainer(delegate)
+      .apply { applyDefaults() }
   }
 
   override fun row() = flexContainer(FlexDirection.Row)

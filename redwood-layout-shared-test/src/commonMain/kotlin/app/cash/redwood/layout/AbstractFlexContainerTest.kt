@@ -48,6 +48,21 @@ abstract class AbstractFlexContainerTest<T : Any> {
     backgroundColor: Int = argb(51, 0, 0, 255),
   ): TestFlexContainer<T>
 
+  /**
+   * Yoga node’s default values for properties like alignment are different from Redwood's default
+   * values, so we explicitly apply those defaults here. This is only necessary in tests; in
+   * production the framework explicitly sets every property.
+   */
+  protected fun TestFlexContainer<*>.applyDefaults() {
+    width(Constraint.Wrap)
+    height(Constraint.Wrap)
+    margin(Margin.Zero)
+    overflow(Overflow.Clip)
+    crossAxisAlignment(CrossAxisAlignment.Start)
+    mainAxisAlignment(MainAxisAlignment.Start)
+    onScroll(null)
+  }
+
   /** Returns a non-lazy flex container row, even if the test is for a LazyList. */
   abstract fun row(): Row<T>
 
@@ -119,7 +134,14 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
-    container.add(widgetFactory.text(movies.first()))
+    container.add(
+      widgetFactory.text(
+        text = movies.first(),
+        modifier = Modifier
+          .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+          .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch)),
+      ),
+    )
     container.onEndChanges()
     snapshotter(container.value).snapshot()
   }
@@ -484,7 +506,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     parent.children.insert(
       0,
       flexContainer(FlexDirection.Column).apply {
-        modifier = GrowImpl(1.0)
+        modifier = Modifier
+          .then(GrowImpl(1.0))
+          .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+          .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch))
         width(Constraint.Fill)
         mainAxisAlignment(MainAxisAlignment.SpaceBetween)
         add(
@@ -505,7 +530,10 @@ abstract class AbstractFlexContainerTest<T : Any> {
     parent.children.insert(
       1,
       flexContainer(FlexDirection.Column).apply {
-        modifier = GrowImpl(1.0)
+        modifier = Modifier
+          .then(GrowImpl(1.0))
+          .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+          .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch))
         width(Constraint.Fill)
         mainAxisAlignment(MainAxisAlignment.SpaceBetween)
         add(
@@ -777,12 +805,20 @@ abstract class AbstractFlexContainerTest<T : Any> {
       }
       .also { column.add(it) }
 
-    val rowA1 = widgetFactory.text("A1 ".repeat(50))
-      .apply { modifier = FlexImpl(1.0) }
-      .also { rowA.children.insert(0, it) }
-    val rowA2 = widgetFactory.text("A-TWO ".repeat(50))
-      .apply { modifier = FlexImpl(1.0) }
-      .also { rowA.children.insert(1, it) }
+    val rowA1 = widgetFactory.text(
+      text = "A1 ".repeat(50),
+      modifier = Modifier
+        .then(FlexImpl(1.0))
+        .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+        .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch)),
+    ).also { rowA.children.insert(0, it) }
+    val rowA2 = widgetFactory.text(
+      text = "A-TWO ".repeat(50),
+      modifier = Modifier
+        .then(FlexImpl(1.0))
+        .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+        .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch)),
+    ).also { rowA.children.insert(1, it) }
 
     val rowB = widgetFactory.text("B1 ".repeat(5))
       .apply {
@@ -811,13 +847,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
       height(Constraint.Fill)
     }
 
-    val alignStart = HorizontalAlignmentImpl(CrossAxisAlignment.Start)
     flexContainer(FlexDirection.Column)
       .apply {
         width(Constraint.Fill)
         modifier = WidthImpl(25.dp)
-        add(widgetFactory.text("ok", alignStart)) // This is under 25.dp in width.
-        add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
+        add(widgetFactory.text("ok")) // This is under 25.dp in width.
+        add(widgetFactory.text("1 2 3 4")) // Each character is under 25.dp in width.
         onEndChanges()
       }
       .also { fullWidthParent.children.insert(0, it) }
@@ -826,8 +861,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
       .apply {
         width(Constraint.Fill)
         modifier = WidthImpl(25.dp)
-        add(widgetFactory.text("overflows parent", alignStart)) // This is over 25.dp in width.
-        add(widgetFactory.text("1 2 3 4", alignStart)) // Each character is under 25.dp in width.
+        add(widgetFactory.text("overflows parent")) // This is over 25.dp in width.
+        add(widgetFactory.text("1 2 3 4")) // Each character is under 25.dp in width.
         onEndChanges()
       }
       .also { fullWidthParent.children.insert(1, it) }

@@ -55,6 +55,7 @@ class ComposeUiFlexContainerTest(
     backgroundColor: Int,
   ): ComposeTestFlexContainer {
     return ComposeTestFlexContainer(direction, backgroundColor)
+      .apply { applyDefaults() }
   }
 
   override fun row() = flexContainer(FlexDirection.Row)
