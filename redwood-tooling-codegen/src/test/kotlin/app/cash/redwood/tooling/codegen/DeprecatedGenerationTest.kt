@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.tooling.codegen
 
+import app.cash.burst.Burst
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
@@ -25,13 +26,10 @@ import assertk.all
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.contains
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import kotlin.DeprecationLevel.ERROR
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
+@Burst
 class DeprecatedGenerationTest {
   @Suppress("DEPRECATION")
   @Schema(
@@ -140,9 +138,7 @@ class DeprecatedGenerationTest {
   }
 
   @Test
-  fun protocolCodegen(
-    @TestParameter type: ProtocolCodegenType,
-  ) {
+  fun protocolCodegen(type: ProtocolCodegenType) {
     val schema = parseTestSchema(DeprecatedSchema::class)
     assertAll {
       for (fileSpec in schema.generateFileSpecs(type)) {
@@ -152,9 +148,7 @@ class DeprecatedGenerationTest {
     }
   }
 
-  @Test fun codegen(
-    @TestParameter type: CodegenType,
-  ) {
+  @Test fun codegen(type: CodegenType) {
     val schema = parseTestSchema(DeprecatedSchema::class)
     assertAll {
       for (fileSpec in schema.generateFileSpecs(type)) {

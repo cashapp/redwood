@@ -19,6 +19,7 @@ import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
@@ -32,15 +33,12 @@ import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
+@Burst
 class ComposeUiFlexContainerTest(
-  @TestParameter layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection,
 ) : AbstractFlexContainerTest<@Composable () -> Unit>() {
 
   override val widgetFactory = ComposeUiTestWidgetFactory

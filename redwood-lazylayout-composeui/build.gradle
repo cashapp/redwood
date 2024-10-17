@@ -6,6 +6,7 @@ redwoodBuild {
 }
 
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'app.cash.burst'
 apply plugin: 'app.cash.paparazzi'
 
 kotlin {
@@ -24,7 +25,6 @@ kotlin {
         implementation projects.redwoodLayoutComposeui
         implementation projects.redwoodLayoutSharedTest
         implementation projects.redwoodSnapshotTesting
-        implementation libs.testParameterInjector
       }
     }
   }

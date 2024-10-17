@@ -6,15 +6,16 @@ redwoodBuild {
 }
 
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.burst'
 apply plugin: 'app.cash.paparazzi'
 
 dependencies {
   api projects.redwoodLayoutWidget
   implementation projects.redwoodYoga
   implementation libs.androidx.core
+  testImplementation libs.burst
   testImplementation projects.redwoodLayoutSharedTest
   testImplementation projects.redwoodSnapshotTesting
-  testImplementation libs.testParameterInjector
 }
 
 android {

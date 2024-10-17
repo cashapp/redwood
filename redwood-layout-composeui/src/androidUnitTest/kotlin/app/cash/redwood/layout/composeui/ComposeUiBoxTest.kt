@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
+import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractBoxTest
@@ -23,14 +24,11 @@ import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import com.android.resources.LayoutDirection
-import com.google.testing.junit.testparameterinjector.TestParameter
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
+@Burst
 class ComposeUiBoxTest(
-  @TestParameter layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection,
 ) : AbstractBoxTest<@Composable () -> Unit>() {
 
   @get:Rule

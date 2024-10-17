@@ -7,6 +7,7 @@ redwoodBuild {
 
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'app.cash.burst'
 apply plugin: 'app.cash.paparazzi'
 
 kotlin {
@@ -25,7 +26,6 @@ kotlin {
       dependencies {
         implementation projects.redwoodLayoutSharedTest
         implementation projects.redwoodSnapshotTesting
-        implementation libs.testParameterInjector
       }
     }
   }

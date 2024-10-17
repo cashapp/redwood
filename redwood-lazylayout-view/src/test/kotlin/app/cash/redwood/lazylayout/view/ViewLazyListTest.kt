@@ -24,11 +24,8 @@ import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
-import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Rule
-import org.junit.runner.RunWith
 
-@RunWith(TestParameterInjector::class)
 class ViewLazyListTest : AbstractLazyListTest<View>() {
 
   @get:Rule
