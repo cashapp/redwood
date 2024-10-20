@@ -37,11 +37,11 @@ import app.cash.redwood.ui.dp
 import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.compose.backgroundColor
 
-private val accentColor = 0xFFDDDDDDu
-private val boxColor = 0xFFFFFF66u
-private val backColor = 0x88FF0000u
-private val middleColor = 0x8800FF00u
-private val frontColor = 0x880000FFu
+private val accentColor = 0xFFDDDDDD.toInt()
+private val boxColor = 0xFFFFFF66.toInt()
+private val backColor = 0x88FF0000.toInt()
+private val middleColor = 0x8800FF00.toInt()
+private val frontColor = 0x880000FF.toInt()
 
 @Composable
 fun BoxSandbox(modifier: Modifier = Modifier) {

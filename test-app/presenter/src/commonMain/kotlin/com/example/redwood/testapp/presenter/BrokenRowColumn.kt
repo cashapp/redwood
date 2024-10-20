@@ -49,7 +49,7 @@ fun BrokenRowColumn(modifier: Modifier = Modifier) {
           .margin(Margin(start = 24.dp, end = 24.dp))
           .flex(1.0),
       ) {
-        Spacer(48.dp, 48.dp, Modifier.backgroundColor(0xFFFF0000U))
+        Spacer(48.dp, 48.dp, Modifier.backgroundColor(0xFFFF0000.toInt()))
       }
     }
   }

@@ -142,8 +142,8 @@ public data object CustomTypeDataObject
 
 @Modifier(8)
 public data class BackgroundColor(
-  /** Expects argb format: `0xAARRGGBBu`. */
-  val color: UInt,
+  /** Expects argb format: `0xAARRGGBB`. */
+  val color: Int,
 )
 
 @Modifier(-4_543_827) // -4_543_827 is a reserved tag.

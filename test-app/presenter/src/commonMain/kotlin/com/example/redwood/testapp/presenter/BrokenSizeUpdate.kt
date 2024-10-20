@@ -55,7 +55,7 @@ fun BrokenSizeUpdate(modifier: Modifier = Modifier) {
       "hello",
       modifier = Modifier
         .size(width, height)
-        .backgroundColor(0xFFFF0000U),
+        .backgroundColor(0xFFFF0000.toInt()),
     )
   }
 }
