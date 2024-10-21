@@ -15,7 +15,7 @@ Fixed:
 - Fix inconsistencies between iOS and Android for `Column` and `Row` layouts.
 
 Breaking:
-- Replace `CodeListener` with `RedwoodView.Root`. This puts the loading/error/ready state with the UI that displays that state.
+- Replace `CodeListener` with new functions in `RedwoodView`. This puts the loading/error/ready state with the UI that displays that state.
 
 
 ## [0.15.0] - 2024-09-30

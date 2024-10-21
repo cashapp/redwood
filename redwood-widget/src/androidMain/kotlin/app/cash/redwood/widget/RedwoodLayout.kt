@@ -19,10 +19,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import androidx.core.graphics.Insets
+import androidx.core.view.children as viewGroupChildren
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
@@ -38,13 +39,16 @@ import kotlinx.coroutines.flow.StateFlow
 public open class RedwoodLayout(
   context: Context,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
-  public final override val root: RedwoodView.Root<View> = ViewRoot(context),
-) : FrameLayout(context),
+) : ViewGroup(context),
   RedwoodView<View> {
+
+  final override val children: Widget.Children<View> = ViewGroupChildren(this)
+  final override val value: View
+    get() = this
+
   init {
     // The view needs to have an ID to participate in instance state saving.
     id = R.id.redwood_layout
-    super.addView(root.value)
   }
 
   private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
@@ -82,15 +86,36 @@ public open class RedwoodLayout(
     }
   }
 
+  override fun contentState(
+    loadCount: Int,
+    attached: Boolean,
+    uncaughtException: Throwable?,
+  ) {
+    // Remove all child views in case the previous content state left some behind.
+    removeAllViews()
+  }
+
+  override fun restart(restart: (() -> Unit)?) {
+    // This base class doesn't call restart().
+  }
+
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    root.value.measure(widthMeasureSpec, heightMeasureSpec)
-    setMeasuredDimension(root.value.measuredWidth, root.value.measuredHeight)
+    var maxWidth = 0
+    var maxHeight = 0
+    for (child in viewGroupChildren) {
+      child.measure(widthMeasureSpec, heightMeasureSpec)
+      maxWidth = maxOf(maxWidth, child.measuredWidth)
+      maxHeight = maxOf(maxHeight, child.measuredHeight)
+    }
+    setMeasuredDimension(maxWidth, maxHeight)
   }
 
   @SuppressLint("DrawAllocation") // It's only on layout.
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
     mutableUiConfiguration.value = computeUiConfiguration()
-    root.value.layout(0, 0, right - left, bottom - top)
+    for (child in viewGroupChildren) {
+      child.layout(0, 0, right - left, bottom - top)
+    }
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {

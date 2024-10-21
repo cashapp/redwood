@@ -24,18 +24,15 @@ import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatch
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
-import app.cash.redwood.widget.RedwoodView
-import app.cash.redwood.widget.ViewRoot
 import app.cash.treehouse.host.R
 import java.util.UUID
 
 @SuppressLint("ViewConstructor")
-public class TreehouseLayout(
+public open class TreehouseLayout(
   context: Context,
   override val widgetSystem: WidgetSystem<View>,
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
-  root: RedwoodView.Root<View> = ViewRoot(context),
-) : RedwoodLayout(context, androidOnBackPressedDispatcher, root),
+) : RedwoodLayout(context, androidOnBackPressedDispatcher),
   TreehouseView<View> {
   override var readyForContentChangeListener: ReadyForContentChangeListener<View>? = null
     set(value) {
@@ -47,10 +44,10 @@ public class TreehouseLayout(
    * Like [View.isAttachedToWindow]. We'd prefer that property but it's false until
    * [onAttachedToWindow] returns and true until [onDetachedFromWindow] returns.
    */
-  override var readyForContent: Boolean = false
+  final override var readyForContent: Boolean = false
     private set
 
-  override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
+  final override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
     private set
 
   override var saveCallback: TreehouseView.SaveCallback? = null

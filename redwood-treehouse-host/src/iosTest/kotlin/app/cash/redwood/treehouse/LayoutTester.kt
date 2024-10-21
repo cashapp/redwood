@@ -69,9 +69,9 @@ class LayoutTester(
 
       Subject.TreehouseView -> TreehouseUIView(throwingWidgetSystem)
         .apply {
-          (this.root.children as UIViewChildren).insert(0, viewWidget(referenceView))
+          (this.children as UIViewChildren).insert(0, viewWidget(referenceView))
         }
-        .root.value
+        .value
     }
   }
 

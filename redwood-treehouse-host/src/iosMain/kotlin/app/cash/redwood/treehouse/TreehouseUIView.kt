@@ -18,14 +18,12 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
-import app.cash.redwood.widget.UIViewRoot
 import platform.UIKit.UIView
 
 @ObjCName("TreehouseUIView", exact = true)
 public class TreehouseUIView(
   override val widgetSystem: WidgetSystem<UIView>,
-  root: UIViewRoot,
-) : RedwoodUIView(root),
+) : RedwoodUIView(),
   TreehouseView<UIView> {
   override var saveCallback: TreehouseView.SaveCallback? = null
   override var stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
@@ -37,9 +35,7 @@ public class TreehouseUIView(
     }
 
   override val readyForContent: Boolean
-    get() = root.value.superview != null
-
-  public constructor(widgetSystem: WidgetSystem<UIView>) : this(widgetSystem, UIViewRoot())
+    get() = value.superview != null
 
   override fun superviewChanged() {
     readyForContentChangeListener?.onReadyForContentChanged(this)

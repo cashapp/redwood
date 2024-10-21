@@ -116,7 +116,7 @@ class EmojiSearchActivity : ComponentActivity() {
             widgetSystem = widgetSystem,
             contentSource = treehouseContentSource,
             modifier = Modifier.padding(contentPadding),
-            root = { scope -> EmojiSearchComposeUiRoot(scope) },
+            dynamicContent = EmojiSearchComposeUiRoot(),
           )
         }
       }

@@ -25,6 +25,7 @@ import app.cash.redwood.ui.dp
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
 import org.w3c.dom.events.Event
@@ -37,9 +38,9 @@ public fun HTMLElement.asRedwoodView(): RedwoodView<HTMLElement> {
 }
 
 private class RedwoodHTMLElementView(
-  element: HTMLElement,
+  override val value: HTMLElement,
 ) : RedwoodView<HTMLElement> {
-  override val root = HTMLRoot(element)
+  override val children: Widget.Children<HTMLElement> = HTMLElementChildren(value)
 
   private var pixelRatioQueryRemover: (() -> Unit)? = null
 
@@ -64,8 +65,8 @@ private class RedwoodHTMLElementView(
     _uiConfiguration = MutableStateFlow(
       UiConfiguration(
         darkMode = colorSchemeQuery.matches,
-        viewportSize = Size(width = element.offsetWidth.dp, height = element.offsetHeight.dp),
-        layoutDirection = when (element.dir) {
+        viewportSize = Size(width = value.offsetWidth.dp, height = value.offsetHeight.dp),
+        layoutDirection = when (value.dir) {
           "ltr" -> LayoutDirection.Ltr
           "rtl" -> LayoutDirection.Rtl
           "auto" -> LayoutDirection.Auto
@@ -90,6 +91,19 @@ private class RedwoodHTMLElementView(
 
     // TODO Watch size change
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+  }
+
+  override fun contentState(
+    loadCount: Int,
+    attached: Boolean,
+    uncaughtException: Throwable?,
+  ) {
+    // Remove all child views in case the previous content state left some behind.
+    value.clear()
+  }
+
+  override fun restart(restart: (() -> Unit)?) {
+    // This base class doesn't call restart().
   }
 
   private fun observePixelRatioChange() {

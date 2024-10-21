@@ -79,11 +79,7 @@ class EmojiSearchUIViewRoot : UIViewRoot {
         attached: Bool,
         uncaughtException: KotlinThrowable?
     ) {
-        for view in value.subviews {
-            if let exceptionView = view as? ExceptionView {
-                exceptionView.removeFromSuperview()
-            }
-        }
+        super.contentState(loadCount: loadCount, attached: attached, uncaughtException: uncaughtException)
 
         if uncaughtException != nil {
             let exceptionView = ExceptionView(uncaughtException!)

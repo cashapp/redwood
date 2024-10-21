@@ -40,12 +40,12 @@ public class ChangeListRenderer<W : Any>(
     view: TreehouseView<W>,
     changeList: SnapshotChangeList,
   ) {
-    view.root.children.remove(0, view.root.children.widgets.size)
+    view.children.remove(0, view.children.widgets.size)
 
     val hostAdapter = HostProtocolAdapter(
       // Use latest host version as the guest version to avoid any compatibility behavior.
       guestVersion = hostRedwoodVersion,
-      container = view.root.children,
+      container = view.children,
       factory = view.widgetSystem.widgetFactory(
         json,
         ProtocolMismatchHandler.Throwing,

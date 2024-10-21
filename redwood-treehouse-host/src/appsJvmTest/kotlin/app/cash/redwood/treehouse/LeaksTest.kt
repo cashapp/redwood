@@ -46,7 +46,7 @@ class LeaksTest {
     assertThat(textInputValue.text).isEqualTo("what would you like to see?")
 
     val widgetLeakWatcher = LeakWatcher {
-      view.root.children.widgets.single()
+      view.children.widgets.single()
     }
 
     // While the widget is in the UI, it's expected to be in a reference cycle.

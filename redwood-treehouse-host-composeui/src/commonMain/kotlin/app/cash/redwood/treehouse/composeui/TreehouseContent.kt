@@ -45,9 +45,8 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
-import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.SavedStateRegistry
-import kotlinx.coroutines.CoroutineScope
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -56,7 +55,7 @@ public fun <A : AppService> TreehouseContent(
   widgetSystem: WidgetSystem<@Composable () -> Unit>,
   contentSource: TreehouseContentSource<A>,
   modifier: Modifier = Modifier,
-  root: ((CoroutineScope) -> RedwoodView.Root<@Composable () -> Unit>) = { _ -> ComposeUiRoot() },
+  dynamicContent: DynamicContent = DynamicContent(),
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
   val scope = rememberCoroutineScope()
@@ -75,7 +74,20 @@ public fun <A : AppService> TreehouseContent(
   )
   val treehouseView = remember(widgetSystem) {
     object : TreehouseView<@Composable () -> Unit> {
-      override val root: RedwoodView.Root<@Composable () -> Unit> = root(scope)
+      override val children: ComposeWidgetChildren = ComposeWidgetChildren()
+
+      override val value: @Composable () -> Unit = {
+        dynamicContent.Render(children)
+      }
+
+      override fun contentState(loadCount: Int, attached: Boolean, uncaughtException: Throwable?) {
+        dynamicContent.contentState(scope, loadCount, attached, uncaughtException)
+      }
+
+      override fun restart(restart: (() -> Unit)?) {
+        dynamicContent.restart(restart)
+      }
+
       override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
 
@@ -106,7 +118,7 @@ public fun <A : AppService> TreehouseContent(
       }
     },
   ) {
-    treehouseView.root.value()
+    treehouseView.value()
   }
 }
 

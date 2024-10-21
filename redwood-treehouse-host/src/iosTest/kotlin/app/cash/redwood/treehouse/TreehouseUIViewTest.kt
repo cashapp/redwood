@@ -43,10 +43,10 @@ class TreehouseUIViewTest {
     val layout = TreehouseUIView(throwingWidgetSystem)
 
     val view = UIView()
-    layout.root.children.insert(0, viewWidget(view))
-    assertThat(layout.root.value.subviews).hasSize(1)
+    layout.children.insert(0, viewWidget(view))
+    assertThat(layout.value.subviews).hasSize(1)
     // For some reason `assertSame` fails on these references.
-    assertThat(layout.root.value.subviews[0].objcPtr()).isEqualTo(view.objcPtr())
+    assertThat(layout.value.subviews[0].objcPtr()).isEqualTo(view.objcPtr())
   }
 
   @Test fun attachAndDetachSendsStateChange() {
@@ -57,10 +57,10 @@ class TreehouseUIViewTest {
     layout.readyForContentChangeListener = listener
     assertThat(listener.count).isEqualTo(0)
 
-    parent.addSubview(layout.root.value)
+    parent.addSubview(layout.value)
     assertThat(listener.count).isEqualTo(1)
 
-    layout.root.value.removeFromSuperview()
+    layout.value.removeFromSuperview()
     assertThat(listener.count).isEqualTo(2)
   }
 
@@ -70,7 +70,7 @@ class TreehouseUIViewTest {
     parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.root.value)
+    parent.addSubview(layout.value)
 
     assertThat(layout.uiConfiguration.value.darkMode).isTrue()
   }
@@ -79,7 +79,7 @@ class TreehouseUIViewTest {
     val parent = UIWindow()
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.root.value)
+    parent.addSubview(layout.value)
 
     layout.uiConfiguration.test {
       assertThat(awaitItem().darkMode).isFalse()
@@ -103,7 +103,7 @@ class TreehouseUIViewTest {
     }
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.root.value)
+    parent.addSubview(layout.value)
 
     assertThat(layout.uiConfiguration.value.safeAreaInsets).isEqualTo(expectedInsets)
   }
@@ -113,7 +113,7 @@ class TreehouseUIViewTest {
     val parent = UIWindow()
 
     val layout = TreehouseUIView(throwingWidgetSystem)
-    parent.addSubview(layout.root.value)
+    parent.addSubview(layout.value)
 
     val expectedLayoutDirection = when (val direction = parent.effectiveUserInterfaceLayoutDirection) {
       UIUserInterfaceLayoutDirectionLeftToRight -> LayoutDirection.Ltr
