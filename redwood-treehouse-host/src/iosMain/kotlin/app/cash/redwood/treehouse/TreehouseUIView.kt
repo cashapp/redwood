@@ -21,7 +21,7 @@ import app.cash.redwood.widget.RedwoodUIView
 import platform.UIKit.UIView
 
 @ObjCName("TreehouseUIView", exact = true)
-public class TreehouseUIView(
+public open class TreehouseUIView(
   override val widgetSystem: WidgetSystem<UIView>,
 ) : RedwoodUIView(),
   TreehouseView<UIView> {

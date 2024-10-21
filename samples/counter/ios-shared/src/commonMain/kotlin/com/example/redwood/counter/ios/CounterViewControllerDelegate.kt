@@ -27,14 +27,14 @@ import kotlinx.coroutines.plus
 
 @Suppress("unused") // Called from Swift.
 class CounterViewControllerDelegate(
-  root: UIViewRoot,
+  redwoodUIView: RedwoodUIView,
 ) {
   private val scope = MainScope() + DisplayLinkClock
 
   init {
     val composition = RedwoodComposition(
       scope = scope,
-      view = RedwoodUIView(root),
+      view = redwoodUIView,
       widgetSystem = SchemaWidgetSystem(
         Schema = IosWidgetFactory,
         RedwoodLayout = UIViewRedwoodLayoutWidgetFactory(),

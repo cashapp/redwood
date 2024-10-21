@@ -38,15 +38,14 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
         let widgetSystem = EmojiSearchTreehouseWidgetSystem(treehouseApp: treehouseApp)
-        let treehouseView = TreehouseUIView(
-            widgetSystem: widgetSystem,
-            root: EmojiSearchUIViewRoot()
+        let treehouseView = EmojiSearchTreehouseUIView(
+            widgetSystem: widgetSystem
         )
         let content = treehouseApp.createContent(
             source: EmojiSearchContent()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
-        view = treehouseView.root.value
+        view = treehouseView.value
     }
 
     func codeLoadFailed() {
@@ -73,7 +72,14 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     }
 }
 
-class EmojiSearchUIViewRoot : UIViewRoot {
+class EmojiSearchTreehouseUIView : TreehouseUIView {
+
+    init(
+        widgetSystem: EmojiSearchTreehouseWidgetSystem
+    ) {
+        super.init(widgetSystem: widgetSystem)
+    }
+
     override func contentState(
         loadCount: Int32,
         attached: Bool,

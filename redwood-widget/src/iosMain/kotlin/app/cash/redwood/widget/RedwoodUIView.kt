@@ -43,6 +43,7 @@ import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirect
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 
+@ObjCName("RedwoodUIView", exact = true)
 public open class RedwoodUIView : RedwoodView<UIView> {
   private val valueRootView: RootUIStackView = RootUIStackView()
 
