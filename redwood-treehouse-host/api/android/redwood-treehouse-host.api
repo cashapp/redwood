@@ -116,14 +116,17 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers 
 	public abstract fun getZipline ()Lkotlinx/coroutines/CoroutineDispatcher;
 }
 
-public final class app/cash/redwood/treehouse/TreehouseLayout : app/cash/redwood/widget/RedwoodLayout, app/cash/redwood/treehouse/TreehouseView {
-	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;)V
-	public synthetic fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/widget/RedwoodView$Root;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun getReadyForContent ()Z
+public class app/cash/redwood/treehouse/TreehouseLayout : app/cash/redwood/widget/RedwoodLayout, app/cash/redwood/treehouse/TreehouseView {
+	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;)V
+	public final fun getReadyForContent ()Z
 	public fun getReadyForContentChangeListener ()Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;
 	public fun getSaveCallback ()Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;
-	public fun getStateSnapshotId-kwWZ-Q0 ()Ljava/lang/String;
+	public final fun getStateSnapshotId-kwWZ-Q0 ()Ljava/lang/String;
 	public fun getWidgetSystem ()Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;
+	protected fun onAttachedToWindow ()V
+	protected fun onDetachedFromWindow ()V
+	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
+	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
 	public fun setReadyForContentChangeListener (Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;)V
 	public fun setSaveCallback (Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;)V
 }
