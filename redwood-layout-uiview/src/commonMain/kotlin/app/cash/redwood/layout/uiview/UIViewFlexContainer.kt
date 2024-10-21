@@ -17,9 +17,14 @@ package app.cash.redwood.layout.uiview
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ResizableWidget
@@ -31,16 +36,52 @@ import kotlinx.cinterop.convert
 import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
+internal class UIViewColumn : Column<UIView>() {
+  private val container = UIViewFlexContainer(FlexDirection.Column)
+
+  override val value: UIView get() = container.value
+  override var modifier by container::modifier
+  override val children get() = container.children
+
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun overflow(overflow: Overflow) = container.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) = container.mainAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
+}
+
+internal class UIViewRow : Row<UIView>() {
+  private val container = UIViewFlexContainer(FlexDirection.Row)
+
+  override val value: UIView get() = container.value
+  override var modifier by container::modifier
+  override val children get() = container.children
+
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun overflow(overflow: Overflow) = container.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) = container.mainAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
+}
+
 internal class UIViewFlexContainer(
   direction: FlexDirection,
-) : YogaFlexContainer<UIView>,
+) : YogaFlexContainer<UIView>(),
   ResizableWidget<UIView>,
   ChangeListener {
-  private val yogaView: YogaUIView = YogaUIView()
+  private val yogaView: YogaUIView = YogaUIView().apply {
+    rootNode.flexDirection = direction
+  }
+
   override val rootNode: Node get() = yogaView.rootNode
   override val density: Density get() = Density.Default
   override val value: UIView get() = yogaView
-  override val children: UIViewChildren = UIViewChildren(
+
+  val children: UIViewChildren = UIViewChildren(
     container = value,
     insert = { index, widget ->
       val view = widget.value
@@ -72,23 +113,19 @@ internal class UIViewFlexContainer(
 
   override var sizeListener: SizeListener? = null
 
-  init {
-    yogaView.rootNode.flexDirection = direction
-  }
-
-  override fun width(width: Constraint) {
+  fun width(width: Constraint) {
     yogaView.widthConstraint = width
   }
 
-  override fun height(height: Constraint) {
+  fun height(height: Constraint) {
     yogaView.heightConstraint = height
   }
 
-  override fun overflow(overflow: Overflow) {
+  fun overflow(overflow: Overflow) {
     yogaView.scrollEnabled = overflow == Overflow.Scroll
   }
 
-  override fun onScroll(onScroll: ((Px) -> Unit)?) {
+  fun onScroll(onScroll: ((Px) -> Unit)?) {
     yogaView.onScroll = onScroll
   }
 
