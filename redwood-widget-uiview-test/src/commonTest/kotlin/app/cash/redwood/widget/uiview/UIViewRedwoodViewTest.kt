@@ -30,5 +30,5 @@ class UIViewRedwoodViewTest(
   override fun redwoodView() = RedwoodUIView()
 
   override fun snapshotter(redwoodView: RedwoodUIView) =
-    UIViewSnapshotter.framed(callback, redwoodView.root.value)
+    UIViewSnapshotter.framed(callback, redwoodView.value)
 }
