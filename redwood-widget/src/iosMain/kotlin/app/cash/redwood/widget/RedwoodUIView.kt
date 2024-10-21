@@ -25,11 +25,17 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.cinterop.CValue
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIApplication
+import platform.UIKit.UILayoutConstraintAxisVertical
+import platform.UIKit.UIStackView
+import platform.UIKit.UIStackViewAlignmentFill
+import platform.UIKit.UIStackViewDistributionFillEqually
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceLayoutDirection
 import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight
@@ -37,17 +43,23 @@ import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirect
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
 
-public open class RedwoodUIView(
-  final override val root: UIViewRoot,
-) : RedwoodView<UIView> {
-  public constructor() : this(UIViewRoot())
+@ObjCName("RedwoodUIView", exact = true)
+public open class RedwoodUIView : RedwoodView<UIView> {
+  private val valueRootView: RootUIStackView = RootUIStackView()
+
+  override val value: UIView
+    get() = valueRootView
+
+  private val _children = UIViewChildren(valueRootView)
+  override val children: Widget.Children<UIView>
+    get() = _children
 
   private val mutableUiConfiguration =
     MutableStateFlow(
       computeUiConfiguration(
-        traitCollection = root.value.traitCollection,
-        layoutDirection = root.value.effectiveUserInterfaceLayoutDirection,
-        bounds = root.value.bounds,
+        traitCollection = valueRootView.traitCollection,
+        layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
+        bounds = valueRootView.bounds,
       ),
     )
 
@@ -65,19 +77,63 @@ public open class RedwoodUIView(
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
-  init {
-    root.valueRootView.redwoodUIView = this
+  override fun contentState(
+    loadCount: Int,
+    attached: Boolean,
+    uncaughtException: Throwable?,
+  ) {
+    // Remove all child views in case the previous content state left some behind.
+    for (subview in value.subviews.toList()) {
+      (subview as UIView).removeFromSuperview()
+    }
   }
 
-  public fun updateUiConfiguration() {
+  override fun restart(restart: (() -> Unit)?) {
+    // This base class doesn't call restart().
+  }
+
+  private fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
-      traitCollection = root.value.traitCollection,
-      layoutDirection = root.value.effectiveUserInterfaceLayoutDirection,
-      bounds = root.value.bounds,
+      traitCollection = valueRootView.traitCollection,
+      layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
+      bounds = valueRootView.bounds,
     )
   }
 
-  public open fun superviewChanged() {
+  protected open fun superviewChanged() {
+  }
+
+  /**
+   * In practice we expect this to contain either zero child subviews (especially when
+   * newly-initialized) or one child subview, which will usually be a layout container.
+   *
+   * This could just as easily be a horizontal stack. A box would be even better, but there's no
+   * such built-in component and implementing it manually is difficult if we want to react to
+   * content resizes.
+   */
+  private inner class RootUIStackView : UIStackView(cValue { CGRectZero }) {
+    init {
+      this.axis = UILayoutConstraintAxisVertical
+      this.alignment = UIStackViewAlignmentFill // Fill horizontal.
+      this.distribution = UIStackViewDistributionFillEqually // Fill vertical.
+    }
+
+    override fun layoutSubviews() {
+      super.layoutSubviews()
+
+      // Bounds likely changed. Report new size.
+      updateUiConfiguration()
+    }
+
+    override fun didMoveToSuperview() {
+      super.didMoveToSuperview()
+      superviewChanged()
+    }
+
+    override fun traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+      super.traitCollectionDidChange(previousTraitCollection)
+      updateUiConfiguration()
+    }
   }
 }
 

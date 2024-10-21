@@ -19,9 +19,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedDispatcher
 import androidx.core.view.WindowCompat
-import androidx.core.view.iterator
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
@@ -31,9 +32,8 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
-import app.cash.redwood.treehouse.TreehouseView
+import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.widget.ViewRoot
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -82,7 +82,7 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
-    val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
+    val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       EmojiSearchProtocolFactory(
         widgetSystem = EmojiSearchWidgetSystem(
           EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
@@ -94,18 +94,19 @@ class EmojiSearchActivity : ComponentActivity() {
       )
     }
 
-    val viewRoot = EmojiSearchViewRoot(context, scope)
-
-    treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher, viewRoot).apply {
-      treehouseContentSource.bindWhenReady(this, treehouseApp)
-    }
+    treehouseLayout = EmojiSearchTreehouseLayout(this, widgetSystem, onBackPressedDispatcher, scope)
+      .apply {
+        treehouseContentSource.bindWhenReady(this, treehouseApp)
+      }
     setContentView(treehouseLayout)
   }
 
-  private class EmojiSearchViewRoot(
+  private class EmojiSearchTreehouseLayout(
     context: Context,
+    widgetSystem: WidgetSystem<View>,
+    androidOnBackPressedDispatcher: OnBackPressedDispatcher,
     private val scope: CoroutineScope,
-  ) : ViewRoot(context) {
+  ) : TreehouseLayout(context, widgetSystem, androidOnBackPressedDispatcher) {
     private var restart: (() -> Unit)? = null
 
     override fun contentState(
@@ -113,6 +114,8 @@ class EmojiSearchActivity : ComponentActivity() {
       attached: Boolean,
       uncaughtException: Throwable?,
     ) {
+      super.contentState(loadCount, attached, uncaughtException)
+
       if (uncaughtException != null) {
         scope.launch {
           delay(2.seconds)
@@ -120,13 +123,6 @@ class EmojiSearchActivity : ComponentActivity() {
         }
       }
 
-      val i = iterator()
-      while (i.hasNext()) {
-        val child = i.next()
-        if (child is ExceptionView || child is LoadingView) {
-          i.remove()
-        }
-      }
       if (loadCount == 0) {
         addView(LoadingView(context))
       }

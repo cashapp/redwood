@@ -140,7 +140,7 @@ internal class TreehouseAppContent<A : AppService>(
 
     if (stateFlow.value.viewState == ViewState.Bound(view)) return // Idempotent.
 
-    view.root.restart(codeHost::restart)
+    view.restart(codeHost::restart)
 
     preload(view.onBackPressedDispatcher, view.uiConfiguration)
 
@@ -156,7 +156,7 @@ internal class TreehouseAppContent<A : AppService>(
     // code is coming.
     when (nextCodeState) {
       is CodeState.Idle -> {
-        view.root.contentState(
+        view.contentState(
           loadCount = nextCodeState.loadCount,
           attached = false,
         )
@@ -187,7 +187,7 @@ internal class TreehouseAppContent<A : AppService>(
     if (previousViewState is ViewState.None) return // Idempotent.
 
     if (previousViewState is ViewState.Bound) {
-      previousViewState.view.root.restart(null) // Break a reference cycle.
+      previousViewState.view.restart(null) // Break a reference cycle.
     }
     val nextViewState = ViewState.None
     val nextCodeState = CodeState.Idle<A>(
@@ -424,7 +424,7 @@ private class ViewContentCodeBinding<A : AppService>(
       @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
       hostAdapter = HostProtocolAdapter(
         guestVersion = codeSession.guestProtocolVersion,
-        container = view.root.children as Widget.Children<Any>,
+        container = view.children as Widget.Children<Any>,
         factory = view.widgetSystem.widgetFactory(
           json = codeSession.json,
           protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
@@ -436,8 +436,8 @@ private class ViewContentCodeBinding<A : AppService>(
     }
 
     if (deliveredChangeCount++ == 0) {
-      view.root.children.remove(0, view.root.children.widgets.size)
-      view.root.contentState(
+      view.children.remove(0, view.children.widgets.size)
+      view.contentState(
         loadCount = loadCount,
         attached = true,
       )
@@ -537,7 +537,7 @@ private class ViewContentCodeBinding<A : AppService>(
     canceled = true
 
     viewOrNull?.let { view ->
-      view.root.contentState(
+      view.contentState(
         loadCount = loadCount,
         attached = false,
         uncaughtException = exception,

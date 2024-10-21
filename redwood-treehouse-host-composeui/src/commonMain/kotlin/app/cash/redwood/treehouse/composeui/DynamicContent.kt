@@ -16,37 +16,40 @@
 package app.cash.redwood.treehouse.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.Modifier
-import app.cash.redwood.widget.RedwoodView
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
+import kotlinx.coroutines.CoroutineScope
 
-/**
- * A default base implementation of [RedwoodView.Root].
- *
- * This composition contributes nothing to the view hierarchy. It delegates directly to its child
- * views.
- */
-public open class ComposeUiRoot : RedwoodView.Root<@Composable () -> Unit> {
-  override val children: ComposeWidgetChildren = ComposeWidgetChildren()
+public open class DynamicContent {
+  public var loadCount: Int by mutableIntStateOf(0)
+    private set
+  public var attached: Boolean by mutableStateOf(false)
+    private set
+  public var uncaughtException: Throwable? by mutableStateOf(null)
+    private set
+  public var restart: (() -> Unit)? by mutableStateOf(null)
+    private set
 
-  override var modifier: Modifier = Modifier
-
-  override fun contentState(
+  public open fun contentState(
+    scope: CoroutineScope,
     loadCount: Int,
     attached: Boolean,
     uncaughtException: Throwable?,
   ) {
+    this.loadCount = loadCount
+    this.attached = attached
+    this.uncaughtException = uncaughtException
   }
 
-  override fun restart(restart: (() -> Unit)?) {
-  }
-
-  override val value: @Composable () -> Unit = {
-    Render()
+  public fun restart(restart: (() -> Unit)?) {
+    this.restart = restart
   }
 
   @Composable
-  public open fun Render() {
+  public open fun Render(children: ComposeWidgetChildren) {
     children.Render()
   }
 }

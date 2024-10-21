@@ -65,7 +65,7 @@ public fun <W : Any> RedwoodComposition(
   widgetSystem: WidgetSystem<W>,
   onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
-  view.root.children.remove(0, view.root.children.widgets.size)
+  view.children.remove(0, view.children.widgets.size)
 
   val saveableStateRegistry = view.savedStateRegistry?.let { viewRegistry ->
     val state = viewRegistry.consumeRestoredState()
@@ -95,7 +95,7 @@ public fun <W : Any> RedwoodComposition(
 
   return RedwoodComposition(
     scope,
-    view.root.children,
+    view.children,
     view.onBackPressedDispatcher,
     saveableStateRegistry,
     view.uiConfiguration,

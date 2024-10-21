@@ -187,9 +187,9 @@ class TreehouseAppContentTest {
       "codeSessionB.app.uis[0].start()",
     )
 
-    // This still shows UI from codeSessionA. There's no onCodeLoaded() and no reset() until the new
-    // code's first widget is added!
-    val buttonA = view1.root.views.single() as ButtonValue
+    // This still shows UI from codeSessionA. The content isn't attached until the new code's first
+    // widget is added!
+    val buttonA = view1.views.single() as ButtonValue
     assertThat(buttonA.text).isEqualTo("helloA")
     codeSessionB.appService.uis.single().addWidget("helloB")
     eventLog.takeEvent("codeListener.onCodeLoaded(1)")

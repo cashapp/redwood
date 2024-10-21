@@ -19,34 +19,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.cash.redwood.treehouse.composeui.ComposeUiRoot
+import app.cash.redwood.treehouse.composeui.DynamicContent
+import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-internal class EmojiSearchComposeUiRoot(
-  private val scope: CoroutineScope,
-) : ComposeUiRoot() {
-  private var loadCount by mutableIntStateOf(0)
-  private var attached by mutableStateOf(false)
-  private var uncaughtException by mutableStateOf<Throwable?>(null)
-  private var restart: (() -> Unit)? = null
-
+internal class EmojiSearchComposeUiRoot : DynamicContent() {
   override fun contentState(
+    scope: CoroutineScope,
     loadCount: Int,
     attached: Boolean,
     uncaughtException: Throwable?,
   ) {
-    this.loadCount = loadCount
-    this.attached = attached
-    this.uncaughtException = uncaughtException
+    super.contentState(scope, loadCount, attached, uncaughtException)
 
     if (uncaughtException != null) {
       scope.launch {
@@ -56,12 +45,8 @@ internal class EmojiSearchComposeUiRoot(
     }
   }
 
-  override fun restart(restart: (() -> Unit)?) {
-    this.restart = restart
-  }
-
   @Composable
-  override fun Render() {
+  override fun Render(children: ComposeWidgetChildren) {
     val uncaughtException = this.uncaughtException
     if (uncaughtException != null) {
       Box(
@@ -83,6 +68,6 @@ internal class EmojiSearchComposeUiRoot(
       return
     }
 
-    super.Render()
+    super.Render(children)
   }
 }
