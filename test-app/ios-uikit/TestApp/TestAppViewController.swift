@@ -40,7 +40,7 @@ class TestAppViewController : UIViewController {
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
 
-        let tv = treehouseView.root.value
+        let tv = treehouseView.value
         tv.translatesAutoresizingMaskIntoConstraints = false
 
         self.view.addSubview(tv)
