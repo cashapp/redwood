@@ -36,6 +36,7 @@ class UIViewBoxTest(
   override fun box(): Box<UIView> {
     return UIViewBox().apply {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 0.0, alpha = 0.5)
+      applyDefaults()
     }
   }
 

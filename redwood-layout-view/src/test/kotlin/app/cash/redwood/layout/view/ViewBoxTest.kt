@@ -47,6 +47,7 @@ class ViewBoxTest(
   override fun box(): Box<View> {
     return ViewBox(paparazzi.context).apply {
       background = ColorDrawable(0x88000000.toInt())
+      applyDefaults()
     }
   }
 
