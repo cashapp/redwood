@@ -41,6 +41,7 @@ class ComposeUiBoxTest(
   override val widgetFactory = ComposeUiTestWidgetFactory
 
   override fun box(): Box<@Composable () -> Unit> = ComposeUiBox(0x88000000.toInt())
+    .apply { applyDefaults() }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

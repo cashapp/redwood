@@ -17,7 +17,6 @@ package app.cash.redwood.layout.view
 
 import android.graphics.drawable.ColorDrawable
 import android.view.View
-import android.widget.FrameLayout
 import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
@@ -47,22 +46,9 @@ class ViewBoxTest(
   override fun box(): Box<View> {
     return ViewBox(paparazzi.context).apply {
       background = ColorDrawable(0x88000000.toInt())
+      applyDefaults()
     }
   }
 
-  override fun snapshotter(widget: View): Snapshotter {
-    // Allow children to wrap.
-    val container = object : FrameLayout(paparazzi.context) {
-      override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(
-          MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-          MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST),
-        )
-      }
-    }.apply {
-      addView(widget)
-    }
-
-    return ViewSnapshotter(paparazzi, container)
-  }
+  override fun snapshotter(widget: View): Snapshotter = ViewSnapshotter(paparazzi, widget)
 }
