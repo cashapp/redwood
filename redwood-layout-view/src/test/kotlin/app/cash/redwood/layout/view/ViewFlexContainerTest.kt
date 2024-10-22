@@ -21,7 +21,6 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
@@ -75,7 +74,7 @@ class ViewFlexContainerTest(
   class ViewTestFlexContainer internal constructor(
     private val delegate: ViewFlexContainer,
   ) : TestFlexContainer<View>,
-    FlexContainer<View> by delegate,
+    YogaFlexContainer<View> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
     private var onScroll: ((Px) -> Unit)? = null

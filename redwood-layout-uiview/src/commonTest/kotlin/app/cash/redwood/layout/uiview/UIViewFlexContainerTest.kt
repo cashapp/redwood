@@ -20,7 +20,6 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
-import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
@@ -82,7 +81,7 @@ class UIViewFlexContainerTest(
     private val delegate: UIViewFlexContainer,
   ) : TestFlexContainer<UIView>,
     ResizableWidget<UIView>,
-    FlexContainer<UIView> by delegate,
+    YogaFlexContainer<UIView> by delegate,
     ChangeListener by delegate {
     private var childCount = 0
 

@@ -27,7 +27,8 @@ import app.cash.redwood.layout.modifier.Shrink as ShrinkModifier
 import app.cash.redwood.layout.modifier.Size as SizeModifier
 import app.cash.redwood.layout.modifier.VerticalAlignment as VerticalAlignmentModifier
 import app.cash.redwood.layout.modifier.Width as WidthModifier
-import app.cash.redwood.layout.widget.FlexContainer
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.yoga.AlignItems
@@ -35,7 +36,9 @@ import app.cash.redwood.yoga.AlignSelf
 import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
 
-internal interface YogaFlexContainer<W : Any> : FlexContainer<W> {
+internal interface YogaFlexContainer<W : Any> :
+  Column<W>,
+  Row<W> {
   val rootNode: Node
   val density: Density
 
@@ -50,11 +53,27 @@ internal interface YogaFlexContainer<W : Any> : FlexContainer<W> {
     }
   }
 
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(horizontalAlignment)
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(horizontalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(verticalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(verticalAlignment)
+  }
+
+  fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     rootNode.alignItems = crossAxisAlignment.toAlignItems()
   }
 
-  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+  fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
   }
 }

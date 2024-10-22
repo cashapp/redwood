@@ -29,7 +29,6 @@ import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.Width
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.FlexContainer
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
@@ -75,7 +74,8 @@ private class HTMLFlexContainer(
   override val value: HTMLDivElement,
   direction: String,
   private val overflowSetter: HTMLDivElement.(String) -> Unit,
-) : FlexContainer<HTMLElement> {
+) : Column<HTMLElement>,
+  Row<HTMLElement> {
   init {
     value.style.display = "flex"
     value.style.flexDirection = direction
@@ -127,11 +127,27 @@ private class HTMLFlexContainer(
     }
   }
 
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(horizontalAlignment)
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(horizontalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(verticalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(verticalAlignment)
+  }
+
+  private fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     value.style.alignItems = crossAxisAlignment.toCss()
   }
 
-  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+  private fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     value.style.justifyContent = mainAxisAlignment.toCss()
   }
 

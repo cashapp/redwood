@@ -30,15 +30,6 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Column : app.
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Column.width|width(app.cash.redwood.layout.api.Constraint){}[0]
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/FlexContainer : app.cash.redwood.layout.widget/Column<#A>, app.cash.redwood.layout.widget/Row<#A> { // app.cash.redwood.layout.widget/FlexContainer|null[0]
-    abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
-    abstract fun mainAxisAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.mainAxisAlignment|mainAxisAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
-    open fun horizontalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
-    open fun horizontalAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
-    open fun verticalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
-    open fun verticalAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/FlexContainer.verticalAlignment|verticalAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
-}
-
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory|null[0]
     abstract fun Box(): app.cash.redwood.layout.widget/Box<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Box|Box(){}[0]
     abstract fun Column(): app.cash.redwood.layout.widget/Column<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Column|Column(){}[0]
