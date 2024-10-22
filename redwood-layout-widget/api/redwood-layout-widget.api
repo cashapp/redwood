@@ -18,15 +18,6 @@ public abstract interface class app/cash/redwood/layout/widget/Column : app/cash
 	public abstract fun width-DyLkt4w (I)V
 }
 
-public abstract interface class app/cash/redwood/layout/widget/FlexContainer : app/cash/redwood/layout/widget/Column, app/cash/redwood/layout/widget/Row {
-	public abstract fun crossAxisAlignment-njEs0f8 (I)V
-	public fun horizontalAlignment-6exqka8 (I)V
-	public fun horizontalAlignment-njEs0f8 (I)V
-	public abstract fun mainAxisAlignment-6exqka8 (I)V
-	public fun verticalAlignment-6exqka8 (I)V
-	public fun verticalAlignment-njEs0f8 (I)V
-}
-
 public abstract interface class app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory {
 	public abstract fun Box ()Lapp/cash/redwood/layout/widget/Box;
 	public abstract fun Column ()Lapp/cash/redwood/layout/widget/Column;
