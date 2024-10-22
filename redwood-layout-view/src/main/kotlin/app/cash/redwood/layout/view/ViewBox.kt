@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.view
 
-import app.cash.redwood.layout.modifier.Margin as RedwoodMargin
 import android.content.Context
 import android.view.View
 import android.view.View.LAYOUT_DIRECTION_LTR
@@ -27,6 +26,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
+import app.cash.redwood.layout.modifier.Margin as RedwoodMargin
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
