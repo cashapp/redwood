@@ -29,9 +29,9 @@ public class ViewRedwoodLayoutWidgetFactory(
 ) : RedwoodLayoutWidgetFactory<View> {
   override fun Box(): Box<View> = ViewBox(context)
 
-  override fun Column(): Column<View> = ViewFlexContainer(context, FlexDirection.Column)
+  override fun Column(): Column<View> = ViewColumn(context)
 
-  override fun Row(): Row<View> = ViewFlexContainer(context, FlexDirection.Row)
+  override fun Row(): Row<View> = ViewRow(context)
 
   override fun Spacer(): Spacer<View> = ViewSpacer(context)
 }
