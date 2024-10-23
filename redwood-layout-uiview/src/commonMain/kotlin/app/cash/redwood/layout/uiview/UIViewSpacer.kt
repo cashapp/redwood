@@ -45,17 +45,17 @@ internal class UIViewSpacer : Spacer<UIView> {
   private fun invalidate() {
     value.setNeedsLayout()
   }
+}
 
-  private inner class SpacerUIView : UIView(cValue { CGRectZero }) {
-    var width = 0.0
-    var height = 0.0
+private class SpacerUIView : UIView(cValue { CGRectZero }) {
+  var width = 0.0
+  var height = 0.0
 
-    override fun intrinsicContentSize(): CValue<CGSize> {
-      return CGSizeMake(width, height)
-    }
+  override fun intrinsicContentSize(): CValue<CGSize> {
+    return CGSizeMake(width, height)
+  }
 
-    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      return CGSizeMake(width, height)
-    }
+  override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+    return CGSizeMake(width, height)
   }
 }
