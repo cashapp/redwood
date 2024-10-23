@@ -298,7 +298,7 @@ private class Measurer {
 
     val left = when {
       horizontalAlignment == CrossAxisAlignment.Center -> {
-        marginLeft + (frameWidth - width) / 2
+        marginLeft + (frameWidth - width - marginWidth) / 2
       }
       alignRight -> {
         (boxMarginStart + frameWidth + boxMarginEnd) - marginRight - width
@@ -308,7 +308,7 @@ private class Measurer {
 
     val top = when (verticalAlignment) {
       CrossAxisAlignment.Center -> {
-        boxMarginTop + marginTop + (frameHeight - height) / 2
+        boxMarginTop + marginTop + (frameHeight - height - marginHeight) / 2
       }
       CrossAxisAlignment.End -> {
         boxMarginTop + frameHeight - marginBottom - height
