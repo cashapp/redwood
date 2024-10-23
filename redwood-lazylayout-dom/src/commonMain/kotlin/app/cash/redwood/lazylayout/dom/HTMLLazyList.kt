@@ -33,10 +33,10 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
-internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
+internal class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
   override var modifier: Modifier = Modifier
 
-  final override val value = document.createElement("div") as HTMLDivElement
+  override val value = document.createElement("div") as HTMLDivElement
 
   private val processor = object : LazyListUpdateProcessor<HTMLElement, HTMLElement>() {
     override fun insertRows(index: Int, count: Int) {
@@ -86,7 +86,7 @@ internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
     value.style.display = "flex"
   }
 
-  final override val items: Widget.Children<HTMLElement> = object : Widget.Children<HTMLElement> by processor.items {
+  override val items: Widget.Children<HTMLElement> = object : Widget.Children<HTMLElement> by processor.items {
     override fun insert(index: Int, widget: Widget<HTMLElement>) {
       processor.items.insert(index, widget)
       intersectionObserver.observe(widget.value)
@@ -108,7 +108,7 @@ internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
     }
   }
 
-  final override val placeholder = processor.placeholder
+  override val placeholder = processor.placeholder
 
   override fun width(width: Constraint) {
     value.style.width = width.toCss()
@@ -162,8 +162,25 @@ internal open class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
 
 internal class HTMLRefreshableLazyList(
   document: Document,
-) : HTMLLazyList(document),
-  RefreshableLazyList<HTMLElement> {
+) : RefreshableLazyList<HTMLElement> {
+  private val delegate = HTMLLazyList(document)
+
+  override val value get() = delegate.value
+  override var modifier by delegate::modifier
+
+  override val placeholder get() = delegate.placeholder
+  override val items get() = delegate.items
+
+  override fun isVertical(isVertical: Boolean) = delegate.isVertical(isVertical)
+  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = delegate.onViewportChanged(onViewportChanged)
+  override fun itemsAfter(itemsAfter: Int) = delegate.itemsAfter(itemsAfter)
+  override fun itemsBefore(itemsBefore: Int) = delegate.itemsBefore(itemsBefore)
+  override fun width(width: Constraint) = delegate.width(width)
+  override fun height(height: Constraint) = delegate.height(height)
+  override fun margin(margin: Margin) = delegate.margin(margin)
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = delegate.scrollItemIndex(scrollItemIndex)
+
   override fun refreshing(refreshing: Boolean) {
   }
 

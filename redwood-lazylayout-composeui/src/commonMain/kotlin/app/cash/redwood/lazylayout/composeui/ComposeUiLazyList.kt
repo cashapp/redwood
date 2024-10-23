@@ -51,9 +51,7 @@ import app.cash.redwood.ui.toPlatformDp
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 @OptIn(ExperimentalMaterialApi::class)
-internal class ComposeUiLazyList :
-  LazyList<@Composable () -> Unit>,
-  RefreshableLazyList<@Composable () -> Unit> {
+internal class ComposeUiLazyList : LazyList<@Composable () -> Unit> {
   private var isVertical by mutableStateOf(false)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
   private var itemsBefore by mutableIntStateOf(0)
@@ -91,11 +89,11 @@ internal class ComposeUiLazyList :
     this.itemsAfter = itemsAfter
   }
 
-  override fun refreshing(refreshing: Boolean) {
+  fun refreshing(refreshing: Boolean) {
     this.isRefreshing = refreshing
   }
 
-  override fun onRefresh(onRefresh: (() -> Unit)?) {
+  fun onRefresh(onRefresh: (() -> Unit)?) {
     this.onRefresh = onRefresh
   }
 
@@ -119,7 +117,7 @@ internal class ComposeUiLazyList :
     this.scrollItemIndex = scrollItemIndex
   }
 
-  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
+  fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
     this.pullRefreshContentColor = Color(pullRefreshContentColor.toLong())
   }
 
@@ -206,4 +204,27 @@ internal class ComposeUiLazyList :
       }
     }
   }
+}
+
+internal class ComposeUiRefreshableLazyList : RefreshableLazyList<@Composable () -> Unit> {
+  private val delegate = ComposeUiLazyList()
+
+  override val value get() = delegate.value
+  override var modifier by delegate::modifier
+
+  override val placeholder get() = delegate.placeholder
+  override val items get() = delegate.items
+
+  override fun isVertical(isVertical: Boolean) = delegate.isVertical(isVertical)
+  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = delegate.onViewportChanged(onViewportChanged)
+  override fun itemsBefore(itemsBefore: Int) = delegate.itemsBefore(itemsBefore)
+  override fun itemsAfter(itemsAfter: Int) = delegate.itemsAfter(itemsAfter)
+  override fun refreshing(refreshing: Boolean) = delegate.refreshing(refreshing)
+  override fun onRefresh(onRefresh: (() -> Unit)?) = delegate.onRefresh(onRefresh)
+  override fun width(width: Constraint) = delegate.width(width)
+  override fun height(height: Constraint) = delegate.height(height)
+  override fun margin(margin: Margin) = delegate.margin(margin)
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = delegate.scrollItemIndex(scrollItemIndex)
+  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) = delegate.pullRefreshContentColor(pullRefreshContentColor)
 }
