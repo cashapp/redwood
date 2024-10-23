@@ -27,11 +27,10 @@ import kotlin.math.min
 
 internal class ViewSpacer(
   context: Context,
-) : View(context),
-  Spacer<View> {
+) : Spacer<View> {
   private val density = Density(context.resources)
 
-  override val value get() = this
+  override val value: View = SpacerView(context)
 
   override var modifier: Modifier = Modifier
 
@@ -44,7 +43,9 @@ internal class ViewSpacer(
     value.minimumHeight = with(density) { height.toPxInt() }
     value.requestLayout()
   }
+}
 
+private class SpacerView(context: Context) : View(context) {
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     setMeasuredDimension(
       getDefaultSizeSpace(suggestedMinimumWidth, widthMeasureSpec),
