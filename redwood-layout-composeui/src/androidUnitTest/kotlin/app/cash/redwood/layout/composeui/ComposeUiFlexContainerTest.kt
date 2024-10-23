@@ -37,7 +37,7 @@ import org.junit.Rule
 
 @Burst
 class ComposeUiFlexContainerTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractFlexContainerTest<@Composable () -> Unit>() {
 
   override val widgetFactory = ComposeUiTestWidgetFactory

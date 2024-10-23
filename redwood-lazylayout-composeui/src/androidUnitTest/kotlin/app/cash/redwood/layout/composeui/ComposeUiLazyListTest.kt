@@ -42,7 +42,7 @@ import org.junit.Rule
 
 @Burst
 class ComposeUiLazyListTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractFlexContainerTest<@Composable () -> Unit>() {
 
   @get:Rule

@@ -100,7 +100,7 @@ enum class ComposeLauncher {
 
 @Burst
 class ChangeListenerTest(
-  private val launcher: ComposeLauncher,
+  private val launcher: ComposeLauncher = ComposeLauncher.Direct,
 ) {
   private fun <T> CoroutineScope.launchComposition(
     widgetSystem: TestSchemaWidgetSystem<WidgetValue>,

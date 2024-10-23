@@ -40,7 +40,7 @@ import org.junit.Rule
 
 @Burst
 class ViewLazyListAsFlexContainerTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractFlexContainerTest<View>() {
 
   @get:Rule

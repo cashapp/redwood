@@ -30,7 +30,7 @@ import org.junit.Rule
 
 @Burst
 class ViewRedwoodViewTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractRedwoodViewTest<View, RedwoodLayout>() {
   @get:Rule
   val paparazzi = Paparazzi(
