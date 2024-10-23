@@ -20,7 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Height
 import app.cash.redwood.layout.modifier.HorizontalAlignment
-import app.cash.redwood.layout.modifier.Margin as ModifierMargin
+import app.cash.redwood.layout.modifier.Margin as RedwoodMargin
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
@@ -28,7 +28,6 @@ import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
@@ -37,6 +36,7 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
+import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -94,6 +94,7 @@ internal class UIViewBox :
     var horizontalAlignment = CrossAxisAlignment.Start
     var verticalAlignment = CrossAxisAlignment.Start
     var sizeListener: ResizableWidget.SizeListener? = null
+    private val measurer = Measurer()
 
     val children = UIViewChildren(
       container = this,
@@ -127,242 +128,187 @@ internal class UIViewBox :
     override fun layoutSubviews() {
       super.layoutSubviews()
 
-      children.widgets.forEach { widget ->
-        layoutWidget(widget)
-      }
-    }
+      measurer.box(
+        boxHorizontalAlignment = horizontalAlignment,
+        boxVerticalAlignment = verticalAlignment,
+        frame = frame,
+      )
 
-    private fun layoutWidget(widget: Widget<UIView>) {
-      val view = widget.value
-
-      // Check for modifier overrides in the children, otherwise default to the Box's alignment values.
-      var itemHorizontalAlignment = horizontalAlignment
-      var itemVerticalAlignment = verticalAlignment
-
-      val frameWidth = frame.useContents { size.width }
-      val frameHeight = frame.useContents { size.height }
-
-      var requestedWidth: CGFloat = Double.NaN
-      var requestedHeight: CGFloat = Double.NaN
-
-      var margin = Margin.Zero
-
-      widget.modifier.forEachScoped { childModifier ->
-        when (childModifier) {
-          is HorizontalAlignment -> {
-            itemHorizontalAlignment = childModifier.alignment
-          }
-
-          is VerticalAlignment -> {
-            itemVerticalAlignment = childModifier.alignment
-          }
-
-          is Width -> with(Density.Default) {
-            requestedWidth = childModifier.width.toPx()
-          }
-
-          is Height -> with(Density.Default) {
-            requestedHeight = childModifier.height.toPx()
-          }
-
-          is Size -> with(Density.Default) {
-            requestedWidth = childModifier.width.toPx()
-            requestedHeight = childModifier.height.toPx()
-          }
-
-          is ModifierMargin -> {
-            margin = maxEachSide(margin, childModifier.margin)
-          }
-        }
-      }
-
-      // Initialize this to the view's width and height before any measurement. Use the frame's
-      // dimensions if the user didn't explicitly specify one. This is the final value for Stretch
-      // alignment.
-      var viewWidth = when {
-        !requestedWidth.isNaN() -> requestedWidth
-        else -> frameWidth
-      }
-      var viewHeight = when {
-        !requestedHeight.isNaN() -> requestedHeight
-        else -> frameHeight
-      }
-
-      // Measure the view if don't have an exact width or height.
-      val mustMeasureWidth = requestedWidth.isNaN() &&
-        itemHorizontalAlignment != CrossAxisAlignment.Stretch
-      val mustMeasureHeight = requestedHeight.isNaN() &&
-        itemVerticalAlignment != CrossAxisAlignment.Stretch
-
-      if (mustMeasureWidth || mustMeasureHeight) {
-        val fittingSize = view.systemLayoutSizeFittingSize(CGSizeMake(viewWidth, viewHeight))
-
-        viewWidth = when {
-          !requestedWidth.isNaN() -> requestedWidth
-          itemHorizontalAlignment == CrossAxisAlignment.Stretch -> frameWidth - margin.width
-          else -> fittingSize.useContents { width }
-        }
-
-        viewHeight = when {
-          !requestedHeight.isNaN() -> requestedHeight
-          itemVerticalAlignment == CrossAxisAlignment.Stretch -> frameHeight - margin.height
-          else -> fittingSize.useContents { height }
-        }
-      }
-
-      // Compute the view's offset.
-      with(Density.Default) {
-        val x = when (itemHorizontalAlignment) {
-          CrossAxisAlignment.Center -> ((frameWidth - viewWidth - margin.width) / 2.0) + margin.start.toPx()
-          CrossAxisAlignment.End -> frameWidth - viewWidth - margin.end.toPx()
-          else -> margin.start.toPx()
-        }
-        val y = when (itemVerticalAlignment) {
-          CrossAxisAlignment.Center -> ((frameHeight - viewHeight - margin.height) / 2.0) + margin.top.toPx()
-          CrossAxisAlignment.End -> frameHeight - viewHeight - margin.bottom.toPx()
-          else -> margin.top.toPx()
-        }
-
-        // Position the view.
-        view.setFrame(CGRectMake(x, y, viewWidth, viewHeight))
+      for (widget in children.widgets) {
+        measurer.measure(widget)
+        measurer.layout(widget)
       }
     }
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-      val zero = CGSizeMake(0.0, 0.0)
+      measurer.box(
+        boxHorizontalAlignment = horizontalAlignment,
+        boxVerticalAlignment = verticalAlignment,
+        frame = frame,
+      )
 
-      val requestedSize = children.widgets.fold(zero) { acc, widget ->
-        maxEachDimension(acc, widget.modifier.requestedSize)
+      var maxWidth = 0.0
+      var maxHeight = 0.0
+      for (widget in children.widgets) {
+        measurer.measure(widget)
+        maxWidth = maxOf(maxWidth, measurer.width + measurer.marginWidth)
+        maxHeight = maxOf(maxHeight, measurer.height + measurer.marginHeight)
       }
 
-      val wrapOrFillSize = when {
-        widthConstraint == Constraint.Wrap || heightConstraint == Constraint.Wrap -> {
-          val wrapSize = children.widgets.fold(zero) { acc, widget ->
-            maxEachDimension(acc, widget.value.sizeThatFits(size) + widget.modifier.margin)
-          }
-
-          CGSizeMake(
-            widthSize = when (widthConstraint) {
-              Constraint.Wrap -> wrapSize
-              else -> size
-            },
-            heightSize = when (heightConstraint) {
-              Constraint.Wrap -> wrapSize
-              else -> size
-            },
-          )
-        }
-
-        // Optimization: Don't call sizeThatFits() if we don't need to.
-        else -> size
-      }
-
-      return maxEachDimension(requestedSize, wrapOrFillSize)
+      return CGSizeMake(maxWidth, maxHeight)
     }
   }
 }
 
 /**
- * Returns the literal size specified by the width, height, size, and margin modifiers.
+ * Measures and lays out one child view at a time.
  *
- * If no size is specified this returns `0.0 x 0.0`.
- *
- * If conflicting sizes are specified this returns the maximum of the values.
+ * This class is mutable and reused to avoid object allocation.
  */
-internal val Modifier.requestedSize: CValue<CGSize>
-  get() {
-    var width = 0.0
-    var height = 0.0
-    var margin = Margin.Zero
+private class Measurer {
+  // Inputs from the box.
+  var boxHorizontalAlignment = CrossAxisAlignment.Start
+  var boxVerticalAlignment = CrossAxisAlignment.Start
 
-    forEachScoped { childModifier ->
-      when (childModifier) {
-        is Width -> with(Density.Default) {
-          width = maxOf(width, childModifier.width.toPx())
-        }
+  // The available space for the child view and its margins.
+  var frameWidth = Double.NaN
+  var frameHeight = Double.NaN
 
-        is Height -> with(Density.Default) {
-          height = maxOf(height, childModifier.height.toPx())
-        }
+  // Inputs from the child widget.
+  var horizontalAlignment = CrossAxisAlignment.Start
+  var verticalAlignment = CrossAxisAlignment.Start
+  var marginStart = 0.0
+  var marginEnd = 0.0
+  var marginTop = 0.0
+  var marginBottom = 0.0
+  var requestedWidth = Double.NaN
+  var requestedHeight = Double.NaN
 
-        is Size -> with(Density.Default) {
-          width = maxOf(width, childModifier.width.toPx())
-          height = maxOf(height, childModifier.height.toPx())
-        }
+  // Measurement results.
+  var width = Double.NaN
+  var height = Double.NaN
 
-        is ModifierMargin -> {
-          margin = maxEachSide(margin, childModifier.margin)
-        }
-      }
+  val marginWidth: CGFloat
+    get() = marginStart + marginEnd
+  val marginHeight: CGFloat
+    get() = marginTop + marginBottom
+
+  /** Configure the enclosing box. */
+  fun box(
+    boxHorizontalAlignment: CrossAxisAlignment,
+    boxVerticalAlignment: CrossAxisAlignment,
+    frame: CValue<CGRect>,
+  ) {
+    this.boxHorizontalAlignment = boxHorizontalAlignment
+    this.boxVerticalAlignment = boxVerticalAlignment
+    frame.useContents {
+      frameWidth = size.width
+      frameHeight = size.height
     }
-
-    return CGSizeMake(width, height) + margin
   }
 
-internal val Modifier.margin: Margin
-  get() {
-    var result = Margin.Zero
+  /** Measure [widget]. Always call [box] first. */
+  fun measure(widget: Widget<UIView>) {
+    this.horizontalAlignment = boxHorizontalAlignment
+    this.verticalAlignment = boxVerticalAlignment
+    this.marginStart = 0.0
+    this.marginEnd = 0.0
+    this.marginTop = 0.0
+    this.marginBottom = 0.0
+    this.requestedWidth = Double.NaN
+    this.requestedHeight = Double.NaN
 
-    forEachScoped {
-      if (it is ModifierMargin) {
-        result = maxEachSide(result, it.margin)
-      }
-    }
-
-    return result
-  }
-
-internal operator fun CValue<CGSize>.plus(margin: Margin): CValue<CGSize> {
-  return useContents {
     with(Density.Default) {
-      CGSizeMake(
-        width = margin.start.toPx() + width + margin.end.toPx(),
-        height = margin.top.toPx() + height + margin.bottom.toPx(),
-      )
+      widget.modifier.forEachScoped { childModifier ->
+        when (childModifier) {
+          is HorizontalAlignment -> horizontalAlignment = childModifier.alignment
+          is VerticalAlignment -> verticalAlignment = childModifier.alignment
+          is Width -> requestedWidth = childModifier.width.toPx()
+          is Height -> requestedHeight = childModifier.height.toPx()
+          is Size -> {
+            requestedWidth = childModifier.width.toPx()
+            requestedHeight = childModifier.height.toPx()
+          }
+
+          is RedwoodMargin -> {
+            with(Density.Default) {
+              marginStart = maxOf(marginStart, childModifier.margin.start.toPx())
+              marginEnd = maxOf(marginEnd, childModifier.margin.end.toPx())
+              marginTop = maxOf(marginTop, childModifier.margin.top.toPx())
+              marginBottom = maxOf(marginBottom, childModifier.margin.bottom.toPx())
+            }
+          }
+        }
+      }
+    }
+
+    val availableWidth = (frameWidth - marginWidth).coerceAtLeast(0.0)
+    val availableHeight = (frameHeight - marginHeight).coerceAtLeast(0.0)
+
+    val fitWidth = when {
+      !requestedWidth.isNaN() -> requestedWidth
+      horizontalAlignment == CrossAxisAlignment.Stretch -> availableWidth
+      else -> availableWidth
+    }
+    val fitHeight = when {
+      !requestedHeight.isNaN() -> requestedHeight
+      verticalAlignment == CrossAxisAlignment.Stretch -> availableHeight
+      else -> availableHeight
+    }
+
+    // Measure the view if don't have an exact width or height.
+    val mustMeasureWidth = requestedWidth.isNaN() &&
+      horizontalAlignment != CrossAxisAlignment.Stretch
+    val mustMeasureHeight = requestedHeight.isNaN() &&
+      verticalAlignment != CrossAxisAlignment.Stretch
+
+    if (!mustMeasureWidth && !mustMeasureHeight) {
+      this.width = fitWidth
+      this.height = fitHeight
+      return
+    }
+
+    val view = widget.value
+    val measuredSize = view.sizeThatFits(CGSizeMake(fitWidth, fitHeight))
+
+    width = when {
+      !requestedWidth.isNaN() -> requestedWidth
+      horizontalAlignment == CrossAxisAlignment.Stretch -> availableWidth
+      else -> measuredSize.useContents { width }
+    }
+
+    height = when {
+      !requestedHeight.isNaN() -> requestedHeight
+      verticalAlignment == CrossAxisAlignment.Stretch -> availableHeight
+      else -> measuredSize.useContents { height }
     }
   }
-}
 
-internal val Margin.width: Double
-  get() = with(Density.Default) { start.toPx() + end.toPx() }
+  fun layout(widget: Widget<UIView>) {
+    val view = widget.value
 
-internal val Margin.height: Double
-  get() = with(Density.Default) { top.toPx() + bottom.toPx() }
+    // Compute the view's offset.
+    val x = when (horizontalAlignment) {
+      CrossAxisAlignment.Center -> {
+        marginStart + (frameWidth - width - marginWidth) / 2.0
+      }
+      CrossAxisAlignment.End -> {
+        frameWidth - marginEnd - width
+      }
+      else -> marginStart
+    }
 
-/** Returns a size that takes the width from [widthSize] and the height from [heightSize]. */
-@Suppress("FunctionName")
-internal fun CGSizeMake(
-  widthSize: CValue<CGSize>,
-  heightSize: CValue<CGSize>,
-): CValue<CGSize> = CGSizeMake(
-  width = widthSize.useContents { width },
-  height = heightSize.useContents { height },
-)
+    val y = when (verticalAlignment) {
+      CrossAxisAlignment.Center -> {
+        marginTop + (frameHeight - height - marginHeight) / 2.0
+      }
+      CrossAxisAlignment.End -> {
+        frameHeight - marginBottom - height
+      }
+      else -> marginTop
+    }
 
-/** Returns the smallest size that wraps both [a] and [b]. */
-internal fun maxEachDimension(a: CValue<CGSize>, b: CValue<CGSize>): CValue<CGSize> {
-  val aWidth: CGFloat
-  val aHeight: CGFloat
-  a.useContents {
-    aWidth = width
-    aHeight = height
+    // Position the view.
+    view.setFrame(CGRectMake(x, y, width, height))
   }
-  val bWidth: CGFloat
-  val bHeight: CGFloat
-  b.useContents {
-    bWidth = width
-    bHeight = height
-  }
-  return CGSizeMake(
-    maxOf(aWidth, bWidth),
-    maxOf(aHeight, bHeight),
-  )
 }
-
-/** Returns a margin that uses the largest of [a] and [b] for each side. */
-internal fun maxEachSide(a: Margin, b: Margin) = Margin(
-  start = maxOf(a.start.value, b.start.value).dp,
-  end = maxOf(a.end.value, b.end.value).dp,
-  top = maxOf(a.top.value, b.top.value).dp,
-  bottom = maxOf(a.bottom.value, b.bottom.value).dp,
-)

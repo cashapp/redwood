@@ -20,10 +20,6 @@ import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
-import app.cash.redwood.snapshot.testing.isEqualTo
-import assertk.assertThat
-import kotlin.test.Test
-import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
@@ -41,35 +37,4 @@ class UIViewBoxTest(
   }
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
-
-  @Test
-  fun maxEachDimension() {
-    assertThat(
-      maxEachDimension(
-        CGSizeMake(5.0, 10.0),
-        CGSizeMake(8.0, 4.0),
-      ),
-    ).isEqualTo(8.0, 10.0)
-
-    assertThat(
-      maxEachDimension(
-        CGSizeMake(8.0, 4.0),
-        CGSizeMake(5.0, 10.0),
-      ),
-    ).isEqualTo(8.0, 10.0)
-
-    assertThat(
-      maxEachDimension(
-        CGSizeMake(8.0, 10.0),
-        CGSizeMake(5.0, 4.0),
-      ),
-    ).isEqualTo(8.0, 10.0)
-
-    assertThat(
-      maxEachDimension(
-        CGSizeMake(5.0, 4.0),
-        CGSizeMake(8.0, 10.0),
-      ),
-    ).isEqualTo(8.0, 10.0)
-  }
 }
