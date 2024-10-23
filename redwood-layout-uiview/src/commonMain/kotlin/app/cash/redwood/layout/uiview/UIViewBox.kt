@@ -341,14 +341,22 @@ internal fun CGSizeMake(
 
 /** Returns the smallest size that wraps both [a] and [b]. */
 internal fun maxEachDimension(a: CValue<CGSize>, b: CValue<CGSize>): CValue<CGSize> {
-  return a@a.useContents {
-    b@b.useContents {
-      CGSizeMake(
-        maxOf(a@width, b@width),
-        maxOf(a@height, b@height),
-      )
-    }
+  val aWidth: CGFloat
+  val aHeight: CGFloat
+  a.useContents {
+    aWidth = width
+    aHeight = height
   }
+  val bWidth: CGFloat
+  val bHeight: CGFloat
+  b.useContents {
+    bWidth = width
+    bHeight = height
+  }
+  return CGSizeMake(
+    maxOf(aWidth, bWidth),
+    maxOf(aHeight, bHeight),
+  )
 }
 
 /** Returns a margin that uses the largest of [a] and [b] for each side. */
