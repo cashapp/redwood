@@ -50,10 +50,51 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.toPlatformDp
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
+internal class ComposeUiLazyList : LazyList<@Composable () -> Unit>() {
+  private val container = ComposeUiLazyContainer()
+
+  override val value get() = container.value
+  override var modifier by container::modifier
+
+  override val placeholder get() = container.placeholder
+  override val items get() = container.items
+
+  override fun isVertical(isVertical: Boolean) = container.isVertical(isVertical)
+  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = container.onViewportChanged(onViewportChanged)
+  override fun itemsBefore(itemsBefore: Int) = container.itemsBefore(itemsBefore)
+  override fun itemsAfter(itemsAfter: Int) = container.itemsAfter(itemsAfter)
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = container.crossAxisAlignment(crossAxisAlignment)
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = container.scrollItemIndex(scrollItemIndex)
+}
+
+internal class ComposeUiRefreshableLazyList : RefreshableLazyList<@Composable () -> Unit>() {
+  private val container = ComposeUiLazyContainer()
+
+  override val value get() = container.value
+  override var modifier by container::modifier
+
+  override val placeholder get() = container.placeholder
+  override val items get() = container.items
+
+  override fun isVertical(isVertical: Boolean) = container.isVertical(isVertical)
+  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = container.onViewportChanged(onViewportChanged)
+  override fun itemsBefore(itemsBefore: Int) = container.itemsBefore(itemsBefore)
+  override fun itemsAfter(itemsAfter: Int) = container.itemsAfter(itemsAfter)
+  override fun refreshing(refreshing: Boolean) = container.refreshing(refreshing)
+  override fun onRefresh(onRefresh: (() -> Unit)?) = container.onRefresh(onRefresh)
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = container.crossAxisAlignment(crossAxisAlignment)
+  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = container.scrollItemIndex(scrollItemIndex)
+  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) = container.pullRefreshContentColor(pullRefreshContentColor)
+}
+
 @OptIn(ExperimentalMaterialApi::class)
-internal class ComposeUiLazyList :
-  LazyList<@Composable () -> Unit>,
-  RefreshableLazyList<@Composable () -> Unit> {
+internal class ComposeUiLazyContainer {
   private var isVertical by mutableStateOf(false)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
   private var itemsBefore by mutableIntStateOf(0)
@@ -69,61 +110,61 @@ internal class ComposeUiLazyList :
 
   internal var testOnlyModifier: Modifier? = null
 
-  override var modifier: RedwoodModifier = RedwoodModifier
+  var modifier: RedwoodModifier = RedwoodModifier
 
-  override val placeholder = ComposeWidgetChildren()
+  val placeholder = ComposeWidgetChildren()
 
-  override val items = ComposeWidgetChildren()
+  val items = ComposeWidgetChildren()
 
-  override fun isVertical(isVertical: Boolean) {
+  fun isVertical(isVertical: Boolean) {
     this.isVertical = isVertical
   }
 
-  override fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
+  fun onViewportChanged(onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) {
     this.onViewportChanged = onViewportChanged
   }
 
-  override fun itemsBefore(itemsBefore: Int) {
+  fun itemsBefore(itemsBefore: Int) {
     this.itemsBefore = itemsBefore
   }
 
-  override fun itemsAfter(itemsAfter: Int) {
+  fun itemsAfter(itemsAfter: Int) {
     this.itemsAfter = itemsAfter
   }
 
-  override fun refreshing(refreshing: Boolean) {
+  fun refreshing(refreshing: Boolean) {
     this.isRefreshing = refreshing
   }
 
-  override fun onRefresh(onRefresh: (() -> Unit)?) {
+  fun onRefresh(onRefresh: (() -> Unit)?) {
     this.onRefresh = onRefresh
   }
 
-  override fun width(width: Constraint) {
+  fun width(width: Constraint) {
     this.width = width
   }
 
-  override fun height(height: Constraint) {
+  fun height(height: Constraint) {
     this.height = height
   }
 
-  override fun margin(margin: Margin) {
+  fun margin(margin: Margin) {
     this.margin = margin
   }
 
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+  fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     this.crossAxisAlignment = crossAxisAlignment
   }
 
-  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
+  fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {
     this.scrollItemIndex = scrollItemIndex
   }
 
-  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
+  fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
     this.pullRefreshContentColor = Color(pullRefreshContentColor.toLong())
   }
 
-  override val value: @Composable () -> Unit = @Composable {
+  val value: @Composable () -> Unit = @Composable {
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
         // TODO If CrossAxisAlignment is Stretch, pass Modifier.fillParentMaxWidth() to child widget.

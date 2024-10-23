@@ -70,7 +70,7 @@ internal class UIViewRow : Row<UIView>() {
 
 internal class UIViewFlexContainer(
   direction: FlexDirection,
-) : YogaFlexContainer<UIView>(),
+) : YogaFlexContainer<UIView>,
   ResizableWidget<UIView>,
   ChangeListener {
   private val yogaView: YogaUIView = YogaUIView().apply {

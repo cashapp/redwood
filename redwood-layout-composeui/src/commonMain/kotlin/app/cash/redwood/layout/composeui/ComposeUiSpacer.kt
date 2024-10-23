@@ -27,7 +27,7 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.dp
 
-internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
+internal class ComposeUiSpacer : Spacer<@Composable () -> Unit>() {
   private var width by mutableStateOf(0.dp)
   private var height by mutableStateOf(0.dp)
 

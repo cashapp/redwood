@@ -36,13 +36,11 @@ import app.cash.redwood.yoga.AlignSelf
 import app.cash.redwood.yoga.JustifyContent
 import app.cash.redwood.yoga.Node
 
-internal interface YogaFlexContainer<W : Any> :
-  Column<W>,
-  Row<W> {
+internal interface YogaFlexContainer<W : Any> {
   val rootNode: Node
   val density: Density
 
-  override fun margin(margin: Margin) {
+  fun margin(margin: Margin) {
     with(rootNode) {
       with(density) {
         marginStart = margin.start.toPx().toFloat()
@@ -51,22 +49,6 @@ internal interface YogaFlexContainer<W : Any> :
         marginBottom = margin.bottom.toPx().toFloat()
       }
     }
-  }
-
-  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
-    mainAxisAlignment(horizontalAlignment)
-  }
-
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
-    crossAxisAlignment(horizontalAlignment)
-  }
-
-  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
-    mainAxisAlignment(verticalAlignment)
-  }
-
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
-    crossAxisAlignment(verticalAlignment)
   }
 
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {

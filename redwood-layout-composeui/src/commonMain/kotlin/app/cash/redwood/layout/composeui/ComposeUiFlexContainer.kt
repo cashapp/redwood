@@ -46,9 +46,12 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
@@ -56,14 +59,46 @@ import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import app.cash.redwood.yoga.isHorizontal
 
+internal class ComposeUiColumn : Column<@Composable () -> Unit>() {
+  private val container = ComposeUiFlexContainer(FlexDirection.Row)
+
+  override val value get() = container.value
+  override var modifier by container::modifier
+  override val children get() = container.children
+
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun overflow(overflow: Overflow) = container.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) = container.mainAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
+}
+
+internal class ComposeUiRow : Row<@Composable () -> Unit>() {
+  private val container = ComposeUiFlexContainer(FlexDirection.Row)
+
+  override val value get() = container.value
+  override var modifier by container::modifier
+  override val children get() = container.children
+
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun overflow(overflow: Overflow) = container.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) = container.mainAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
+}
+
 internal class ComposeUiFlexContainer(
   private val flexDirection: FlexDirection,
 ) : YogaFlexContainer<@Composable () -> Unit> {
   override val rootNode = Node().apply {
     flexDirection = this@ComposeUiFlexContainer.flexDirection
   }
-  override val children = ComposeWidgetChildren()
-  override var modifier: RedwoodModifier = RedwoodModifier
+  val children = ComposeWidgetChildren()
+  var modifier: RedwoodModifier = RedwoodModifier
 
   private var recomposeTick by mutableIntStateOf(0)
   private var width by mutableStateOf(Constraint.Wrap)
@@ -76,11 +111,11 @@ internal class ComposeUiFlexContainer(
   internal var testOnlyModifier: Modifier? = null
   internal var scrollState: ScrollState? = null
 
-  override fun width(width: Constraint) {
+  fun width(width: Constraint) {
     this.width = width
   }
 
-  override fun height(height: Constraint) {
+  fun height(height: Constraint) {
     this.height = height
   }
 
@@ -88,11 +123,11 @@ internal class ComposeUiFlexContainer(
     this.margin = margin
   }
 
-  override fun overflow(overflow: Overflow) {
+  fun overflow(overflow: Overflow) {
     this.overflow = overflow
   }
 
-  override fun onScroll(onScroll: ((Px) -> Unit)?) {
+  fun onScroll(onScroll: ((Px) -> Unit)?) {
     this.onScroll = onScroll
   }
 
@@ -110,7 +145,7 @@ internal class ComposeUiFlexContainer(
     recomposeTick++
   }
 
-  override val value: @Composable () -> Unit = @Composable {
+  val value: @Composable () -> Unit = @Composable {
     Layout(
       content = {
         // Observe this so we can manually trigger recomposition.
