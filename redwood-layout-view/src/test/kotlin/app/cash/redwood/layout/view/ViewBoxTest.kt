@@ -30,7 +30,7 @@ import org.junit.Rule
 
 @Burst
 class ViewBoxTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractBoxTest<View>() {
 
   @get:Rule

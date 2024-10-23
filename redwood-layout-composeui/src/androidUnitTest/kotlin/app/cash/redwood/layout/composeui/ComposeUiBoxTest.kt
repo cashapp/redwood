@@ -28,7 +28,7 @@ import org.junit.Rule
 
 @Burst
 class ComposeUiBoxTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractBoxTest<@Composable () -> Unit>() {
 
   @get:Rule

@@ -34,7 +34,7 @@ import org.junit.Rule
 
 @Burst
 class ViewFlexContainerTest(
-  layoutDirection: LayoutDirection,
+  layoutDirection: LayoutDirection = LayoutDirection.LTR,
 ) : AbstractFlexContainerTest<View>() {
 
   @get:Rule
