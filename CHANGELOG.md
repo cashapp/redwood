@@ -13,6 +13,7 @@ Changed:
 Fixed:
 - Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
 - Fix inconsistencies between iOS and Android for `Column` and `Row` layouts.
+- Correctly update the layout when a Box's child's modifiers are removed.
 
 Breaking:
 - Replace `CodeListener` with new functions in `RedwoodView`. This puts the loading/error/ready state with the UI that displays that state.
