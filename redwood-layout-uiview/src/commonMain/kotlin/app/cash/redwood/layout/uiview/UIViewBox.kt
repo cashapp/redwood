@@ -41,7 +41,6 @@ import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
-import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIView
 import platform.darwin.NSInteger
 
@@ -67,14 +66,7 @@ internal class UIViewBox :
   }
 
   override fun margin(margin: Margin) {
-    value.layoutMargins = with(Density.Default) {
-      UIEdgeInsetsMake(
-        top = margin.top.toPx(),
-        left = margin.start.toPx(),
-        bottom = margin.bottom.toPx(),
-        right = margin.end.toPx(),
-      )
-    }
+    value.margin = margin
     value.invalidateSize()
   }
 
@@ -91,6 +83,7 @@ internal class UIViewBox :
   internal class View : UIView(CGRectZero.readValue()) {
     var widthConstraint = Constraint.Wrap
     var heightConstraint = Constraint.Wrap
+    var margin: Margin = Margin.Zero
     var horizontalAlignment = CrossAxisAlignment.Start
     var verticalAlignment = CrossAxisAlignment.Start
     var sizeListener: ResizableWidget.SizeListener? = null
@@ -129,9 +122,11 @@ internal class UIViewBox :
       super.layoutSubviews()
 
       measurer.box(
+        boxDensity = Density.Default,
         boxHorizontalAlignment = horizontalAlignment,
         boxVerticalAlignment = verticalAlignment,
-        frame = frame,
+        boxMargin = margin,
+        boxFrame = frame,
       )
 
       for (widget in children.widgets) {
@@ -142,9 +137,11 @@ internal class UIViewBox :
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
       measurer.box(
+        boxDensity = Density.Default,
         boxHorizontalAlignment = horizontalAlignment,
         boxVerticalAlignment = verticalAlignment,
-        frame = frame,
+        boxMargin = margin,
+        boxFrame = frame,
       )
 
       var maxWidth = 0.0
@@ -167,8 +164,13 @@ internal class UIViewBox :
  */
 private class Measurer {
   // Inputs from the box.
+  var boxDensity = Density.Default
   var boxHorizontalAlignment = CrossAxisAlignment.Start
   var boxVerticalAlignment = CrossAxisAlignment.Start
+  var boxMarginStart = 0.0
+  var boxMarginEnd = 0.0
+  var boxMarginTop = 0.0
+  var boxMarginBottom = 0.0
 
   // The available space for the child view and its margins.
   var frameWidth = Double.NaN
@@ -195,15 +197,24 @@ private class Measurer {
 
   /** Configure the enclosing box. */
   fun box(
+    boxDensity: Density,
     boxHorizontalAlignment: CrossAxisAlignment,
     boxVerticalAlignment: CrossAxisAlignment,
-    frame: CValue<CGRect>,
+    boxMargin: Margin,
+    boxFrame: CValue<CGRect>,
   ) {
+    this.boxDensity = boxDensity
     this.boxHorizontalAlignment = boxHorizontalAlignment
     this.boxVerticalAlignment = boxVerticalAlignment
-    frame.useContents {
-      frameWidth = size.width
-      frameHeight = size.height
+    with(boxDensity) {
+      boxMarginStart = boxMargin.start.toPx()
+      boxMarginEnd = boxMargin.end.toPx()
+      boxMarginTop = boxMargin.top.toPx()
+      boxMarginBottom = boxMargin.bottom.toPx()
+    }
+    boxFrame.useContents {
+      frameWidth = (size.width - boxMarginStart - boxMarginEnd).coerceAtLeast(0.0)
+      frameHeight = (size.height - boxMarginTop - boxMarginBottom).coerceAtLeast(0.0)
     }
   }
 
@@ -218,7 +229,7 @@ private class Measurer {
     this.requestedWidth = Double.NaN
     this.requestedHeight = Double.NaN
 
-    with(Density.Default) {
+    with(boxDensity) {
       widget.modifier.forEachScoped { childModifier ->
         when (childModifier) {
           is HorizontalAlignment -> horizontalAlignment = childModifier.alignment
@@ -290,22 +301,22 @@ private class Measurer {
     // Compute the view's offset.
     val x = when (horizontalAlignment) {
       CrossAxisAlignment.Center -> {
-        marginStart + (frameWidth - width - marginWidth) / 2.0
+        boxMarginStart + marginStart + (frameWidth - width - marginWidth) / 2.0
       }
       CrossAxisAlignment.End -> {
-        frameWidth - marginEnd - width
+        (boxMarginStart + frameWidth) - marginEnd - width
       }
-      else -> marginStart
+      else -> boxMarginStart + marginStart
     }
 
     val y = when (verticalAlignment) {
       CrossAxisAlignment.Center -> {
-        marginTop + (frameHeight - height - marginHeight) / 2.0
+        boxMarginTop + marginTop + (frameHeight - height - marginHeight) / 2.0
       }
       CrossAxisAlignment.End -> {
-        frameHeight - marginBottom - height
+        boxMarginTop + frameHeight - marginBottom - height
       }
-      else -> marginTop
+      else -> boxMarginTop + marginTop
     }
 
     // Position the view.
