@@ -34,7 +34,6 @@ import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
-import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -85,7 +84,6 @@ class ComposeUiLazyListTest(
     // Work around https://youtrack.jetbrains.com/issue/KT-68850
     override val value: @Composable () -> Unit get() = delegate.value
 
-    private var childCount = 0
     private var onScroll: ((Px) -> Unit)? = null
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
@@ -109,20 +107,6 @@ class ComposeUiLazyListTest(
     }
 
     override fun overflow(overflow: Overflow) {
-    }
-
-    override fun add(widget: Widget<@Composable () -> Unit>) {
-      addAt(childCount, widget)
-    }
-
-    override fun addAt(index: Int, widget: Widget<@Composable () -> Unit>) {
-      delegate.items.insert(index, widget)
-      childCount++
-    }
-
-    override fun removeAt(index: Int) {
-      delegate.items.remove(index = index, count = 1)
-      childCount--
     }
 
     override fun onEndChanges() {

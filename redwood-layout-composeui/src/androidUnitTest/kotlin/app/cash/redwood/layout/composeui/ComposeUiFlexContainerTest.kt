@@ -28,7 +28,6 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
-import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -72,8 +71,6 @@ class ComposeUiFlexContainerTest(
     private val delegate: ComposeUiFlexContainer,
   ) : TestFlexContainer<@Composable () -> Unit>,
     YogaFlexContainer<@Composable () -> Unit> by delegate {
-    private var childCount = 0
-
     override val children: ComposeWidgetChildren = delegate.children
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
@@ -90,20 +87,6 @@ class ComposeUiFlexContainerTest(
       runBlocking {
         delegate.scrollState?.scrollTo(offset.value.toInt())
       }
-    }
-
-    override fun add(widget: Widget<@Composable () -> Unit>) {
-      addAt(childCount, widget)
-    }
-
-    override fun addAt(index: Int, widget: Widget<@Composable () -> Unit>) {
-      delegate.children.insert(index, widget)
-      childCount++
-    }
-
-    override fun removeAt(index: Int) {
-      delegate.children.remove(index = index, count = 1)
-      childCount--
     }
 
     override fun onEndChanges() {

@@ -27,7 +27,6 @@ import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
-import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import org.junit.Rule
@@ -76,7 +75,6 @@ class ViewFlexContainerTest(
   ) : TestFlexContainer<View>,
     YogaFlexContainer<View> by delegate,
     ChangeListener by delegate {
-    private var childCount = 0
     private var onScroll: ((Px) -> Unit)? = null
 
     override val children: ViewGroupChildren = delegate.children
@@ -87,20 +85,6 @@ class ViewFlexContainerTest(
 
     override fun scroll(offset: Px) {
       onScroll?.invoke(offset)
-    }
-
-    override fun add(widget: Widget<View>) {
-      addAt(childCount, widget)
-    }
-
-    override fun addAt(index: Int, widget: Widget<View>) {
-      delegate.children.insert(index, widget)
-      childCount++
-    }
-
-    override fun removeAt(index: Int) {
-      delegate.children.remove(index = index, count = 1)
-      childCount--
     }
   }
 }
