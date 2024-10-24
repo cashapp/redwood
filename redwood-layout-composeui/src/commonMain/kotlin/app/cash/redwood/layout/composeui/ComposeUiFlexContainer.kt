@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.layout.composeui
 
+import app.cash.redwood.Modifier as RedwoodModifier
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,11 +42,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
@@ -55,6 +57,38 @@ import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import app.cash.redwood.yoga.isHorizontal
+
+internal class ComposeUiColumn : Column<@Composable () -> Unit> {
+  private val container = ComposeUiFlexContainer(FlexDirection.Row)
+
+  override val value get() = container.value
+  override var modifier by container::modifier
+  override val children get() = container.children
+
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun overflow(overflow: Overflow) = container.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) = container.mainAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
+}
+
+internal class ComposeUiRow : Row<@Composable () -> Unit> {
+  private val container = ComposeUiFlexContainer(FlexDirection.Row)
+
+  override val value get() = container.value
+  override var modifier by container::modifier
+  override val children get() = container.children
+
+  override fun width(width: Constraint) = container.width(width)
+  override fun height(height: Constraint) = container.height(height)
+  override fun margin(margin: Margin) = container.margin(margin)
+  override fun overflow(overflow: Overflow) = container.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) = container.mainAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
+}
 
 internal class ComposeUiFlexContainer(
   private val flexDirection: FlexDirection,
