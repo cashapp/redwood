@@ -24,12 +24,13 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
+import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.Widget
-import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import kotlinx.coroutines.runBlocking
@@ -52,14 +53,14 @@ class ComposeUiFlexContainerTest(
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
-  ): ComposeTestFlexContainer {
+  ): TestFlexContainer<@Composable () -> Unit> {
     return ComposeTestFlexContainer(direction, backgroundColor)
       .apply { applyDefaults() }
   }
 
-  override fun row() = flexContainer(FlexDirection.Row)
+  override fun row() = ComposeUiRedwoodLayoutWidgetFactory().Row()
 
-  override fun column() = flexContainer(FlexDirection.Column)
+  override fun column() = ComposeUiRedwoodLayoutWidgetFactory().Column()
 
   override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
     // TODO: honor backgroundColor.
@@ -74,7 +75,15 @@ class ComposeUiFlexContainerTest(
     YogaFlexContainer<@Composable () -> Unit> by delegate {
     private var childCount = 0
 
-    override val children: ComposeWidgetChildren = delegate.children
+    override val value get() = delegate.value
+    override var modifier by delegate::modifier
+
+    override val children get() = delegate.children
+
+    override fun width(width: Constraint) = delegate.width(width)
+    override fun height(height: Constraint) = delegate.height(height)
+
+    override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiFlexContainer(direction).apply {
