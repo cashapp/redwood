@@ -83,7 +83,6 @@ class ViewLazyListAsFlexContainerTest(
   ) : TestFlexContainer<View>,
     LazyList<View> by delegate,
     ChangeListener by delegate {
-    private var childCount = 0
     private var onScroll: ((Px) -> Unit)? = null
 
     constructor(context: Context, direction: FlexDirection, backgroundColor: Int) : this(
@@ -107,20 +106,6 @@ class ViewLazyListAsFlexContainerTest(
     }
 
     override fun overflow(overflow: Overflow) {
-    }
-
-    override fun add(widget: Widget<View>) {
-      addAt(childCount, widget)
-    }
-
-    override fun addAt(index: Int, widget: Widget<View>) {
-      delegate.items.insert(index, widget)
-      childCount++
-    }
-
-    override fun removeAt(index: Int) {
-      delegate.items.remove(index = index, count = 1)
-      childCount--
     }
   }
 }

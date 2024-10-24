@@ -83,8 +83,6 @@ class UIViewFlexContainerTest(
     ResizableWidget<UIView>,
     YogaFlexContainer<UIView> by delegate,
     ChangeListener by delegate {
-    private var childCount = 0
-
     override var sizeListener: SizeListener? by delegate::sizeListener
 
     override val children: Widget.Children<UIView> = delegate.children
@@ -99,20 +97,6 @@ class UIViewFlexContainerTest(
 
     override fun scroll(offset: Px) {
       (delegate.value as UIScrollView).setContentOffset(cValue { y = offset.value }, false)
-    }
-
-    override fun add(widget: Widget<UIView>) {
-      addAt(childCount, widget)
-    }
-
-    override fun addAt(index: Int, widget: Widget<UIView>) {
-      delegate.children.insert(index, widget)
-      childCount++
-    }
-
-    override fun removeAt(index: Int) {
-      delegate.children.remove(index = index, count = 1)
-      childCount--
     }
   }
 

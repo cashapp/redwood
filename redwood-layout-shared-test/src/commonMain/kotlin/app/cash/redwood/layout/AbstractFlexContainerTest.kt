@@ -63,6 +63,18 @@ abstract class AbstractFlexContainerTest<T : Any> {
     onScroll(null)
   }
 
+  protected fun <T : Any> TestFlexContainer<T>.add(widget: Widget<T>) {
+    addAt(children.widgets.size, widget)
+  }
+
+  protected fun <T : Any> TestFlexContainer<T>.addAt(index: Int, widget: Widget<T>) {
+    children.insert(index, widget)
+  }
+
+  protected fun <T : Any> TestFlexContainer<T>.removeAt(index: Int) {
+    children.remove(index, 1)
+  }
+
   /** Returns a non-lazy flex container row, even if the test is for a LazyList. */
   abstract fun row(): Row<T>
 
@@ -959,9 +971,6 @@ interface TestFlexContainer<T : Any> :
   fun overflow(overflow: Overflow)
   fun onScroll(onScroll: ((Px) -> Unit)?)
   fun scroll(offset: Px)
-  fun add(widget: Widget<T>)
-  fun addAt(index: Int, widget: Widget<T>)
-  fun removeAt(index: Int)
 }
 
 private val movies = listOf(
