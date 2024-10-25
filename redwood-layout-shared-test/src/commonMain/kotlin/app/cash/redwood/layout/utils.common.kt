@@ -31,11 +31,6 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import kotlin.test.assertTrue
 
-/** We don't have assume() on kotlin.test. Tests that fail here should be skipped instead. */
-fun assumeTrue(b: Boolean) {
-  assertTrue(b)
-}
-
 internal data class CrossAxisAlignmentImpl(
   override val alignment: CrossAxisAlignment,
 ) : HorizontalAlignment,

@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.layout
 
+import app.cash.burst.Burst
+import app.cash.burst.burstValues
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -40,6 +42,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Burst
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract val widgetFactory: TestWidgetFactory<T>
 
@@ -119,62 +122,20 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   abstract fun snapshotter(widget: T): Snapshotter
 
-  @Test fun testEmptyLayout_Column() {
-    emptyLayout(FlexDirection.Column)
-  }
-
-  @Test fun testEmptyLayout_Row() {
-    emptyLayout(FlexDirection.Row)
-  }
-
-  private fun emptyLayout(
-    flexDirection: FlexDirection,
+  @Test fun testEmptyLayout(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.onEndChanges()
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun testLayoutWithConstraints_Column_Wrap_Wrap() {
-    layoutWithConstraints(FlexDirection.Column, Constraint.Wrap, Constraint.Wrap)
-  }
-
-  @Test fun testLayoutWithConstraints_Column_Wrap_Fill() {
-    layoutWithConstraints(FlexDirection.Column, Constraint.Wrap, Constraint.Fill)
-  }
-
-  @Test fun testLayoutWithConstraints_Column_Fill_Wrap() {
-    layoutWithConstraints(FlexDirection.Column, Constraint.Fill, Constraint.Wrap)
-  }
-
-  @Test fun testLayoutWithConstraints_Column_Fill_Fill() {
-    layoutWithConstraints(FlexDirection.Column, Constraint.Fill, Constraint.Fill)
-  }
-
-  @Test fun testLayoutWithConstraints_Row_Wrap_Wrap() {
-    layoutWithConstraints(FlexDirection.Row, Constraint.Wrap, Constraint.Wrap)
-  }
-
-  @Test fun testLayoutWithConstraints_Row_Wrap_Fill() {
-    layoutWithConstraints(FlexDirection.Row, Constraint.Wrap, Constraint.Fill)
-  }
-
-  @Test fun testLayoutWithConstraints_Row_Fill_Wrap() {
-    layoutWithConstraints(FlexDirection.Row, Constraint.Fill, Constraint.Wrap)
-  }
-
-  @Test fun testLayoutWithConstraints_Row_Fill_Fill() {
-    layoutWithConstraints(FlexDirection.Row, Constraint.Fill, Constraint.Fill)
-  }
-
-  private fun layoutWithConstraints(
-    flexDirection: FlexDirection,
-    width: Constraint,
-    height: Constraint,
+  @Test fun testLayoutWithConstraints(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
+    width: Constraint = burstValues(Constraint.Wrap, Constraint.Fill),
+    height: Constraint = burstValues(Constraint.Wrap, Constraint.Fill),
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
@@ -190,18 +151,9 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun testShortLayout_Column() {
-    shortLayout(FlexDirection.Column)
-  }
-
-  @Test fun testShortLayout_Row() {
-    shortLayout(FlexDirection.Row)
-  }
-
-  private fun shortLayout(
-    flexDirection: FlexDirection,
+  @Test fun testShortLayout(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
@@ -211,18 +163,9 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun testLongLayout_Column() {
-    longLayout(FlexDirection.Column)
-  }
-
-  @Test fun testLongLayout_Row() {
-    longLayout(FlexDirection.Row)
-  }
-
-  private fun longLayout(
-    flexDirection: FlexDirection,
+  @Test fun testLongLayout(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column)
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
@@ -232,18 +175,9 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun testLayoutWithMarginAndDifferentAlignments_Column() {
-    layoutWithMarginAndDifferentAlignments(FlexDirection.Column)
-  }
-
-  @Test fun testLayoutWithMarginAndDifferentAlignments_Row() {
-    layoutWithMarginAndDifferentAlignments(FlexDirection.Row)
-  }
-
-  private fun layoutWithMarginAndDifferentAlignments(
-    flexDirection: FlexDirection,
+  @Test fun testLayoutWithMarginAndDifferentAlignments(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column)
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -261,43 +195,15 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(container.value).snapshot()
   }
 
-  @Test fun testLayoutWithCrossAxisAlignment_Column_Start() {
-    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.Start)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Column_Center() {
-    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.Center)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Column_End() {
-    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.End)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Column_Stretch() {
-    layoutWithCrossAxisAlignment(FlexDirection.Column, CrossAxisAlignment.Stretch)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Row_Start() {
-    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.Start)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Row_Center() {
-    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.Center)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Row_End() {
-    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.End)
-  }
-
-  @Test fun testLayoutWithCrossAxisAlignment_Row_Stretch() {
-    layoutWithCrossAxisAlignment(FlexDirection.Row, CrossAxisAlignment.Stretch)
-  }
-
-  private fun layoutWithCrossAxisAlignment(
-    flexDirection: FlexDirection,
-    crossAxisAlignment: CrossAxisAlignment,
+  @Test fun testLayoutWithCrossAxisAlignment(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
+    crossAxisAlignment: CrossAxisAlignment = burstValues(
+      CrossAxisAlignment.Start,
+      CrossAxisAlignment.Center,
+      CrossAxisAlignment.End,
+      CrossAxisAlignment.Stretch,
+    ),
   ) {
-    assumeTrue(flexDirection in listOf(FlexDirection.Row, FlexDirection.Column))
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -325,22 +231,13 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("FlexEnd")
   }
 
-  @Test fun testColumnWithMainAxisAlignment_Center() {
-    columnWithMainAxisAlignment(MainAxisAlignment.Center)
-  }
-
-  @Test fun testColumnWithMainAxisAlignment_SpaceBetween() {
-    columnWithMainAxisAlignment(MainAxisAlignment.SpaceBetween)
-  }
-
-  @Test fun testColumnWithMainAxisAlignment_SpaceAround() {
-    columnWithMainAxisAlignment(MainAxisAlignment.SpaceAround)
-  }
-
-  private fun columnWithMainAxisAlignment(
-    mainAxisAlignment: MainAxisAlignment,
+  @Test fun testColumnWithMainAxisAlignment(
+    mainAxisAlignment: MainAxisAlignment = burstValues(
+      MainAxisAlignment.Center,
+      MainAxisAlignment.SpaceBetween,
+      MainAxisAlignment.SpaceAround,
+    ),
   ) {
-    assumeTrue(mainAxisAlignment in listOf(MainAxisAlignment.Center, MainAxisAlignment.SpaceBetween, MainAxisAlignment.SpaceAround))
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)

@@ -5,6 +5,8 @@ redwoodBuild {
   sharedSnapshotTests()
 }
 
+apply plugin: 'app.cash.burst'
+
 kotlin {
   sourceSets {
     commonMain {
@@ -17,6 +19,7 @@ kotlin {
         api projects.redwoodWidget
         api projects.redwoodYoga
         api libs.kotlin.test
+        implementation libs.burst
       }
     }
     jvmMain {
