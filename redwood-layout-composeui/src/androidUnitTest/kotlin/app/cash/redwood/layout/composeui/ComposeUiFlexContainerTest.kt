@@ -24,11 +24,14 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
+import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
-import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import kotlinx.coroutines.runBlocking
@@ -51,18 +54,26 @@ class ComposeUiFlexContainerTest(
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
-  ): ComposeTestFlexContainer {
+  ): TestFlexContainer<@Composable () -> Unit> {
     return ComposeTestFlexContainer(direction, backgroundColor)
-      .apply { applyDefaults() }
+      .apply { (this as TestFlexContainer<*>).applyDefaults() }
   }
 
-  override fun row() = flexContainer(FlexDirection.Row)
+  override fun row(): Row<@Composable () -> Unit> = ComposeUiRow()
+    .apply {
+      container.testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
+      applyDefaults()
+    }
 
-  override fun column() = flexContainer(FlexDirection.Column)
+  override fun column(): Column<@Composable () -> Unit> = ComposeUiColumn()
+    .apply {
+      container.testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
+      applyDefaults()
+    }
 
   override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
     // TODO: honor backgroundColor.
-    return ComposeUiRedwoodLayoutWidgetFactory().Spacer()
+    return ComposeUiSpacer()
   }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
@@ -71,7 +82,6 @@ class ComposeUiFlexContainerTest(
     private val delegate: ComposeUiFlexContainer,
   ) : TestFlexContainer<@Composable () -> Unit>,
     YogaFlexContainer<@Composable () -> Unit> by delegate {
-    override val children: ComposeWidgetChildren = delegate.children
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiFlexContainer(direction).apply {
@@ -79,9 +89,15 @@ class ComposeUiFlexContainerTest(
       },
     )
 
-    override fun onScroll(onScroll: ((Px) -> Unit)?) {
-      delegate.onScroll(onScroll)
-    }
+    override val value get() = delegate.value
+    override var modifier by delegate::modifier
+
+    override val children get() = delegate.children
+
+    override fun width(width: Constraint) = delegate.width(width)
+    override fun height(height: Constraint) = delegate.height(height)
+    override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
+    override fun onScroll(onScroll: ((Px) -> Unit)?) = delegate.onScroll(onScroll)
 
     override fun scroll(offset: Px) {
       runBlocking {

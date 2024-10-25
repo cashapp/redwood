@@ -62,7 +62,7 @@ class UIViewFlexContainerTest(
         }
       }
 
-      applyDefaults()
+      (this as TestFlexContainer<*>).applyDefaults()
     }
   }
 

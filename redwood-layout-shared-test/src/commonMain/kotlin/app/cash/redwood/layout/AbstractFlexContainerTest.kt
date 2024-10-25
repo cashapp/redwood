@@ -43,9 +43,11 @@ import kotlin.test.assertTrue
 abstract class AbstractFlexContainerTest<T : Any> {
   abstract val widgetFactory: TestWidgetFactory<T>
 
+  protected val defaultBackgroundColor = argb(51, 0, 0, 255)
+
   abstract fun flexContainer(
     direction: FlexDirection,
-    backgroundColor: Int = argb(51, 0, 0, 255),
+    backgroundColor: Int = defaultBackgroundColor,
   ): TestFlexContainer<T>
 
   /**
@@ -60,6 +62,36 @@ abstract class AbstractFlexContainerTest<T : Any> {
     overflow(Overflow.Clip)
     crossAxisAlignment(CrossAxisAlignment.Start)
     mainAxisAlignment(MainAxisAlignment.Start)
+    onScroll(null)
+  }
+
+  /**
+   * Yoga node’s default values for properties like alignment are different from Redwood's default
+   * values, so we explicitly apply those defaults here. This is only necessary in tests; in
+   * production the framework explicitly sets every property.
+   */
+  protected fun Row<*>.applyDefaults() {
+    width(Constraint.Wrap)
+    height(Constraint.Wrap)
+    margin(Margin.Zero)
+    overflow(Overflow.Clip)
+    verticalAlignment(CrossAxisAlignment.Start)
+    horizontalAlignment(MainAxisAlignment.Start)
+    onScroll(null)
+  }
+
+  /**
+   * Yoga node’s default values for properties like alignment are different from Redwood's default
+   * values, so we explicitly apply those defaults here. This is only necessary in tests; in
+   * production the framework explicitly sets every property.
+   */
+  protected fun Column<*>.applyDefaults() {
+    width(Constraint.Wrap)
+    height(Constraint.Wrap)
+    margin(Margin.Zero)
+    overflow(Overflow.Clip)
+    horizontalAlignment(CrossAxisAlignment.Start)
+    verticalAlignment(MainAxisAlignment.Start)
     onScroll(null)
   }
 
