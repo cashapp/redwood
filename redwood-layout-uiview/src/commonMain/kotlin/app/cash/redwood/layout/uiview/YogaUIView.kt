@@ -11,6 +11,7 @@ import app.cash.redwood.ui.Px
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
+import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
@@ -140,12 +141,15 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
   override fun scrollViewDidScroll(scrollView: UIScrollView) {
     val onScroll = onScroll
     if (onScroll != null) {
+      val size = scrollView.bounds.useContents {
+        if (isColumn()) size.height else size.width
+      }
       val max = scrollView.contentSize.useContents {
         if (isColumn()) height else width
       }
       val offset = scrollView.contentOffset.useContents {
         if (isColumn()) y else x
-      }.coerceIn(minimumValue = 0.0, maximumValue = max)
+      }.coerceIn(minimumValue = 0.0, maximumValue = max(0.0, max - size))
       onScroll(Px(offset))
     }
   }
