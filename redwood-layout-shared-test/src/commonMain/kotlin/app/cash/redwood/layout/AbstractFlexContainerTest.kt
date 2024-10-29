@@ -164,7 +164,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testLongLayout(
-    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column)
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
   ) {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
@@ -176,7 +176,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test fun testLayoutWithMarginAndDifferentAlignments(
-    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column)
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
   ) {
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
