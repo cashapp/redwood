@@ -24,7 +24,7 @@ open class KotlinHostingXCTestCase<KotlinTest>: KotlinHostingXCTestCaseHelper wh
                 for i in 0..<Int(methodCount) {
                     let selector = method_getName(methodList[i])
                     let selectorName = NSStringFromSelector(selector)
-                    if selectorName.hasPrefix("test") {
+                    if selectorName.hasPrefix("test") && !selectorName.contains(":") {
                         let kotlinTest = initTest(name: selectorName)
                         createTestMethod(target: kotlinTest, selector: selector)
                     }
