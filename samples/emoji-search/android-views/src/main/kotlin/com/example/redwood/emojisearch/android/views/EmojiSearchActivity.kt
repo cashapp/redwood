@@ -21,13 +21,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedDispatcher
 import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
+import app.cash.redwood.treehouse.Crashed
+import app.cash.redwood.treehouse.DynamicContentWidgetFactory
 import app.cash.redwood.treehouse.EventListener
+import app.cash.redwood.treehouse.Loading
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
@@ -50,9 +52,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okio.FileSystem
@@ -94,46 +94,22 @@ class EmojiSearchActivity : ComponentActivity() {
       )
     }
 
-    treehouseLayout = EmojiSearchTreehouseLayout(this, widgetSystem, onBackPressedDispatcher, scope)
-      .apply {
-        treehouseContentSource.bindWhenReady(this, treehouseApp)
-      }
+    treehouseLayout = TreehouseLayout(
+      context = this,
+      widgetSystem = widgetSystem,
+      dynamicContentWidgetFactory = EmojiSearchDynamicContentWidgetFactory(context),
+      androidOnBackPressedDispatcher = onBackPressedDispatcher,
+    ).apply {
+      treehouseContentSource.bindWhenReady(this, treehouseApp)
+    }
     setContentView(treehouseLayout)
   }
 
-  private class EmojiSearchTreehouseLayout(
-    context: Context,
-    widgetSystem: WidgetSystem<View>,
-    androidOnBackPressedDispatcher: OnBackPressedDispatcher,
-    private val scope: CoroutineScope,
-  ) : TreehouseLayout(context, widgetSystem, androidOnBackPressedDispatcher) {
-    private var restart: (() -> Unit)? = null
-
-    override fun contentState(
-      loadCount: Int,
-      attached: Boolean,
-      uncaughtException: Throwable?,
-    ) {
-      super.contentState(loadCount, attached, uncaughtException)
-
-      if (uncaughtException != null) {
-        scope.launch {
-          delay(2.seconds)
-          restart?.invoke()
-        }
-      }
-
-      if (loadCount == 0) {
-        addView(LoadingView(context))
-      }
-      if (uncaughtException != null) {
-        addView(ExceptionView(context, uncaughtException))
-      }
-    }
-
-    override fun restart(restart: (() -> Unit)?) {
-      this.restart = restart
-    }
+  class EmojiSearchDynamicContentWidgetFactory(
+    private val context: Context,
+  ) : DynamicContentWidgetFactory<View> {
+    override fun Loading(): Loading<View> = LoadingView(context)
+    override fun Crashed(): Crashed<View> = ExceptionView(context)
   }
 
   private val appEventListener: EventListener = object : EventListener() {

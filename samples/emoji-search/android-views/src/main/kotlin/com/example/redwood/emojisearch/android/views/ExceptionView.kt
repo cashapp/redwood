@@ -20,10 +20,13 @@ import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
 import android.view.Gravity.CENTER
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
+import app.cash.redwood.Modifier
+import app.cash.redwood.treehouse.Crashed
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.dp
 
@@ -41,32 +44,42 @@ import app.cash.redwood.ui.dp
 @SuppressLint("ViewConstructor")
 internal class ExceptionView(
   context: Context,
-  private val exception: Throwable,
-) : LinearLayout(context) {
+) : LinearLayout(context),
+  Crashed<View> {
+  override val value: View = this
+  override var modifier: Modifier = Modifier
+
+  private val skunk = AppCompatTextView(context)
+    .apply {
+      textAlignment = TEXT_ALIGNMENT_CENTER
+      setTextColor(Color.BLACK)
+      textSize = 40f
+      text = "🦨"
+    }
+
+  private val exceptionTextView = AppCompatTextView(context)
+    .apply {
+      textAlignment = TEXT_ALIGNMENT_CENTER
+      setTextColor(Color.BLACK)
+      textSize = 16f
+      ellipsize = TextUtils.TruncateAt.END
+    }
+
+  override fun uncaughtException(uncaughtException: Throwable) {
+    exceptionTextView.text = uncaughtException.toString()
+      .substringBefore("\n").replace(": ", "\n")
+  }
+
+  override fun restart(restart: () -> Unit) {
+  }
 
   init {
     orientation = VERTICAL
     gravity = CENTER
     setBackgroundColor(Color.argb(255, 255, 250, 225))
 
-    addView(
-      AppCompatTextView(context).apply {
-        textAlignment = TEXT_ALIGNMENT_CENTER
-        setTextColor(Color.BLACK)
-        textSize = 40f
-        text = "🦨"
-      },
-    )
-
-    addView(
-      AppCompatTextView(context).apply {
-        textAlignment = TEXT_ALIGNMENT_CENTER
-        setTextColor(Color.BLACK)
-        textSize = 16f
-        text = exception.toString().substringBefore("\n").replace(": ", "\n")
-        ellipsize = TextUtils.TruncateAt.END
-      },
-    )
+    addView(skunk)
+    addView(exceptionTextView)
   }
 
   override fun generateDefaultLayoutParams(): LayoutParams {

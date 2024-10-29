@@ -18,9 +18,6 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/RedwoodView { // app
         abstract fun <get-uiConfiguration>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.widget/RedwoodView.uiConfiguration.<get-uiConfiguration>|<get-uiConfiguration>(){}[0]
     abstract val value // app.cash.redwood.widget/RedwoodView.value|{}value[0]
         abstract fun <get-value>(): #A // app.cash.redwood.widget/RedwoodView.value.<get-value>|<get-value>(){}[0]
-
-    abstract fun contentState(kotlin/Int, kotlin/Boolean, kotlin/Throwable? = ...) // app.cash.redwood.widget/RedwoodView.contentState|contentState(kotlin.Int;kotlin.Boolean;kotlin.Throwable?){}[0]
-    abstract fun restart(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.widget/RedwoodView.restart|restart(kotlin.Function0<kotlin.Unit>?){}[0]
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/Widget { // app.cash.redwood.widget/Widget|null[0]
@@ -139,8 +136,6 @@ open class app.cash.redwood.widget/RedwoodUIView : app.cash.redwood.widget/Redwo
     open val value // app.cash.redwood.widget/RedwoodUIView.value|{}value[0]
         open fun <get-value>(): platform.UIKit/UIView // app.cash.redwood.widget/RedwoodUIView.value.<get-value>|<get-value>(){}[0]
 
-    open fun contentState(kotlin/Int, kotlin/Boolean, kotlin/Throwable?) // app.cash.redwood.widget/RedwoodUIView.contentState|contentState(kotlin.Int;kotlin.Boolean;kotlin.Throwable?){}[0]
-    open fun restart(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.widget/RedwoodUIView.restart|restart(kotlin.Function0<kotlin.Unit>?){}[0]
     open fun superviewChanged() // app.cash.redwood.widget/RedwoodUIView.superviewChanged|superviewChanged(){}[0]
 }
 

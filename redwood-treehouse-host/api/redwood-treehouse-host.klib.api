@@ -10,7 +10,21 @@ abstract fun interface <#A: app.cash.redwood.treehouse/AppService> app.cash.redw
     abstract fun get(#A): app.cash.redwood.treehouse/ZiplineTreehouseUi // app.cash.redwood.treehouse/TreehouseContentSource.get|get(1:0){}[0]
 }
 
+abstract interface <#A: kotlin/Any> app.cash.redwood.treehouse/Crashed : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.treehouse/Crashed|null[0]
+    abstract fun restart(kotlin/Function0<kotlin/Unit>) // app.cash.redwood.treehouse/Crashed.restart|restart(kotlin.Function0<kotlin.Unit>){}[0]
+    abstract fun uncaughtException(kotlin/Throwable) // app.cash.redwood.treehouse/Crashed.uncaughtException|uncaughtException(kotlin.Throwable){}[0]
+}
+
+abstract interface <#A: kotlin/Any> app.cash.redwood.treehouse/DynamicContentWidgetFactory { // app.cash.redwood.treehouse/DynamicContentWidgetFactory|null[0]
+    abstract fun Crashed(): app.cash.redwood.treehouse/Crashed<#A> // app.cash.redwood.treehouse/DynamicContentWidgetFactory.Crashed|Crashed(){}[0]
+    abstract fun Loading(): app.cash.redwood.treehouse/Loading<#A> // app.cash.redwood.treehouse/DynamicContentWidgetFactory.Loading|Loading(){}[0]
+}
+
+abstract interface <#A: kotlin/Any> app.cash.redwood.treehouse/Loading : app.cash.redwood.widget/Widget<#A> // app.cash.redwood.treehouse/Loading|null[0]
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.treehouse/TreehouseView : app.cash.redwood.widget/RedwoodView<#A> { // app.cash.redwood.treehouse/TreehouseView|null[0]
+    abstract val dynamicContentWidgetFactory // app.cash.redwood.treehouse/TreehouseView.dynamicContentWidgetFactory|{}dynamicContentWidgetFactory[0]
+        abstract fun <get-dynamicContentWidgetFactory>(): app.cash.redwood.treehouse/DynamicContentWidgetFactory<#A> // app.cash.redwood.treehouse/TreehouseView.dynamicContentWidgetFactory.<get-dynamicContentWidgetFactory>|<get-dynamicContentWidgetFactory>(){}[0]
     abstract val readyForContent // app.cash.redwood.treehouse/TreehouseView.readyForContent|{}readyForContent[0]
         abstract fun <get-readyForContent>(): kotlin/Boolean // app.cash.redwood.treehouse/TreehouseView.readyForContent.<get-readyForContent>|<get-readyForContent>(){}[0]
     abstract val stateSnapshotId // app.cash.redwood.treehouse/TreehouseView.stateSnapshotId|{}stateSnapshotId[0]
@@ -39,10 +53,34 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.treehouse/TreehouseView : a
 }
 
 abstract interface app.cash.redwood.treehouse/Content { // app.cash.redwood.treehouse/Content|null[0]
+    abstract val state // app.cash.redwood.treehouse/Content.state|{}state[0]
+        abstract fun <get-state>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.treehouse/Content.State> // app.cash.redwood.treehouse/Content.state.<get-state>|<get-state>(){}[0]
+
     abstract fun bind(app.cash.redwood.treehouse/TreehouseView<*>) // app.cash.redwood.treehouse/Content.bind|bind(app.cash.redwood.treehouse.TreehouseView<*>){}[0]
     abstract fun preload(app.cash.redwood.ui/OnBackPressedDispatcher, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>) // app.cash.redwood.treehouse/Content.preload|preload(app.cash.redwood.ui.OnBackPressedDispatcher;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>){}[0]
     abstract fun unbind() // app.cash.redwood.treehouse/Content.unbind|unbind(){}[0]
-    abstract suspend fun awaitContent(kotlin/Int = ...) // app.cash.redwood.treehouse/Content.awaitContent|awaitContent(kotlin.Int){}[0]
+
+    final class State { // app.cash.redwood.treehouse/Content.State|null[0]
+        constructor <init>(kotlin/Int, kotlin/Boolean, kotlin/Int, kotlin/Throwable? = ...) // app.cash.redwood.treehouse/Content.State.<init>|<init>(kotlin.Int;kotlin.Boolean;kotlin.Int;kotlin.Throwable?){}[0]
+
+        final val attached // app.cash.redwood.treehouse/Content.State.attached|{}attached[0]
+            final fun <get-attached>(): kotlin/Boolean // app.cash.redwood.treehouse/Content.State.attached.<get-attached>|<get-attached>(){}[0]
+        final val deliveredChangeCount // app.cash.redwood.treehouse/Content.State.deliveredChangeCount|{}deliveredChangeCount[0]
+            final fun <get-deliveredChangeCount>(): kotlin/Int // app.cash.redwood.treehouse/Content.State.deliveredChangeCount.<get-deliveredChangeCount>|<get-deliveredChangeCount>(){}[0]
+        final val loadCount // app.cash.redwood.treehouse/Content.State.loadCount|{}loadCount[0]
+            final fun <get-loadCount>(): kotlin/Int // app.cash.redwood.treehouse/Content.State.loadCount.<get-loadCount>|<get-loadCount>(){}[0]
+        final val uncaughtException // app.cash.redwood.treehouse/Content.State.uncaughtException|{}uncaughtException[0]
+            final fun <get-uncaughtException>(): kotlin/Throwable? // app.cash.redwood.treehouse/Content.State.uncaughtException.<get-uncaughtException>|<get-uncaughtException>(){}[0]
+
+        final fun component1(): kotlin/Int // app.cash.redwood.treehouse/Content.State.component1|component1(){}[0]
+        final fun component2(): kotlin/Boolean // app.cash.redwood.treehouse/Content.State.component2|component2(){}[0]
+        final fun component3(): kotlin/Int // app.cash.redwood.treehouse/Content.State.component3|component3(){}[0]
+        final fun component4(): kotlin/Throwable? // app.cash.redwood.treehouse/Content.State.component4|component4(){}[0]
+        final fun copy(kotlin/Int = ..., kotlin/Boolean = ..., kotlin/Int = ..., kotlin/Throwable? = ...): app.cash.redwood.treehouse/Content.State // app.cash.redwood.treehouse/Content.State.copy|copy(kotlin.Int;kotlin.Boolean;kotlin.Int;kotlin.Throwable?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.treehouse/Content.State.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // app.cash.redwood.treehouse/Content.State.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // app.cash.redwood.treehouse/Content.State.toString|toString(){}[0]
+    }
 }
 
 abstract interface app.cash.redwood.treehouse/StateStore { // app.cash.redwood.treehouse/StateStore|null[0]
@@ -159,8 +197,10 @@ open class app.cash.redwood.treehouse/EventListener { // app.cash.redwood.treeho
 }
 
 open class app.cash.redwood.treehouse/TreehouseUIView : app.cash.redwood.treehouse/TreehouseView<platform.UIKit/UIView>, app.cash.redwood.widget/RedwoodUIView { // app.cash.redwood.treehouse/TreehouseUIView|null[0]
-    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>){}[0]
+    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>, app.cash.redwood.treehouse/DynamicContentWidgetFactory<platform.UIKit/UIView> = ...) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>;app.cash.redwood.treehouse.DynamicContentWidgetFactory<platform.UIKit.UIView>){}[0]
 
+    open val dynamicContentWidgetFactory // app.cash.redwood.treehouse/TreehouseUIView.dynamicContentWidgetFactory|{}dynamicContentWidgetFactory[0]
+        open fun <get-dynamicContentWidgetFactory>(): app.cash.redwood.treehouse/DynamicContentWidgetFactory<platform.UIKit/UIView> // app.cash.redwood.treehouse/TreehouseUIView.dynamicContentWidgetFactory.<get-dynamicContentWidgetFactory>|<get-dynamicContentWidgetFactory>(){}[0]
     open val readyForContent // app.cash.redwood.treehouse/TreehouseUIView.readyForContent|{}readyForContent[0]
         open fun <get-readyForContent>(): kotlin/Boolean // app.cash.redwood.treehouse/TreehouseUIView.readyForContent.<get-readyForContent>|<get-readyForContent>(){}[0]
     open val widgetSystem // app.cash.redwood.treehouse/TreehouseUIView.widgetSystem|{}widgetSystem[0]

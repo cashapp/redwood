@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.15.0...HEAD
 
 New:
-- Nothing yet!
+- Redwood publishes what's happening in bound content through the new `Content.State` type.
 
 Changed:
 - Drop support for non-incremental layouts in `Row` and `Column`.
@@ -17,7 +17,7 @@ Fixed:
 - Fix a layout bug where children of `Box` containers were not measured properly.
 
 Breaking:
-- Replace `CodeListener` with new functions in `RedwoodView`. This puts the loading/error/ready state with the UI that displays that state.
+- Replace `CodeListener` with a new `DynamicContentWidgetFactory` API. Now loading and crashed views work like all other child widgets.
 
 
 ## [0.15.0] - 2024-09-30

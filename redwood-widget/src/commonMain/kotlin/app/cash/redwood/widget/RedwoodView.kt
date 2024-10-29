@@ -33,40 +33,4 @@ public interface RedwoodView<W : Any> {
    * a snapshot of the most-recent content, but the content will ignore user actions.
    */
   public val children: Widget.Children<W>
-
-  /**
-   * Called for lifecycle changes to the content choreographing this view.
-   *
-   * Content may be bound to this view before it has a view tree. When that happens this will
-   * be called with `loadCount = 0` and `attached = false`. Content won't be ready if it is busy
-   * downloading, launching, or computing an initial view tree.
-   *
-   * When the content's initial view tree is ready, this is called with `loadCount = 1` and
-   * `attached = true`. This signals that the content is both running and interactive.
-   *
-   * If the content stops, this is called again with `attached = false`. This happens when the
-   * content is detached, either gracefully or due to a crash. Call the lambda provided to
-   * [restart] to relaunch the content.
-   *
-   * Each time the content is replaced dynamically (a ‘hot reload’), this is called with an
-   * incremented [loadCount].
-   *
-   * @param loadCount how many different versions of content have been loaded for this view. This
-   *     is 1 for the first load, and increments for subsequent reloads. Use this to trigger an
-   *     'reloaded' message or animation when business logic is updated. This may skip values if
-   *     content stops before it emits its initial view tree.
-   * @param attached true if the content is interactive. This is false if it has stopped or
-   *     crashed.
-   * @param uncaughtException the exception that caused the content to detach.
-   */
-  public fun contentState(
-    loadCount: Int,
-    attached: Boolean,
-    uncaughtException: Throwable? = null,
-  )
-
-  /**
-   * Call the provided lambda to restart the business logic that powers this UI.
-   */
-  public fun restart(restart: (() -> Unit)?)
 }

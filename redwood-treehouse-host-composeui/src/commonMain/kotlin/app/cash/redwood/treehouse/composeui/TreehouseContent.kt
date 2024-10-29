@@ -23,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -32,6 +31,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.composeui.safeAreaInsets
 import app.cash.redwood.treehouse.AppService
+import app.cash.redwood.treehouse.DynamicContentWidgetFactory
 import app.cash.redwood.treehouse.StateSnapshot
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseContentSource
@@ -55,10 +55,10 @@ public fun <A : AppService> TreehouseContent(
   widgetSystem: WidgetSystem<@Composable () -> Unit>,
   contentSource: TreehouseContentSource<A>,
   modifier: Modifier = Modifier,
-  dynamicContent: DynamicContent = DynamicContent(),
+  dynamicContentWidgetFactory: DynamicContentWidgetFactory<@Composable () -> Unit> =
+    EmptyDynamicContentWidgetFactory,
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
-  val scope = rememberCoroutineScope()
 
   var viewportSize: Size? by remember { mutableStateOf(null) }
   val density = LocalDensity.current
@@ -77,17 +77,10 @@ public fun <A : AppService> TreehouseContent(
       override val children: ComposeWidgetChildren = ComposeWidgetChildren()
 
       override val value: @Composable () -> Unit = {
-        dynamicContent.Render(children)
+        children.Render()
       }
 
-      override fun contentState(loadCount: Int, attached: Boolean, uncaughtException: Throwable?) {
-        dynamicContent.contentState(scope, loadCount, attached, uncaughtException)
-      }
-
-      override fun restart(restart: (() -> Unit)?) {
-        dynamicContent.restart(restart)
-      }
-
+      override val dynamicContentWidgetFactory = dynamicContentWidgetFactory
       override val onBackPressedDispatcher = onBackPressedDispatcher
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
 

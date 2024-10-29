@@ -49,14 +49,11 @@ public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwoo
 }
 
 public abstract interface class app/cash/redwood/widget/RedwoodView {
-	public abstract fun contentState (IZLjava/lang/Throwable;)V
-	public static synthetic fun contentState$default (Lapp/cash/redwood/widget/RedwoodView;IZLjava/lang/Throwable;ILjava/lang/Object;)V
 	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
 	public abstract fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public abstract fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun getValue ()Ljava/lang/Object;
-	public abstract fun restart (Lkotlin/jvm/functions/Function0;)V
 }
 
 public abstract interface class app/cash/redwood/widget/SavedStateRegistry {

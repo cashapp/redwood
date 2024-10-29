@@ -23,6 +23,8 @@ import platform.UIKit.UIView
 @ObjCName("TreehouseUIView", exact = true)
 public open class TreehouseUIView(
   override val widgetSystem: WidgetSystem<UIView>,
+  override val dynamicContentWidgetFactory: DynamicContentWidgetFactory<UIView> =
+    EmptyDynamicContentWidgetFactory(),
 ) : RedwoodUIView(),
   TreehouseView<UIView> {
   override var saveCallback: TreehouseView.SaveCallback? = null

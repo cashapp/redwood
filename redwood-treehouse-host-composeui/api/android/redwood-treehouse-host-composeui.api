@@ -1,16 +1,13 @@
-public class app/cash/redwood/treehouse/composeui/DynamicContent {
-	public static final field $stable I
+public final class app/cash/redwood/treehouse/composeui/ComposableSingletons$EmptyDynamicContentWidgetFactoryKt {
+	public static final field INSTANCE Lapp/cash/redwood/treehouse/composeui/ComposableSingletons$EmptyDynamicContentWidgetFactoryKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function2;
 	public fun <init> ()V
-	public fun Render (Lapp/cash/redwood/widget/compose/ComposeWidgetChildren;Landroidx/compose/runtime/Composer;I)V
-	public fun contentState (Lkotlinx/coroutines/CoroutineScope;IZLjava/lang/Throwable;)V
-	public final fun getAttached ()Z
-	public final fun getLoadCount ()I
-	public final fun getRestart ()Lkotlin/jvm/functions/Function0;
-	public final fun getUncaughtException ()Ljava/lang/Throwable;
-	public final fun restart (Lkotlin/jvm/functions/Function0;)V
+	public final fun getLambda-1$redwood_treehouse_host_composeui_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$redwood_treehouse_host_composeui_release ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class app/cash/redwood/treehouse/composeui/TreehouseContentKt {
-	public static final fun TreehouseContent (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Lapp/cash/redwood/treehouse/TreehouseContentSource;Landroidx/compose/ui/Modifier;Lapp/cash/redwood/treehouse/composeui/DynamicContent;Landroidx/compose/runtime/Composer;II)V
+	public static final fun TreehouseContent (Lapp/cash/redwood/treehouse/TreehouseApp;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Lapp/cash/redwood/treehouse/TreehouseContentSource;Landroidx/compose/ui/Modifier;Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;Landroidx/compose/runtime/Composer;II)V
 }
 

@@ -154,7 +154,6 @@ internal class TreehouseTester(
   fun view(): FakeTreehouseView {
     return FakeTreehouseView(
       name = "view",
-      eventLog = eventLog,
       onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog),
     )
   }

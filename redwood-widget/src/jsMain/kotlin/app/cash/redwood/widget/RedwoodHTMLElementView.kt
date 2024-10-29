@@ -25,7 +25,6 @@ import app.cash.redwood.ui.dp
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.MediaQueryList
 import org.w3c.dom.events.Event
@@ -91,19 +90,6 @@ private class RedwoodHTMLElementView(
 
     // TODO Watch size change
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
-  }
-
-  override fun contentState(
-    loadCount: Int,
-    attached: Boolean,
-    uncaughtException: Throwable?,
-  ) {
-    // Remove all child views in case the previous content state left some behind.
-    value.clear()
-  }
-
-  override fun restart(restart: (() -> Unit)?) {
-    // This base class doesn't call restart().
   }
 
   private fun observePixelRatioChange() {

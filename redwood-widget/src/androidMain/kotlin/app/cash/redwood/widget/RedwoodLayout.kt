@@ -86,19 +86,6 @@ public open class RedwoodLayout(
     }
   }
 
-  override fun contentState(
-    loadCount: Int,
-    attached: Boolean,
-    uncaughtException: Throwable?,
-  ) {
-    // Remove all child views in case the previous content state left some behind.
-    removeAllViews()
-  }
-
-  override fun restart(restart: (() -> Unit)?) {
-    // This base class doesn't call restart().
-  }
-
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     var maxWidth = 0
     var maxHeight = 0

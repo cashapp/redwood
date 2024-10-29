@@ -22,13 +22,13 @@ import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.ProtocolFactory
 import app.cash.redwood.protocol.host.UiEvent
 import app.cash.redwood.protocol.host.UiEventSink
+import app.cash.redwood.treehouse.Content.State
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -37,13 +37,12 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.Json
 
-private class State<A : AppService>(
+private class InternalState<A : AppService>(
   val viewState: ViewState,
   val codeState: CodeState<A>,
 ) {
@@ -67,20 +66,27 @@ private sealed interface ViewState {
 
 private sealed interface CodeState<A : AppService> {
   val loadCount: Int
+  val lastUncaughtException: Throwable?
 
   class Idle<A : AppService>(
-    override val loadCount: Int = 0,
+    override val loadCount: Int,
+    override val lastUncaughtException: Throwable?,
   ) : CodeState<A>
 
   class Running<A : AppService>(
-    override val loadCount: Int = 0,
+    override val loadCount: Int,
+    override val lastUncaughtException: Throwable?,
     val viewContentCodeBinding: ViewContentCodeBinding<A>,
     val changesAwaitingInitViewSize: Int = 0,
     val deliveredChangeCount: Int = 0,
-  ) : CodeState<A> {
-    val changeCount: Int
-      get() = changesAwaitingInitViewSize + deliveredChangeCount
-  }
+  ) : CodeState<A>
+
+  fun asState() = State(
+    attached = this is Running,
+    loadCount = loadCount,
+    deliveredChangeCount = (this as? Running)?.deliveredChangeCount ?: 0,
+    uncaughtException = lastUncaughtException,
+  )
 }
 
 internal class TreehouseAppContent<A : AppService>(
@@ -91,16 +97,27 @@ internal class TreehouseAppContent<A : AppService>(
 ) : Content,
   CodeHost.Listener<A>,
   CodeSession.Listener<A> {
-  private val stateFlow = MutableStateFlow<State<A>>(
-    State(ViewState.None, CodeState.Idle()),
+  private val internalStateFlow = MutableStateFlow<InternalState<A>>(
+    InternalState(ViewState.None, CodeState.Idle(0, null)),
   )
+
+  private val externalStateFlow = MutableStateFlow(
+    State(
+      loadCount = 0,
+      attached = false,
+      deliveredChangeCount = 0,
+    ),
+  )
+
+  override val state: StateFlow<State>
+    get() = externalStateFlow
 
   override fun preload(
     onBackPressedDispatcher: OnBackPressedDispatcher,
     uiConfiguration: StateFlow<UiConfiguration>,
   ) {
     dispatchers.checkUi()
-    val previousState = stateFlow.value
+    val previousState = internalStateFlow.value
 
     if (previousState.viewState == ViewState.Preloading(onBackPressedDispatcher, uiConfiguration)) {
       return // Idempotent.
@@ -117,9 +134,9 @@ internal class TreehouseAppContent<A : AppService>(
         val newLoadCount = previousState.codeState.loadCount + 1
         CodeState.Running(
           loadCount = newLoadCount,
+          lastUncaughtException = previousState.codeState.lastUncaughtException,
           viewContentCodeBinding = startViewCodeContentBinding(
             codeSession = codeSession,
-            loadCount = newLoadCount,
             onBackPressedDispatcher = onBackPressedDispatcher,
             firstUiConfiguration = uiConfiguration,
           ),
@@ -132,66 +149,50 @@ internal class TreehouseAppContent<A : AppService>(
     // Ask to get notified when code is ready.
     codeHost.addListener(this)
 
-    stateFlow.value = State(nextViewState, nextCodeState)
+    internalStateFlow.value = InternalState(nextViewState, nextCodeState)
+    externalStateFlow.value = nextCodeState.asState()
   }
 
   override fun bind(view: TreehouseView<*>) {
     dispatchers.checkUi()
 
-    if (stateFlow.value.viewState == ViewState.Bound(view)) return // Idempotent.
-
-    view.restart(codeHost::restart)
+    if (internalStateFlow.value.viewState == ViewState.Bound(view)) return // Idempotent.
 
     preload(view.onBackPressedDispatcher, view.uiConfiguration)
 
-    val previousState = stateFlow.value
+    val previousState = internalStateFlow.value
     val previousViewState = previousState.viewState
+    val previousCodeState = previousState.codeState
 
     check(previousViewState is ViewState.Preloading)
 
     val nextViewState = ViewState.Bound(view)
-    val nextCodeState = previousState.codeState
 
     // Make sure we're showing something in the view; either loaded code or a spinner to show that
     // code is coming.
-    when (nextCodeState) {
-      is CodeState.Idle -> {
-        view.contentState(
-          loadCount = nextCodeState.loadCount,
-          attached = false,
-        )
-      }
-      is CodeState.Running -> nextCodeState.viewContentCodeBinding.initView(view)
+    when (previousCodeState) {
+      is CodeState.Idle -> view.showLoading()
+      is CodeState.Running -> previousCodeState.viewContentCodeBinding.initView(view)
     }
 
-    stateFlow.value = State(nextViewState, nextCodeState)
-  }
-
-  override suspend fun awaitContent(untilChangeCount: Int) {
-    stateFlow.first {
-      if (it.viewState is ViewState.None) {
-        throw CancellationException("unbound while awaiting content")
-      }
-
-      it.codeState is CodeState.Running && it.codeState.changeCount >= untilChangeCount
-    }
+    val nextCodeState = internalStateFlow.value.codeState
+    internalStateFlow.value = InternalState(nextViewState, nextCodeState)
+    externalStateFlow.value = nextCodeState.asState()
   }
 
   override fun unbind() {
     dispatchers.checkUi()
 
-    val previousState = stateFlow.value
+    val previousState = internalStateFlow.value
     val previousViewState = previousState.viewState
     val previousCodeState = previousState.codeState
 
     if (previousViewState is ViewState.None) return // Idempotent.
 
-    if (previousViewState is ViewState.Bound) {
-      previousViewState.view.restart(null) // Break a reference cycle.
-    }
     val nextViewState = ViewState.None
     val nextCodeState = CodeState.Idle<A>(
       loadCount = previousCodeState.loadCount,
+      lastUncaughtException = previousCodeState.lastUncaughtException,
     )
 
     // Cancel the code if necessary.
@@ -202,13 +203,14 @@ internal class TreehouseAppContent<A : AppService>(
       binding.codeSession.removeListener(this)
     }
 
-    stateFlow.value = State(nextViewState, nextCodeState)
+    internalStateFlow.value = InternalState(nextViewState, nextCodeState)
+    externalStateFlow.value = nextCodeState.asState()
   }
 
   override fun codeSessionChanged(next: CodeSession<A>) {
     dispatchers.checkUi()
 
-    val previousState = stateFlow.value
+    val previousState = internalStateFlow.value
     val viewState = previousState.viewState
     val previousCodeState = previousState.codeState
 
@@ -227,9 +229,9 @@ internal class TreehouseAppContent<A : AppService>(
     val newLoadCount = previousCodeState.loadCount + 1
     val nextCodeState = CodeState.Running(
       loadCount = newLoadCount,
+      lastUncaughtException = previousState.codeState.lastUncaughtException,
       viewContentCodeBinding = startViewCodeContentBinding(
         codeSession = next,
-        loadCount = newLoadCount,
         onBackPressedDispatcher = onBackPressedDispatcher,
         firstUiConfiguration = uiConfiguration,
       ),
@@ -247,7 +249,8 @@ internal class TreehouseAppContent<A : AppService>(
       binding.codeSession.removeListener(this)
     }
 
-    stateFlow.value = State(viewState, nextCodeState)
+    internalStateFlow.value = InternalState(viewState, nextCodeState)
+    externalStateFlow.value = nextCodeState.asState()
   }
 
   override fun onUncaughtException(codeSession: CodeSession<A>, exception: Throwable) {
@@ -265,7 +268,7 @@ internal class TreehouseAppContent<A : AppService>(
   private fun codeSessionStopped(exception: Throwable?) {
     dispatchers.checkUi()
 
-    val previousState = stateFlow.value
+    val previousState = internalStateFlow.value
     val viewState = previousState.viewState
     val previousCodeState = previousState.codeState
 
@@ -279,14 +282,15 @@ internal class TreehouseAppContent<A : AppService>(
 
     val nextCodeState = CodeState.Idle<A>(
       loadCount = previousCodeState.loadCount,
+      lastUncaughtException = exception,
     )
-    stateFlow.value = State(viewState, nextCodeState)
+    internalStateFlow.value = InternalState(viewState, nextCodeState)
+    externalStateFlow.value = nextCodeState.asState()
   }
 
   /** This function may only be invoked on [TreehouseDispatchers.ui]. */
   private fun startViewCodeContentBinding(
     codeSession: CodeSession<A>,
-    loadCount: Int,
     onBackPressedDispatcher: OnBackPressedDispatcher,
     firstUiConfiguration: StateFlow<UiConfiguration>,
   ): ViewContentCodeBinding<A> {
@@ -294,13 +298,13 @@ internal class TreehouseAppContent<A : AppService>(
     codeSession.addListener(this)
 
     return ViewContentCodeBinding(
-      stateStore = codeHost.stateStore,
+      codeHost = codeHost,
       dispatchers = dispatchers,
       eventPublisher = codeSession.eventPublisher,
       contentSource = source,
-      stateFlow = stateFlow,
+      internalStateFlow = internalStateFlow,
+      externalStateFlow = externalStateFlow,
       codeSession = codeSession,
-      loadCount = loadCount,
       onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
       leakDetector = leakDetector,
@@ -323,19 +327,25 @@ internal class TreehouseAppContent<A : AppService>(
  * binding.
  */
 private class ViewContentCodeBinding<A : AppService>(
-  val stateStore: StateStore,
+  codeHost: CodeHost<A>,
   val dispatchers: TreehouseDispatchers,
   val eventPublisher: EventPublisher,
   contentSource: TreehouseContentSource<A>,
-  val stateFlow: MutableStateFlow<State<A>>,
+  val internalStateFlow: MutableStateFlow<InternalState<A>>,
+  val externalStateFlow: MutableStateFlow<State>,
   val codeSession: CodeSession<A>,
-  private val loadCount: Int,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
   private val leakDetector: LeakDetector,
 ) : ChangesSinkService,
   TreehouseView.SaveCallback,
   ZiplineTreehouseUi.Host {
+
+  /** Only accessed on [TreehouseDispatchers.ui]. Null after [cancel]. */
+  private var codeHostOrNull: CodeHost<A>? = codeHost
+
+  private val stateStore: StateStore = codeHost.stateStore
+
   private val uiConfigurationFlow = SequentialStateFlow(firstUiConfiguration)
 
   private val bindingScope = CoroutineScope(
@@ -435,12 +445,10 @@ private class ViewContentCodeBinding<A : AppService>(
       hostAdapterOrNull = hostAdapter
     }
 
+    // If this is the first change, clear the previous content. This could be the previous children,
+    // a Loading widget, or a Crashed widget.
     if (deliveredChangeCount++ == 0) {
       view.children.remove(0, view.children.widgets.size)
-      view.contentState(
-        loadCount = loadCount,
-        attached = true,
-      )
     }
     updateChangeCount()
 
@@ -449,20 +457,27 @@ private class ViewContentCodeBinding<A : AppService>(
 
   /** Unblock coroutines suspended on TreehouseAppContent.awaitContent(). */
   private fun updateChangeCount() {
-    val state = stateFlow.value
+    val state = internalStateFlow.value
     val codeState = state.codeState as? CodeState.Running ?: return
 
     // Don't mutate state if this binding is out of date.
     if (codeState.viewContentCodeBinding != this) return
 
-    stateFlow.value = State(
-      state.viewState,
-      CodeState.Running(
-        viewContentCodeBinding = this,
-        changesAwaitingInitViewSize = changesAwaitingInitView.size,
-        deliveredChangeCount = deliveredChangeCount,
-      ),
+    // Clear the previous run's uncaught exception when content is ready.
+    val lastUncaughtException = when {
+      deliveredChangeCount > 0 -> null
+      else -> codeState.lastUncaughtException
+    }
+
+    val nextCodeState = CodeState.Running(
+      loadCount = codeState.loadCount,
+      lastUncaughtException = lastUncaughtException,
+      viewContentCodeBinding = this,
+      changesAwaitingInitViewSize = changesAwaitingInitView.size,
+      deliveredChangeCount = deliveredChangeCount,
     )
+    internalStateFlow.value = InternalState(state.viewState, nextCodeState)
+    externalStateFlow.value = nextCodeState.asState()
   }
 
   fun start() {
@@ -536,17 +551,14 @@ private class ViewContentCodeBinding<A : AppService>(
     if (canceled) return
     canceled = true
 
+    hostAdapterOrNull?.close()
+    hostAdapterOrNull = null
     viewOrNull?.let { view ->
-      view.contentState(
-        loadCount = loadCount,
-        attached = false,
-        uncaughtException = exception,
-      )
+      if (exception != null) view.showCrashed(exception, codeHostOrNull!!)
       view.saveCallback = null
     }
     viewOrNull = null
-    hostAdapterOrNull?.close()
-    hostAdapterOrNull = null
+    codeHostOrNull = null
     eventBridge.bindingScope = null
     eventBridge.ziplineDispatcher = null
     bindingScope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
@@ -557,6 +569,26 @@ private class ViewContentCodeBinding<A : AppService>(
       bindingScope.cancel()
     }
   }
+}
+
+private fun <W : Any> TreehouseView<W>.showLoading() {
+  children.remove(0, children.widgets.size)
+  children.insert(0, dynamicContentWidgetFactory.Loading())
+}
+
+private fun <W : Any> TreehouseView<W>.showCrashed(
+  exception: Throwable,
+  codeHost: CodeHost<*>,
+) {
+  children.remove(0, children.widgets.size)
+  children.insert(
+    index = 0,
+    widget = dynamicContentWidgetFactory.Crashed()
+      .apply {
+        uncaughtException(exception)
+        restart(codeHost::restart)
+      },
+  )
 }
 
 /**

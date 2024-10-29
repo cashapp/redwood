@@ -31,6 +31,8 @@ import java.util.UUID
 public open class TreehouseLayout(
   context: Context,
   override val widgetSystem: WidgetSystem<View>,
+  override val dynamicContentWidgetFactory: DynamicContentWidgetFactory<View> =
+    EmptyDynamicContentWidgetFactory(context),
   androidOnBackPressedDispatcher: AndroidOnBackPressedDispatcher,
 ) : RedwoodLayout(context, androidOnBackPressedDispatcher),
   TreehouseView<View> {

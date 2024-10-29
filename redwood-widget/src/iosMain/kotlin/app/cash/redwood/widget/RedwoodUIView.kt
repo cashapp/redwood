@@ -77,21 +77,6 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
-  override fun contentState(
-    loadCount: Int,
-    attached: Boolean,
-    uncaughtException: Throwable?,
-  ) {
-    // Remove all child views in case the previous content state left some behind.
-    for (subview in value.subviews.toList()) {
-      (subview as UIView).removeFromSuperview()
-    }
-  }
-
-  override fun restart(restart: (() -> Unit)?) {
-    // This base class doesn't call restart().
-  }
-
   private fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = valueRootView.traitCollection,

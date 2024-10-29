@@ -75,14 +75,14 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
+    content.awaitInitialCodeLoading()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.appService.uis.single().addWidget("hello")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
     val buttonValue = view1.views.single() as ButtonValue
     assertThat(buttonValue.text).isEqualTo("hello")
 
@@ -90,7 +90,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -111,10 +111,10 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -133,12 +133,12 @@ class TreehouseAppContentTest {
     eventLog.assertNoEvents()
 
     codeSessionA.appService.uis.single().addWidget("hello")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
     val buttonValue = view1.views.single() as ButtonValue
     assertThat(buttonValue.text).isEqualTo("hello")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -154,12 +154,12 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.appService.uis.single().addWidget("hello")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
     val buttonValue = view1.views.single() as ButtonValue
     assertThat(buttonValue.text).isEqualTo("hello")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -170,17 +170,17 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
+    content.awaitInitialCodeLoading()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     codeSessionA.appService.uis.single().addWidget("helloA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
 
     val codeSessionB = codeHost.startCodeSession("codeSessionB")
+    content.awaitCodeLoaded(loadCount = 2)
     eventLog.takeEventsInAnyOrder(
-      "codeListener.onCodeDetached(null)",
       "codeSessionA.app.uis[0].close()",
       "codeSessionA.stop()",
       "codeSessionB.start()",
@@ -192,12 +192,12 @@ class TreehouseAppContentTest {
     val buttonA = view1.views.single() as ButtonValue
     assertThat(buttonA.text).isEqualTo("helloA")
     codeSessionB.appService.uis.single().addWidget("helloB")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded(loadCount = 2)
     val buttonB = view1.views.single() as ButtonValue
     assertThat(buttonB.text).isEqualTo("helloB")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
@@ -222,7 +222,7 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
+    content.awaitInitialCodeLoading()
 
     content.unbind()
     eventLog.assertNoEvents()
@@ -248,24 +248,24 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.appService.uis.single().addWidget("helloA")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
     val buttonA = view1.views.single() as ButtonValue
     assertThat(buttonA.text).isEqualTo("helloA")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
 
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[1].start()")
 
     codeSessionA.appService.uis.last().addWidget("helloB")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded(loadCount = 2)
     val buttonB = view1.views.single() as ButtonValue
     assertThat(buttonB.text).isEqualTo("helloB")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[1].close()")
   }
 
@@ -292,7 +292,7 @@ class TreehouseAppContentTest {
     eventLog.assertNoEvents()
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -313,7 +313,7 @@ class TreehouseAppContentTest {
 
     content.unbind()
     eventLog.takeEvent("onBackPressedDispatcher.callbacks[0].cancel()")
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
   }
 
@@ -332,8 +332,8 @@ class TreehouseAppContentTest {
     codeHost.startCodeSession("codeSessionB")
 
     // When we close codeSessionA, its back handlers are released with it.
+    content.awaitCodeLoaded(loadCount = 2)
     eventLog.takeEventsInAnyOrder(
-      "codeListener.onCodeDetached(null)",
       "codeSessionA.app.uis[0].close()",
       "onBackPressedDispatcher.callbacks[0].cancel()",
       "codeSessionA.stop()",
@@ -343,7 +343,7 @@ class TreehouseAppContentTest {
     assertThat(onBackPressedDispatcher.callbacks).isEmpty()
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
@@ -359,9 +359,9 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.handleUncaughtException(Exception("boom!"))
+    content.awaitCodeDetached("boom!")
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
-      "codeListener.onCodeDetached(kotlin.Exception: boom!)",
       "codeSessionA.stop()",
     )
 
@@ -380,14 +380,14 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
+    content.awaitInitialCodeLoading()
 
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
@@ -403,9 +403,9 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.handleUncaughtException(Exception("boom!"))
+    content.awaitCodeDetached("boom!")
     eventLog.takeEventsInAnyOrder(
       "codeSessionA.app.uis[0].close()",
-      "codeListener.onCodeDetached(kotlin.Exception: boom!)",
       "codeSessionA.stop()",
     )
 
@@ -414,7 +414,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionB.app.uis[0].start()")
 
     content.unbind()
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached("boom!")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
   }
 
@@ -438,7 +438,7 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onCodeDetached(null)")
+    content.awaitCodeDetached("boom!")
 
     content.unbind()
   }
@@ -449,20 +449,20 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
+    content.awaitInitialCodeLoading()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
 
     codeSessionA.appService.uis.single().addWidget("hello")
-    eventLog.takeEvent("codeListener.onCodeLoaded(1)")
+    content.awaitCodeLoaded()
 
     codeSessionA.appService.uis.single().throwOnNextEvent("boom!")
     val button = view1.views.single() as ButtonValue
     button.onClick!!.invoke()
+    content.awaitCodeDetached("boom!")
     eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
-    eventLog.takeEvent("codeListener.onCodeDetached(kotlin.Exception: boom!)")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
 
@@ -492,7 +492,7 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
-    eventLog.takeEvent("codeListener.onInitialCodeLoading()")
+    content.awaitInitialCodeLoading()
 
     content.bind(view1)
     eventLog.assertNoEvents()
@@ -512,7 +512,6 @@ class TreehouseAppContentTest {
   private fun treehouseView(name: String): FakeTreehouseView {
     return FakeTreehouseView(
       name = name,
-      eventLog = eventLog,
       onBackPressedDispatcher = onBackPressedDispatcher,
       uiConfiguration = uiConfiguration,
     )

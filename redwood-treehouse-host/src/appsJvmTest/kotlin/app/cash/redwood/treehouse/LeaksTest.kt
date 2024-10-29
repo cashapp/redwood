@@ -166,12 +166,12 @@ class LeaksTest {
 
     // After we bind the content, it'll be in a retain cycle.
     content.bind(view)
-    tester.eventLog.takeEvent("codeListener.onCodeLoaded(1)", skipOthers = true)
+    content.awaitCodeLoaded(loadCount = 1)
     contentSourceLeakWatcher.assertObjectInReferenceCycle()
 
     // Unbind it, and it's no longer retained.
     content.unbind()
-    tester.eventLog.takeEvent("codeListener.onCodeDetached(null)", skipOthers = true)
+    content.awaitCodeDetached()
     treehouseApp.dispatchers.awaitLaunchedTasks()
     contentSourceLeakWatcher.assertNotLeaked()
 
@@ -193,7 +193,7 @@ class LeaksTest {
 
     // One content is bound, the view is in a reference cycle.
     content.bind(view!!)
-    tester.eventLog.takeEvent("codeListener.onCodeLoaded(1)", skipOthers = true)
+    content.awaitCodeLoaded(loadCount = 1)
     viewLeakWatcher.assertObjectInReferenceCycle()
 
     // Stop referencing the view from our test harness.
@@ -266,15 +266,15 @@ class LeaksTest {
 
     // After we bind the content, it'll be in a retain cycle.
     content!!.bind(view)
-    tester.eventLog.takeEvent("codeListener.onCodeLoaded(1)", skipOthers = true)
+    content.awaitCodeLoaded(loadCount = 1)
     contentLeakWatcher.assertObjectInReferenceCycle()
 
     // Unbind it and stop referencing it in our test harness.
     content.unbind()
+    content.awaitCodeDetached()
     content = null
 
     // The content is no longer retained.
-    tester.eventLog.takeEvent("codeListener.onCodeDetached(null)", skipOthers = true)
     treehouseApp.dispatchers.awaitLaunchedTasks()
     contentLeakWatcher.assertNotLeaked()
 

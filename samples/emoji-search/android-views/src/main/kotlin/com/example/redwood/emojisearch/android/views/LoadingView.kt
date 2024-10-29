@@ -18,15 +18,22 @@ package com.example.redwood.emojisearch.android.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.Gravity.CENTER
+import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.view.ContextThemeWrapper
+import app.cash.redwood.Modifier
+import app.cash.redwood.treehouse.Loading
 
 @SuppressLint("ViewConstructor")
 internal class LoadingView(
   context: Context,
-) : FrameLayout(context) {
+) : FrameLayout(context),
+  Loading<View> {
+  override val value = this
+  override var modifier: Modifier = Modifier
+
   init {
     addView(
       ProgressBar(

@@ -23,7 +23,6 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
-import app.cash.redwood.widget.Widget
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -32,20 +31,16 @@ import kotlinx.coroutines.flow.StateFlow
 
 /**
  * An in-memory fake.
- *
- * This pretends to be like a real UI by keeping an independent copy of the views. That way
- * [Widget.Children.detach] can clear the widget (adapters) without forcing an update to the UI.
  */
 internal class FakeTreehouseView(
   private val name: String,
-  private val eventLog: EventLog,
   override val onBackPressedDispatcher: OnBackPressedDispatcher,
   override val uiConfiguration: StateFlow<UiConfiguration> = MutableStateFlow(UiConfiguration()),
 ) : TreehouseView<WidgetValue> {
-  override val children = FakeChildren()
+  override val children = MutableListChildren<WidgetValue>()
 
   val views: List<WidgetValue>
-    get() = children.views
+    get() = children.map { it.value }
 
   override val value: WidgetValue
     get() = error("unexpected call")
@@ -61,6 +56,8 @@ internal class FakeTreehouseView(
     )
   }
 
+  override val dynamicContentWidgetFactory = FakeDynamicContentWidgetFactory()
+
   override var readyForContentChangeListener: ReadyForContentChangeListener<WidgetValue>? = null
 
   override var readyForContent = false
@@ -75,40 +72,5 @@ internal class FakeTreehouseView(
 
   override val savedStateRegistry: SavedStateRegistry? = null
 
-  override fun contentState(loadCount: Int, attached: Boolean, uncaughtException: Throwable?) {
-    // Remove all child views in case the previous content state left some behind.
-    if (attached) children.views.clear()
-
-    // Canonicalize "java.lang.Exception(boom!)" to "kotlin.Exception(boom!)".
-    val exceptionString = uncaughtException?.toString()?.replace("java.lang.", "kotlin.")
-
-    // TODO(jwilson): this is a backwards-compatibility shim. Emit a simpler event.
-    eventLog += when {
-      loadCount == 0 && !attached -> "codeListener.onInitialCodeLoading()"
-      attached -> "codeListener.onCodeLoaded($loadCount)"
-      else -> "codeListener.onCodeDetached($exceptionString)"
-    }
-  }
-
-  override fun restart(restart: (() -> Unit)?) {
-  }
-
   override fun toString() = name
-
-  internal class FakeChildren(
-    private val childrenDelegate: MutableListChildren<WidgetValue> = MutableListChildren(),
-  ) : Widget.Children<WidgetValue> by childrenDelegate {
-    /** A private copy of the child views that isn't cleared by `detach()`. */
-    val views = mutableListOf<WidgetValue>()
-
-    override fun insert(index: Int, widget: Widget<WidgetValue>) {
-      views.add(index, widget.value)
-      childrenDelegate.insert(index, widget)
-    }
-
-    override fun remove(index: Int, count: Int) {
-      views.subList(index, index + count).clear()
-      childrenDelegate.remove(index, count)
-    }
-  }
 }

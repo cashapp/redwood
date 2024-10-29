@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import kotlin.native.ObjCName
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -39,6 +38,8 @@ import kotlinx.coroutines.flow.StateFlow
  */
 @ObjCName("Content", exact = true)
 public interface Content {
+  public val state: StateFlow<State>
+
   /**
    * Immediately begins preparing the widget tree.
    */
@@ -55,19 +56,26 @@ public interface Content {
   public fun bind(view: TreehouseView<*>)
 
   /**
-   * Suspends until content is available; either it is already in the view or it is preloaded and a
-   * call to [bind] will immediately show this content.
-   *
-   * @param untilChangeCount the number of changes received to wait for. This is approximately the
-   *     number of recompositions that had non-empty updates.
-   * @throws [CancellationException] if it's unbound before it returns.
-   */
-  public suspend fun awaitContent(untilChangeCount: Int = 1)
-
-  /**
    * Calling [unbind] without a bound view is safe.
    *
    * This function may only be invoked on [TreehouseDispatchers.ui].
    */
   public fun unbind()
+
+  public data class State(
+    /** How many attempts have been made to load this content. */
+    val loadCount: Int,
+
+    /** True if this content is currently responding to user actions. */
+    val attached: Boolean,
+
+    /**
+     * How many times the content has updated itself. This is approximately the number of
+     * recompositions that had non-empty updates.
+     */
+    val deliveredChangeCount: Int,
+
+    /** The most recent exception that crashed this content. */
+    val uncaughtException: Throwable? = null,
+  )
 }

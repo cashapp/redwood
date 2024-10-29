@@ -24,6 +24,7 @@ import kotlinx.serialization.json.Json
 @ObjCName("TreehouseView", exact = true)
 public interface TreehouseView<W : Any> : RedwoodView<W> {
   public val widgetSystem: WidgetSystem<W>
+  public val dynamicContentWidgetFactory: DynamicContentWidgetFactory<W>
   public val readyForContent: Boolean
   public var readyForContentChangeListener: ReadyForContentChangeListener<W>?
   public var saveCallback: SaveCallback?

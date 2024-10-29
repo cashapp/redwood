@@ -4,16 +4,43 @@ public final class app/cash/redwood/treehouse/ChangeListRenderer {
 }
 
 public abstract interface class app/cash/redwood/treehouse/Content {
-	public abstract fun awaitContent (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun awaitContent$default (Lapp/cash/redwood/treehouse/Content;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun bind (Lapp/cash/redwood/treehouse/TreehouseView;)V
+	public abstract fun getState ()Lkotlinx/coroutines/flow/StateFlow;
 	public abstract fun preload (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lkotlinx/coroutines/flow/StateFlow;)V
 	public abstract fun unbind ()V
+}
+
+public final class app/cash/redwood/treehouse/Content$State {
+	public fun <init> (IZILjava/lang/Throwable;)V
+	public synthetic fun <init> (IZILjava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Z
+	public final fun component3 ()I
+	public final fun component4 ()Ljava/lang/Throwable;
+	public final fun copy (IZILjava/lang/Throwable;)Lapp/cash/redwood/treehouse/Content$State;
+	public static synthetic fun copy$default (Lapp/cash/redwood/treehouse/Content$State;IZILjava/lang/Throwable;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/Content$State;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttached ()Z
+	public final fun getDeliveredChangeCount ()I
+	public final fun getLoadCount ()I
+	public final fun getUncaughtException ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class app/cash/redwood/treehouse/ContentBindingKt {
 	public static final fun bindWhenReady (Lapp/cash/redwood/treehouse/Content;Lapp/cash/redwood/treehouse/TreehouseView;)Ljava/io/Closeable;
 	public static final fun bindWhenReady (Lapp/cash/redwood/treehouse/TreehouseContentSource;Lapp/cash/redwood/treehouse/TreehouseView;Lapp/cash/redwood/treehouse/TreehouseApp;)Ljava/io/Closeable;
+}
+
+public abstract interface class app/cash/redwood/treehouse/Crashed : app/cash/redwood/widget/Widget {
+	public abstract fun restart (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun uncaughtException (Ljava/lang/Throwable;)V
+}
+
+public abstract interface class app/cash/redwood/treehouse/DynamicContentWidgetFactory {
+	public abstract fun Crashed ()Lapp/cash/redwood/treehouse/Crashed;
+	public abstract fun Loading ()Lapp/cash/redwood/treehouse/Loading;
 }
 
 public class app/cash/redwood/treehouse/EventListener {
@@ -58,6 +85,9 @@ public final class app/cash/redwood/treehouse/EventListener$Companion {
 
 public abstract interface class app/cash/redwood/treehouse/EventListener$Factory : java/lang/AutoCloseable {
 	public abstract fun create (Lapp/cash/redwood/treehouse/TreehouseApp;Ljava/lang/String;)Lapp/cash/redwood/treehouse/EventListener;
+}
+
+public abstract interface class app/cash/redwood/treehouse/Loading : app/cash/redwood/widget/Widget {
 }
 
 public final class app/cash/redwood/treehouse/MemoryStateStore : app/cash/redwood/treehouse/StateStore {
@@ -112,6 +142,7 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers 
 }
 
 public abstract interface class app/cash/redwood/treehouse/TreehouseView : app/cash/redwood/widget/RedwoodView {
+	public abstract fun getDynamicContentWidgetFactory ()Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;
 	public abstract fun getReadyForContent ()Z
 	public abstract fun getReadyForContentChangeListener ()Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;
 	public abstract fun getSaveCallback ()Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;
