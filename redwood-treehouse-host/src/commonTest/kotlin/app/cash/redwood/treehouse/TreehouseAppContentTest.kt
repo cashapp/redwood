@@ -20,8 +20,10 @@ import app.cash.redwood.ui.UiConfiguration
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
 import com.example.redwood.testapp.testing.ButtonValue
+import com.example.redwood.testapp.widget.Button
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -76,6 +78,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitInitialCodeLoading()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -92,6 +95,9 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+
+    // Unbinding the content doesn't clear the view.
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
   }
 
   @Test
@@ -112,6 +118,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitCodeLoaded()
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
 
     content.unbind()
     content.awaitCodeDetached()
@@ -130,6 +137,7 @@ class TreehouseAppContentTest {
 
     val view1 = treehouseView("view1")
     content.bind(view1)
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
     eventLog.assertNoEvents()
 
     codeSessionA.appService.uis.single().addWidget("hello")
@@ -140,6 +148,7 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
   }
 
   @Test
@@ -171,12 +180,14 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitInitialCodeLoading()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     codeSessionA.appService.uis.single().addWidget("helloA")
     eventLog.takeEvent("codeSessionA.start()")
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
     content.awaitCodeLoaded()
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
 
     val codeSessionB = codeHost.startCodeSession("codeSessionB")
     content.awaitCodeLoaded(loadCount = 2)
@@ -199,6 +210,7 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
   }
 
   @Test
@@ -223,6 +235,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitInitialCodeLoading()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     content.unbind()
     eventLog.assertNoEvents()
@@ -230,6 +243,7 @@ class TreehouseAppContentTest {
     // Code that arrives after a bound UI unbinds doesn't do anything.
     codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
   }
 
   /**
@@ -246,6 +260,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     codeSessionA.appService.uis.single().addWidget("helloA")
     content.awaitCodeLoaded()
@@ -255,9 +270,11 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
 
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[1].start()")
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     codeSessionA.appService.uis.last().addWidget("helloB")
     content.awaitCodeLoaded(loadCount = 2)
@@ -267,6 +284,7 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionA.app.uis[1].close()")
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
   }
 
   @Test
@@ -357,6 +375,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     eventLog.takeEvent("codeSessionA.app.uis[0].start()")
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     codeSessionA.handleUncaughtException(Exception("boom!"))
     content.awaitCodeDetached("boom!")
@@ -364,8 +383,10 @@ class TreehouseAppContentTest {
       "codeSessionA.app.uis[0].close()",
       "codeSessionA.stop()",
     )
+    assertThat(view1.children.single()).isInstanceOf<Crashed<*>>()
 
     content.unbind()
+    assertThat(view1.children.single()).isInstanceOf<Crashed<*>>()
   }
 
   @Test
@@ -381,6 +402,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitInitialCodeLoading()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
@@ -389,6 +411,7 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached()
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
   }
 
   @Test
@@ -408,6 +431,7 @@ class TreehouseAppContentTest {
       "codeSessionA.app.uis[0].close()",
       "codeSessionA.stop()",
     )
+    assertThat(view1.children.single()).isInstanceOf<Crashed<*>>()
 
     codeHost.startCodeSession("codeSessionB")
     eventLog.takeEvent("codeSessionB.start()")
@@ -416,6 +440,7 @@ class TreehouseAppContentTest {
     content.unbind()
     content.awaitCodeDetached("boom!")
     eventLog.takeEvent("codeSessionB.app.uis[0].close()")
+    assertThat(view1.children.single()).isInstanceOf<Crashed<*>>()
   }
 
   /**
@@ -440,6 +465,9 @@ class TreehouseAppContentTest {
     content.bind(view1)
     content.awaitCodeDetached("boom!")
 
+    // TODO(jwilson): should we make this Crashed instead?
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
+
     content.unbind()
   }
 
@@ -450,6 +478,7 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitInitialCodeLoading()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     val codeSessionA = codeHost.startCodeSession("codeSessionA")
     eventLog.takeEvent("codeSessionA.start()")
@@ -457,6 +486,7 @@ class TreehouseAppContentTest {
 
     codeSessionA.appService.uis.single().addWidget("hello")
     content.awaitCodeLoaded()
+    assertThat(view1.children.single()).isInstanceOf<Button<*>>()
 
     codeSessionA.appService.uis.single().throwOnNextEvent("boom!")
     val button = view1.views.single() as ButtonValue
@@ -465,6 +495,7 @@ class TreehouseAppContentTest {
     eventLog.takeEvent("codeSessionA.app.uis[0].sendEvent()")
     eventLog.takeEvent("codeSessionA.app.uis[0].close()")
     eventLog.takeEvent("codeSessionA.stop()")
+    assertThat(view1.children.single()).isInstanceOf<Crashed<*>>()
 
     content.unbind()
   }
@@ -493,9 +524,11 @@ class TreehouseAppContentTest {
     val view1 = treehouseView("view1")
     content.bind(view1)
     content.awaitInitialCodeLoading()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     content.bind(view1)
     eventLog.assertNoEvents()
+    assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     content.unbind()
   }

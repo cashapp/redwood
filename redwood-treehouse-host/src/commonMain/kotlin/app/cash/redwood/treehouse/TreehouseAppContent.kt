@@ -172,7 +172,9 @@ internal class TreehouseAppContent<A : AppService>(
     // code is coming.
     when (previousCodeState) {
       is CodeState.Idle -> view.showLoading()
-      is CodeState.Running -> previousCodeState.viewContentCodeBinding.initView(view)
+      is CodeState.Running -> {
+        previousCodeState.viewContentCodeBinding.initView(view, mustUpdateView = true)
+      }
     }
 
     val nextCodeState = internalStateFlow.value.codeState
@@ -239,7 +241,7 @@ internal class TreehouseAppContent<A : AppService>(
 
     // If we have a view, tell the new binding about it.
     if (viewState is ViewState.Bound) {
-      nextCodeState.viewContentCodeBinding.initView(viewState.view)
+      nextCodeState.viewContentCodeBinding.initView(viewState.view, mustUpdateView = false)
     }
 
     // If we replaced an old binding, cancel that old binding.
@@ -390,7 +392,10 @@ private class ViewContentCodeBinding<A : AppService>(
   override val uiConfigurations: StateFlow<UiConfiguration>
     get() = uiConfigurationFlow
 
-  fun initView(view: TreehouseView<*>) {
+  fun initView(
+    view: TreehouseView<*>,
+    mustUpdateView: Boolean,
+  ) {
     dispatchers.checkUi()
 
     require(!initViewCalled)
@@ -403,9 +408,15 @@ private class ViewContentCodeBinding<A : AppService>(
     view.saveCallback = this
 
     // Apply all the changes received before we had a view to apply them to.
+    var hasChanges = false
     while (true) {
       val changes = changesAwaitingInitView.removeFirstOrNull() ?: break
+      hasChanges = true
       receiveChangesOnUiDispatcher(changes)
+    }
+
+    if (mustUpdateView && !hasChanges) {
+      view.showLoading()
     }
   }
 
