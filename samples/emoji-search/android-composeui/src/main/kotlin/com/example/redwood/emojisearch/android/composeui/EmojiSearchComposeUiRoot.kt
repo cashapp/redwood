@@ -19,54 +19,52 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.cash.redwood.widget.compose.ComposeWidgetChildren
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.treehouse.Crashed
+import app.cash.redwood.treehouse.DynamicContentWidgetFactory
+import app.cash.redwood.treehouse.Loading
 
-internal class EmojiSearchComposeUiRoot : DynamicContent() {
-  override fun contentState(
-    scope: CoroutineScope,
-    loadCount: Int,
-    attached: Boolean,
-    uncaughtException: Throwable?,
-  ) {
-    super.contentState(scope, loadCount, attached, uncaughtException)
+internal class EmojiSearchDynamicContentWidgetFactory : DynamicContentWidgetFactory<@Composable () -> Unit> {
 
-    if (uncaughtException != null) {
-      scope.launch {
-        delay(2_000.milliseconds)
-        restart?.invoke()
-      }
-    }
-  }
+  override fun Loading() = RealLoading()
 
-  @Composable
-  override fun Render(children: ComposeWidgetChildren) {
-    val uncaughtException = this.uncaughtException
-    if (uncaughtException != null) {
-      Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-      ) {
-        BasicText(uncaughtException.stackTraceToString())
-      }
-      return
-    }
+  override fun Crashed() = RealCrashed()
 
-    if (!attached) {
+  internal class RealLoading : Loading<@Composable () -> Unit> {
+    override var modifier: RedwoodModifier = RedwoodModifier
+    override val value = @Composable {
       Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
       ) {
         BasicText("loading...")
       }
-      return
+    }
+  }
+
+  internal class RealCrashed : Crashed<@Composable () -> Unit> {
+    private var uncaughtException by mutableStateOf<Throwable?>(null)
+
+    override var modifier: RedwoodModifier = RedwoodModifier
+    override val value = @Composable {
+      Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+      ) {
+        BasicText(uncaughtException?.stackTraceToString() ?: "")
+      }
     }
 
-    super.Render(children)
+    override fun uncaughtException(uncaughtException: Throwable) {
+      this.uncaughtException = uncaughtException
+    }
+
+    override fun restart(restart: () -> Unit) {
+    }
   }
 }

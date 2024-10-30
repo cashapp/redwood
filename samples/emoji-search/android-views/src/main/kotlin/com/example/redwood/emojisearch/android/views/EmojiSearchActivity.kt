@@ -97,8 +97,8 @@ class EmojiSearchActivity : ComponentActivity() {
     treehouseLayout = TreehouseLayout(
       context = this,
       widgetSystem = widgetSystem,
-      dynamicContentWidgetFactory = EmojiSearchDynamicContentWidgetFactory(context),
       androidOnBackPressedDispatcher = onBackPressedDispatcher,
+      dynamicContentWidgetFactory = EmojiSearchDynamicContentWidgetFactory(context),
     ).apply {
       treehouseContentSource.bindWhenReady(this, treehouseApp)
     }

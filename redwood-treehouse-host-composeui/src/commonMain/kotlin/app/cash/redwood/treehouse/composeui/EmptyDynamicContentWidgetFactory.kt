@@ -28,6 +28,12 @@ internal object EmptyDynamicContentWidgetFactory :
 
   override fun Crashed() = EmptyCrashed()
 
+  internal class EmptyLoading : Loading<@Composable () -> Unit> {
+    override var modifier: Modifier = Modifier
+    override val value = @Composable {
+    }
+  }
+
   internal class EmptyCrashed : Crashed<@Composable () -> Unit> {
     override var modifier: Modifier = Modifier
     override val value = @Composable {
@@ -37,12 +43,6 @@ internal object EmptyDynamicContentWidgetFactory :
     }
 
     override fun restart(restart: () -> Unit) {
-    }
-  }
-
-  internal class EmptyLoading : Loading<@Composable () -> Unit> {
-    override var modifier: Modifier = Modifier
-    override val value = @Composable {
     }
   }
 }
