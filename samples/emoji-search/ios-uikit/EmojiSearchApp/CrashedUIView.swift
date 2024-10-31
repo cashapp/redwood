@@ -27,28 +27,28 @@ import EmojiSearchKt
 ///                  RuntimeException
 ///                        boom!
 /// ```
-class ExceptionView : UIView {
-    let exception: KotlinThrowable
+class CrashedUIView : Crashed {
 
-    required init(_ exception: KotlinThrowable) {
-        self.exception = exception
-        super.init(frame: CGRect.zero)
+    let emoji = UILabel()
+    let message = UILabel()
+    let centeredContent = UIView()
+    let root = UIView()
+    var value: Any { root }
 
-        let emoji = UILabel()
+    var modifier: Modifier = ExposedKt.modifier()
+
+    required init() {
         emoji.textAlignment = .center
         emoji.font = emoji.font.withSize(40)
         emoji.text = "🦨"
         emoji.numberOfLines = 0
         emoji.translatesAutoresizingMaskIntoConstraints = false
 
-        let message = UILabel()
         message.textAlignment = .center
-        message.text = exceptionToLabel(exception)
         message.font = message.font.withSize(16)
         message.numberOfLines = 0
         message.translatesAutoresizingMaskIntoConstraints = false
 
-        let centeredContent = UIView()
         centeredContent.translatesAutoresizingMaskIntoConstraints = false
         centeredContent.addSubview(emoji)
         centeredContent.addSubview(message)
@@ -66,18 +66,26 @@ class ExceptionView : UIView {
             message.bottomAnchor.constraint(equalTo: centeredContent.bottomAnchor),
         ])
 
-        backgroundColor = UIColor(red: 255/255.0, green: 250/255.0, blue: 225/255.0, alpha: 1.0)
-        translatesAutoresizingMaskIntoConstraints = false
-        addSubview(centeredContent)
+        root.translatesAutoresizingMaskIntoConstraints = false
+        root.addSubview(centeredContent)
         NSLayoutConstraint.activate([
-            centeredContent.centerYAnchor.constraint(equalTo: centerYAnchor),
-            centeredContent.leftAnchor.constraint(equalTo: leftAnchor),
-            centeredContent.rightAnchor.constraint(equalTo: rightAnchor),
+            centeredContent.centerYAnchor.constraint(equalTo: root.centerYAnchor),
+            centeredContent.leftAnchor.constraint(equalTo: root.leftAnchor),
+            centeredContent.rightAnchor.constraint(equalTo: root.rightAnchor),
         ])
+        root.backgroundColor = UIColor(red: 255/255.0, green: 250/255.0, blue: 225/255.0, alpha: 1.0)
+        root.translatesAutoresizingMaskIntoConstraints = false
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func restart(restart: @escaping () -> Void) {
+    }
+
+    func uncaughtException(uncaughtException: KotlinThrowable) {
+        message.text = exceptionToLabel(uncaughtException)
     }
 
     private func exceptionToLabel(_ exception: KotlinThrowable) -> String {

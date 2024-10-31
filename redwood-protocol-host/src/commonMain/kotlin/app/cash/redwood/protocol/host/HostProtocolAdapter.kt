@@ -425,7 +425,7 @@ private class RootProtocolNode<W : Any>(
     }
 
   override fun detach() {
-    // Do nothing because 'children' is owned by the host's TreehouseView.
+    // Do nothing because 'children' is owned by the host's RedwoodView.
   }
 }
 

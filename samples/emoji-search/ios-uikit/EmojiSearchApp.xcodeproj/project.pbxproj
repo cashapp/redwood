@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1069C9E12AF0AECC007D6F07 /* ExceptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1069C9E02AF0AECC007D6F07 /* ExceptionView.swift */; };
+		1067AA792CD3CCC8004FD1D1 /* CrashedUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1067AA782CD3CCC8004FD1D1 /* CrashedUIView.swift */; };
+		1067AA7B2CD3CCE2004FD1D1 /* LoadingUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1067AA7A2CD3CCE2004FD1D1 /* LoadingUIView.swift */; };
 		10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */; };
 		10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4D28C0EA40006F125E /* TextBinding.swift */; };
 		635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635661D421F12B7E00DD7240 /* AppDelegate.swift */; };
@@ -23,7 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1069C9E02AF0AECC007D6F07 /* ExceptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExceptionView.swift; sourceTree = "<group>"; };
+		1067AA782CD3CCC8004FD1D1 /* CrashedUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashedUIView.swift; sourceTree = "<group>"; };
+		1067AA7A2CD3CCE2004FD1D1 /* LoadingUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingUIView.swift; sourceTree = "<group>"; };
 		10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosEmojiSearchWidgetFactory.swift; sourceTree = "<group>"; };
 		10AA3D4D28C0EA40006F125E /* TextBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBinding.swift; sourceTree = "<group>"; };
 		635661D121F12B7E00DD7240 /* EmojiSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,7 +86,8 @@
 				CB9F76552810A8A8008CF457 /* IosHostApi.swift */,
 				10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */,
 				10AA3D4D28C0EA40006F125E /* TextBinding.swift */,
-				1069C9E02AF0AECC007D6F07 /* ExceptionView.swift */,
+				1067AA782CD3CCC8004FD1D1 /* CrashedUIView.swift */,
+				1067AA7A2CD3CCE2004FD1D1 /* LoadingUIView.swift */,
 			);
 			path = EmojiSearchApp;
 			sourceTree = "<group>";
@@ -190,13 +193,14 @@
 			files = (
 				10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */,
 				CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */,
-				1069C9E12AF0AECC007D6F07 /* ExceptionView.swift in Sources */,
+				1067AA792CD3CCC8004FD1D1 /* CrashedUIView.swift in Sources */,
 				C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */,
 				10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */,
 				635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */,
 				AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */,
 				CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */,
 				C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */,
+				1067AA7B2CD3CCE2004FD1D1 /* LoadingUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

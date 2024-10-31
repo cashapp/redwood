@@ -38,8 +38,9 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
         let widgetSystem = EmojiSearchTreehouseWidgetSystem(treehouseApp: treehouseApp)
-        let treehouseView = EmojiSearchTreehouseUIView(
-            widgetSystem: widgetSystem
+        let treehouseView = TreehouseUIView(
+            widgetSystem: widgetSystem,
+            dynamicContentWidgetFactory: EmojiSearchDynamicContentWidgetFactory()
         )
         let content = treehouseApp.createContent(
             source: EmojiSearchContent()
@@ -72,35 +73,13 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     }
 }
 
-class EmojiSearchTreehouseUIView : TreehouseUIView {
-
-    init(
-        widgetSystem: EmojiSearchTreehouseWidgetSystem
-    ) {
-        super.init(widgetSystem: widgetSystem)
+class EmojiSearchDynamicContentWidgetFactory : DynamicContentWidgetFactory {
+    func Crashed() -> any Crashed {
+        return CrashedUIView()
     }
 
-    override func contentState(
-        loadCount: Int32,
-        attached: Bool,
-        uncaughtException: KotlinThrowable?
-    ) {
-        super.contentState(loadCount: loadCount, attached: attached, uncaughtException: uncaughtException)
-
-        if uncaughtException != nil {
-            let exceptionView = ExceptionView(uncaughtException!)
-            exceptionView.translatesAutoresizingMaskIntoConstraints = false
-            value.addSubview(exceptionView)
-            NSLayoutConstraint.activate([
-                exceptionView.topAnchor.constraint(equalTo: value.topAnchor),
-                exceptionView.leftAnchor.constraint(equalTo: value.leftAnchor),
-                exceptionView.rightAnchor.constraint(equalTo: value.rightAnchor),
-                exceptionView.bottomAnchor.constraint(equalTo: value.bottomAnchor),
-            ])
-        }
-    }
-
-    override func restart(restart: (() -> Void)? = nil) {
+    func Loading() -> any Loading {
+        return LoadingUIView()
     }
 }
 

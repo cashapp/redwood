@@ -197,7 +197,8 @@ open class app.cash.redwood.treehouse/EventListener { // app.cash.redwood.treeho
 }
 
 open class app.cash.redwood.treehouse/TreehouseUIView : app.cash.redwood.treehouse/TreehouseView<platform.UIKit/UIView>, app.cash.redwood.widget/RedwoodUIView { // app.cash.redwood.treehouse/TreehouseUIView|null[0]
-    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>, app.cash.redwood.treehouse/DynamicContentWidgetFactory<platform.UIKit/UIView> = ...) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>;app.cash.redwood.treehouse.DynamicContentWidgetFactory<platform.UIKit.UIView>){}[0]
+    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>){}[0]
+    constructor <init>(app.cash.redwood.treehouse/TreehouseView.WidgetSystem<platform.UIKit/UIView>, app.cash.redwood.treehouse/DynamicContentWidgetFactory<platform.UIKit/UIView>) // app.cash.redwood.treehouse/TreehouseUIView.<init>|<init>(app.cash.redwood.treehouse.TreehouseView.WidgetSystem<platform.UIKit.UIView>;app.cash.redwood.treehouse.DynamicContentWidgetFactory<platform.UIKit.UIView>){}[0]
 
     open val dynamicContentWidgetFactory // app.cash.redwood.treehouse/TreehouseUIView.dynamicContentWidgetFactory|{}dynamicContentWidgetFactory[0]
         open fun <get-dynamicContentWidgetFactory>(): app.cash.redwood.treehouse/DynamicContentWidgetFactory<platform.UIKit/UIView> // app.cash.redwood.treehouse/TreehouseUIView.dynamicContentWidgetFactory.<get-dynamicContentWidgetFactory>|<get-dynamicContentWidgetFactory>(){}[0]
