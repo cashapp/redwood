@@ -29,12 +29,21 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UILabel
+import platform.UIKit.UILayoutConstraintAxisVertical
+import platform.UIKit.UIScrollView
+import platform.UIKit.UIStackView
+import platform.UIKit.UIStackViewAlignmentLeading
+import platform.UIKit.UIStackViewDistributionFill
 import platform.UIKit.UIView
 
 object UIViewTestWidgetFactory : TestWidgetFactory<UIView> {
   override fun color() = UIViewColor()
 
   override fun text() = UIViewText()
+
+  override fun column() = UIViewSimpleColumn()
+
+  override fun scrollWrapper() = UIViewScrollWrapper()
 }
 
 fun Int.toUIColor(): UIColor {
@@ -104,4 +113,39 @@ class UIViewColor : Color<UIView> {
     value.setFrame(CGRectMake(0.0, 0.0, width, height))
     value.invalidateIntrinsicContentSize()
   }
+}
+
+class UIViewSimpleColumn : SimpleColumn<UIView> {
+  override var modifier: Modifier = Modifier
+
+  override val value = UIStackView(CGRectZero.readValue()).apply {
+    this.axis = UILayoutConstraintAxisVertical
+    this.alignment = UIStackViewAlignmentLeading
+    this.distribution = UIStackViewDistributionFill
+  }
+
+  override fun add(child: UIView) {
+    value.addArrangedSubview(child)
+  }
+}
+
+class UIViewScrollWrapper : ScrollWrapper<UIView> {
+  override var modifier: Modifier = Modifier
+
+  override val value = UIScrollView(CGRectZero.readValue())
+
+  override var content: UIView?
+    get() = value.subviews().firstOrNull() as UIView?
+    set(value) {
+      val scrollView = this@UIViewScrollWrapper.value
+      (scrollView.subviews.firstOrNull() as UIView?)?.removeFromSuperview()
+      if (value == null) return
+
+      scrollView.addSubview(value)
+      value.translatesAutoresizingMaskIntoConstraints = false
+      value.leadingAnchor.constraintEqualToAnchor(scrollView.leadingAnchor).active = true
+      value.topAnchor.constraintEqualToAnchor(scrollView.topAnchor).active = true
+      value.trailingAnchor.constraintEqualToAnchor(scrollView.trailingAnchor).active = true
+      value.bottomAnchor.constraintEqualToAnchor(scrollView.bottomAnchor).active = true
+    }
 }

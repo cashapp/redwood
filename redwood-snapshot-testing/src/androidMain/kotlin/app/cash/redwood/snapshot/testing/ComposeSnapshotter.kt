@@ -22,7 +22,7 @@ class ComposeSnapshotter(
   private val paparazzi: Paparazzi,
   private val widget: @Composable () -> Unit,
 ) : Snapshotter {
-  override fun snapshot(name: String?) {
+  override fun snapshot(name: String?, scrolling: Boolean) {
     paparazzi.snapshot(name, widget)
   }
 }

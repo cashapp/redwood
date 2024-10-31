@@ -24,7 +24,7 @@ import app.cash.redwood.widget.Widget
  *
  * The text is centered vertically.
  */
-interface Text<T : Any> : Widget<T> {
+interface Text<W : Any> : Widget<W> {
   val measureCount: Int
   fun text(text: String)
   fun bgColor(color: Int)

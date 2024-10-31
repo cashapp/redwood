@@ -22,7 +22,22 @@ class ViewSnapshotter(
   private val paparazzi: Paparazzi,
   private val view: View,
 ) : Snapshotter {
-  override fun snapshot(name: String?) {
+  override fun snapshot(name: String?, scrolling: Boolean) {
     paparazzi.snapshot(view = view, name = name)
+
+    if (scrolling) {
+      var scrollCount = 0
+      while (view.canScrollVertically(1)) {
+        view.scrollBy(0, view.height)
+        scrollCount++
+
+        check(scrollCount < 15) {
+          "This view has been scrolled 15 times! Bad input?"
+        }
+
+        paparazzi.snapshot(view = view, name = "${name.orEmpty()}_$scrollCount")
+      }
+      view.scrollTo(0, 0)
+    }
   }
 }

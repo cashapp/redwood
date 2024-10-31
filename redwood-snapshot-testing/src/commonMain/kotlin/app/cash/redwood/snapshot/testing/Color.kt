@@ -18,7 +18,7 @@ package app.cash.redwood.snapshot.testing
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.widget.Widget
 
-interface Color<T : Any> : Widget<T> {
+interface Color<W : Any> : Widget<W> {
   fun width(width: Dp)
   fun height(height: Dp)
   fun color(color: Int)

@@ -15,16 +15,11 @@
  */
 package app.cash.redwood.snapshot.testing
 
+import app.cash.redwood.widget.Widget
+
 /**
- * Captures snapshots of a subject view.
- *
- * The subject of the view hierarchy must do its own layout invalidation. This is particularly
- * important for iOS UIView layouts, where the application layer is responsible for tracking layout
- * changes.
+ * Wraps a widget in a container that scrolls vertically.
  */
-interface Snapshotter {
-  fun snapshot(
-    name: String? = null,
-    scrolling: Boolean = false,
-  )
+interface ScrollWrapper<W : Any> : Widget<W> {
+  var content: W?
 }

@@ -17,11 +17,15 @@ package app.cash.redwood.snapshot.testing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +44,10 @@ object ComposeUiTestWidgetFactory : TestWidgetFactory<@Composable () -> Unit> {
   override fun color(): ColorWidget<@Composable () -> Unit> = ComposeUiColor()
 
   override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
+
+  override fun column(): SimpleColumn<@Composable () -> Unit> = ComposeUiColumn()
+
+  override fun scrollWrapper(): ScrollWrapper<@Composable () -> Unit> = ComposeUiScrollWrapper()
 }
 
 class ComposeUiText : Text<@Composable () -> Unit> {
@@ -97,4 +105,37 @@ class ComposeUiColor : ColorWidget<@Composable () -> Unit> {
 
 internal fun Dp.toDp(): ComposeDp {
   return ComposeDp(toPlatformDp().toFloat())
+}
+
+class ComposeUiColumn : SimpleColumn<@Composable () -> Unit> {
+  private val children = mutableStateListOf<@Composable () -> Unit>()
+
+  override var modifier: RedwoodModifier = RedwoodModifier
+
+  override val value = @Composable {
+    Column {
+      for (child in children) {
+        child()
+      }
+    }
+  }
+
+  override fun add(child: @Composable () -> Unit) {
+    children.add(child)
+  }
+}
+
+class ComposeUiScrollWrapper : ScrollWrapper<@Composable () -> Unit> {
+  override var content: (@Composable () -> Unit)? = null
+
+  override var modifier: RedwoodModifier = RedwoodModifier
+
+  override val value = @Composable {
+    val state = rememberScrollState()
+    Column(
+      modifier = Modifier.verticalScroll(state),
+    ) {
+      content?.invoke()
+    }
+  }
 }

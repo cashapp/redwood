@@ -21,6 +21,8 @@ import app.cash.redwood.ui.Dp
 interface TestWidgetFactory<W : Any> {
   fun color(): Color<W>
   fun text(): Text<W>
+  fun column(): SimpleColumn<W>
+  fun scrollWrapper(): ScrollWrapper<W>
 }
 
 fun <W : Any> TestWidgetFactory<W>.text(

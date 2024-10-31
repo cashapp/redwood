@@ -20,6 +20,7 @@ import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import app.cash.redwood.widget.AbstractRedwoodViewTest
 import app.cash.redwood.widget.RedwoodUIView
+import app.cash.redwood.widget.Widget
 import platform.UIKit.UIView
 
 class UIViewRedwoodViewTest(
@@ -31,4 +32,7 @@ class UIViewRedwoodViewTest(
 
   override fun snapshotter(redwoodView: RedwoodUIView) =
     UIViewSnapshotter.framed(callback, redwoodView.value)
+
+  override fun snapshotter(widget: Widget<UIView>) =
+    UIViewSnapshotter.framed(callback, widget.value)
 }

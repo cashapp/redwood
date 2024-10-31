@@ -15,16 +15,11 @@
  */
 package app.cash.redwood.snapshot.testing
 
+import app.cash.redwood.widget.Widget
+
 /**
- * Captures snapshots of a subject view.
- *
- * The subject of the view hierarchy must do its own layout invalidation. This is particularly
- * important for iOS UIView layouts, where the application layer is responsible for tracking layout
- * changes.
+ * Delegates to the host platform's column-like layout without any other capabilities.
  */
-interface Snapshotter {
-  fun snapshot(
-    name: String? = null,
-    scrolling: Boolean = false,
-  )
+interface SimpleColumn<W : Any> : Widget<W> {
+  fun add(child: W)
 }
