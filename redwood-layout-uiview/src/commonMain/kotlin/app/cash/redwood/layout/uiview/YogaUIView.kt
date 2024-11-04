@@ -38,8 +38,8 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
 
   var onScroll: ((Px) -> Unit)? = null
 
-  private var widthForIntrinsicSize = UIViewNoIntrinsicMetric
-  private var heightForIntrinsicSize = UIViewNoIntrinsicMetric
+  private var fillWidth = UIViewNoIntrinsicMetric
+  private var fillHeight = UIViewNoIntrinsicMetric
 
   init {
     // TODO: Support scroll indicators.
@@ -64,16 +64,22 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
   override fun setBounds(bounds: CValue<CGRect>) {
     val newWidth = bounds.useContents { size.width }
     val newHeight = bounds.useContents { size.height }
-    if (isColumn()) {
-      if (widthForIntrinsicSize != newWidth) {
-        invalidateIntrinsicContentSize()
-        this.widthForIntrinsicSize = newWidth
-      }
-    } else {
-      if (heightForIntrinsicSize != newHeight) {
-        invalidateIntrinsicContentSize()
-        this.heightForIntrinsicSize = newHeight
-      }
+
+    // Invalidate first because it clears fillWidth and fillHeight.
+    if (
+      (widthConstraint == Constraint.Fill && newWidth != fillWidth) ||
+      (heightConstraint == Constraint.Fill && newHeight != fillHeight)
+    ) {
+      invalidateIntrinsicContentSize()
+    }
+
+    this.fillWidth = when (widthConstraint) {
+      Constraint.Fill -> newWidth
+      else -> UIViewNoIntrinsicMetric
+    }
+    this.fillHeight = when (heightConstraint) {
+      Constraint.Fill -> newHeight
+      else -> UIViewNoIntrinsicMetric
     }
 
     super.setBounds(bounds)
@@ -81,14 +87,14 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
 
   override fun invalidateIntrinsicContentSize() {
     super.invalidateIntrinsicContentSize()
-    this.widthForIntrinsicSize = UIViewNoIntrinsicMetric
-    this.heightForIntrinsicSize = UIViewNoIntrinsicMetric
+    this.fillWidth = UIViewNoIntrinsicMetric
+    this.fillHeight = UIViewNoIntrinsicMetric
   }
 
   override fun intrinsicContentSize(): CValue<CGSize> {
     return calculateLayout(
-      width = widthForIntrinsicSize.toYogaWithWidthConstraint(),
-      height = heightForIntrinsicSize.toYogaWithWidthConstraint(),
+      width = fillWidth.toYogaWithWidthConstraint(),
+      height = fillHeight.toYogaWithWidthConstraint(),
     )
   }
 
