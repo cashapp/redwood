@@ -32,8 +32,8 @@ import platform.UIKit.UILabel
 import platform.UIKit.UILayoutConstraintAxisVertical
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIStackView
-import platform.UIKit.UIStackViewAlignmentLeading
-import platform.UIKit.UIStackViewDistributionFill
+import platform.UIKit.UIStackViewAlignmentFill
+import platform.UIKit.UIStackViewDistributionEqualSpacing
 import platform.UIKit.UIView
 
 object UIViewTestWidgetFactory : TestWidgetFactory<UIView> {
@@ -120,8 +120,8 @@ class UIViewSimpleColumn : SimpleColumn<UIView> {
 
   override val value = UIStackView(CGRectZero.readValue()).apply {
     this.axis = UILayoutConstraintAxisVertical
-    this.alignment = UIStackViewAlignmentLeading
-    this.distribution = UIStackViewDistributionFill
+    this.alignment = UIStackViewAlignmentFill
+    this.distribution = UIStackViewDistributionEqualSpacing
   }
 
   override fun add(child: UIView) {
@@ -144,8 +144,8 @@ class UIViewScrollWrapper : ScrollWrapper<UIView> {
       scrollView.addSubview(value)
       value.translatesAutoresizingMaskIntoConstraints = false
       value.leadingAnchor.constraintEqualToAnchor(scrollView.leadingAnchor).active = true
+      value.widthAnchor.constraintEqualToAnchor(scrollView.widthAnchor).active = true
       value.topAnchor.constraintEqualToAnchor(scrollView.topAnchor).active = true
-      value.trailingAnchor.constraintEqualToAnchor(scrollView.trailingAnchor).active = true
       value.bottomAnchor.constraintEqualToAnchor(scrollView.bottomAnchor).active = true
     }
 }

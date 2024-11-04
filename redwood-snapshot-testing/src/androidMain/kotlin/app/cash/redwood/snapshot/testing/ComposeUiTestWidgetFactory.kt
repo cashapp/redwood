@@ -15,6 +15,9 @@
  */
 package app.cash.redwood.snapshot.testing
 
+import androidx.compose.ui.unit.Dp as ComposeDp
+import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.snapshot.testing.Color as ColorWidget
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,11 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp as ComposeDp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.cash.redwood.Modifier as RedwoodModifier
-import app.cash.redwood.snapshot.testing.Color as ColorWidget
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.toPlatformDp
 
@@ -113,6 +113,7 @@ class ComposeUiColumn : SimpleColumn<@Composable () -> Unit> {
   override var modifier: RedwoodModifier = RedwoodModifier
 
   override val value = @Composable {
+    // We'd like to pass Modifier.fillMaxWidth() to all children.
     Column {
       for (child in children) {
         child()
