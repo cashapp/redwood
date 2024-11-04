@@ -16,6 +16,7 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
+import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
@@ -37,6 +38,9 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
 
   var onScroll: ((Px) -> Unit)? = null
 
+  private var widthForIntrinsicSize = UIViewNoIntrinsicMetric
+  private var heightForIntrinsicSize = UIViewNoIntrinsicMetric
+
   init {
     // TODO: Support scroll indicators.
     scrollEnabled = false
@@ -45,7 +49,48 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
     contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever
   }
 
-  override fun intrinsicContentSize(): CValue<CGSize> = calculateLayout()
+  /**
+   * The intrinsic size is broken by design if any subview's height depends on its width (or
+   * vice-versa). For example, if a subview is UILabel that wraps, we need to know how wide the
+   * label is before we can compute that label's height.
+   *
+   * We work around this by:
+   *
+   *  1. Making [intrinsicContentSize] depend on the mostly-recently applied bounds
+   *  2. Invalidating it each time the bounds change
+   *
+   * This will result in an additional layout pass when the parent view uses [intrinsicContentSize].
+   */
+  override fun setBounds(bounds: CValue<CGRect>) {
+    val newWidth = bounds.useContents { size.width }
+    val newHeight = bounds.useContents { size.height }
+    if (isColumn()) {
+      if (widthForIntrinsicSize != newWidth) {
+        invalidateIntrinsicContentSize()
+        this.widthForIntrinsicSize = newWidth
+      }
+    } else {
+      if (heightForIntrinsicSize != newHeight) {
+        invalidateIntrinsicContentSize()
+        this.heightForIntrinsicSize = newHeight
+      }
+    }
+
+    super.setBounds(bounds)
+  }
+
+  override fun invalidateIntrinsicContentSize() {
+    super.invalidateIntrinsicContentSize()
+    this.widthForIntrinsicSize = UIViewNoIntrinsicMetric
+    this.heightForIntrinsicSize = UIViewNoIntrinsicMetric
+  }
+
+  override fun intrinsicContentSize(): CValue<CGSize> {
+    return calculateLayout(
+      width = widthForIntrinsicSize.toYogaWithWidthConstraint(),
+      height = heightForIntrinsicSize.toYogaWithWidthConstraint(),
+    )
+  }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
     return size.useContents<CGSize, CValue<CGSize>> {

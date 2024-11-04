@@ -885,6 +885,63 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     snapshotter(root.value).snapshot()
   }
+
+  @Test fun testIntrinsicContentSizeWhenSubviewsWrap() {
+    val fullWidthParent = widgetFactory.column()
+
+    flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(horizontal = 30.dp))
+        add(widgetFactory.text("A ".repeat(50)))
+        add(widgetFactory.text("B ".repeat(50)))
+        onEndChanges()
+      }
+      .also { fullWidthParent.add(it.value) }
+
+    flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(horizontal = 40.dp))
+        add(widgetFactory.text("C ".repeat(50)))
+        add(widgetFactory.text("D ".repeat(50)))
+        onEndChanges()
+      }
+      .also { fullWidthParent.add(it.value) }
+
+    flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(horizontal = 50.dp))
+        add(widgetFactory.text("E ".repeat(50)))
+        add(widgetFactory.text("F ".repeat(50)))
+        onEndChanges()
+      }
+      .also { fullWidthParent.add(it.value) }
+
+    val scrollWrapper = widgetFactory.scrollWrapper()
+    scrollWrapper.content = fullWidthParent.value
+    snapshotter(scrollWrapper.value).snapshot(scrolling = true)
+  }
+
+  @Test fun testIntrinsicContentSizeWhenSubviewsRequireScrolling() {
+    val column = flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Wrap)
+        margin(Margin(horizontal = 50.dp))
+        add(widgetFactory.text("AAAAA BBBB CCC DD E ".repeat(50)))
+        add(widgetFactory.text("FFFFF GGGG HHH II J ".repeat(50)))
+        onEndChanges()
+      }
+
+    val scrollWrapper = widgetFactory.scrollWrapper()
+    scrollWrapper.content = column.value
+    snapshotter(scrollWrapper.value).snapshot(scrolling = true)
+  }
 }
 
 interface TestFlexContainer<T : Any> :

@@ -13,6 +13,7 @@ Changed:
 Fixed:
 - Fix a layout bug where children of fixed-with `Row` containers were assigned the wrong width.
 - Fix inconsistencies between iOS and Android for `Column` and `Row` layouts.
+- Fix a layout bug where `Row` and `Column` layouts reported the wrong dimensions if their subviews could wrap.
 - Correctly update the layout when a Box's child's modifiers are removed.
 - Fix a layout bug where children of `Box` containers were not measured properly.
 
