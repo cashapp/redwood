@@ -36,7 +36,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 
-xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.90.2'
+xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.90.3'
 
 atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.26.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.9.20"
