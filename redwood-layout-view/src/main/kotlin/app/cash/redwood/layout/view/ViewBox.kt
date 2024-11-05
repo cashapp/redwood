@@ -122,15 +122,18 @@ private class BoxViewGroup(
       maxHeight = maxOf(maxHeight, measurer.height + measurer.marginHeight)
     }
 
-    val resultWidth = when {
-      widthMode == MeasureSpec.EXACTLY -> widthSize
-      widthMode == MeasureSpec.AT_MOST -> maxWidth.coerceAtMost(widthSize)
-      else -> maxWidth
+    val boxMarginWidth = measurer.boxMarginStart + measurer.boxMarginEnd
+    val boxMarginHeight = measurer.boxMarginTop + measurer.boxMarginBottom
+
+    val resultWidth = when (widthMode) {
+      MeasureSpec.EXACTLY -> widthSize
+      MeasureSpec.AT_MOST -> (maxWidth + boxMarginWidth).coerceAtMost(widthSize)
+      else -> maxWidth + boxMarginWidth
     }
-    val resultHeight = when {
-      heightMode == MeasureSpec.EXACTLY -> heightSize
-      heightMode == MeasureSpec.AT_MOST -> maxHeight.coerceAtMost(heightSize)
-      else -> maxHeight
+    val resultHeight = when (heightMode) {
+      MeasureSpec.EXACTLY -> heightSize
+      MeasureSpec.AT_MOST -> (maxHeight + boxMarginHeight).coerceAtMost(heightSize)
+      else -> maxHeight + boxMarginHeight
     }
 
     setMeasuredDimension(resultWidth, resultHeight)

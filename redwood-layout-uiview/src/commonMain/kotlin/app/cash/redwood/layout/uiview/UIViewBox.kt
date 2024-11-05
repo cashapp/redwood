@@ -36,12 +36,12 @@ import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
-import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.darwin.NSInteger
 
 internal class UIViewBox :
@@ -118,6 +118,9 @@ internal class UIViewBox :
       }
     }
 
+    override fun intrinsicContentSize() =
+      sizeThatFits(CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric))
+
     override fun layoutSubviews() {
       super.layoutSubviews()
 
@@ -126,7 +129,8 @@ internal class UIViewBox :
         boxHorizontalAlignment = horizontalAlignment,
         boxVerticalAlignment = verticalAlignment,
         boxMargin = margin,
-        boxFrame = frame,
+        boxWidth = frame.useContents { size.width },
+        boxHeight = frame.useContents { size.height },
       )
 
       for (widget in children.widgets) {
@@ -141,7 +145,8 @@ internal class UIViewBox :
         boxHorizontalAlignment = horizontalAlignment,
         boxVerticalAlignment = verticalAlignment,
         boxMargin = margin,
-        boxFrame = frame,
+        boxWidth = size.useContents { width },
+        boxHeight = size.useContents { height },
       )
 
       var maxWidth = 0.0
@@ -152,7 +157,10 @@ internal class UIViewBox :
         maxHeight = maxOf(maxHeight, measurer.height + measurer.marginHeight)
       }
 
-      return CGSizeMake(maxWidth, maxHeight)
+      val boxMarginWidth = measurer.boxMarginStart + measurer.boxMarginEnd
+      val boxMarginHeight = measurer.boxMarginTop + measurer.boxMarginBottom
+
+      return CGSizeMake(maxWidth + boxMarginWidth, maxHeight + boxMarginHeight)
     }
   }
 }
@@ -201,7 +209,8 @@ private class Measurer {
     boxHorizontalAlignment: CrossAxisAlignment,
     boxVerticalAlignment: CrossAxisAlignment,
     boxMargin: Margin,
-    boxFrame: CValue<CGRect>,
+    boxWidth: CGFloat,
+    boxHeight: CGFloat,
   ) {
     this.boxDensity = boxDensity
     this.boxHorizontalAlignment = boxHorizontalAlignment
@@ -212,9 +221,13 @@ private class Measurer {
       boxMarginTop = boxMargin.top.toPx()
       boxMarginBottom = boxMargin.bottom.toPx()
     }
-    boxFrame.useContents {
-      frameWidth = (size.width - boxMarginStart - boxMarginEnd).coerceAtLeast(0.0)
-      frameHeight = (size.height - boxMarginTop - boxMarginBottom).coerceAtLeast(0.0)
+    this.frameWidth = when {
+      boxWidth == UIViewNoIntrinsicMetric -> UIViewNoIntrinsicMetric
+      else -> (boxWidth - boxMarginStart - boxMarginEnd).coerceAtLeast(0.0)
+    }
+    this.frameHeight = when {
+      boxHeight == UIViewNoIntrinsicMetric -> UIViewNoIntrinsicMetric
+      else -> (boxHeight - boxMarginTop - boxMarginBottom).coerceAtLeast(0.0)
     }
   }
 
@@ -253,8 +266,14 @@ private class Measurer {
       }
     }
 
-    val availableWidth = (frameWidth - marginWidth).coerceAtLeast(0.0)
-    val availableHeight = (frameHeight - marginHeight).coerceAtLeast(0.0)
+    val availableWidth = when {
+      frameWidth == UIViewNoIntrinsicMetric -> UIViewNoIntrinsicMetric
+      else -> (frameWidth - marginWidth).coerceAtLeast(0.0)
+    }
+    val availableHeight = when {
+      frameHeight == UIViewNoIntrinsicMetric -> UIViewNoIntrinsicMetric
+      else -> (frameHeight - marginHeight).coerceAtLeast(0.0)
+    }
 
     val fitWidth = when {
       !requestedWidth.isNaN() -> requestedWidth

@@ -362,6 +362,49 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
+  fun testBoxMeasurementIncludesMargins() {
+    val container = widgetFactory.column()
+    container.add(
+      box().apply {
+        children.insert(0, widgetFactory.text("box 1"))
+      }.value,
+    )
+
+    container.add(
+      box().apply {
+        horizontalAlignment(CrossAxisAlignment.End)
+        margin(Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp))
+        children.insert(0, widgetFactory.text("box 2"))
+      }.value,
+    )
+
+    container.add(
+      box().apply {
+        horizontalAlignment(CrossAxisAlignment.Center)
+        children.insert(0, widgetFactory.text("box 3"))
+      }.value,
+    )
+
+    container.add(
+      box().apply {
+        margin(Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp))
+        children.insert(0, widgetFactory.text("box 4"))
+      }.value,
+    )
+
+    container.add(
+      box().apply {
+        horizontalAlignment(CrossAxisAlignment.End)
+        children.insert(0, widgetFactory.text("box 5"))
+      }.value,
+    )
+
+    val scrollWrapper = widgetFactory.scrollWrapper()
+    scrollWrapper.content = container.value
+    snapshotter(scrollWrapper.value).snapshot()
+  }
+
+  @Test
   fun testMarginsAndAlignment() {
     val widget = box().apply {
       width(Constraint.Fill)
