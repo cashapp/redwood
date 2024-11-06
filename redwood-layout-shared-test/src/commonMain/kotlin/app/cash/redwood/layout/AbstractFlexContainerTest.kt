@@ -942,6 +942,40 @@ abstract class AbstractFlexContainerTest<T : Any> {
     scrollWrapper.content = column.value
     snapshotter(scrollWrapper.value).snapshot(scrolling = true)
   }
+
+  /**
+   * We had a bug where content would shrink to its minimum required size with [Overflow.Scroll],
+   * even if the enclosing container didn't require that.
+   */
+  @Test fun testFillAndOverflowScroll() {
+    val column = flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+        overflow(Overflow.Scroll)
+        crossAxisAlignment(CrossAxisAlignment.Center)
+      }
+
+    column.add(widgetFactory.text("top"))
+
+    column.add(
+      flexContainer(FlexDirection.Column)
+        .apply {
+          modifier = FlexImpl(1.0)
+          width(Constraint.Fill)
+          height(Constraint.Fill)
+          crossAxisAlignment(CrossAxisAlignment.Center)
+          mainAxisAlignment(MainAxisAlignment.Center)
+          add(widgetFactory.text("middle"))
+          onEndChanges()
+        },
+    )
+
+    column.add(widgetFactory.text("bottom"))
+    column.onEndChanges()
+
+    snapshotter(column.value).snapshot()
+  }
 }
 
 interface TestFlexContainer<T : Any> :

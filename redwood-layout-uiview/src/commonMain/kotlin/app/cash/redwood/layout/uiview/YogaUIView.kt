@@ -110,28 +110,35 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
   override fun layoutSubviews() {
     super.layoutSubviews()
 
-    // Based on the constraints of Fill or Wrap, we
-    // calculate a size that the container should fit in.
-    val boundsSize = bounds.useContents {
-      CGSizeMake(size.width, size.height)
-    }
+    // Calculate a size that the container should fit in.
+    val boundsWidth = bounds.useContents { size.width }
+    val boundsHeight = bounds.useContents { size.height }
 
-    val contentSize = when {
+    var contentWidth = boundsWidth
+    var contentHeight = boundsHeight
+
+    when {
       // If we're not scrolling, the contentSize should equal the size of the view.
-      !scrollEnabled -> boundsSize
+      !scrollEnabled -> Unit
 
       // When scrolling is enabled, we want to calculate and apply the contentSize
       // separately and have it grow a much as needed in the flexDirection.
       // This duplicates the calculation we're doing above, and should be
       // combined into one call.
-      isColumn() -> calculateLayout(width = boundsSize.useContents { width.toYoga() })
-      else -> calculateLayout(height = boundsSize.useContents { height.toYoga() })
+      isColumn() -> {
+        val unboundedSize = calculateLayout(width = boundsWidth.toYoga())
+        contentHeight = maxOf(boundsHeight, unboundedSize.useContents { height })
+      }
+      else -> {
+        val unboundedSize = calculateLayout(height = boundsHeight.toYoga())
+        contentWidth = maxOf(boundsWidth, unboundedSize.useContents { width })
+      }
     }
 
-    setContentSize(contentSize)
+    setContentSize(CGSizeMake(contentWidth, contentHeight))
     calculateLayout(
-      width = contentSize.useContents { width.toYoga() },
-      height = contentSize.useContents { height.toYoga() },
+      width = contentWidth.toYoga(),
+      height = contentHeight.toYoga(),
     )
 
     // Layout the nodes based on the calculatedLayouts above.
