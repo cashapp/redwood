@@ -366,7 +366,7 @@ public class HostProtocolAdapter<W : Any>(
       // Reuse the node.
       val old = nodes.put(widgetId.value, pooled)
       require(old == null) {
-        "Insert attempted to replace existing widget with ID $widgetId"
+        "Insert attempted to replace existing widget with ID ${widgetId.value}"
       }
 
       val skippedCreate = changesAndNulls[changeIndexForCreate] as Create
