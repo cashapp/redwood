@@ -130,7 +130,9 @@ public abstract class app/cash/redwood/treehouse/TreehouseApp$Spec {
 }
 
 public final class app/cash/redwood/treehouse/TreehouseAppFactoryAndroidKt {
+	public static final fun TreehouseAppFactory (Landroid/content/Context;Lapp/cash/zipline/loader/ZiplineHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
 	public static final fun TreehouseAppFactory (Landroid/content/Context;Lokhttp3/OkHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
+	public static synthetic fun TreehouseAppFactory$default (Landroid/content/Context;Lapp/cash/zipline/loader/ZiplineHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
 	public static synthetic fun TreehouseAppFactory$default (Landroid/content/Context;Lokhttp3/OkHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
 }
 
