@@ -36,6 +36,7 @@ import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
+import kotlin.collections.mutableMapOf
 import kotlin.native.ObjCName
 
 /**
@@ -60,8 +61,9 @@ public class HostProtocolAdapter<W : Any>(
     is GeneratedHostProtocol -> factory
   }
 
+  // TODO Use MutableIntObjectMap once https://issuetracker.google.com/issues/378077858 is fixed.
   private val nodes =
-    mutableIntObjectMapOf<ProtocolNode<W>>(Id.Root.value, RootProtocolNode(container))
+    mutableMapOf<Int, ProtocolNode<W>>(Id.Root.value to RootProtocolNode(container))
 
   private val removeNodeById = IdVisitor { nodes.remove(it.value) }
 
@@ -173,7 +175,7 @@ public class HostProtocolAdapter<W : Any>(
   public fun close() {
     closed = true
 
-    nodes.forEachValue { node ->
+    nodes.values.forEach { node ->
       node.detach()
     }
     nodes.clear()
@@ -235,9 +237,10 @@ public class HostProtocolAdapter<W : Any>(
       // Must have a Create node that precedes it.
       if (lastCreatedId != change.id) continue
 
-      idToNode[change.id.value] = ReuseNode(
-        widgetId = change.id,
-        childrenTag = ChildrenTag.Root,
+      idToNode[lastCreatedId.value] = ReuseNode(
+        widgetId = lastCreatedId,
+        // This is the root of the reuse tree, so it will never have a children tag from a parent.
+        childrenTag = ChildrenTag(-1),
       )
     }
 
@@ -359,18 +362,16 @@ public class HostProtocolAdapter<W : Any>(
      * descendants into the nodes map.
      */
     fun assignPooledNodeRecursive(
-      nodes: MutableIntObjectMap<ProtocolNode<W>>,
+      nodes: MutableMap<Int, ProtocolNode<W>>,
       changesAndNulls: Array<Change?>,
       pooled: ProtocolNode<W>,
     ) {
       // Reuse the node.
+      pooled.id = widgetId
       val old = nodes.put(widgetId.value, pooled)
       require(old == null) {
         "Insert attempted to replace existing widget with ID ${widgetId.value}"
       }
-
-      val skippedCreate = changesAndNulls[changeIndexForCreate] as Create
-      pooled.id = skippedCreate.id
 
       // Remove the corresponding changes that we avoided by node reuse. We don't clear the 'Add'
       // that adds the node to its new parent.
