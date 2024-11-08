@@ -5,6 +5,7 @@
 
 New:
 - Redwood publishes what's happening in bound content through the new `Content.State` type.
+- Accept a `ZiplineHttpClient` in `TreehouseAppFactory` on Android.
 
 Changed:
 - Drop support for non-incremental layouts in `Row` and `Column`.
