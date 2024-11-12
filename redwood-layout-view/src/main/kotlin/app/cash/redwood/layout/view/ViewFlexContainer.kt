@@ -27,8 +27,13 @@ import androidx.core.widget.NestedScrollView
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
 import app.cash.redwood.Modifier
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
@@ -36,6 +41,46 @@ import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.isHorizontal
+
+internal class ViewColumn(context: Context) :
+  Column<View>,
+  ChangeListener {
+  private val delegate = ViewFlexContainer(context, FlexDirection.Column)
+
+  override val value get() = delegate.value
+  override var modifier by delegate::modifier
+
+  override val children get() = delegate.children
+
+  override fun width(width: Constraint) = delegate.width(width)
+  override fun height(height: Constraint) = delegate.height(height)
+  override fun margin(margin: Margin) = delegate.margin(margin)
+  override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) = delegate.mainAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = delegate.onScroll(onScroll)
+  override fun onEndChanges() = delegate.onEndChanges()
+}
+
+internal class ViewRow(context: Context) :
+  Row<View>,
+  ChangeListener {
+  private val delegate = ViewFlexContainer(context, FlexDirection.Row)
+
+  override val value get() = delegate.value
+  override var modifier by delegate::modifier
+
+  override val children get() = delegate.children
+
+  override fun width(width: Constraint) = delegate.width(width)
+  override fun height(height: Constraint) = delegate.height(height)
+  override fun margin(margin: Margin) = delegate.margin(margin)
+  override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) = delegate.mainAxisAlignment(horizontalAlignment)
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(verticalAlignment)
+  override fun onScroll(onScroll: ((Px) -> Unit)?) = delegate.onScroll(onScroll)
+  override fun onEndChanges() = delegate.onEndChanges()
+}
 
 internal class ViewFlexContainer(
   private val context: Context,
@@ -73,7 +118,7 @@ internal class ViewFlexContainer(
     },
   )
 
-  private var onScroll: ((Px) -> Unit)? = null
+  internal var onScroll: ((Px) -> Unit)? = null
 
   override var modifier: Modifier = Modifier
 
