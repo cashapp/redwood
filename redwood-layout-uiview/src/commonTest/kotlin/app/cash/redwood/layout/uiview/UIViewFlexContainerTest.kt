@@ -20,13 +20,15 @@ import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import app.cash.redwood.snapshot.testing.toUIColor
 import app.cash.redwood.ui.Px
-import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.ResizableWidget.SizeListener
 import app.cash.redwood.widget.Widget
@@ -66,9 +68,15 @@ class UIViewFlexContainerTest(
     }
   }
 
-  override fun row() = flexContainer(FlexDirection.Row)
+  override fun row(): Row<UIView> = UIViewRow().apply {
+    value.backgroundColor = defaultBackgroundColor.toUIColor()
+    applyDefaults()
+  }
 
-  override fun column() = flexContainer(FlexDirection.Column)
+  override fun column(): Column<UIView> = UIViewColumn().apply {
+    value.backgroundColor = defaultBackgroundColor.toUIColor()
+    applyDefaults()
+  }
 
   override fun spacer(backgroundColor: Int): Spacer<UIView> {
     return UIViewRedwoodLayoutWidgetFactory().Spacer()
@@ -81,11 +89,15 @@ class UIViewFlexContainerTest(
     private val delegate: UIViewFlexContainer,
   ) : TestFlexContainer<UIView>,
     ResizableWidget<UIView>,
-    YogaFlexContainer<UIView> by delegate,
-    ChangeListener by delegate {
+    YogaFlexContainer<UIView> by delegate {
     override var sizeListener: SizeListener? by delegate::sizeListener
 
-    override val children: Widget.Children<UIView> = delegate.children
+    override val value: UIView get() = delegate.value
+    override var modifier by delegate::modifier
+    override val children: Widget.Children<UIView> get() = delegate.children
+    override fun width(width: Constraint) = delegate.width(width)
+    override fun height(height: Constraint) = delegate.height(height)
+    override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
 
     init {
       value.backgroundColor = UIColor(red = 0.0, green = 0.0, blue = 1.0, alpha = 0.2)
@@ -98,6 +110,8 @@ class UIViewFlexContainerTest(
     override fun scroll(offset: Px) {
       (delegate.value as UIScrollView).setContentOffset(cValue { y = offset.value }, false)
     }
+
+    override fun onEndChanges() = delegate.onEndChanges()
   }
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
