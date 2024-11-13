@@ -30,9 +30,12 @@ import app.cash.redwood.ui.dp
 internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
   private var width by mutableStateOf(0.dp)
   private var height by mutableStateOf(0.dp)
+  var testOnlyModifier: Modifier? = null
 
   override val value = @Composable {
-    Spacer(Modifier.defaultMinSize(width.toDp(), height.toDp()))
+    var modifier = Modifier.defaultMinSize(width.toDp(), height.toDp())
+    testOnlyModifier?.let { modifier = modifier.then(it) }
+    Spacer(modifier)
   }
 
   override var modifier: RedwoodModifier = RedwoodModifier

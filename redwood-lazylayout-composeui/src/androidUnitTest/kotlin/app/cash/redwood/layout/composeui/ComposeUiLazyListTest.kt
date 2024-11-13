@@ -70,8 +70,11 @@ class ComposeUiLazyListTest(
   }
 
   override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
-    // TODO: honor backgroundColor.
-    return ComposeUiRedwoodLayoutWidgetFactory().Spacer()
+    return ComposeUiRedwoodLayoutWidgetFactory().Spacer().apply {
+      @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+      (this as ComposeUiSpacer).testOnlyModifier =
+        Modifier.background(Color(backgroundColor))
+    }
   }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)

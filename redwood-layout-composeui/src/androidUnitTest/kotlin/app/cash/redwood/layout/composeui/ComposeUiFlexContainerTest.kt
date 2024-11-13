@@ -72,8 +72,9 @@ class ComposeUiFlexContainerTest(
     }
 
   override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
-    // TODO: honor backgroundColor.
-    return ComposeUiSpacer()
+    return ComposeUiSpacer().apply {
+      testOnlyModifier = Modifier.background(Color(backgroundColor))
+    }
   }
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
