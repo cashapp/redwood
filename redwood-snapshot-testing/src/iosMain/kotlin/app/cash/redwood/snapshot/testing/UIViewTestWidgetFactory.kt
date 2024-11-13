@@ -83,7 +83,9 @@ class UIViewText :
   }
 }
 
-class UIViewColor : Color<UIView>, ResizableWidget<UIView> {
+class UIViewColor :
+  Color<UIView>,
+  ResizableWidget<UIView> {
   override var sizeListener: SizeListener? = null
 
   override val value: UIView = object : UIView(CGRectZero.readValue()) {

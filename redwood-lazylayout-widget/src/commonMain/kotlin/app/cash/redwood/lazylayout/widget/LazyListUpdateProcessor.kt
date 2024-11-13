@@ -414,7 +414,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     val sizeOnlyPlaceholderValue = createPlaceholder(firstPlaceholder.value) ?: return null
     return SizeOnlyPlaceholderWidget(
       value = sizeOnlyPlaceholderValue,
-      modifier = firstPlaceholder.modifier
+      modifier = firstPlaceholder.modifier,
     )
   }
 

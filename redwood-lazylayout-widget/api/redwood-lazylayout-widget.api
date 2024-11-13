@@ -36,11 +36,10 @@ public abstract class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor
 	public final fun getPlaceholder ()Lapp/cash/redwood/widget/Widget$Children;
 	public final fun getSize ()I
 	protected abstract fun insertRows (II)V
-	protected fun isSizeOnlyPlaceholder (Ljava/lang/Object;)Z
 	public final fun itemsAfter (I)V
 	public final fun itemsBefore (I)V
 	public final fun onEndChanges ()V
-	protected abstract fun setContent (Ljava/lang/Object;Ljava/lang/Object;Lapp/cash/redwood/Modifier;)V
+	protected abstract fun setContent (Ljava/lang/Object;Lapp/cash/redwood/widget/Widget;)V
 }
 
 public final class app/cash/redwood/lazylayout/widget/LazyListUpdateProcessor$Binding {

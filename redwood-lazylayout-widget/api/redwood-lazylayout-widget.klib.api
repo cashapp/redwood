@@ -62,7 +62,7 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
 
     abstract fun deleteRows(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.deleteRows|deleteRows(kotlin.Int;kotlin.Int){}[0]
     abstract fun insertRows(kotlin/Int, kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.insertRows|insertRows(kotlin.Int;kotlin.Int){}[0]
-    abstract fun setContent(#A, #B?, app.cash.redwood/Modifier) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.setContent|setContent(1:0;1:1?;app.cash.redwood.Modifier){}[0]
+    abstract fun setContent(#A, app.cash.redwood.widget/Widget<#B>?) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.setContent|setContent(1:0;app.cash.redwood.widget.Widget<1:1>?){}[0]
     final fun bind(kotlin/Int, #A): app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding<#A, #B> // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.bind|bind(kotlin.Int;1:0){}[0]
     final fun getOrCreateView(kotlin/Int, kotlin/Function1<app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding<#A, #B>, #A>): #A // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.getOrCreateView|getOrCreateView(kotlin.Int;kotlin.Function1<app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.Binding<1:0,1:1>,1:0>){}[0]
     final fun itemsAfter(kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.itemsAfter|itemsAfter(kotlin.Int){}[0]
@@ -71,7 +71,6 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
     open fun createPlaceholder(#B): #B? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.createPlaceholder|createPlaceholder(1:1){}[0]
     open fun detach(#A) // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.detach|detach(1:0){}[0]
     open fun detach() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.detach|detach(){}[0]
-    open fun isSizeOnlyPlaceholder(#B): kotlin/Boolean // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.isSizeOnlyPlaceholder|isSizeOnlyPlaceholder(1:1){}[0]
 
     final class <#A1: kotlin/Any, #B1: kotlin/Any> Binding { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding|null[0]
         final val isBound // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.isBound|{}isBound[0]
