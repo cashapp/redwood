@@ -24,15 +24,17 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
+import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.lazylayout.composeui.ComposeUiLazyList
-import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.FlexDirection
@@ -63,10 +65,12 @@ class ComposeUiLazyListTest(
 
   override fun row(): Row<@Composable () -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Row()
+      .apply { applyDefaults() }
   }
 
   override fun column(): Column<@Composable () -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Column()
+      .apply { applyDefaults() }
   }
 
   override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
@@ -81,11 +85,10 @@ class ComposeUiLazyListTest(
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,
-  ) : TestFlexContainer<@Composable () -> Unit>,
-    LazyList<@Composable () -> Unit> by delegate {
+  ) : TestFlexContainer<@Composable () -> Unit> {
 
-    // Work around https://youtrack.jetbrains.com/issue/KT-68850
-    override val value: @Composable () -> Unit get() = delegate.value
+    override val value get() = delegate.value
+    override var modifier by delegate::modifier
 
     private var onScroll: ((Px) -> Unit)? = null
 
@@ -112,7 +115,11 @@ class ComposeUiLazyListTest(
     override fun overflow(overflow: Overflow) {
     }
 
-    override fun onEndChanges() {
-    }
+    override fun onEndChanges() {}
+
+    override fun width(width: Constraint) = delegate.width(width)
+    override fun height(height: Constraint) = delegate.height(height)
+    override fun margin(margin: Margin) = delegate.margin(margin)
+    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
   }
 }

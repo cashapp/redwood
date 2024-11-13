@@ -62,7 +62,7 @@ public class HTMLElementRedwoodLayoutWidgetFactory(
 
 private class HTMLColumn(
   value: HTMLDivElement,
-) : Column<HTMLElement> {
+) : Column<HTMLElement>() {
   private val container = HTMLFlexContainer(value, "column") { overflowY = it }
 
   override val value get() = container.value
@@ -80,7 +80,7 @@ private class HTMLColumn(
 
 private class HTMLRow(
   value: HTMLDivElement,
-) : Row<HTMLElement> {
+) : Row<HTMLElement>() {
   private val container = HTMLFlexContainer(value, "row") { overflowX = it }
 
   override val value get() = container.value
@@ -165,7 +165,7 @@ private class HTMLFlexContainer(
 
 private class HTMLSpacer(
   override val value: HTMLDivElement,
-) : Spacer<HTMLElement> {
+) : Spacer<HTMLElement>() {
   override fun width(width: Dp) {
     value.style.width = width.toPxString()
   }

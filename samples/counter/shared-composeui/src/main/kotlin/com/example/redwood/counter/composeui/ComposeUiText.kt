@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import com.example.redwood.counter.widget.Text
 
-internal class ComposeUiText : Text<@Composable () -> Unit> {
+internal class ComposeUiText : Text<@Composable () -> Unit>() {
   private var text by mutableStateOf("")
 
   override var modifier: Modifier = Modifier

@@ -22,7 +22,7 @@ import com.example.redwood.testapp.testing.ButtonValue
 import com.example.redwood.testapp.widget.Button
 
 class ListeningButton :
-  Button<WidgetValue>,
+  Button<WidgetValue>(),
   ChangeListener {
   private val changes = ArrayList<String>()
   fun changes(): List<String> {

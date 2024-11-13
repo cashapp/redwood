@@ -27,7 +27,7 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
-internal class UIViewSpacer : Spacer<UIView> {
+internal class UIViewSpacer : Spacer<UIView>() {
   private val view = SpacerUIView()
   override val value: UIView get() = view
   override var modifier: Modifier = Modifier

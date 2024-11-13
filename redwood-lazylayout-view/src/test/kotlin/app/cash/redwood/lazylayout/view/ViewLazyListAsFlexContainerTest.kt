@@ -25,8 +25,6 @@ import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
@@ -56,18 +54,14 @@ class ViewLazyListAsFlexContainerTest(
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
-  ): TestFlexContainer<View> {
-    return ViewTestFlexContainer(paparazzi.context, direction, backgroundColor)
-      .apply { applyDefaults() }
-  }
+  ) = ViewTestFlexContainer(paparazzi.context, direction, backgroundColor)
+    .apply { applyDefaults() }
 
-  override fun row(): Row<View> {
-    return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Row()
-  }
+  override fun row() = ViewRedwoodLayoutWidgetFactory(paparazzi.context).Row()
+    .apply { applyDefaults() }
 
-  override fun column(): Column<View> {
-    return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
-  }
+  override fun column() = ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
+    .apply { applyDefaults() }
 
   override fun spacer(backgroundColor: Int): Spacer<View> {
     return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Spacer()

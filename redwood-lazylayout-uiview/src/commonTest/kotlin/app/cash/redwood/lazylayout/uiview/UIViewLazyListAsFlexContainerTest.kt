@@ -17,18 +17,18 @@ package app.cash.redwood.lazylayout.uiview
 
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
+import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.lazylayout.toUIColor
-import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.snapshot.testing.UIViewSnapshotCallback
 import app.cash.redwood.snapshot.testing.UIViewSnapshotter
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
-import app.cash.redwood.widget.ChangeListener
-import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import platform.UIKit.UIView
 
@@ -37,17 +37,19 @@ class UIViewLazyListAsFlexContainerTest(
 ) : AbstractFlexContainerTest<UIView>() {
   override val widgetFactory = UIViewTestWidgetFactory
 
-  private val lazyLayoutWidgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
-
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
-  ) = ViewTestFlexContainer(lazyLayoutWidgetFactory.LazyList(), direction, backgroundColor)
-    .apply { applyDefaults() }
+  ): TestFlexContainer<UIView> {
+    return ViewTestFlexContainer(UIViewLazyList(), direction, backgroundColor)
+      .apply { applyDefaults() }
+  }
 
   override fun row() = UIViewRedwoodLayoutWidgetFactory().Row()
+    .apply { applyDefaults() }
 
   override fun column() = UIViewRedwoodLayoutWidgetFactory().Column()
+    .apply { applyDefaults() }
 
   override fun spacer(backgroundColor: Int): Spacer<UIView> {
     return UIViewRedwoodLayoutWidgetFactory().Spacer()
@@ -58,20 +60,25 @@ class UIViewLazyListAsFlexContainerTest(
 
   override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
-  class ViewTestFlexContainer private constructor(
-    private val delegate: LazyList<UIView>,
-  ) : TestFlexContainer<UIView>,
-    LazyList<UIView> by delegate {
+  private class ViewTestFlexContainer private constructor(
+    private val delegate: UIViewLazyList,
+  ) : TestFlexContainer<UIView> {
     private var onScroll: ((Px) -> Unit)? = null
 
-    constructor(delegate: LazyList<UIView>, direction: FlexDirection, backgroundColor: Int) : this(
+    constructor(delegate: UIViewLazyList, direction: FlexDirection, backgroundColor: Int) : this(
       delegate.apply {
         isVertical(direction == FlexDirection.Column)
         value.backgroundColor = backgroundColor.toUIColor()
       },
     )
 
-    override val children: Widget.Children<UIView> = delegate.items
+    override val value get() = delegate.value
+    override var modifier by delegate::modifier
+    override val children get() = delegate.items
+    override fun width(width: Constraint) = delegate.width(width)
+    override fun height(height: Constraint) = delegate.height(height)
+    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
+    override fun margin(margin: Margin) = delegate.margin(margin)
 
     override fun onScroll(onScroll: ((Px) -> Unit)?) {
       this.onScroll = onScroll
@@ -87,8 +94,6 @@ class UIViewLazyListAsFlexContainerTest(
     override fun overflow(overflow: Overflow) {
     }
 
-    override fun onEndChanges() {
-      (delegate as ChangeListener).onEndChanges()
-    }
+    override fun onEndChanges() = delegate.onEndChanges()
   }
 }

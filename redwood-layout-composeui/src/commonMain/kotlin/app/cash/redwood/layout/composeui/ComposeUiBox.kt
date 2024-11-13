@@ -48,7 +48,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 internal class ComposeUiBox(
   private val backgroundColor: Int = 0,
-) : Box<@Composable () -> Unit> {
+) : Box<@Composable () -> Unit>() {
   private var modifierTick by mutableIntStateOf(0)
   override val children = ComposeWidgetChildren(onModifierUpdated = { modifierTick++ })
 

@@ -267,13 +267,13 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
 /*
 /** {tag=2} */
 @ObjCName("Button", exact = true)
-interface Button<W: Any> : Widget<W> {
+abstract class Button<W: Any> : Widget<W> {
   /** {tag=1} */
-  fun text(text: String?)
+  abstract fun text(text: String?)
   /** {tag=2} */
-  fun enabled(enabled: Boolean)
+  abstract fun enabled(enabled: Boolean)
   /** {tag=3} */
-  fun onClick(onClick: (() -> Unit)?)
+  abstract fun onClick(onClick: (() -> Unit)?)
 }
 */
 internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
@@ -281,7 +281,8 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
   return buildFileSpec(schema.widgetPackage(), flatName) {
     addAnnotation(suppressDeprecations)
     addType(
-      TypeSpec.interfaceBuilder(flatName)
+      TypeSpec.classBuilder(flatName)
+        .addModifiers(ABSTRACT)
         .addTypeVariable(typeVariableW)
         .addSuperinterface(RedwoodWidget.Widget.parameterizedBy(typeVariableW))
         .optIn(Stdlib.ExperimentalObjCName)

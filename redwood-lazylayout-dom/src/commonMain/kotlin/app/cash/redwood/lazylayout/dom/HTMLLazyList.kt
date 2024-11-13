@@ -33,7 +33,7 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
-internal class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
+internal class HTMLLazyList(document: Document) : LazyList<HTMLElement>() {
   override var modifier: Modifier = Modifier
 
   override val value = document.createElement("div") as HTMLDivElement
@@ -162,7 +162,7 @@ internal class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
 
 internal class HTMLRefreshableLazyList(
   document: Document,
-) : RefreshableLazyList<HTMLElement> {
+) : RefreshableLazyList<HTMLElement>() {
   private val delegate = HTMLLazyList(document)
 
   override val value get() = delegate.value

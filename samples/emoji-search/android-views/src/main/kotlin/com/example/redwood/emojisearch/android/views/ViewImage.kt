@@ -25,7 +25,7 @@ import com.example.redwood.emojisearch.widget.Image
 
 internal class ViewImage(
   override val value: ImageView,
-) : Image<View> {
+) : Image<View>() {
   init {
     val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48F, value.resources.displayMetrics).toInt()
     value.layoutParams = ViewGroup.LayoutParams(size, size)

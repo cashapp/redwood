@@ -28,7 +28,7 @@ import app.cash.redwood.Modifier
 import com.example.redwood.emojisearch.widget.TextInput
 import example.values.TextFieldState
 
-internal class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
+internal class ComposeUiTextInput : TextInput<@Composable () -> Unit>() {
   private var state by mutableStateOf(TextFieldState())
   private var hint by mutableStateOf("")
   private var onChange: ((TextFieldState) -> Unit)? = null

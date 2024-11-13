@@ -38,7 +38,7 @@ class HTMLElementEmojiSearchWidgetFactory(private val document: Document) : Emoj
 
 private class HtmlTextInput(
   override val value: HTMLInputElement,
-) : TextInput<HTMLElement> {
+) : TextInput<HTMLElement>() {
   private var onChange: ((TextFieldState) -> Unit)? = null
   private var state = TextFieldState()
   private var updating = false
@@ -90,7 +90,7 @@ private class HtmlTextInput(
 
 private class HtmlText(
   override val value: HTMLSpanElement,
-) : Text<HTMLElement> {
+) : Text<HTMLElement>() {
   override var modifier: Modifier = Modifier
 
   override fun text(text: String) {
@@ -100,7 +100,7 @@ private class HtmlText(
 
 private class HtmlImage(
   override val value: HTMLImageElement,
-) : Image<HTMLElement> {
+) : Image<HTMLElement>() {
   override var modifier: Modifier = Modifier
   override fun url(url: String) {
     value.src = url

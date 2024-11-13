@@ -6,46 +6,9 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-lazylayout-widget>
-abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/LazyList : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.lazylayout.widget/LazyList|null[0]
-    abstract val items // app.cash.redwood.lazylayout.widget/LazyList.items|{}items[0]
-        abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.items.<get-items>|<get-items>(){}[0]
-    abstract val placeholder // app.cash.redwood.lazylayout.widget/LazyList.placeholder|{}placeholder[0]
-        abstract fun <get-placeholder>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
-
-    abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.lazylayout.widget/LazyList.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
-    abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/LazyList.height|height(app.cash.redwood.layout.api.Constraint){}[0]
-    abstract fun isVertical(kotlin/Boolean) // app.cash.redwood.lazylayout.widget/LazyList.isVertical|isVertical(kotlin.Boolean){}[0]
-    abstract fun itemsAfter(kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyList.itemsAfter|itemsAfter(kotlin.Int){}[0]
-    abstract fun itemsBefore(kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyList.itemsBefore|itemsBefore(kotlin.Int){}[0]
-    abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.lazylayout.widget/LazyList.margin|margin(app.cash.redwood.ui.Margin){}[0]
-    abstract fun onViewportChanged(kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Unit>) // app.cash.redwood.lazylayout.widget/LazyList.onViewportChanged|onViewportChanged(kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Unit>){}[0]
-    abstract fun scrollItemIndex(app.cash.redwood.lazylayout.api/ScrollItemIndex) // app.cash.redwood.lazylayout.widget/LazyList.scrollItemIndex|scrollItemIndex(app.cash.redwood.lazylayout.api.ScrollItemIndex){}[0]
-    abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/LazyList.width|width(app.cash.redwood.layout.api.Constraint){}[0]
-}
-
 abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory { // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory|null[0]
     abstract fun LazyList(): app.cash.redwood.lazylayout.widget/LazyList<#A> // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory.LazyList|LazyList(){}[0]
     abstract fun RefreshableLazyList(): app.cash.redwood.lazylayout.widget/RefreshableLazyList<#A> // app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory.RefreshableLazyList|RefreshableLazyList(){}[0]
-}
-
-abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/RefreshableLazyList : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.lazylayout.widget/RefreshableLazyList|null[0]
-    abstract val items // app.cash.redwood.lazylayout.widget/RefreshableLazyList.items|{}items[0]
-        abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.items.<get-items>|<get-items>(){}[0]
-    abstract val placeholder // app.cash.redwood.lazylayout.widget/RefreshableLazyList.placeholder|{}placeholder[0]
-        abstract fun <get-placeholder>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
-
-    abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
-    abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.height|height(app.cash.redwood.layout.api.Constraint){}[0]
-    abstract fun isVertical(kotlin/Boolean) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.isVertical|isVertical(kotlin.Boolean){}[0]
-    abstract fun itemsAfter(kotlin/Int) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.itemsAfter|itemsAfter(kotlin.Int){}[0]
-    abstract fun itemsBefore(kotlin/Int) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.itemsBefore|itemsBefore(kotlin.Int){}[0]
-    abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.margin|margin(app.cash.redwood.ui.Margin){}[0]
-    abstract fun onRefresh(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.onRefresh|onRefresh(kotlin.Function0<kotlin.Unit>?){}[0]
-    abstract fun onViewportChanged(kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Unit>) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.onViewportChanged|onViewportChanged(kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Unit>){}[0]
-    abstract fun pullRefreshContentColor(kotlin/UInt) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.pullRefreshContentColor|pullRefreshContentColor(kotlin.UInt){}[0]
-    abstract fun refreshing(kotlin/Boolean) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.refreshing|refreshing(kotlin.Boolean){}[0]
-    abstract fun scrollItemIndex(app.cash.redwood.lazylayout.api/ScrollItemIndex) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.scrollItemIndex|scrollItemIndex(app.cash.redwood.lazylayout.api.ScrollItemIndex){}[0]
-    abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.width|width(app.cash.redwood.layout.api.Constraint){}[0]
 }
 
 abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor|null[0]
@@ -83,6 +46,47 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
         final fun detach() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.detach|detach(){}[0]
         final fun unbind() // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.unbind|unbind(){}[0]
     }
+}
+
+abstract class <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/LazyList : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.lazylayout.widget/LazyList|null[0]
+    constructor <init>() // app.cash.redwood.lazylayout.widget/LazyList.<init>|<init>(){}[0]
+
+    abstract val items // app.cash.redwood.lazylayout.widget/LazyList.items|{}items[0]
+        abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.items.<get-items>|<get-items>(){}[0]
+    abstract val placeholder // app.cash.redwood.lazylayout.widget/LazyList.placeholder|{}placeholder[0]
+        abstract fun <get-placeholder>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
+
+    abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.lazylayout.widget/LazyList.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
+    abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/LazyList.height|height(app.cash.redwood.layout.api.Constraint){}[0]
+    abstract fun isVertical(kotlin/Boolean) // app.cash.redwood.lazylayout.widget/LazyList.isVertical|isVertical(kotlin.Boolean){}[0]
+    abstract fun itemsAfter(kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyList.itemsAfter|itemsAfter(kotlin.Int){}[0]
+    abstract fun itemsBefore(kotlin/Int) // app.cash.redwood.lazylayout.widget/LazyList.itemsBefore|itemsBefore(kotlin.Int){}[0]
+    abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.lazylayout.widget/LazyList.margin|margin(app.cash.redwood.ui.Margin){}[0]
+    abstract fun onViewportChanged(kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Unit>) // app.cash.redwood.lazylayout.widget/LazyList.onViewportChanged|onViewportChanged(kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Unit>){}[0]
+    abstract fun scrollItemIndex(app.cash.redwood.lazylayout.api/ScrollItemIndex) // app.cash.redwood.lazylayout.widget/LazyList.scrollItemIndex|scrollItemIndex(app.cash.redwood.lazylayout.api.ScrollItemIndex){}[0]
+    abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/LazyList.width|width(app.cash.redwood.layout.api.Constraint){}[0]
+}
+
+abstract class <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/RefreshableLazyList : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.lazylayout.widget/RefreshableLazyList|null[0]
+    constructor <init>() // app.cash.redwood.lazylayout.widget/RefreshableLazyList.<init>|<init>(){}[0]
+
+    abstract val items // app.cash.redwood.lazylayout.widget/RefreshableLazyList.items|{}items[0]
+        abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.items.<get-items>|<get-items>(){}[0]
+    abstract val placeholder // app.cash.redwood.lazylayout.widget/RefreshableLazyList.placeholder|{}placeholder[0]
+        abstract fun <get-placeholder>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
+
+    abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
+    abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.height|height(app.cash.redwood.layout.api.Constraint){}[0]
+    abstract fun isVertical(kotlin/Boolean) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.isVertical|isVertical(kotlin.Boolean){}[0]
+    abstract fun itemsAfter(kotlin/Int) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.itemsAfter|itemsAfter(kotlin.Int){}[0]
+    abstract fun itemsBefore(kotlin/Int) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.itemsBefore|itemsBefore(kotlin.Int){}[0]
+    abstract fun margin(app.cash.redwood.ui/Margin) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.margin|margin(app.cash.redwood.ui.Margin){}[0]
+    abstract fun onRefresh(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.onRefresh|onRefresh(kotlin.Function0<kotlin.Unit>?){}[0]
+    abstract fun onViewportChanged(kotlin/Function2<kotlin/Int, kotlin/Int, kotlin/Unit>) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.onViewportChanged|onViewportChanged(kotlin.Function2<kotlin.Int,kotlin.Int,kotlin.Unit>){}[0]
+    abstract fun pullRefreshContentColor(kotlin/UInt) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.pullRefreshContentColor|pullRefreshContentColor(kotlin.UInt){}[0]
+    abstract fun refreshing(kotlin/Boolean) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.refreshing|refreshing(kotlin.Boolean){}[0]
+    abstract fun scrollItemIndex(app.cash.redwood.lazylayout.api/ScrollItemIndex) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.scrollItemIndex|scrollItemIndex(app.cash.redwood.lazylayout.api.ScrollItemIndex){}[0]
+    abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.width|width(app.cash.redwood.layout.api.Constraint){}[0]
 }
 
 abstract class app.cash.redwood.lazylayout.widget/LazyListScrollProcessor { // app.cash.redwood.lazylayout.widget/LazyListScrollProcessor|null[0]

@@ -22,7 +22,7 @@ import com.example.redwood.counter.widget.Text
 
 internal class AndroidText(
   override val value: TextView,
-) : Text<View> {
+) : Text<View>() {
   override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {

@@ -66,7 +66,7 @@ import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
 internal class UIViewLazyList :
-  LazyList<UIView>,
+  LazyList<UIView>(),
   ChangeListener {
   internal var tableView: UITableView? = object : UITableView(
     CGRectZero.readValue(),
@@ -410,7 +410,7 @@ internal class LazyListContainerCell(
 }
 
 internal class UIViewRefreshableLazyList :
-  RefreshableLazyList<UIView>,
+  RefreshableLazyList<UIView>(),
   ChangeListener {
   private val delegate = UIViewLazyList()
 

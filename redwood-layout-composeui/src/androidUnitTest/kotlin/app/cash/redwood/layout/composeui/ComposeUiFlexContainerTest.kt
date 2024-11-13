@@ -25,12 +25,15 @@ import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
@@ -79,16 +82,13 @@ class ComposeUiFlexContainerTest(
 
   override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
-  class ComposeTestFlexContainer private constructor(
-    private val delegate: ComposeUiFlexContainer,
-  ) : TestFlexContainer<@Composable () -> Unit>,
-    YogaFlexContainer<@Composable () -> Unit> by delegate {
-
-    constructor(direction: FlexDirection, backgroundColor: Int) : this(
-      ComposeUiFlexContainer(direction).apply {
-        testOnlyModifier = Modifier.background(Color(backgroundColor))
-      },
-    )
+  class ComposeTestFlexContainer(
+    direction: FlexDirection,
+    backgroundColor: Int,
+  ) : TestFlexContainer<@Composable () -> Unit> {
+    private val delegate = ComposeUiFlexContainer(direction).apply {
+      testOnlyModifier = Modifier.background(Color(backgroundColor))
+    }
 
     override val value get() = delegate.value
     override var modifier by delegate::modifier
@@ -97,6 +97,9 @@ class ComposeUiFlexContainerTest(
 
     override fun width(width: Constraint) = delegate.width(width)
     override fun height(height: Constraint) = delegate.height(height)
+    override fun margin(margin: Margin) = delegate.margin(margin)
+    override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
+    override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) = delegate.mainAxisAlignment(mainAxisAlignment)
     override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
     override fun onScroll(onScroll: ((Px) -> Unit)?) = delegate.onScroll(onScroll)
 

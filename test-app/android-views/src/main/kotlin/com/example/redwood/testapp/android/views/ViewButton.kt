@@ -22,7 +22,7 @@ import com.example.redwood.testapp.widget.Button
 
 internal class ViewButton(
   override val value: WidgetButton,
-) : Button<View> {
+) : Button<View>() {
   override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {

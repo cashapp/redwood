@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import app.cash.redwood.Modifier as RedwoodModifier
 import com.example.redwood.counter.widget.Button
 
-internal class ComposeUiButton : Button<@Composable () -> Unit> {
+internal class ComposeUiButton : Button<@Composable () -> Unit>() {
   private var text by mutableStateOf("")
   private var isEnabled by mutableStateOf(false)
   private var onClick by mutableStateOf({})

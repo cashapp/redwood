@@ -43,7 +43,7 @@ import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.isHorizontal
 
 internal class ViewColumn(context: Context) :
-  Column<View>,
+  Column<View>(),
   ChangeListener {
   private val delegate = ViewFlexContainer(context, FlexDirection.Column)
 
@@ -63,7 +63,7 @@ internal class ViewColumn(context: Context) :
 }
 
 internal class ViewRow(context: Context) :
-  Row<View>,
+  Row<View>(),
   ChangeListener {
   private val delegate = ViewFlexContainer(context, FlexDirection.Row)
 

@@ -30,7 +30,7 @@ import example.values.TextFieldState
 
 internal class ViewTextInput(
   context: Context,
-) : TextInput<View> {
+) : TextInput<View>() {
   private var state = TextFieldState()
   private var onChange: ((TextFieldState) -> Unit)? = null
   private var updating = false

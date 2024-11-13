@@ -6,7 +6,16 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-layout-widget>
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Box : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Box|null[0]
+abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory|null[0]
+    abstract fun Box(): app.cash.redwood.layout.widget/Box<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Box|Box(){}[0]
+    abstract fun Column(): app.cash.redwood.layout.widget/Column<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Column|Column(){}[0]
+    abstract fun Row(): app.cash.redwood.layout.widget/Row<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Row|Row(){}[0]
+    abstract fun Spacer(): app.cash.redwood.layout.widget/Spacer<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Spacer|Spacer(){}[0]
+}
+
+abstract class <#A: kotlin/Any> app.cash.redwood.layout.widget/Box : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Box|null[0]
+    constructor <init>() // app.cash.redwood.layout.widget/Box.<init>|<init>(){}[0]
+
     abstract val children // app.cash.redwood.layout.widget/Box.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Box.children.<get-children>|<get-children>(){}[0]
 
@@ -17,7 +26,9 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Box : app.cas
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Box.width|width(app.cash.redwood.layout.api.Constraint){}[0]
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Column : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Column|null[0]
+abstract class <#A: kotlin/Any> app.cash.redwood.layout.widget/Column : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Column|null[0]
+    constructor <init>() // app.cash.redwood.layout.widget/Column.<init>|<init>(){}[0]
+
     abstract val children // app.cash.redwood.layout.widget/Column.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Column.children.<get-children>|<get-children>(){}[0]
 
@@ -30,14 +41,9 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Column : app.
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Column.width|width(app.cash.redwood.layout.api.Constraint){}[0]
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory { // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory|null[0]
-    abstract fun Box(): app.cash.redwood.layout.widget/Box<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Box|Box(){}[0]
-    abstract fun Column(): app.cash.redwood.layout.widget/Column<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Column|Column(){}[0]
-    abstract fun Row(): app.cash.redwood.layout.widget/Row<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Row|Row(){}[0]
-    abstract fun Spacer(): app.cash.redwood.layout.widget/Spacer<#A> // app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory.Spacer|Spacer(){}[0]
-}
+abstract class <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Row|null[0]
+    constructor <init>() // app.cash.redwood.layout.widget/Row.<init>|<init>(){}[0]
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Row|null[0]
     abstract val children // app.cash.redwood.layout.widget/Row.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Row.children.<get-children>|<get-children>(){}[0]
 
@@ -50,7 +56,9 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cas
     abstract fun width(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Row.width|width(app.cash.redwood.layout.api.Constraint){}[0]
 }
 
-abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Spacer : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Spacer|null[0]
+abstract class <#A: kotlin/Any> app.cash.redwood.layout.widget/Spacer : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Spacer|null[0]
+    constructor <init>() // app.cash.redwood.layout.widget/Spacer.<init>|<init>(){}[0]
+
     abstract fun height(app.cash.redwood.ui/Dp) // app.cash.redwood.layout.widget/Spacer.height|height(app.cash.redwood.ui.Dp){}[0]
     abstract fun width(app.cash.redwood.ui/Dp) // app.cash.redwood.layout.widget/Spacer.width|width(app.cash.redwood.ui.Dp){}[0]
 }

@@ -24,7 +24,7 @@ import com.google.android.material.R as MaterialR
 
 internal class ViewText(
   override val value: TextView,
-) : Text<View> {
+) : Text<View>() {
   override var modifier: Modifier = Modifier
 
   init {

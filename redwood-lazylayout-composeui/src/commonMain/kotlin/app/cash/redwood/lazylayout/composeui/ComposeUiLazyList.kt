@@ -51,7 +51,7 @@ import app.cash.redwood.ui.toPlatformDp
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 @OptIn(ExperimentalMaterialApi::class)
-internal class ComposeUiLazyList : LazyList<@Composable () -> Unit> {
+internal class ComposeUiLazyList : LazyList<@Composable () -> Unit>() {
   private var isVertical by mutableStateOf(false)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
   private var itemsBefore by mutableIntStateOf(0)
@@ -206,7 +206,7 @@ internal class ComposeUiLazyList : LazyList<@Composable () -> Unit> {
   }
 }
 
-internal class ComposeUiRefreshableLazyList : RefreshableLazyList<@Composable () -> Unit> {
+internal class ComposeUiRefreshableLazyList : RefreshableLazyList<@Composable () -> Unit>() {
   private val delegate = ComposeUiLazyList()
 
   override val value get() = delegate.value

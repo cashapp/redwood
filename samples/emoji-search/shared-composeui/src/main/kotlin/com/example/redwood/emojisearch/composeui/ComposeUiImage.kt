@@ -30,7 +30,7 @@ import com.example.redwood.emojisearch.widget.Image
 
 internal class ComposeUiImage(
   private val imageLoader: ImageLoader,
-) : Image<@Composable () -> Unit> {
+) : Image<@Composable () -> Unit>() {
   private var url by mutableStateOf("")
   private var onClick by mutableStateOf({})
 
