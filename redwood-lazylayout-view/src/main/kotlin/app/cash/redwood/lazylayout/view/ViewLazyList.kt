@@ -73,9 +73,6 @@ internal class ViewLazyList private constructor(
     override fun createPlaceholder(original: View) =
       SizeOnlyPlaceholder(original, value.context)
 
-    override fun isSizeOnlyPlaceholder(placeholder: View) =
-      placeholder is SizeOnlyPlaceholder
-
     override fun insertRows(index: Int, count: Int) {
       adapter.notifyItemRangeInserted(index, count)
     }
@@ -84,8 +81,8 @@ internal class ViewLazyList private constructor(
       adapter.notifyItemRangeRemoved(index, count)
     }
 
-    override fun setContent(view: ViewHolder, content: View?, modifier: Modifier) {
-      view.content = content
+    override fun setContent(view: ViewHolder, widget: Widget<View>?) {
+      view.content = widget?.value
     }
   }
 

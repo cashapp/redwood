@@ -45,9 +45,9 @@ internal class HTMLLazyList(document: Document) : LazyList<HTMLElement> {
     override fun deleteRows(index: Int, count: Int) {
     }
 
-    override fun setContent(view: HTMLElement, content: HTMLElement?, modifier: Modifier) {
-      if (content != null) {
-        view.appendChild(content)
+    override fun setContent(view: HTMLElement, widget: Widget<HTMLElement>?) {
+      if (widget != null) {
+        view.appendChild(widget.value)
       }
     }
   }

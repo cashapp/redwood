@@ -42,13 +42,13 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     get() = itemsBefore.nonNullElements + loadedItems + itemsAfter.nonNullElements
 
   /** Pool of placeholder widgets. */
-  private val placeholdersQueue = ArrayDeque<W>()
+  private val placeholdersQueue = ArrayDeque<Widget<W>>()
 
   /**
    * The first placeholder ever returned. We use it to choose measured dimensions for created
    * placeholders if the pool ever runs out.
    */
-  private var firstPlaceholder: W? = null
+  private var firstPlaceholder: Widget<W>? = null
 
   /** Loaded items that may or may not have a view bound. */
   private var loadedItems = mutableListOf<Binding<V, W>>()
@@ -68,8 +68,8 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
 
     override fun insert(index: Int, widget: Widget<W>) {
       _widgets += widget
-      if (firstPlaceholder == null) firstPlaceholder = widget.value
-      placeholdersQueue += widget.value
+      if (firstPlaceholder == null) firstPlaceholder = widget
+      placeholdersQueue += widget
     }
 
     override fun move(fromIndex: Int, toIndex: Int, count: Int) {
@@ -244,7 +244,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
           for (i in 0 until edit.widgets.size) {
             val index = itemsBefore.size + edit.index + i
             val binding = Binding(this).apply {
-              setContentAndModifier(edit.widgets[i])
+              setContent(edit.widgets[i])
             }
             loadedItems.add(edit.index + i, binding)
 
@@ -336,7 +336,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     // No binding for this index. Create one.
     if (binding == null) {
       return Binding(this).apply {
-        setContentAndModifier(loadedContent)
+        setContent(loadedContent)
       }
     }
 
@@ -346,7 +346,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       recyclePlaceholder(binding.content)
     }
     binding.isPlaceholder = false
-    binding.setContentAndModifier(loadedContent)
+    binding.setContent(loadedContent)
     return binding
   }
 
@@ -357,9 +357,9 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     if (!loaded.isBound) return null
 
     // Show the placeholder in the bound view.
-    val placeholderContent = loaded.processor.takePlaceholder()
-    if (placeholderContent != null) {
-      loaded.setContentAndModifier(placeholderContent, Modifier)
+    val placeholder = loaded.processor.takePlaceholder()
+    if (placeholder != null) {
+      loaded.setContent(placeholder)
     }
     loaded.isPlaceholder = true
     return loaded
@@ -396,7 +396,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       isPlaceholder = true,
     ).apply {
       val placeholder = takePlaceholder() ?: return@apply // Detached.
-      setContentAndModifier(placeholder, Modifier)
+      setContent(placeholder)
     }
 
     return when {
@@ -406,17 +406,21 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     }
   }
 
-  private fun takePlaceholder(): W? {
+  private fun takePlaceholder(): Widget<W>? {
     val result = placeholdersQueue.removeFirstOrNull()
     if (result != null) return result
 
     val firstPlaceholder = this.firstPlaceholder ?: return null // Detached.
-    return createPlaceholder(firstPlaceholder)
+    val sizeOnlyPlaceholderValue = createPlaceholder(firstPlaceholder.value) ?: return null
+    return SizeOnlyPlaceholderWidget(
+      value = sizeOnlyPlaceholderValue,
+      modifier = firstPlaceholder.modifier
+    )
   }
 
-  private fun recyclePlaceholder(placeholder: W?) {
+  private fun recyclePlaceholder(placeholder: Widget<W>?) {
     if (placeholder == null) return // Detached.
-    if (!isSizeOnlyPlaceholder(placeholder)) {
+    if (placeholder !is SizeOnlyPlaceholderWidget) {
       placeholdersQueue += placeholder
     }
   }
@@ -429,13 +433,11 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
    */
   protected open fun createPlaceholder(original: W): W? = null
 
-  protected open fun isSizeOnlyPlaceholder(placeholder: W): Boolean = false
-
   protected abstract fun insertRows(index: Int, count: Int)
 
   protected abstract fun deleteRows(index: Int, count: Int)
 
-  protected abstract fun setContent(view: V, content: W?, modifier: Modifier)
+  protected abstract fun setContent(view: V, widget: Widget<W>?)
 
   protected open fun detach(view: V) {
   }
@@ -478,21 +480,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
      * This may also be null if it should be a placeholder but the enclosing LazyList is detached.
      * This could happen if the user scrolls the table after the view is detached.
      */
-    internal var content: W? = null
+    internal var content: Widget<W>? = null
       private set
 
-    private var modifier: Modifier = Modifier
-
-    internal fun setContentAndModifier(widget: Widget<W>) {
-      setContentAndModifier(widget.value, widget.modifier)
-    }
-
-    internal fun setContentAndModifier(content: W, modifier: Modifier) {
+    internal fun setContent(content: Widget<W>) {
       this.content = content
-      this.modifier = modifier
 
       val view = this.view
-      if (view != null) processor.setContent(view, content, modifier)
+      if (view != null) processor.setContent(view, content)
     }
 
     public fun bind(view: V) {
@@ -503,14 +498,14 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
       }
 
       this.view = view
-      processor.setContent(view, content, modifier)
+      processor.setContent(view, content)
     }
 
     public fun unbind() {
       val view = this.view ?: return
 
       // Unbind the view.
-      processor.setContent(view, null, Modifier)
+      processor.setContent(view, null)
       this.view = null
 
       if (isPlaceholder) {
@@ -542,4 +537,9 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
     class Move<W : Any>(val fromIndex: Int, val toIndex: Int, val count: Int) : Edit<W>()
     class Remove<W : Any>(var index: Int, var count: Int) : Edit<W>()
   }
+
+  private class SizeOnlyPlaceholderWidget<W : Any>(
+    override val value: W,
+    override var modifier: Modifier,
+  ) : Widget<W>
 }

@@ -15,9 +15,9 @@
  */
 package app.cash.redwood.lazylayout.widget
 
-import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringCell
 import app.cash.redwood.lazylayout.widget.FakeUpdateProcessor.StringContent
+import app.cash.redwood.widget.Widget
 
 /**
  * This fake simulates a real scroll window, which is completely independent of the window of loaded
@@ -112,7 +112,9 @@ class FakeUpdateProcessor : LazyListUpdateProcessor<StringCell, StringContent>()
     }
   }
 
-  override fun setContent(view: StringCell, content: StringContent?, modifier: Modifier) {
+  override fun setContent(view: StringCell, widget: Widget<StringContent>?) {
+    val content = widget?.value
+
     // It is an error for `content` to already have a parent cell.
     val previous = view.content
     require(content?.parentCell == null)

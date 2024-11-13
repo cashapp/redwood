@@ -124,8 +124,6 @@ internal class UIViewLazyList :
   private var updateProcessor: LazyListUpdateProcessor<LazyListContainerCell, UIView>? = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
     override fun createPlaceholder(original: UIView) = SizeOnlyPlaceholder(original)
 
-    override fun isSizeOnlyPlaceholder(placeholder: UIView) = placeholder is SizeOnlyPlaceholder
-
     override fun insertRows(index: Int, count: Int) {
       rowCount += count
       val tableView = this@UIViewLazyList.tableView ?: error("detached")
@@ -156,8 +154,8 @@ internal class UIViewLazyList :
       tableView.endUpdates()
     }
 
-    override fun setContent(view: LazyListContainerCell, content: UIView?, modifier: Modifier) {
-      view.setContent(content)
+    override fun setContent(view: LazyListContainerCell, widget: Widget<UIView>?) {
+      view.setContent(widget?.value)
     }
 
     override fun detach(view: LazyListContainerCell) {

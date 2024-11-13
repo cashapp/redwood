@@ -23,7 +23,6 @@ import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.ResizableWidget.SizeListener
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
-import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
@@ -84,12 +83,14 @@ class UIViewText :
   }
 }
 
-class UIViewColor : Color<UIView> {
+class UIViewColor : Color<UIView>, ResizableWidget<UIView> {
+  override var sizeListener: SizeListener? = null
+
   override val value: UIView = object : UIView(CGRectZero.readValue()) {
-    override fun intrinsicContentSize(): CValue<CGSize> {
-      return CGSizeMake(width, height)
-    }
+    override fun intrinsicContentSize() = CGSizeMake(width, height)
+    override fun sizeThatFits(size: CValue<CGSize>) = CGSizeMake(width, height)
   }
+
   override var modifier: Modifier = Modifier
 
   private var width = 0.0
@@ -97,21 +98,16 @@ class UIViewColor : Color<UIView> {
 
   override fun width(width: Dp) {
     this.width = with(Density.Default) { width.toPx() }
-    invalidate()
+    sizeListener?.invalidateSize()
   }
 
   override fun height(height: Dp) {
     this.height = with(Density.Default) { height.toPx() }
-    invalidate()
+    sizeListener?.invalidateSize()
   }
 
   override fun color(color: Int) {
     value.backgroundColor = color.toUIColor()
-  }
-
-  private fun invalidate() {
-    value.setFrame(CGRectMake(0.0, 0.0, width, height))
-    value.invalidateIntrinsicContentSize()
   }
 }
 
