@@ -461,7 +461,7 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
    * assumes that a view that is discarded will never be bound again.
    */
   public class Binding<V : Any, W : Any> internal constructor(
-    internal val processor: LazyListUpdateProcessor<V, W>,
+    public val processor: LazyListUpdateProcessor<V, W>,
     internal var isPlaceholder: Boolean = false,
   ) {
     /** The currently-bound view. Null if this is not on-screen. */

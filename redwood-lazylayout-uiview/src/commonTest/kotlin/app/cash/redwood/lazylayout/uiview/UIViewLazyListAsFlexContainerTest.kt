@@ -39,6 +39,8 @@ class UIViewLazyListAsFlexContainerTest(
 
   private val lazyLayoutWidgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
 
+  override val viewMeasurementIsImpreciseAfterAnItemSizeChanges = true
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,

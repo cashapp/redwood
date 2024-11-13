@@ -32,6 +32,7 @@ import app.cash.redwood.lazylayout.widget.LazyListUpdateProcessor.Binding
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ChangeListener
+import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCClass
@@ -121,8 +122,8 @@ internal class UIViewLazyList :
     }
   }
 
-  private var updateProcessor: LazyListUpdateProcessor<LazyListContainerCell, UIView>? = object : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
-    override fun createPlaceholder(original: UIView) = SizeOnlyPlaceholder(original)
+  internal inner class UpdateProcessor : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
+    override fun createPlaceholder(original: UIView): UIView = SizeOnlyPlaceholder(original)
 
     override fun insertRows(index: Int, count: Int) {
       rowCount += count
@@ -155,7 +156,7 @@ internal class UIViewLazyList :
     }
 
     override fun setContent(view: LazyListContainerCell, widget: Widget<UIView>?) {
-      view.setContent(widget?.value)
+      view.setContent(widget)
     }
 
     override fun detach(view: LazyListContainerCell) {
@@ -165,7 +166,20 @@ internal class UIViewLazyList :
     override fun detach() {
       this@UIViewLazyList.detach()
     }
+
+    fun invalidateSize(binding: Binding<LazyListContainerCell, UIView>) {
+      val tableView = this@UIViewLazyList.tableView ?: return
+      val lazyListContainerCell = binding.view ?: return
+      val indexPath = tableView.indexPathForCell(lazyListContainerCell) ?: return
+
+      tableView.reloadRowsAtIndexPaths(
+        listOf(indexPath),
+        UITableViewRowAnimationNone,
+      )
+    }
   }
+
+  private var updateProcessor: UpdateProcessor? = UpdateProcessor()
 
   /** Cache of [LazyListUpdateProcessor.size] so we can return it after [detach]. */
   private var rowCount = 0
@@ -336,6 +350,7 @@ internal class LazyListContainerCell(
   reuseIdentifier: String?,
 ) : UITableViewCell(style, reuseIdentifier) {
   internal var binding: Binding<LazyListContainerCell, UIView>? = null
+  private var content: Widget<UIView>? = null
 
   override fun initWithStyle(
     style: UITableViewCellStyle,
@@ -379,33 +394,48 @@ internal class LazyListContainerCell(
   override fun layoutSubviews() {
     super.layoutSubviews()
 
-    val content = contentView.subviews.firstOrNull() as UIView? ?: return
-    content.setFrame(bounds)
+    content?.value?.setFrame(bounds)
     contentView.setFrame(bounds)
   }
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
-    val content = contentView.subviews.firstOrNull() as UIView? ?: return super.sizeThatFits(size)
-    return content.sizeThatFits(size)
+    val content = this.content ?: return super.sizeThatFits(size)
+    return content.value.sizeThatFits(size)
   }
 
-  internal fun setContent(content: UIView?) {
-    removeAllSubviews()
-    if (content != null) {
-      contentView.addSubview(content)
+  internal fun setContent(widget: Widget<UIView>?) {
+    val previous = this.content
+    if (previous != null) {
+      previous.value.removeFromSuperview()
+      if (previous is ResizableWidget) {
+        previous.sizeListener = null
+      }
+    }
+    this.selectedBackgroundView = null
+
+    this.content = widget
+    if (widget != null) {
+      contentView.addSubview(widget.value)
+      if (widget is ResizableWidget) {
+        widget.sizeListener = object : ResizableWidget.SizeListener {
+          override fun invalidateSize() {
+            val binding = binding ?: return
+            (binding.processor as UIViewLazyList.UpdateProcessor).invalidateSize(binding)
+          }
+        }
+      }
     }
     setNeedsLayout()
   }
 
-  private fun removeAllSubviews() {
-    contentView.subviews.forEach {
-      (it as UIView).removeFromSuperview()
-    }
-    selectedBackgroundView = null
-  }
-
   internal fun detach() {
-    binding = null // Break a reference cycle.
+    val previous = content
+    if (previous is ResizableWidget) {
+      previous.sizeListener = null
+    }
+
+    this.binding = null // Break a reference cycle.
+    this.content = null // Break a reference cycle.
   }
 }
 

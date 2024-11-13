@@ -31,6 +31,7 @@ import app.cash.redwood.snapshot.testing.Red
 import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.argb
+import app.cash.redwood.snapshot.testing.color
 import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
@@ -47,6 +48,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
   abstract val widgetFactory: TestWidgetFactory<T>
 
   protected val defaultBackgroundColor = argb(51, 0, 0, 255)
+
+  protected open val viewMeasurementIsImpreciseAfterAnItemSizeChanges = false
 
   abstract fun flexContainer(
     direction: FlexDirection,
@@ -651,10 +654,12 @@ abstract class AbstractFlexContainerTest<T : Any> {
     val bMeasureCountV2 = b.measureCount
     val cMeasureCountV2 = c.measureCount
 
-    // Only 'b' is measured again.
-    assertEquals(aMeasureCountV1, aMeasureCountV2)
-    assertTrue(bMeasureCountV1 <= bMeasureCountV2)
-    assertEquals(cMeasureCountV1, cMeasureCountV2)
+    // Only 'b' is measured again. Except for UIViewLazyList which measures more.
+    if (!viewMeasurementIsImpreciseAfterAnItemSizeChanges) {
+      assertEquals(aMeasureCountV1, aMeasureCountV2)
+      assertTrue(bMeasureCountV1 <= bMeasureCountV2)
+      assertEquals(cMeasureCountV1, cMeasureCountV2)
+    }
 
     snapshotter.snapshot("v3")
     val aMeasureCountV3 = a.measureCount
@@ -772,6 +777,42 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     rowA1.text("A1 ".repeat(5))
     rowA2.text("A-TWO ".repeat(5))
+    snapshotter.snapshot("v2")
+  }
+
+  @Test fun testLayoutHandlesChildResizes() {
+    val column = flexContainer(FlexDirection.Column)
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+        crossAxisAlignment(CrossAxisAlignment.Stretch)
+      }
+    val snapshotter = snapshotter(column.value)
+
+    val row0 = widgetFactory.color(Red, 100.dp, 100.dp)
+    column.add(row0)
+
+    val row1 = widgetFactory.color(Green, 80.dp, 80.dp)
+    column.add(row1)
+
+    val row2 = widgetFactory.color(Blue, 60.dp, 60.dp)
+    column.add(row2)
+
+    val row3 = widgetFactory.color(Red, 40.dp, 40.dp)
+    column.add(row3)
+
+    column.onEndChanges()
+    snapshotter.snapshot("v1")
+
+    row0.height(40.dp)
+    row0.width(40.dp)
+    row1.height(60.dp)
+    row1.width(60.dp)
+    row2.height(80.dp)
+    row2.width(80.dp)
+    row3.height(100.dp)
+    row3.width(100.dp)
+
     snapshotter.snapshot("v2")
   }
 

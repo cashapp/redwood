@@ -75,6 +75,8 @@ abstract class <#A: kotlin/Any, #B: kotlin/Any> app.cash.redwood.lazylayout.widg
     final class <#A1: kotlin/Any, #B1: kotlin/Any> Binding { // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding|null[0]
         final val isBound // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.isBound|{}isBound[0]
             final fun <get-isBound>(): kotlin/Boolean // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.isBound.<get-isBound>|<get-isBound>(){}[0]
+        final val processor // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.processor|{}processor[0]
+            final fun <get-processor>(): app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor<#A1, #B1> // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.processor.<get-processor>|<get-processor>(){}[0]
 
         final var view // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view|{}view[0]
             final fun <get-view>(): #A1? // app.cash.redwood.lazylayout.widget/LazyListUpdateProcessor.Binding.view.<get-view>|<get-view>(){}[0]

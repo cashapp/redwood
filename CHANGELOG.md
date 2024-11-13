@@ -17,6 +17,7 @@ Fixed:
 - Fix a layout bug where `Row` and `Column` layouts reported the wrong dimensions if their subviews could wrap.
 - Correctly update the layout when a Box's child's modifiers are removed.
 - Fix a layout bug where children of `Box` containers were not measured properly.
+- Fix a bug where `LazyColumn` didn't honor child widget resizes.
 
 Breaking:
 - Replace `CodeListener` with a new `DynamicContentWidgetFactory` API. Now loading and crashed views work like all other child widgets.
