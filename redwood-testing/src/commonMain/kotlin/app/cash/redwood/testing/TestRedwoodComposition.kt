@@ -29,12 +29,9 @@ import app.cash.redwood.widget.WidgetSystem
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withTimeout
 
@@ -94,16 +91,14 @@ private class RealTestRedwoodComposition<W : Any, S>(
   onBackPressedDispatcher: OnBackPressedDispatcher,
   savedState: TestSavedState?,
   initialUiConfiguration: UiConfiguration,
-  createSnapshot: () -> S,
+  private val createSnapshot: () -> S,
 ) : TestRedwoodComposition<S> {
-  /** Emit frames manually in [sendFrames]. */
+  /** Emits frames manually in [awaitSnapshot]. */
   private val clock = BroadcastFrameClock()
   private var timeNanos = 0L
   private val frameDelay = 1.seconds / 60
   private var contentSet = false
-
-  /** Channel with the most recent snapshot, if any. */
-  private val snapshots = Channel<S>(Channel.CONFLATED)
+  private var hasChanges = false
 
   override val uiConfigurations = MutableStateFlow(initialUiConfiguration)
 
@@ -125,12 +120,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
     saveableStateRegistry = savedStateRegistry,
     uiConfigurations = uiConfigurations,
     widgetSystem = widgetSystem,
-    onEndChanges = {
-      val newSnapshot = createSnapshot()
-
-      // trySend always succeeds on a CONFLATED channel.
-      check(snapshots.trySend(newSnapshot).isSuccess)
-    },
+    onEndChanges = { hasChanges = true },
   )
 
   override fun setContent(content: @Composable () -> Unit) {
@@ -141,26 +131,19 @@ private class RealTestRedwoodComposition<W : Any, S>(
   override suspend fun awaitSnapshot(timeout: Duration): S {
     check(contentSet) { "setContent must be called first!" }
 
-    // Await at least one change, sending frames while we wait.
-    return withTimeout(timeout) {
-      val sendFramesJob = sendFrames()
-      try {
-        snapshots.receive()
-      } finally {
-        sendFramesJob.cancel()
-      }
-    }
-  }
-
-  /** Launches a job that sends a frame immediately and again every 16 ms until it's canceled. */
-  private fun CoroutineScope.sendFrames(): Job {
-    return launch {
+    // Await changes, sending at least one frame while we wait.
+    withTimeout(timeout) {
       while (true) {
         clock.sendFrame(timeNanos)
+        if (hasChanges) break
+
         timeNanos += frameDelay.inWholeNanoseconds
         delay(frameDelay)
       }
     }
+
+    hasChanges = false
+    return createSnapshot()
   }
 
   override fun cancel() {
