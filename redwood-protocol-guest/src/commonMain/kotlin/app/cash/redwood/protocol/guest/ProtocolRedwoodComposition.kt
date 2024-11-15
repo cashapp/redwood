@@ -38,7 +38,6 @@ public fun ProtocolRedwoodComposition(
   onBackPressedDispatcher: OnBackPressedDispatcher,
   saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
-  onEndChanges: () -> Unit = {},
 ): RedwoodComposition {
   val composition = RedwoodComposition(
     scope = scope,
@@ -47,7 +46,6 @@ public fun ProtocolRedwoodComposition(
     saveableStateRegistry = saveableStateRegistry,
     uiConfigurations = uiConfigurations,
     widgetSystem = guestAdapter.widgetSystem,
-    onEndChanges = onEndChanges,
   )
   return ProtocolRedwoodComposition(composition, widgetVersion)
 }

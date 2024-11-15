@@ -120,7 +120,7 @@ private class RealTestRedwoodComposition<W : Any, S>(
     saveableStateRegistry = savedStateRegistry,
     uiConfigurations = uiConfigurations,
     widgetSystem = widgetSystem,
-    onEndChanges = { hasChanges = true },
+    onChanges = { hasChanges = true },
   )
 
   override fun setContent(content: @Composable () -> Unit) {

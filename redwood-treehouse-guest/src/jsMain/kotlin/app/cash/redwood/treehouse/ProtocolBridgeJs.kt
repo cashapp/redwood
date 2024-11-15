@@ -220,8 +220,10 @@ internal class FastGuestProtocolAdapter(
   }
 
   override fun emitChanges() {
-    sendChanges(changesSinkService, arrayOf(changes))
-    changes.clear()
+    if (changes.length > 0) {
+      sendChanges(changesSinkService, arrayOf(changes))
+      changes.clear()
+    }
   }
 
   override fun removeWidget(id: Id) {

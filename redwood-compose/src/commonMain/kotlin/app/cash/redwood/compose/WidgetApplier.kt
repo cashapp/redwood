@@ -54,7 +54,7 @@ import kotlin.math.min
 internal class NodeApplier<W : Any>(
   override val widgetSystem: WidgetSystem<W>,
   root: Widget.Children<W>,
-  private val onEndChanges: () -> Unit,
+  private val onChanges: () -> Unit,
 ) : AbstractApplier<Node<W>>(ChildrenNode(root)),
   RedwoodApplier<W> {
   private var closed = false
@@ -66,6 +66,13 @@ internal class NodeApplier<W : Any>(
     }
   }
 
+  override fun onBeginChanges() {
+    super.onBeginChanges()
+    // We invoke this here rather than in the end change callback to try and ensure
+    // no one relies on it to signal the end of changes.
+    onChanges.invoke()
+  }
+
   override fun onEndChanges() {
     check(!closed)
 
@@ -75,8 +82,6 @@ internal class NodeApplier<W : Any>(
       }
       changedWidgets.clear()
     }
-
-    onEndChanges.invoke()
   }
 
   override fun insertTopDown(index: Int, instance: Node<W>) {

@@ -46,7 +46,6 @@ import app.cash.redwood.ui.UiConfiguration
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.message
@@ -86,9 +85,6 @@ class ProtocolTest {
       },
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
-      onEndChanges = {
-        assertThat(guestAdapter.takeChanges()).isEmpty()
-      },
     )
 
     var actualDisplayVersion = 0U

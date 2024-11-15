@@ -58,12 +58,15 @@ public interface RedwoodComposition {
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
+ * @param onChanges Invoked when changes are being applied to the widget tree. Multiple rounds of
+ * changes can be applied in a single frame or setContent call, resulting in multiple invocations
+ * of this callback.
  */
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   view: RedwoodView<W>,
   widgetSystem: WidgetSystem<W>,
-  onEndChanges: () -> Unit = {},
+  onChanges: () -> Unit = {},
 ): RedwoodComposition {
   view.children.remove(0, view.children.widgets.size)
 
@@ -100,13 +103,16 @@ public fun <W : Any> RedwoodComposition(
     saveableStateRegistry,
     view.uiConfiguration,
     widgetSystem,
-    onEndChanges,
+    onChanges,
   )
 }
 
 /**
  * @param scope A [CoroutineScope] whose [coroutineContext][kotlin.coroutines.CoroutineContext]
  * must have a [MonotonicFrameClock] key which is being ticked.
+ * @param onChanges Invoked when changes are being applied to the widget tree. Multiple rounds of
+ * changes can be applied in a single frame or setContent call, resulting in multiple invocations
+ * of this callback.
  */
 public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
@@ -115,14 +121,14 @@ public fun <W : Any> RedwoodComposition(
   saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
   widgetSystem: WidgetSystem<W>,
-  onEndChanges: () -> Unit = {},
+  onChanges: () -> Unit = {},
 ): RedwoodComposition {
   return WidgetRedwoodComposition(
     scope,
     onBackPressedDispatcher,
     saveableStateRegistry,
     uiConfigurations,
-    NodeApplier(widgetSystem, container, onEndChanges),
+    NodeApplier(widgetSystem, container, onChanges),
   )
 }
 

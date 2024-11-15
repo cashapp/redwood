@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
@@ -56,7 +57,17 @@ private class RedwoodZiplineTreehouseUi(
   private val guestAdapter: GuestProtocolAdapter,
 ) : ZiplineTreehouseUi,
   ZiplineScoped,
-  EventSink by guestAdapter {
+  EventSink by guestAdapter,
+  StandardAppLifecycle.FrameListener {
+
+  private val clock = BroadcastFrameClock {
+    appLifecycle.requestHostFrame()
+  }
+
+  override fun onFrame(timeNanos: Long) {
+    clock.sendFrame(timeNanos)
+    guestAdapter.emitChanges()
+  }
 
   /**
    * By overriding [ZiplineScoped.scope], all services passed into [start] are added to this scope,
@@ -125,11 +136,12 @@ private class RedwoodZiplineTreehouseUi(
 
     guestAdapter.initChangesSink(changesSink)
 
+    appLifecycle.addFrameListener(this)
+
     val composition = ProtocolRedwoodComposition(
-      scope = coroutineScope + appLifecycle.frameClock,
+      scope = coroutineScope + clock,
       guestAdapter = guestAdapter,
       widgetVersion = appLifecycle.widgetVersion,
-      onEndChanges = { guestAdapter.emitChanges() },
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = host.uiConfigurations,
@@ -137,6 +149,10 @@ private class RedwoodZiplineTreehouseUi(
     this.composition = composition
 
     composition.bind(treehouseUi)
+
+    // Explicitly emit the initial changes produced by calling 'setContent' (within 'bind').
+    // All other changes are initiated and emitted by the [onFrame] callback.
+    guestAdapter.emitChanges()
   }
 
   override fun snapshotState(): StateSnapshot {
@@ -145,6 +161,7 @@ private class RedwoodZiplineTreehouseUi(
   }
 
   override fun close() {
+    appLifecycle.removeFrameListener(this)
     coroutineScope.coroutineContext.job.invokeOnCompletion {
       scope.close()
     }

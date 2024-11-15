@@ -1,7 +1,6 @@
 public final class app/cash/redwood/treehouse/StandardAppLifecycle : app/cash/redwood/treehouse/AppLifecycle {
 	public synthetic fun <init> (Lapp/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory;Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun close ()V
-	public final fun getFrameClock ()Landroidx/compose/runtime/MonotonicFrameClock;
 	public fun getGuestProtocolVersion-7jYel6c ()Ljava/lang/String;
 	public fun sendFrame (J)V
 	public fun start (Lapp/cash/redwood/treehouse/AppLifecycle$Host;)V

@@ -9,8 +9,6 @@
 final class app.cash.redwood.treehouse/StandardAppLifecycle : app.cash.redwood.treehouse/AppLifecycle { // app.cash.redwood.treehouse/StandardAppLifecycle|null[0]
     constructor <init>(app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory, kotlinx.serialization.json/Json, kotlin/UInt) // app.cash.redwood.treehouse/StandardAppLifecycle.<init>|<init>(app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory;kotlinx.serialization.json.Json;kotlin.UInt){}[0]
 
-    final val frameClock // app.cash.redwood.treehouse/StandardAppLifecycle.frameClock|{}frameClock[0]
-        final fun <get-frameClock>(): androidx.compose.runtime/MonotonicFrameClock // app.cash.redwood.treehouse/StandardAppLifecycle.frameClock.<get-frameClock>|<get-frameClock>(){}[0]
     final val guestProtocolVersion // app.cash.redwood.treehouse/StandardAppLifecycle.guestProtocolVersion|{}guestProtocolVersion[0]
         final fun <get-guestProtocolVersion>(): app.cash.redwood.protocol/RedwoodVersion // app.cash.redwood.treehouse/StandardAppLifecycle.guestProtocolVersion.<get-guestProtocolVersion>|<get-guestProtocolVersion>(){}[0]
 

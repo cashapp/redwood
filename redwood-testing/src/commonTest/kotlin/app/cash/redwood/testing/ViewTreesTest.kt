@@ -22,7 +22,6 @@ import app.cash.redwood.compose.current
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
-import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange.Add
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Create
@@ -115,7 +114,6 @@ class ViewTreesTest {
       .isEqualTo(expected)
 
     // Validate that the normal Compose protocol backend produces the same list of changes.
-    val protocolChanges = mutableListOf<Change>()
     val guestAdapter = DefaultGuestProtocolAdapter(
       hostVersion = hostRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
@@ -123,7 +121,6 @@ class ViewTreesTest {
     val composition = ProtocolRedwoodComposition(
       scope = this + BroadcastFrameClock(),
       guestAdapter = guestAdapter,
-      onEndChanges = { protocolChanges += guestAdapter.takeChanges() },
       widgetVersion = UInt.MAX_VALUE,
       onBackPressedDispatcher = object : OnBackPressedDispatcher {
         override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable {
@@ -138,7 +135,7 @@ class ViewTreesTest {
     composition.setContent(content)
     composition.cancel()
 
-    assertThat(protocolChanges).isEqualTo(expected)
+    assertThat(guestAdapter.takeChanges()).isEqualTo(expected)
 
     // Ensure when the changes are applied with the widget protocol we get equivalent values.
     val widgetSystem = TestSchemaWidgetSystem(

@@ -66,6 +66,10 @@ public abstract class GuestProtocolAdapter(
 
   public abstract fun initChangesSink(changesSink: ChangesSink)
 
+  /**
+   * Write changes to the underlying [ChangesSink].
+   * This function may no-op if there are no changes to send.
+   */
   public abstract fun emitChanges()
 
   @RedwoodCodegenApi

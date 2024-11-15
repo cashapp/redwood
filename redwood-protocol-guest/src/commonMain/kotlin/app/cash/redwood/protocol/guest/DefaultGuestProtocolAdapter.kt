@@ -170,7 +170,9 @@ public class DefaultGuestProtocolAdapter(
   }
 
   override fun emitChanges() {
-    changesSink.sendChanges(takeChanges())
+    if (changes.isNotEmpty()) {
+      changesSink.sendChanges(takeChanges())
+    }
   }
 
   public override fun removeWidget(id: Id) {
