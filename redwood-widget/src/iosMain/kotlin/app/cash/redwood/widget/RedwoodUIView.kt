@@ -58,6 +58,7 @@ public open class RedwoodUIView : RedwoodView<UIView> {
     MutableStateFlow(
       computeUiConfiguration(
         traitCollection = valueRootView.traitCollection,
+        viewInsets = Margin.Zero,
         layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
         bounds = valueRootView.bounds,
       ),
@@ -78,8 +79,10 @@ public open class RedwoodUIView : RedwoodView<UIView> {
     get() = null
 
   private fun updateUiConfiguration() {
+    val old = mutableUiConfiguration.value
     mutableUiConfiguration.value = computeUiConfiguration(
       traitCollection = valueRootView.traitCollection,
+      viewInsets = old.viewInsets,
       layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
       bounds = valueRootView.bounds,
     )
@@ -124,12 +127,14 @@ public open class RedwoodUIView : RedwoodView<UIView> {
 
 internal fun computeUiConfiguration(
   traitCollection: UITraitCollection,
+  viewInsets: Margin,
   layoutDirection: UIUserInterfaceLayoutDirection,
   bounds: CValue<CGRect>,
 ): UiConfiguration {
   return UiConfiguration(
     darkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark,
     safeAreaInsets = computeSafeAreaInsets(),
+    viewInsets = viewInsets,
     viewportSize = bounds.useContents {
       with(Density.Default) {
         Size(size.width.toDp(), size.height.toDp())

@@ -15,21 +15,21 @@
  */
 package app.cash.redwood.widget
 
+import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
+import androidx.core.view.children as viewGroupChildren
+import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
-import androidx.core.graphics.Insets
-import androidx.core.view.children as viewGroupChildren
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
-import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
-import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +51,11 @@ public open class RedwoodLayout(
     id = R.id.redwood_layout
   }
 
-  private val mutableUiConfiguration = MutableStateFlow(computeUiConfiguration())
+  private val mutableUiConfiguration = MutableStateFlow(
+    computeUiConfiguration(
+      viewInsets = Margin.Zero,
+    ),
+  )
 
   override val onBackPressedDispatcher: RedwoodOnBackPressedDispatcher =
     object : RedwoodOnBackPressedDispatcher {
@@ -82,7 +86,9 @@ public open class RedwoodLayout(
 
   init {
     setOnWindowInsetsChangeListener { insets ->
-      mutableUiConfiguration.value = computeUiConfiguration(insets = insets.safeDrawing)
+      mutableUiConfiguration.value = computeUiConfiguration(
+        viewInsets = insets.safeDrawing.toMargin(Density(resources))
+      )
     }
   }
 
@@ -112,7 +118,7 @@ public open class RedwoodLayout(
 
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
-    insets: Insets = rootWindowInsetsCompat.safeDrawing,
+    viewInsets: Margin = uiConfiguration.value.viewInsets,
   ): UiConfiguration {
     val viewportSize: Size
     val density: Double
@@ -122,7 +128,8 @@ public open class RedwoodLayout(
     }
     return UiConfiguration(
       darkMode = (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES,
-      safeAreaInsets = insets.toMargin(Density(resources)),
+      safeAreaInsets = Margin.Zero,
+      viewInsets = viewInsets,
       viewportSize = viewportSize,
       density = density,
       layoutDirection = when (config.layoutDirection) {

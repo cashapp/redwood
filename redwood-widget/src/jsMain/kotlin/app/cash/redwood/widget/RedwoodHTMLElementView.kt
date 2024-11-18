@@ -17,6 +17,7 @@ package app.cash.redwood.widget
 
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.LayoutDirection
+import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
@@ -64,6 +65,7 @@ private class RedwoodHTMLElementView(
     _uiConfiguration = MutableStateFlow(
       UiConfiguration(
         darkMode = colorSchemeQuery.matches,
+        viewInsets = Margin.Zero,
         viewportSize = Size(width = value.offsetWidth.dp, height = value.offsetHeight.dp),
         layoutDirection = when (value.dir) {
           "ltr" -> LayoutDirection.Ltr
@@ -75,15 +77,7 @@ private class RedwoodHTMLElementView(
     )
 
     colorSchemeQuery.addEventListener("change", { event ->
-      updateUiConfiguration { old ->
-        UiConfiguration(
-          darkMode = event.unsafeCast<MediaQueryList>().matches,
-          safeAreaInsets = old.safeAreaInsets,
-          viewportSize = old.viewportSize,
-          density = old.density,
-          layoutDirection = old.layoutDirection,
-        )
-      }
+      updateUiConfiguration { it.copy(darkMode = event.unsafeCast<MediaQueryList>().matches) }
     })
 
     observePixelRatioChange()
@@ -107,15 +101,7 @@ private class RedwoodHTMLElementView(
       pixelRatioQuery.removeEventListener("change", listener)
     }
 
-    updateUiConfiguration { old ->
-      UiConfiguration(
-        darkMode = old.darkMode,
-        safeAreaInsets = old.safeAreaInsets,
-        viewportSize = old.viewportSize,
-        density = window.devicePixelRatio,
-        layoutDirection = old.layoutDirection,
-      )
-    }
+    updateUiConfiguration { it.copy(density = window.devicePixelRatio) }
   }
 
   private fun updateUiConfiguration(updater: (UiConfiguration) -> UiConfiguration) {

@@ -142,7 +142,7 @@ final class app.cash.redwood.ui/Size { // app.cash.redwood.ui/Size|null[0]
 }
 
 final class app.cash.redwood.ui/UiConfiguration { // app.cash.redwood.ui/UiConfiguration|null[0]
-    constructor <init>(kotlin/Boolean = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.ui/Size? = ..., kotlin/Double = ..., app.cash.redwood.ui/LayoutDirection = ...) // app.cash.redwood.ui/UiConfiguration.<init>|<init>(kotlin.Boolean;app.cash.redwood.ui.Margin;app.cash.redwood.ui.Size?;kotlin.Double;app.cash.redwood.ui.LayoutDirection){}[0]
+    constructor <init>(kotlin/Boolean = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.ui/Size? = ..., kotlin/Double = ..., app.cash.redwood.ui/LayoutDirection = ...) // app.cash.redwood.ui/UiConfiguration.<init>|<init>(kotlin.Boolean;app.cash.redwood.ui.Margin;app.cash.redwood.ui.Margin;app.cash.redwood.ui.Size?;kotlin.Double;app.cash.redwood.ui.LayoutDirection){}[0]
 
     final val darkMode // app.cash.redwood.ui/UiConfiguration.darkMode|{}darkMode[0]
         final fun <get-darkMode>(): kotlin/Boolean // app.cash.redwood.ui/UiConfiguration.darkMode.<get-darkMode>|<get-darkMode>(){}[0]
@@ -152,9 +152,12 @@ final class app.cash.redwood.ui/UiConfiguration { // app.cash.redwood.ui/UiConfi
         final fun <get-layoutDirection>(): app.cash.redwood.ui/LayoutDirection // app.cash.redwood.ui/UiConfiguration.layoutDirection.<get-layoutDirection>|<get-layoutDirection>(){}[0]
     final val safeAreaInsets // app.cash.redwood.ui/UiConfiguration.safeAreaInsets|{}safeAreaInsets[0]
         final fun <get-safeAreaInsets>(): app.cash.redwood.ui/Margin // app.cash.redwood.ui/UiConfiguration.safeAreaInsets.<get-safeAreaInsets>|<get-safeAreaInsets>(){}[0]
+    final val viewInsets // app.cash.redwood.ui/UiConfiguration.viewInsets|{}viewInsets[0]
+        final fun <get-viewInsets>(): app.cash.redwood.ui/Margin // app.cash.redwood.ui/UiConfiguration.viewInsets.<get-viewInsets>|<get-viewInsets>(){}[0]
     final val viewportSize // app.cash.redwood.ui/UiConfiguration.viewportSize|{}viewportSize[0]
         final fun <get-viewportSize>(): app.cash.redwood.ui/Size? // app.cash.redwood.ui/UiConfiguration.viewportSize.<get-viewportSize>|<get-viewportSize>(){}[0]
 
+    final fun copy(kotlin/Boolean = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.ui/Margin = ..., app.cash.redwood.ui/Size? = ..., kotlin/Double = ..., app.cash.redwood.ui/LayoutDirection = ...): app.cash.redwood.ui/UiConfiguration // app.cash.redwood.ui/UiConfiguration.copy|copy(kotlin.Boolean;app.cash.redwood.ui.Margin;app.cash.redwood.ui.Margin;app.cash.redwood.ui.Size?;kotlin.Double;app.cash.redwood.ui.LayoutDirection){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.ui/UiConfiguration.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.ui/UiConfiguration.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.ui/UiConfiguration.toString|toString(){}[0]

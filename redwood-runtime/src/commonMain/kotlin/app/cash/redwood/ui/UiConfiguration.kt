@@ -25,13 +25,23 @@ public class UiConfiguration(
    * True if the device is configured to use a dark color palette.
    */
   public val darkMode: Boolean = false,
+
   /**
-   * A set of distances from the edges of the display where system UI and other elements will be
-   * drawn.
-   *
-   * Use this margin to inset your content to avoid drawing under system UI elements.
+   * The insets of the host window, independent of where the Redwood composition is positioned
+   * within it. The Redwood composition is not responsible for consuming these insets.
    */
   public val safeAreaInsets: Margin = Margin.Zero,
+
+  /**
+   * The insets of the viewport that the composition is responsible for consuming.
+   *
+   * This may be zero if the host view isn't attached to a view hierarchy and therefore doesn't
+   * know its insets.
+   *
+   * See https://developer.android.com/develop/ui/views/layout/edge-to-edge
+   */
+  public val viewInsets: Margin = Margin.Zero,
+
   /**
    * The size of the viewport into which the composition is rendering. This could be as lage as the
    * entire screen or as small as an individual view within a larger native screen.
@@ -55,5 +65,21 @@ public class UiConfiguration(
    */
   public val layoutDirection: LayoutDirection = LayoutDirection.Ltr,
 ) {
+  public fun copy(
+    darkMode: Boolean = this.darkMode,
+    safeAreaInsets: Margin = this.safeAreaInsets,
+    viewInsets: Margin = this.viewInsets,
+    viewportSize: Size? = this.viewportSize,
+    density: Double = this.density,
+    layoutDirection: LayoutDirection = this.layoutDirection,
+  ): UiConfiguration = UiConfiguration(
+    darkMode = darkMode,
+    safeAreaInsets = safeAreaInsets,
+    viewInsets = viewInsets,
+    viewportSize = viewportSize,
+    density = density,
+    layoutDirection = layoutDirection,
+  )
+
   public companion object
 }

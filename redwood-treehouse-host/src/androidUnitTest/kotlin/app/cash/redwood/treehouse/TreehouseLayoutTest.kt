@@ -98,7 +98,10 @@ class TreehouseLayoutTest {
   @Test fun uiConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
-      assertThat(awaitItem().safeAreaInsets).isEqualTo(Margin.Zero)
+      val value1 = awaitItem()
+      assertThat(value1.safeAreaInsets).isEqualTo(Margin.Zero)
+      assertThat(value1.viewInsets).isEqualTo(Margin.Zero)
+
       val insets = Insets.of(10, 20, 30, 40)
       val windowInsets = WindowInsetsCompat.Builder()
         .setInsets(WindowInsetsCompat.Type.systemBars(), insets)
@@ -112,7 +115,9 @@ class TreehouseLayoutTest {
           bottom = insets.bottom.toDp(),
         )
       }
-      assertThat(awaitItem().safeAreaInsets).isEqualTo(expectedInsets)
+      val value2 = awaitItem()
+      assertThat(value2.safeAreaInsets).isEqualTo(Margin.Zero)
+      assertThat(value2.viewInsets).isEqualTo(expectedInsets)
     }
   }
 
