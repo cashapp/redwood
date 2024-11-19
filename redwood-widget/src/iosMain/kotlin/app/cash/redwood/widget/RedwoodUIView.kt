@@ -82,7 +82,7 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
-  public fun updateUiConfiguration() {
+  private fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       density = density,
       traitCollection = valueRootView.traitCollection,
