@@ -54,7 +54,7 @@ class TreehouseLayoutTest {
     val rootView = layout.value as ViewGroup
 
     val view = View(activity)
-    layout.children.insert(0, viewWidget(view))
+    layout.children.insert(0, ViewWidget(view))
     assertThat(rootView.childCount).isEqualTo(1)
     assertThat(rootView.getChildAt(0)).isSameInstanceAs(view)
   }
@@ -134,8 +134,9 @@ class TreehouseLayoutTest {
     }
   }
 
-  private fun viewWidget(view: View) = object : Widget<View> {
-    override val value: View get() = view
+  class ViewWidget(
+    override val value: View,
+  ) : Widget<View> {
     override var modifier: Modifier = Modifier
   }
 
