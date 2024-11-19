@@ -62,7 +62,7 @@ fun main() {
             EmojiSearch(
               httpClient = httpClient,
               navigator = DesktopNavigator,
-              safeAreaInsets = Margin.Zero,
+              viewInsets = Margin.Zero,
             )
           }
         }

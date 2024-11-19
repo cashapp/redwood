@@ -21,7 +21,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.core.view.WindowCompat
+import androidx.activity.enableEdgeToEdge
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
@@ -75,8 +75,8 @@ class EmojiSearchActivity : ComponentActivity() {
 
   @SuppressLint("ResourceType")
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    WindowCompat.setDecorFitsSystemWindows(window, false)
 
     val context = this
     val treehouseApp = createTreehouseApp()

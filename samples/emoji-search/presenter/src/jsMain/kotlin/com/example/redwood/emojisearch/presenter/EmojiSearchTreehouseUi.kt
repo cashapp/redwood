@@ -16,6 +16,7 @@
 package com.example.redwood.emojisearch.presenter
 
 import androidx.compose.runtime.Composable
+import app.cash.redwood.compose.ConsumeInsets
 import app.cash.redwood.treehouse.TreehouseUi
 
 class EmojiSearchTreehouseUi(
@@ -24,6 +25,12 @@ class EmojiSearchTreehouseUi(
 ) : TreehouseUi {
   @Composable
   override fun Show() {
-    EmojiSearch(httpClient, navigator)
+    ConsumeInsets { insets ->
+      EmojiSearch(
+        httpClient = httpClient,
+        navigator = navigator,
+        viewInsets = insets,
+      )
+    }
   }
 }

@@ -50,6 +50,7 @@ import platform.UIKit.UIControlEventValueChanged
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIRefreshControl
 import platform.UIKit.UIScrollView
+import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
 import platform.UIKit.UITableView
 import platform.UIKit.UITableViewAutomaticDimension
 import platform.UIKit.UITableViewCell
@@ -275,6 +276,7 @@ internal class UIViewLazyList :
       rowHeight = UITableViewAutomaticDimension
       separatorStyle = UITableViewCellSeparatorStyleNone
       backgroundColor = UIColor.clearColor
+      contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever
 
       registerClass(
         cellClass = LazyListContainerCell(UITableViewCellStyle.UITableViewCellStyleDefault, REUSE_IDENTIFIER)

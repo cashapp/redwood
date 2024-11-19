@@ -35,6 +35,7 @@ import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
+import app.cash.redwood.layout.compose.Spacer
 import app.cash.redwood.lazylayout.compose.ExperimentalRedwoodLazyLayoutApi
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.lazylayout.compose.items
@@ -71,7 +72,7 @@ fun EmojiSearch(
   httpClient: HttpClient,
   navigator: Navigator,
   modifier: Modifier = Modifier,
-  safeAreaInsets: Margin = LocalUiConfiguration.current.safeAreaInsets,
+  viewInsets: Margin = LocalUiConfiguration.current.safeAreaInsets,
 ) {
   val scope = rememberCoroutineScope()
   val allEmojis = remember { mutableStateListOf<EmojiImage>() }
@@ -123,7 +124,7 @@ fun EmojiSearch(
     width = Constraint.Fill,
     height = Constraint.Fill,
     horizontalAlignment = CrossAxisAlignment.Stretch,
-    margin = safeAreaInsets,
+    margin = Margin(start = viewInsets.start, end = viewInsets.end, top = viewInsets.top),
     modifier = modifier,
   ) {
     TextInput(
@@ -165,6 +166,9 @@ fun EmojiSearch(
             navigator.openUrl(image.url)
           },
         )
+      }
+      item {
+        Spacer(height = viewInsets.bottom)
       }
     }
   }
