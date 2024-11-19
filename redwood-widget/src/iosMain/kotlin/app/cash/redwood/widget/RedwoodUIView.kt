@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIApplication
+import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UILayoutConstraintAxisVertical
 import platform.UIKit.UIStackView
 import platform.UIKit.UIStackViewAlignmentFill
@@ -54,11 +55,14 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val children: Widget.Children<UIView>
     get() = _children
 
+  private val density = Density.Default
+
   private val mutableUiConfiguration =
     MutableStateFlow(
       computeUiConfiguration(
+        density = density,
         traitCollection = valueRootView.traitCollection,
-        viewInsets = Margin.Zero,
+        viewInsets = valueRootView.safeAreaInsets.toMargin(),
         layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
         bounds = valueRootView.bounds,
       ),
@@ -78,11 +82,11 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
-  private fun updateUiConfiguration() {
-    val old = mutableUiConfiguration.value
+  public fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
+      density = density,
       traitCollection = valueRootView.traitCollection,
-      viewInsets = old.viewInsets,
+      viewInsets = valueRootView.safeAreaInsets.toMargin(),
       layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
       bounds = valueRootView.bounds,
     )
@@ -104,6 +108,12 @@ public open class RedwoodUIView : RedwoodView<UIView> {
       this.axis = UILayoutConstraintAxisVertical
       this.alignment = UIStackViewAlignmentFill // Fill horizontal.
       this.distribution = UIStackViewDistributionFillEqually // Fill vertical.
+      this.setInsetsLayoutMarginsFromSafeArea(false) // Consume insets internally.
+    }
+
+    override fun safeAreaInsetsDidChange() {
+      super.safeAreaInsetsDidChange()
+      updateUiConfiguration()
     }
 
     override fun layoutSubviews() {
@@ -123,9 +133,18 @@ public open class RedwoodUIView : RedwoodView<UIView> {
       updateUiConfiguration()
     }
   }
+
+  private fun CValue<UIEdgeInsets>.toMargin(): Margin {
+    return with(density) {
+      useContents {
+        Margin(left.toDp(), right.toDp(), top.toDp(), bottom.toDp())
+      }
+    }
+  }
 }
 
 internal fun computeUiConfiguration(
+  density: Density,
   traitCollection: UITraitCollection,
   viewInsets: Margin,
   layoutDirection: UIUserInterfaceLayoutDirection,
@@ -136,11 +155,11 @@ internal fun computeUiConfiguration(
     safeAreaInsets = computeSafeAreaInsets(),
     viewInsets = viewInsets,
     viewportSize = bounds.useContents {
-      with(Density.Default) {
+      with(density) {
         Size(size.width.toDp(), size.height.toDp())
       }
     },
-    density = Density.Default.rawDensity,
+    density = density.rawDensity,
     layoutDirection = when (layoutDirection) {
       UIUserInterfaceLayoutDirectionRightToLeft -> LayoutDirection.Rtl
       UIUserInterfaceLayoutDirectionLeftToRight -> LayoutDirection.Ltr
