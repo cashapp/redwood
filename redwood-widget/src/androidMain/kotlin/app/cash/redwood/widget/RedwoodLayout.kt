@@ -15,21 +15,21 @@
  */
 package app.cash.redwood.widget
 
-import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
-import androidx.core.view.children as viewGroupChildren
-import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
-import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
+import androidx.core.view.children as viewGroupChildren
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
+import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,7 +87,7 @@ public open class RedwoodLayout(
   init {
     setOnWindowInsetsChangeListener { insets ->
       mutableUiConfiguration.value = computeUiConfiguration(
-        viewInsets = insets.safeDrawing.toMargin(Density(resources))
+        viewInsets = insets.safeDrawing.toMargin(Density(resources)),
       )
     }
   }
