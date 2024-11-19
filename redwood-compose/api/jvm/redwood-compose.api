@@ -17,8 +17,10 @@ public final class app/cash/redwood/compose/RedwoodCompositionKt {
 }
 
 public final class app/cash/redwood/compose/UiConfigurationKt {
+	public static final fun ConsumeInsets (Lapp/cash/redwood/ui/Margin;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 	public static final fun getCurrent (Lapp/cash/redwood/ui/UiConfiguration$Companion;Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/ui/UiConfiguration;
 	public static final fun getLocalUiConfiguration ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public static final fun getLocalViewInsets ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 }
 
 public final class app/cash/redwood/compose/WidgetVersionKt {
