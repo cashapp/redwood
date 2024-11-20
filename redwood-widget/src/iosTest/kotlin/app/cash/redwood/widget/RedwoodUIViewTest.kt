@@ -59,7 +59,7 @@ class RedwoodUIViewTest {
     val window = UIWindow(
       CGRectMake(0.0, 0.0, 390.0, 844.0), // iPhone 14.
     )
-    window.makeKeyAndVisible()
+    window.setHidden(false) // Necessary to propagate additionalSafeAreaInsets.
     window.rootViewController = viewController
 
     assertThat(redwoodUIView.uiConfiguration.value.viewInsets)
