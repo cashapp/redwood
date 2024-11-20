@@ -27,6 +27,13 @@ jobs:
       - run: ./scripts/enforce_git_lfs.sh
       - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps -x dokkaHtml
 
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: test-report
+          path: '**/build/reports/tests/**'
+          retention-days: 1
+
   emulator-tests:
     runs-on: ubuntu-latest
     steps:
