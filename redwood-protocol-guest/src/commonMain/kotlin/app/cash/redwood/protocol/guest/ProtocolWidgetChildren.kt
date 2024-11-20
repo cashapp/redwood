@@ -37,25 +37,26 @@ public class ProtocolWidgetChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    if (guestAdapter.synthesizeSubtreeRemoval) {
+    val removedIds = if (guestAdapter.synthesizeSubtreeRemoval) {
       // This boxes Id values. Don't bother optimizing since it only serves very old hosts.
-      val removedIds = ArrayList<Id>(count)
-      for (i in index until index + count) {
-        val widget = _widgets[i]
-        removedIds += widget.id
-        guestAdapter.removeWidget(widget.id)
+      buildList(count) {
+        for (i in index until index + count) {
+          val widget = _widgets[i]
+          this += widget.id
+          guestAdapter.removeWidget(widget.id)
 
-        widget.depthFirstWalk(guestAdapter.childrenVisitor)
+          widget.depthFirstWalk(guestAdapter.childrenRemover)
+        }
       }
-      guestAdapter.appendRemove(id, tag, index, count, removedIds)
     } else {
       for (i in index until index + count) {
         val widget = _widgets[i]
         guestAdapter.removeWidget(widget.id)
-        widget.depthFirstWalk(guestAdapter.childrenVisitor)
+        widget.depthFirstWalk(guestAdapter.childrenRemover)
       }
-      guestAdapter.appendRemove(id, tag, index, count, emptyList())
+      emptyList()
     }
+    guestAdapter.appendRemove(id, tag, index, count, removedIds)
 
     _widgets.remove(index, count)
   }

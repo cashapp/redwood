@@ -149,7 +149,7 @@ public abstract class GuestProtocolAdapter(
   public abstract fun removeWidget(id: Id)
 
   @RedwoodCodegenApi
-  public val childrenVisitor: ProtocolWidget.ChildrenVisitor = if (synthesizeSubtreeRemoval) {
+  public val childrenRemover: ProtocolWidget.ChildrenVisitor = if (synthesizeSubtreeRemoval) {
     object : ProtocolWidget.ChildrenVisitor {
       override fun visit(
         parent: ProtocolWidget,
