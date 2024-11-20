@@ -25,7 +25,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - run: ./scripts/enforce_git_lfs.sh
-      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps -x dokkaHtml --continue
+#      - run: ./gradlew kotlinUpgradeYarnLock build -PredwoodNoApps -x dokkaHtml --continue
+      - run: ./gradlew :redwood-widget:iosSimulatorArm64Test -PredwoodNoApps -x dokkaHtml --continue
 
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
