@@ -43,15 +43,14 @@ internal actual fun GuestProtocolAdapter(
   hostVersion: RedwoodVersion,
   widgetSystemFactory: ProtocolWidgetSystemFactory,
   mismatchHandler: ProtocolMismatchHandler,
-): GuestProtocolAdapter = FastGuestProtocolAdapter(json, hostVersion, widgetSystemFactory, mismatchHandler)
+): GuestProtocolAdapter = FastGuestProtocolAdapter(json, widgetSystemFactory, mismatchHandler)
 
 @OptIn(ExperimentalSerializationApi::class, RedwoodCodegenApi::class)
 internal class FastGuestProtocolAdapter(
   override val json: Json = Json.Default,
-  hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter(hostVersion) {
+) : GuestProtocolAdapter() {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
   private val changes = JsArray<Change>()

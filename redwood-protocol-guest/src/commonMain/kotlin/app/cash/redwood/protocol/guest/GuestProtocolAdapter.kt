@@ -22,7 +22,6 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyTag
-import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
@@ -37,19 +36,9 @@ import kotlinx.serialization.json.Json
  *
  * This interface is for generated code use only.
  */
-public abstract class GuestProtocolAdapter(
-  hostVersion: RedwoodVersion,
-) : EventSink {
+public abstract class GuestProtocolAdapter : EventSink {
   @RedwoodCodegenApi
   public abstract val json: Json
-
-  /**
-   * Host versions prior to 0.10.0 contained a bug where they did not recursively remove widgets
-   * from the protocol map which leaked any child views of a removed node. We can work around this
-   * on the guest side by synthesizing removes for every node in the subtree.
-   */
-  @RedwoodCodegenApi
-  public val synthesizeSubtreeRemoval: Boolean = hostVersion < RedwoodVersion("0.10.0-SNAPSHOT")
 
   /**
    * The provider of factories of widgets which record property changes and whose children changes
@@ -149,22 +138,7 @@ public abstract class GuestProtocolAdapter(
   public abstract fun removeWidget(id: Id)
 
   @RedwoodCodegenApi
-  public val childrenRemover: ProtocolWidget.ChildrenVisitor = if (synthesizeSubtreeRemoval) {
-    object : ProtocolWidget.ChildrenVisitor {
-      override fun visit(
-        parent: ProtocolWidget,
-        childrenTag: ChildrenTag,
-        children: ProtocolWidgetChildren,
-      ) {
-        // This boxes Id values. Don't bother optimizing since it only serves very old hosts.
-        val childIds = children.widgets.map(ProtocolWidget::id)
-        for (childId in childIds) {
-          removeWidget(childId)
-        }
-        appendRemove(parent.id, childrenTag, 0, childIds.size, childIds)
-      }
-    }
-  } else {
+  public val childrenRemover: ProtocolWidget.ChildrenVisitor =
     object : ProtocolWidget.ChildrenVisitor {
       override fun visit(
         parent: ProtocolWidget,
@@ -176,5 +150,4 @@ public abstract class GuestProtocolAdapter(
         }
       }
     }
-  }
 }

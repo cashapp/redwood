@@ -41,10 +41,12 @@ import kotlinx.serialization.json.JsonPrimitive
 @OptIn(RedwoodCodegenApi::class)
 public class DefaultGuestProtocolAdapter(
   public override val json: Json = Json.Default,
+  // Just keep this parameter because we may need it in the future to vary the protocol.
+  @Suppress("unused")
   hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter(hostVersion) {
+) : GuestProtocolAdapter() {
   private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Int, ProtocolWidget>()
   private val changes = mutableListOf<Change>()

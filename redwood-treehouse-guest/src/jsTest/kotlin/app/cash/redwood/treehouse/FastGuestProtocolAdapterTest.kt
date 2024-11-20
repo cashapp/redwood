@@ -137,8 +137,6 @@ class FastGuestProtocolAdapterTest {
     block: (Widget.Children<Unit>, TestSchemaWidgetSystem<Unit>) -> Unit,
   ): List<Change> {
     val guest = FastGuestProtocolAdapter(
-      // Use latest guest version as the host version to avoid any compatibility behavior.
-      hostVersion = guestRedwoodVersion,
       widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       json = json,
       mismatchHandler = ProtocolMismatchHandler.Throwing,

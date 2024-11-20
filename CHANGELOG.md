@@ -3,6 +3,9 @@
 ## [Unreleased]
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.16.0...HEAD
 
+Breaking:
+- Treehouse hosts running Redwood 0.11.0 or older are not longer actively supported. They will continue to work, but they will experience indefinite memory leaks of native widgets.
+
 New:
 - Nothing yet!
 
