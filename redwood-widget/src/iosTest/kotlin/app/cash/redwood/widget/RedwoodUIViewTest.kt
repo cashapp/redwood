@@ -60,8 +60,8 @@ class RedwoodUIViewTest {
     val window = UIWindow(
       CGRectMake(0.0, 0.0, 390.0, 844.0), // iPhone 14.
     )
-    println("makeKeyAndVisible")
-    window.makeKeyAndVisible()
+    println("setHidden(false)")
+    window.setHidden(false)
     println("SUCCESS")
 //    window.rootViewController = viewController
 //
