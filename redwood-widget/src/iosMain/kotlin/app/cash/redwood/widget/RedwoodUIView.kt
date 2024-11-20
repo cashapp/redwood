@@ -55,7 +55,7 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val children: Widget.Children<UIView>
     get() = _children
 
-  private val density = Density.Default
+  private val density: Density get() = Density.Default
 
   private val mutableUiConfiguration =
     MutableStateFlow(
