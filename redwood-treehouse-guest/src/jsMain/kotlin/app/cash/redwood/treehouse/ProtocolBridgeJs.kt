@@ -203,19 +203,12 @@ internal class FastGuestProtocolAdapter(
     tag: ChildrenTag,
     index: Int,
     count: Int,
-    removedIds: List<Id>,
   ) {
     val id = id
     val tag = tag
     val index = index
     val count = count
-
-    val removedIdsArray = js("[]")
-    for (i in removedIds.indices) {
-      removedIdsArray.push(removedIds[i].value)
-    }
-
-    changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count,"removedIds":removedIdsArray}]"""))
+    changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count}]"""))
   }
 
   override fun emitChanges() {

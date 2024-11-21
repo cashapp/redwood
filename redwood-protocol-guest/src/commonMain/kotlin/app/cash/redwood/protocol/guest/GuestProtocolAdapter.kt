@@ -131,7 +131,6 @@ public abstract class GuestProtocolAdapter : EventSink {
     tag: ChildrenTag,
     index: Int,
     count: Int,
-    removedIds: List<Id>,
   )
 
   @RedwoodCodegenApi

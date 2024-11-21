@@ -42,7 +42,7 @@ public class ProtocolWidgetChildren(
       guestAdapter.removeWidget(widget.id)
       widget.depthFirstWalk(guestAdapter.childrenRemover)
     }
-    guestAdapter.appendRemove(id, tag, index, count, emptyList())
+    guestAdapter.appendRemove(id, tag, index, count)
 
     _widgets.remove(index, count)
   }

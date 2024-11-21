@@ -16,7 +16,6 @@
 package app.cash.redwood.protocol
 
 import dev.drewhamilton.poko.Poko
-import kotlin.DeprecationLevel.ERROR
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -249,9 +248,6 @@ public sealed interface ChildrenChange : Change {
     private val _tag: Int,
     public val index: Int,
     public val count: Int,
-    // TODO Remove this for Redwood 1.0.0.
-    @Deprecated("Only sent for compatibility with old hosts. Do not consume.", level = ERROR)
-    public val removedIds: List<Id> = emptyList(),
   ) : ChildrenChange {
     override val id: Id get() = Id(_id)
     override val tag: ChildrenTag get() = ChildrenTag(_tag)
@@ -262,8 +258,7 @@ public sealed interface ChildrenChange : Change {
         tag: ChildrenTag,
         index: Int,
         count: Int,
-        removedIds: List<Id> = emptyList(),
-      ): Remove = Remove(id.value, tag.value, index, count, removedIds)
+      ): Remove = Remove(id.value, tag.value, index, count)
     }
   }
 }

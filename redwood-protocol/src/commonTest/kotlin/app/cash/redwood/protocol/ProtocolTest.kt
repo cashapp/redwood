@@ -58,8 +58,6 @@ class ProtocolTest {
       ChildrenChange.Add(Id(1), ChildrenTag(2), Id(3), 4),
       ChildrenChange.Move(Id(1), ChildrenTag(2), 3, 4, 5),
       ChildrenChange.Remove(Id(4), ChildrenTag(3), 2, 1),
-      // We send a list of removed IDs only for old hosts.
-      ChildrenChange.Remove(Id(1), ChildrenTag(2), 3, 4, listOf(Id(5), Id(6), Id(7), Id(8))),
       ModifierChange(
         Id(1),
         listOf(
@@ -93,7 +91,6 @@ class ProtocolTest {
       """["add",{"id":1,"tag":2,"childId":3,"index":4}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
       """["remove",{"id":4,"tag":3,"index":2,"count":1}],""" +
-      """["remove",{"id":1,"tag":2,"index":3,"count":4,"removedIds":[5,6,7,8]}],""" +
       """["modifier",{"id":1,"elements":[[1,{}],[2,3],[3,[]],[4],[5]]}],""" +
       """["property",{"id":1,"widget":2,"tag":2,"value":"hello"}],""" +
       """["property",{"id":1,"widget":2,"tag":2}]""" +

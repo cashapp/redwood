@@ -95,8 +95,6 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
             final fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol/ChildrenChange.Remove.id.<get-id>|<get-id>(){}[0]
         final val index // app.cash.redwood.protocol/ChildrenChange.Remove.index|{}index[0]
             final fun <get-index>(): kotlin/Int // app.cash.redwood.protocol/ChildrenChange.Remove.index.<get-index>|<get-index>(){}[0]
-        final val removedIds // app.cash.redwood.protocol/ChildrenChange.Remove.removedIds|{}removedIds[0]
-            final fun <get-removedIds>(): kotlin.collections/List<app.cash.redwood.protocol/Id> // app.cash.redwood.protocol/ChildrenChange.Remove.removedIds.<get-removedIds>|<get-removedIds>(){}[0]
         final val tag // app.cash.redwood.protocol/ChildrenChange.Remove.tag|{}tag[0]
             final fun <get-tag>(): app.cash.redwood.protocol/ChildrenTag // app.cash.redwood.protocol/ChildrenChange.Remove.tag.<get-tag>|<get-tag>(){}[0]
 
@@ -114,9 +112,7 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
         }
 
         final object Companion { // app.cash.redwood.protocol/ChildrenChange.Remove.Companion|null[0]
-            final val $childSerializers // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.$childSerializers|{}$childSerializers[0]
-
-            final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int, kotlin.collections/List<app.cash.redwood.protocol/Id> = ...): app.cash.redwood.protocol/ChildrenChange.Remove // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int;kotlin.collections.List<app.cash.redwood.protocol.Id>){}[0]
+            final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int): app.cash.redwood.protocol/ChildrenChange.Remove // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/ChildrenChange.Remove> // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.serializer|serializer(){}[0]
         }
     }

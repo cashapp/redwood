@@ -159,9 +159,8 @@ public class DefaultGuestProtocolAdapter(
     tag: ChildrenTag,
     index: Int,
     count: Int,
-    removedIds: List<Id>,
   ) {
-    changes.add(ChildrenChange.Remove(id, tag, index, count, removedIds))
+    changes.add(ChildrenChange.Remove(id, tag, index, count))
   }
 
   /** Returns the changes accumulated since the last call to this function. */

@@ -147,7 +147,6 @@ class HostProtocolAdapterTest {
           tag = ChildrenTag.Root,
           index = 0,
           count = 1,
-          removedIds = listOf(Id(1)),
         ),
       ),
     )
@@ -250,7 +249,7 @@ class HostProtocolAdapterTest {
     // Remove root TestRow.
     host.sendChanges(
       listOf(
-        Remove(Id.Root, ChildrenTag.Root, 0, 1, listOf(Id(1))),
+        Remove(Id.Root, ChildrenTag.Root, 0, 1),
       ),
     )
 
