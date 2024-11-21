@@ -22,13 +22,13 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import platform.CoreGraphics.CGRectMake
+import kotlinx.cinterop.cValue
+import platform.CoreGraphics.CGRectZero
+import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
+import platform.UIKit.UIEdgeInsetsZero
 import platform.UIKit.UILabel
 import platform.UIKit.UIView
-import platform.UIKit.UIViewController
-import platform.UIKit.UIWindow
-import platform.UIKit.additionalSafeAreaInsets
 
 class RedwoodUIViewTest {
   @Test
@@ -41,31 +41,17 @@ class RedwoodUIViewTest {
     assertThat(redwoodUIView.value.subviews).containsExactly(label)
   }
 
-  /**
-   * Confirm we accept and propagates insets through [RedwoodUIView.uiConfiguration].
-   *
-   * Testing insets is tricky. We need both a [UIWindow] and a [UIViewController] to apply insets to
-   * a subject view.
-   */
+  /** Confirm we accept and propagates insets through [RedwoodUIView.uiConfiguration]. */
   @Test
   fun viewInsets() {
     val redwoodUIView = RedwoodUIView()
-    val viewController = object : UIViewController(null, null) {
-      override fun loadView() {
-        view = redwoodUIView.value
-      }
-    }
-
-    val window = UIWindow(
-      CGRectMake(0.0, 0.0, 390.0, 844.0), // iPhone 14.
-    )
-    window.setHidden(false) // Necessary to propagate additionalSafeAreaInsets.
-    window.rootViewController = viewController
+    val insetsContainer = InsetsContainer()
+    insetsContainer.addSubview(redwoodUIView.value)
 
     assertThat(redwoodUIView.uiConfiguration.value.viewInsets)
       .isEqualTo(Margin.Zero)
 
-    viewController.additionalSafeAreaInsets = UIEdgeInsetsMake(10.0, 20.0, 30.0, 40.0)
+    insetsContainer.subviewSafeAreaInsets = UIEdgeInsetsMake(10.0, 20.0, 30.0, 40.0)
 
     assertThat(redwoodUIView.uiConfiguration.value.viewInsets)
       .isEqualTo(Margin(top = 10.0.dp, start = 20.0.dp, bottom = 30.0.dp, end = 40.0.dp))
@@ -75,5 +61,17 @@ class RedwoodUIViewTest {
     override val value: UIView,
   ) : Widget<UIView> {
     override var modifier: Modifier = Modifier
+  }
+
+  /** Override [safeAreaInsets] to propagate a test value to subviews on the next layout. */
+  class InsetsContainer : UIView(cValue { CGRectZero }) {
+    var subviewSafeAreaInsets = cValue<UIEdgeInsets> { UIEdgeInsetsZero }
+      set(value) {
+        field = value
+        setNeedsLayout()
+        layoutIfNeeded()
+      }
+
+    override fun safeAreaInsets() = subviewSafeAreaInsets
   }
 }
