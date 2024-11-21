@@ -4,7 +4,8 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.16.0...HEAD
 
 New:
-- Nothing yet!
+- `UIConfiguration.viewInsets` tracks the safe area of the specific `RedwoodView` being targeted. This is currently implemented for views on Android and UIViews on iOS.
+- `ConsumeInsets {}` composable consumes insets. Most applications should call this in their root composable function.
 
 Changed:
 - Nothing yet!

@@ -30,6 +30,7 @@ public class UiConfiguration(
    * The insets of the host window, independent of where the Redwood composition is positioned
    * within it. The Redwood composition is not responsible for consuming these insets.
    */
+  @get:Deprecated("obsoleted by viewInsets")
   public val safeAreaInsets: Margin = Margin.Zero,
 
   /**
