@@ -15,6 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
+import androidx.compose.runtime.BroadcastFrameClock
+import androidx.compose.runtime.MonotonicFrameClock
 import app.cash.redwood.protocol.EventTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.RedwoodVersion
@@ -49,11 +51,12 @@ public class StandardAppLifecycle(
     }
   }
 
-  internal fun requestHostFrame() {
+  private val broadcastFrameClock = BroadcastFrameClock {
     if (started) {
       host.requestFrame()
     }
   }
+  public val frameClock: MonotonicFrameClock get() = broadcastFrameClock
 
   internal val mismatchHandler: ProtocolMismatchHandler = object : ProtocolMismatchHandler {
     override fun onUnknownEvent(widgetTag: WidgetTag, tag: EventTag) {
@@ -85,6 +88,7 @@ public class StandardAppLifecycle(
   }
 
   override fun sendFrame(timeNanos: Long) {
+    broadcastFrameClock.sendFrame(timeNanos)
     for (frameListener in frameListeners) {
       frameListener.onFrame(timeNanos)
     }

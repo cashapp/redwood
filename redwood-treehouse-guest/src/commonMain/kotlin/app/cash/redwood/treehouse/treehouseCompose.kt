@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.treehouse
 
-import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.protocol.Change
@@ -60,12 +59,7 @@ private class RedwoodZiplineTreehouseUi(
   EventSink by guestAdapter,
   StandardAppLifecycle.FrameListener {
 
-  private val clock = BroadcastFrameClock {
-    appLifecycle.requestHostFrame()
-  }
-
   override fun onFrame(timeNanos: Long) {
-    clock.sendFrame(timeNanos)
     guestAdapter.emitChanges()
   }
 
@@ -139,7 +133,7 @@ private class RedwoodZiplineTreehouseUi(
     appLifecycle.addFrameListener(this)
 
     val composition = ProtocolRedwoodComposition(
-      scope = coroutineScope + clock,
+      scope = coroutineScope + appLifecycle.frameClock,
       guestAdapter = guestAdapter,
       widgetVersion = appLifecycle.widgetVersion,
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
