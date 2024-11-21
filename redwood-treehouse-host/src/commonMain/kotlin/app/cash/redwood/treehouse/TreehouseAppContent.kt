@@ -27,7 +27,6 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.widget.Widget
-import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -500,16 +499,7 @@ private class ViewContentCodeBinding<A : AppService>(
       stateSnapshot = viewOrNull?.stateSnapshotId?.let {
         stateStore.get(it.value.orEmpty())
       }
-      try {
-        treehouseUi.start(this@ViewContentCodeBinding)
-      } catch (e: ZiplineApiMismatchException) {
-        // Fall back to calling the function that doesn't have a back pressed dispatcher.
-        treehouseUi.start(
-          changesSink = this@ViewContentCodeBinding,
-          uiConfigurations = uiConfigurationFlow,
-          stateSnapshot = stateSnapshot,
-        )
-      }
+      treehouseUi.start(this@ViewContentCodeBinding)
     }
   }
 

@@ -59,8 +59,6 @@ abstract interface app.cash.redwood.treehouse/OnBackPressedDispatcherService : a
 }
 
 abstract interface app.cash.redwood.treehouse/ZiplineTreehouseUi : app.cash.redwood.protocol/EventSink, app.cash.zipline/ZiplineService { // app.cash.redwood.treehouse/ZiplineTreehouseUi|null[0]
-    abstract fun start(app.cash.redwood.treehouse/ChangesSinkService, app.cash.redwood.treehouse/OnBackPressedDispatcherService, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>, app.cash.redwood.treehouse/StateSnapshot?) // app.cash.redwood.treehouse/ZiplineTreehouseUi.start|start(app.cash.redwood.treehouse.ChangesSinkService;app.cash.redwood.treehouse.OnBackPressedDispatcherService;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>;app.cash.redwood.treehouse.StateSnapshot?){}[0]
-    abstract fun start(app.cash.redwood.treehouse/ChangesSinkService, kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration>, app.cash.redwood.treehouse/StateSnapshot?) // app.cash.redwood.treehouse/ZiplineTreehouseUi.start|start(app.cash.redwood.treehouse.ChangesSinkService;kotlinx.coroutines.flow.StateFlow<app.cash.redwood.ui.UiConfiguration>;app.cash.redwood.treehouse.StateSnapshot?){}[0]
     abstract fun start(app.cash.redwood.treehouse/ZiplineTreehouseUi.Host) // app.cash.redwood.treehouse/ZiplineTreehouseUi.start|start(app.cash.redwood.treehouse.ZiplineTreehouseUi.Host){}[0]
     open fun snapshotState(): app.cash.redwood.treehouse/StateSnapshot? // app.cash.redwood.treehouse/ZiplineTreehouseUi.snapshotState|snapshotState(){}[0]
 

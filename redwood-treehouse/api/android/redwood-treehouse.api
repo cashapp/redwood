@@ -215,8 +215,6 @@ public final class app/cash/redwood/treehouse/StateSnapshotKt {
 public abstract interface class app/cash/redwood/treehouse/ZiplineTreehouseUi : app/cash/redwood/protocol/EventSink, app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/ZiplineTreehouseUi$Companion;
 	public fun snapshotState ()Lapp/cash/redwood/treehouse/StateSnapshot;
-	public abstract fun start (Lapp/cash/redwood/treehouse/ChangesSinkService;Lapp/cash/redwood/treehouse/OnBackPressedDispatcherService;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/treehouse/StateSnapshot;)V
-	public abstract fun start (Lapp/cash/redwood/treehouse/ChangesSinkService;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/treehouse/StateSnapshot;)V
 	public abstract fun start (Lapp/cash/redwood/treehouse/ZiplineTreehouseUi$Host;)V
 }
 

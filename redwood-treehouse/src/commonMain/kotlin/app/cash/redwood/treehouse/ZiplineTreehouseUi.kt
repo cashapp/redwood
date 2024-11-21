@@ -32,24 +32,6 @@ public interface ZiplineTreehouseUi :
   EventSink {
   public fun start(host: Host)
 
-  @Deprecated("Use `start` method that takes in a Host")
-  public fun start(
-    changesSink: ChangesSinkService,
-    onBackPressedDispatcher: OnBackPressedDispatcherService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  )
-
-  @Deprecated(
-    "Use `start` method that takes in an `OnBackPressedDispatcherService` instead.",
-    ReplaceWith("start(changesSink, TODO(), uiConfigurations, stateSnapshot)"),
-  )
-  public fun start(
-    changesSink: ChangesSinkService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  )
-
   public fun snapshotState(): StateSnapshot? = null
 
   /** Access to the host that presents this UI. */

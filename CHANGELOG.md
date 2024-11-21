@@ -5,6 +5,7 @@
 
 Breaking:
 - Treehouse hosts running Redwood 0.11.0 or older are not longer actively supported. They will continue to work, but they will experience indefinite memory leaks of native widgets.
+- Old, deprecated overloads of `ZiplineTreehouseUi.start` have been removed. The new overloads have been available since Redwood 0.8.0 for over a year.
 
 New:
 - `UIConfiguration.viewInsets` tracks the safe area of the specific `RedwoodView` being targeted. This is currently implemented for views on Android and UIViews on iOS.

@@ -23,9 +23,7 @@ import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
-import app.cash.redwood.ui.UiConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
@@ -88,25 +86,6 @@ class FakeZiplineTreehouseUi(
     extraServicesToClose += result
 
     return result
-  }
-
-  @Suppress("OVERRIDE_DEPRECATION")
-  override fun start(
-    changesSink: ChangesSinkService,
-    onBackPressedDispatcher: OnBackPressedDispatcherService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  ) {
-    error("unexpected call")
-  }
-
-  @Suppress("OVERRIDE_DEPRECATION")
-  override fun start(
-    changesSink: ChangesSinkService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  ) {
-    error("unexpected call")
   }
 
   override fun close() {

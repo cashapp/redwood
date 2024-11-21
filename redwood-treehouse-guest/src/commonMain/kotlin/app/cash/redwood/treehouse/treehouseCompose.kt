@@ -17,21 +17,18 @@ package app.cash.redwood.treehouse
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
-import app.cash.redwood.ui.UiConfiguration
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.ZiplineScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.plus
 
@@ -79,46 +76,7 @@ private class RedwoodZiplineTreehouseUi(
 
   private lateinit var saveableStateRegistry: SaveableStateRegistry
 
-  @Suppress("OVERRIDE_DEPRECATION")
-  override fun start(
-    changesSink: ChangesSinkService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  ) {
-    start(changesSink, NullOnBackPressedDispatcherService, uiConfigurations, stateSnapshot)
-  }
-
-  @Suppress("OVERRIDE_DEPRECATION")
-  override fun start(
-    changesSink: ChangesSinkService,
-    onBackPressedDispatcher: OnBackPressedDispatcherService,
-    uiConfigurations: StateFlow<UiConfiguration>,
-    stateSnapshot: StateSnapshot?,
-  ) {
-    val host = object : ZiplineTreehouseUi.Host {
-      override val uiConfigurations = uiConfigurations
-      override val stateSnapshot = stateSnapshot
-
-      override fun sendChanges(changes: List<Change>) {
-        changesSink.sendChanges(changes)
-      }
-
-      override fun addOnBackPressedCallback(
-        onBackPressedCallbackService: OnBackPressedCallbackService,
-      ): CancellableService = onBackPressedDispatcher.addCallback(onBackPressedCallbackService)
-    }
-
-    start(host, changesSink)
-  }
-
   override fun start(host: ZiplineTreehouseUi.Host) {
-    start(host, host)
-  }
-
-  private fun start(
-    host: ZiplineTreehouseUi.Host,
-    changesSink: ChangesSinkService,
-  ) {
     this.saveableStateRegistry = SaveableStateRegistry(
       restoredValues = host.stateSnapshot?.content,
       // Note: values will only be restored by SaveableStateRegistry if `canBeSaved` returns true.
@@ -128,7 +86,7 @@ private class RedwoodZiplineTreehouseUi(
       canBeSaved = { true },
     )
 
-    guestAdapter.initChangesSink(changesSink)
+    guestAdapter.initChangesSink(host)
 
     appLifecycle.addFrameListener(this)
 
@@ -189,11 +147,4 @@ private fun OnBackPressedCallback.asService() = object : OnBackPressedCallbackSe
   override fun close() {
     enabledChangedCallback = null
   }
-}
-
-private object NullOnBackPressedDispatcherService : OnBackPressedDispatcherService {
-  override fun addCallback(onBackPressedCallback: OnBackPressedCallbackService) =
-    object : CancellableService {
-      override fun cancel() = Unit
-    }
 }
