@@ -150,6 +150,9 @@ internal class ComposeUiBox(
     } else {
       modifier.wrapContentHeight(Alignment.Top, unbounded = true)
     }
+    if (backgroundColor != 0) {
+      modifier = modifier.background(Color(backgroundColor))
+    }
     modifier = margin.let { margin ->
       modifier.padding(
         start = margin.start.toDp(),
@@ -157,9 +160,6 @@ internal class ComposeUiBox(
         end = margin.end.toDp(),
         bottom = margin.bottom.toDp(),
       )
-    }
-    if (backgroundColor != 0) {
-      modifier = modifier.background(Color(backgroundColor))
     }
     return modifier
   }

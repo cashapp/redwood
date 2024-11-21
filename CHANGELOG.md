@@ -14,7 +14,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Fix inconsistency in margin application between `ComposeUiBox` and `ViewBox`.
 
 
 ## [0.16.0] - 2024-11-19
