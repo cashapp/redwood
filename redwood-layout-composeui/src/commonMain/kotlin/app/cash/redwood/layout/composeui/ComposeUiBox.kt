@@ -31,6 +31,7 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.util.fastMap
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.layout.api.Constraint
@@ -85,6 +86,7 @@ internal class ComposeUiBox(
     var alignment = alignment
     var matchParentWidth = matchParentWidth
     var matchParentHeight = matchParentHeight
+    var requestedHeight: Dp? = null
 
     forEachScoped { childModifier ->
       when (childModifier) {
@@ -109,7 +111,7 @@ internal class ComposeUiBox(
         }
 
         is Height -> {
-          // TODO
+          requestedHeight = childModifier.height.toDp()
         }
 
         is Size -> {
@@ -134,6 +136,7 @@ internal class ComposeUiBox(
       alignment = alignment,
       matchParentWidth = matchParentWidth,
       matchParentHeight = matchParentHeight,
+      requestedHeight = requestedHeight,
     )
   }
 

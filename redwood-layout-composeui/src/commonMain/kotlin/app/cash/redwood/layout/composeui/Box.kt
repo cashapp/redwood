@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.fastForEachIndexed
@@ -67,6 +68,7 @@ internal data class BoxChildLayoutInfo(
   val alignment: Alignment,
   val matchParentWidth: Boolean,
   val matchParentHeight: Boolean,
+  val requestedHeight: Dp?
 )
 
 @PublishedApi
@@ -108,6 +110,11 @@ internal data class BoxMeasurePolicy(
         childConstraints = childConstraints.copy(
           minHeight = if (boxHeight != Constraints.Infinity) boxHeight else 0,
           maxHeight = boxHeight,
+        )
+      } else if (layoutInfo.requestedHeight != null) {
+        childConstraints = childConstraints.copy(
+          minHeight = layoutInfo.requestedHeight.toPx().toInt(),
+          maxHeight = layoutInfo.requestedHeight.toPx().toInt(),
         )
       }
       val placeable = measurable.measure(childConstraints)

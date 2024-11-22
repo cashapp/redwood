@@ -16,6 +16,7 @@ Changed:
 
 Fixed:
 - Fix inconsistency in margin application between `ComposeUiBox` and `ViewBox`.
+- Add support for the Height modifier in `ComposeUiBox`.
 
 
 ## [0.16.0] - 2024-11-19
