@@ -77,7 +77,7 @@ androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.
 burst = { module = "app.cash.burst:burst", version.ref = "burst" }
 burst-gradle-plugin = { module = "app.cash.burst:burst-gradle-plugin", version.ref = "burst" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "2.0.0" }
-clikt = "com.github.ajalt.clikt:clikt:5.0.1"
+clikt = "com.github.ajalt.clikt:clikt:5.0.2"
 junit = { module = "junit:junit", version = "4.13.2" }
 assertk = "com.willowtreeapps.assertk:assertk:0.28.1"
 robolectric = { module = "org.robolectric:robolectric", version = "4.14.1" }
