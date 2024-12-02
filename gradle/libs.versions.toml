@@ -73,7 +73,7 @@ jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "
 jetbrains-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "jbCompose" }
 jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jbCompose" }
 
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.7.2" }
+androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "8.7.3" }
 burst = { module = "app.cash.burst:burst", version.ref = "burst" }
 burst-gradle-plugin = { module = "app.cash.burst:burst-gradle-plugin", version.ref = "burst" }
 kotlinPoet = { module = "com.squareup:kotlinpoet", version = "2.0.0" }
