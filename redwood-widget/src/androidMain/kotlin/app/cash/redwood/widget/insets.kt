@@ -33,7 +33,7 @@ internal fun View.setOnWindowInsetsChangeListener(listener: (WindowInsetsCompat?
 
 private class WindowInsetsCallback(
   private val listener: (WindowInsetsCompat?) -> Unit,
-) : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE),
+) : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_STOP),
   OnApplyWindowInsetsListener,
   View.OnAttachStateChangeListener {
 
@@ -42,7 +42,7 @@ private class WindowInsetsCallback(
     runningAnimations: List<WindowInsetsAnimationCompat>,
   ): WindowInsetsCompat {
     listener(insets)
-    return insets
+    return WindowInsetsCompat.CONSUMED
   }
 
   override fun onApplyWindowInsets(
@@ -50,7 +50,7 @@ private class WindowInsetsCallback(
     insets: WindowInsetsCompat,
   ): WindowInsetsCompat {
     listener(insets)
-    return insets
+    return WindowInsetsCompat.CONSUMED
   }
 
   override fun onViewAttachedToWindow(view: View) {
