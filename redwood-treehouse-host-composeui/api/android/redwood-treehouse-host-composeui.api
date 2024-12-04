@@ -1,7 +1,5 @@
 public final class app/cash/redwood/treehouse/composeui/ComposableSingletons$EmptyDynamicContentWidgetFactoryKt {
 	public static final field INSTANCE Lapp/cash/redwood/treehouse/composeui/ComposableSingletons$EmptyDynamicContentWidgetFactoryKt;
-	public static field lambda-1 Lkotlin/jvm/functions/Function2;
-	public static field lambda-2 Lkotlin/jvm/functions/Function2;
 	public fun <init> ()V
 	public final fun getLambda-1$redwood_treehouse_host_composeui_release ()Lkotlin/jvm/functions/Function2;
 	public final fun getLambda-2$redwood_treehouse_host_composeui_release ()Lkotlin/jvm/functions/Function2;
