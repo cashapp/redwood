@@ -38,8 +38,9 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.VfsBasedProjectEnvironment
+import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.IncrementalCompilationApi
 import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerInput
-import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.compileModuleToAnalyzedFir
+import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.compileModuleToAnalyzedFirViaLightTreeIncrementally
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems
@@ -72,6 +73,7 @@ import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.expressions.impl.FirResolvedArgumentList
 import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
+import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.fir.types.ConeKotlinTypeProjection
@@ -81,10 +83,9 @@ import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.classId
 import org.jetbrains.kotlin.fir.types.customAnnotations
 import org.jetbrains.kotlin.fir.types.isBasicFunctionType
-import org.jetbrains.kotlin.fir.types.isNullable
+import org.jetbrains.kotlin.fir.types.isMarkedNullable
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
-import org.jetbrains.kotlin.fir.types.toSymbol
 import org.jetbrains.kotlin.fir.types.type
 import org.jetbrains.kotlin.fir.types.variance
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
@@ -92,8 +93,6 @@ import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.platform.CommonPlatforms
-import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.text
 import org.jetbrains.kotlin.types.Variance.INVARIANT
 import org.jetbrains.kotlin.types.Variance.IN_VARIANCE
@@ -163,12 +162,10 @@ public fun parseProtocolSchema(
       commonSources = emptyList(),
       sourcesByModuleName = mapOf(DEFAULT_MODULE_NAME to sourceFiles),
     ),
-    commonPlatform = CommonPlatforms.defaultCommonPlatform,
-    platform = JvmPlatforms.unspecifiedJvmPlatform,
     configuration = configuration,
   )
 
-  val reporter = DiagnosticReporterFactory.createReporter()
+  val reporter = DiagnosticReporterFactory.createReporter(messageCollector)
 
   val globalScope = GlobalSearchScope.allScope(project)
   val packagePartProvider = environment.createPackagePartProvider(globalScope)
@@ -178,12 +175,14 @@ public fun parseProtocolSchema(
     getPackagePartProviderFn = { packagePartProvider },
   )
 
-  val output = compileModuleToAnalyzedFir(
-    input = input,
+  @OptIn(IncrementalCompilationApi::class)
+  val output = compileModuleToAnalyzedFirViaLightTreeIncrementally(
     projectEnvironment = projectEnvironment,
-    previousStepsSymbolProviders = emptyList(),
-    incrementalExcludesScope = null,
+    messageCollector = messageCollector,
+    compilerConfiguration = configuration,
+    input = input,
     diagnosticsReporter = reporter,
+    incrementalExcludesScope = null,
   )
   val platformOutput = output.outputs.first()
   val firFiles = platformOutput.fir
@@ -431,7 +430,7 @@ private fun FirContext.parseWidget(
                 type = it.toFqType(),
               )
             },
-            isNullable = type.isNullable,
+            isNullable = type.isMarkedNullable,
             defaultExpression = defaultExpression,
             deprecation = deprecation,
           )
@@ -454,7 +453,7 @@ private fun FirContext.parseWidget(
         var arguments = typeArguments.dropLast(1) // Drop Unit return type.
         val scope = type.receiverType(firSession)
         if (scope != null) {
-          require(scope.typeArguments.isEmpty() && scope !is ConeTypeParameterType && !scope.isNullable) {
+          require(scope.typeArguments.isEmpty() && scope !is ConeTypeParameterType && !scope.isMarkedNullable) {
             "@Children $memberType#$name lambda receiver can only be a non-null class. Found: ${scope.renderReadable()}"
           }
           arguments = arguments.drop(1)
@@ -874,7 +873,7 @@ private fun ConeTypeProjection.toFqType(): FqType {
           }
           type.lookupTag.classId.toFqType()
             .copy(
-              nullable = type.isNullable,
+              nullable = type.isMarkedNullable,
               parameterTypes = parameterTypes,
               variance = variance,
             )
