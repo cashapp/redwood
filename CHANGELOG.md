@@ -9,6 +9,7 @@ Breaking:
 
 New:
 - `UIConfiguration.viewInsets` tracks the safe area of the specific `RedwoodView` being targeted. This is currently implemented for views on Android and UIViews on iOS.
+- `RedwoodLayout.additionalInsets` configures additional insets for application controls like tab bars and floating action buttons.
 - `ConsumeInsets {}` composable consumes insets. Most applications should call this in their root composable function.
 
 Changed:

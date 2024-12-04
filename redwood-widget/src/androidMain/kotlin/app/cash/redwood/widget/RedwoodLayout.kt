@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback as AndroidOnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
+import androidx.core.graphics.Insets
 import androidx.core.view.children as viewGroupChildren
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import app.cash.redwood.ui.Cancellable
@@ -46,15 +47,27 @@ public open class RedwoodLayout(
   final override val value: View
     get() = this
 
-  init {
-    // The view needs to have an ID to participate in instance state saving.
-    id = R.id.redwood_layout
-  }
+  private var windowInsets: Insets = Insets.NONE
+    set(value) {
+      if (field == value) return
+      field = value
+      mutableUiConfiguration.value = computeUiConfiguration()
+    }
+
+  /**
+   * Additional insets that are summed with this view's window insets to produce
+   * [UiConfiguration.viewInsets]. Use this when an application-layer control like a floating action
+   * button or toolbar requires content to be inset.
+   */
+  public var additionalInsets: Insets = Insets.NONE
+    set(value) {
+      if (field == value) return
+      field = value
+      mutableUiConfiguration.value = computeUiConfiguration()
+    }
 
   private val mutableUiConfiguration = MutableStateFlow(
-    computeUiConfiguration(
-      viewInsets = Margin.Zero,
-    ),
+    computeUiConfiguration(),
   )
 
   override val onBackPressedDispatcher: RedwoodOnBackPressedDispatcher =
@@ -85,10 +98,11 @@ public open class RedwoodLayout(
     get() = mutableUiConfiguration
 
   init {
+    // The view needs to have an ID to participate in instance state saving.
+    id = R.id.redwood_layout
+
     setOnWindowInsetsChangeListener { insets ->
-      mutableUiConfiguration.value = computeUiConfiguration(
-        viewInsets = insets.safeDrawing.toMargin(Density(resources)),
-      )
+      windowInsets = insets.safeDrawing
     }
   }
 
@@ -118,13 +132,19 @@ public open class RedwoodLayout(
 
   private fun computeUiConfiguration(
     config: Configuration = context.resources.configuration,
-    viewInsets: Margin = uiConfiguration.value.viewInsets,
   ): UiConfiguration {
     val viewportSize: Size
     val density: Double
+    val viewInsets: Margin
     with(Density(resources)) {
       density = rawDensity
       viewportSize = Size(width.toDp(), height.toDp())
+      viewInsets = Margin(
+        start = (windowInsets.left + additionalInsets.left).toDp(),
+        end = (windowInsets.right + additionalInsets.right).toDp(),
+        top = (windowInsets.top + additionalInsets.top).toDp(),
+        bottom = (windowInsets.bottom + additionalInsets.bottom).toDp(),
+      )
     }
     return UiConfiguration(
       darkMode = (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES,

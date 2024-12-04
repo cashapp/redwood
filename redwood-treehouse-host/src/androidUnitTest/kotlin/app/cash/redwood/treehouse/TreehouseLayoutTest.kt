@@ -121,6 +121,42 @@ class TreehouseLayoutTest {
     }
   }
 
+  @Test fun viewInsetsSumsSystemBarsAndAdditionalInsets() = runTest {
+    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    layout.uiConfiguration.test {
+      assertThat(awaitItem().viewInsets).isEqualTo(Margin.Zero)
+
+      layout.additionalInsets = Insets.of(5, 6, 7, 8)
+      assertThat(awaitItem().viewInsets).isEqualTo(
+        with(Density(activity.resources)) {
+          Margin(
+            start = 5.toDp(),
+            top = 6.toDp(),
+            end = 7.toDp(),
+            bottom = 8.toDp(),
+          )
+        },
+      )
+
+      ViewCompat.dispatchApplyWindowInsets(
+        layout,
+        WindowInsetsCompat.Builder()
+          .setInsets(WindowInsetsCompat.Type.systemBars(), Insets.of(10, 20, 30, 40))
+          .build(),
+      )
+      assertThat(awaitItem().viewInsets).isEqualTo(
+        with(Density(activity.resources)) {
+          Margin(
+            start = 15.toDp(),
+            top = 26.toDp(),
+            end = 37.toDp(),
+            bottom = 48.toDp(),
+          )
+        },
+      )
+    }
+  }
+
   @Test fun uiConfigurationEmitsLayoutDirectionChanges() = runTest {
     val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
