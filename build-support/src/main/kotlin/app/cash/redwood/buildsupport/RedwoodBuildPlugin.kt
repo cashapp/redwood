@@ -291,7 +291,9 @@ class RedwoodBuildPlugin : Plugin<Project> {
     tasks.withType(KotlinJsCompile::class.java) {
       it.compilerOptions.freeCompilerArgs.addAll(
         // https://github.com/JetBrains/compose-multiplatform/issues/3421
-        "-Xpartial-linkage=disable",
+        // Partial linkage temporarily required due to coroutines linking against unstable API.
+        // See https://github.com/Kotlin/kotlinx.coroutines/issues/4292.
+        // "-Xpartial-linkage=disable",
         // https://github.com/JetBrains/compose-multiplatform/issues/3418
         "-Xklib-enable-signature-clash-checks=false",
         // Translate capturing lambdas into anonymous JS functions rather than hoisting parameters
