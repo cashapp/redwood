@@ -24,3 +24,5 @@ internal expect inline operator fun <T> PlatformSet<T>.plusAssign(element: T)
 internal expect inline fun <T> PlatformSet<T>.forEach(crossinline block: (T) -> Unit)
 
 internal expect inline fun <T> PlatformSet<T>.clear()
+
+internal expect val <T> PlatformSet<T>.size: Int

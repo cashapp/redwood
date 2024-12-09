@@ -19,6 +19,7 @@ package app.cash.redwood.compose
 
 @JsName("Set")
 internal external class JsSet<T> {
+  val size: Int
   fun add(element: T)
   fun clear()
   fun forEach(block: (T) -> Unit)
@@ -41,3 +42,6 @@ internal actual inline fun <T> PlatformSet<T>.forEach(crossinline block: (T) -> 
 internal actual inline fun <T> PlatformSet<T>.clear() {
   clear()
 }
+
+internal actual val <T> PlatformSet<T>.size: Int
+  get() = size

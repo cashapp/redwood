@@ -37,6 +37,7 @@ class RealTestAppPresenter(
   }
 
   override fun launchForTester(): ZiplineTreehouseUi {
-    return TesterTreehouseUi().asZiplineTreehouseUi(appLifecycle)
+    val treehouseUi = TesterTreehouseUi(hostApi)
+    return treehouseUi.asZiplineTreehouseUi(appLifecycle)
   }
 }

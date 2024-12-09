@@ -37,3 +37,6 @@ internal actual inline fun <T> PlatformSet<T>.forEach(block: (T) -> Unit) {
 internal actual inline fun <T> PlatformSet<T>.clear() {
   clear()
 }
+
+internal actual val <T> PlatformSet<T>.size: Int
+  get() = size

@@ -74,7 +74,8 @@ internal class NodeApplier<W : Any>(
   }
 
   override fun onEndChanges() {
-    check(!closed)
+    // When the composition is disposed, onEndChanges() is called after onClear().
+    check(!closed || changedWidgets.size == 0)
 
     changedWidgets.let { changedWidgets ->
       changedWidgets.forEach { changedWidget ->

@@ -20,6 +20,7 @@ import androidx.collection.ScatterSet
 import app.cash.redwood.treehouse.EventLog
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
+import java.util.concurrent.atomic.AtomicLongFieldUpdater
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
@@ -79,6 +80,7 @@ internal object JvmHeap : Heap {
 
       // Don't traverse further on types that are unlikely to contain application-scoped data.
       // We want to avoid loading the entire application heap into memory!
+      instance is AtomicLongFieldUpdater<*> -> listOf()
       instance is Class<*> -> listOf()
       instance is CoroutineDispatcher -> listOf()
       instance is Enum<*> -> listOf()

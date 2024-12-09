@@ -22,4 +22,7 @@ import kotlin.native.ObjCName
 interface HostApi : ZiplineService {
   /** Decodes the response as a string and returns it. */
   suspend fun httpCall(url: String, headers: Map<String, String>): String
+
+  /** Records a message for any potential consumer. */
+  fun log(message: String)
 }

@@ -173,6 +173,7 @@ private class WidgetRedwoodComposition<W : Any>(
   }
 
   override fun cancel() {
+    composition.dispose()
     snapshotHandle.dispose()
     snapshotJob?.cancel()
     recomposeJob.cancel()
