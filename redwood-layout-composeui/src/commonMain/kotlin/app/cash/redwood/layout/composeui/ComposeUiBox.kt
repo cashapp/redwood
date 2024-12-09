@@ -87,6 +87,7 @@ internal class ComposeUiBox(
     var matchParentWidth = matchParentWidth
     var matchParentHeight = matchParentHeight
     var requestedHeight: Dp? = null
+    var requestedWidth: Dp? = null
 
     forEachScoped { childModifier ->
       when (childModifier) {
@@ -107,7 +108,7 @@ internal class ComposeUiBox(
         }
 
         is Width -> {
-          // TODO
+          requestedWidth = childModifier.width.toDp()
         }
 
         is Height -> {
@@ -137,6 +138,7 @@ internal class ComposeUiBox(
       matchParentWidth = matchParentWidth,
       matchParentHeight = matchParentHeight,
       requestedHeight = requestedHeight,
+      requestedWidth = requestedWidth,
     )
   }
 

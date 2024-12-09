@@ -68,7 +68,8 @@ internal data class BoxChildLayoutInfo(
   val alignment: Alignment,
   val matchParentWidth: Boolean,
   val matchParentHeight: Boolean,
-  val requestedHeight: Dp?
+  val requestedHeight: Dp?,
+  val requestedWidth: Dp?
 )
 
 @PublishedApi
@@ -105,7 +106,13 @@ internal data class BoxMeasurePolicy(
           minWidth = if (boxWidth != Constraints.Infinity) boxWidth else 0,
           maxWidth = boxWidth,
         )
+      } else if (layoutInfo.requestedWidth != null) {
+        childConstraints = childConstraints.copy(
+          minWidth = layoutInfo.requestedWidth.toPx().toInt(),
+          maxWidth = layoutInfo.requestedWidth.toPx().toInt(),
+        )
       }
+
       if (layoutInfo.matchParentHeight) {
         childConstraints = childConstraints.copy(
           minHeight = if (boxHeight != Constraints.Infinity) boxHeight else 0,

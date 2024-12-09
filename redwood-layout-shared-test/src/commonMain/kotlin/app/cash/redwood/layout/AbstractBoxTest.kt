@@ -629,4 +629,36 @@ abstract class AbstractBoxTest<T : Any> {
 
     snapshotter.snapshot()
   }
+
+  @Test
+  fun testChildExplicitWidth() {
+    val container = box()
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+        horizontalAlignment(CrossAxisAlignment.Center)
+        verticalAlignment(CrossAxisAlignment.Stretch)
+      }
+    val snapshotter = snapshotter(container.value)
+
+    val box = box()
+      .apply {
+        modifier = MarginImpl(all = 24.dp)
+        width(Constraint.Wrap)
+        height(Constraint.Fill)
+        horizontalAlignment(CrossAxisAlignment.Center)
+        verticalAlignment(CrossAxisAlignment.Stretch)
+      }
+      .also { container.children.insert(0, it) }
+
+    widgetFactory.color().apply {
+      modifier = WidthImpl(200.dp)
+    }.also { box.children.insert(0, it) }
+
+    widgetFactory.text(
+      text = "foreground",
+    ).also { box.children.insert(1, it) }
+
+    snapshotter.snapshot()
+  }
 }
