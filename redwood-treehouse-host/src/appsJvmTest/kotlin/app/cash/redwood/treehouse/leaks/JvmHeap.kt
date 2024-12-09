@@ -21,13 +21,8 @@ import app.cash.redwood.treehouse.EventLog
 import com.example.redwood.testapp.treehouse.HostApi
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
-import java.util.concurrent.atomic.AtomicLongFieldUpdater
-import java.util.concurrent.atomic.AtomicReferenceArray
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
