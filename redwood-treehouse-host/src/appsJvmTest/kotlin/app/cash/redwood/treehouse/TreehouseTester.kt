@@ -44,7 +44,7 @@ internal class TreehouseTester(
 ) {
   val eventLog = EventLog()
 
-  var hostApi: HostApi = FakeHostApi()
+  var hostApi = FakeHostApi()
 
   var eventListenerFactory: EventListener.Factory = FakeEventListener.Factory(eventLog)
 
@@ -98,7 +98,7 @@ internal class TreehouseTester(
     override fun create(scope: CoroutineScope, dispatchers: TreehouseDispatchers) = frameClock
   }
 
-  val treehouseAppFactory = RealTreehouseApp.Factory(
+  private val treehouseAppFactory = RealTreehouseApp.Factory(
     platform = platform,
     httpClient = httpClient,
     frameClockFactory = frameClockFactory,
@@ -129,7 +129,7 @@ internal class TreehouseTester(
       treehouseApp: TreehouseApp<TestAppPresenter>,
       zipline: Zipline,
     ) {
-      zipline.bind("HostApi", hostApi)
+      zipline.bind<HostApi>("HostApi", hostApi)
     }
 
     override fun create(zipline: Zipline): TestAppPresenter {

@@ -16,9 +16,20 @@
 package app.cash.redwood.treehouse
 
 import com.example.redwood.testapp.treehouse.HostApi
+import kotlinx.coroutines.channels.Channel
 
 class FakeHostApi : HostApi {
+  private val messagesChannel = Channel<String>(capacity = Int.MAX_VALUE)
+
   override suspend fun httpCall(url: String, headers: Map<String, String>): String {
     error("unexpected call")
+  }
+
+  override fun log(message: String) {
+    messagesChannel.trySend(message)
+  }
+
+  suspend fun takeMessage(): String {
+    return messagesChannel.receive()
   }
 }

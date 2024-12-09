@@ -16,6 +16,7 @@
 package com.example.redwood.testapp.treehouse
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,19 +25,25 @@ import app.cash.redwood.treehouse.TreehouseUi
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.TextInput
 
-class TesterTreehouseUi : TreehouseUi {
+class TesterTreehouseUi(
+  private val hostApi: HostApi,
+) : TreehouseUi {
   @Composable
   override fun Show() {
     var content by remember { mutableStateOf(Content.InitialValue) }
-    content.Show { newContent ->
-      content = newContent
-    }
+    content.Show(
+      changeContent = { newContent -> content = newContent },
+      log = { message -> hostApi.log(message) },
+    )
   }
 
   enum class Content {
     InitialValue {
       @Composable
-      override fun Show(changeContent: (Content) -> Unit) {
+      override fun Show(
+        changeContent: (Content) -> Unit,
+        log: (String) -> Unit,
+      ) {
         TextInput(
           text = "what would you like to see?",
           customType = null,
@@ -47,9 +54,33 @@ class TesterTreehouseUi : TreehouseUi {
       }
     },
 
+    GuestLifecycleTestShowDisposable {
+      @Composable
+      override fun Show(
+        changeContent: (Content) -> Unit,
+        log: (String) -> Unit,
+      ) {
+        DisposableEffect(log) {
+          log("DisposableEffect.effect()")
+          onDispose {
+            log("DisposableEffect.dispose()")
+          }
+        }
+        Button(
+          text = "Next",
+          onClick = {
+            changeContent(Empty)
+          },
+        )
+      }
+    },
+
     TreehouseTesterTestHappyPathStep2 {
       @Composable
-      override fun Show(changeContent: (Content) -> Unit) {
+      override fun Show(
+        changeContent: (Content) -> Unit,
+        log: (String) -> Unit,
+      ) {
         Button(
           text = "This is TreehouseTesterTestHappyPathStep2",
           onClick = {
@@ -60,13 +91,19 @@ class TesterTreehouseUi : TreehouseUi {
 
     Empty {
       @Composable
-      override fun Show(changeContent: (Content) -> Unit) {
+      override fun Show(
+        changeContent: (Content) -> Unit,
+        log: (String) -> Unit,
+      ) {
       }
     },
 
     ;
 
     @Composable
-    abstract fun Show(changeContent: (Content) -> Unit)
+    abstract fun Show(
+      changeContent: (Content) -> Unit,
+      log: (String) -> Unit,
+    )
   }
 }
