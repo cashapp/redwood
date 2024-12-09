@@ -59,4 +59,7 @@ class RealHostApi(
       continuation.invokeOnCancellation { call.cancel() }
     }
   }
+
+  override fun log(message: String) {
+  }
 }
