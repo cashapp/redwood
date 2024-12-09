@@ -17,7 +17,7 @@ Changed:
 Fixed:
 - Fix inconsistency in margin application between `ComposeUiBox` and `ViewBox`.
 - Add support for the Height modifier in `ComposeUiBox`.
-
+- Add support for the Width modifier in `ComposeUiBox`.
 
 ## [0.16.0] - 2024-11-19
 [0.16.0]: https://github.com/cashapp/redwood/releases/tag/0.16.0
