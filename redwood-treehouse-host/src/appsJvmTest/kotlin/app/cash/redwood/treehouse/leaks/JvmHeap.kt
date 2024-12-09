@@ -18,11 +18,16 @@ package app.cash.redwood.treehouse.leaks
 import androidx.collection.IntObjectMap
 import androidx.collection.ScatterSet
 import app.cash.redwood.treehouse.EventLog
+import com.example.redwood.testapp.treehouse.HostApi
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.concurrent.atomic.AtomicLongFieldUpdater
+import java.util.concurrent.atomic.AtomicReferenceArray
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -80,11 +85,11 @@ internal object JvmHeap : Heap {
 
       // Don't traverse further on types that are unlikely to contain application-scoped data.
       // We want to avoid loading the entire application heap into memory!
-      instance is AtomicLongFieldUpdater<*> -> listOf()
       instance is Class<*> -> listOf()
       instance is CoroutineDispatcher -> listOf()
       instance is Enum<*> -> listOf()
       instance is EventLog -> listOf()
+      instance is HostApi -> listOf()
       instance is Int -> listOf()
       instance is Job -> listOf()
       instance is Json -> listOf()
