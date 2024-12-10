@@ -17,9 +17,14 @@ package app.cash.redwood.protocol.guest
 
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
+import app.cash.redwood.layout.compose.Box
+import app.cash.redwood.layout.compose.Column
+import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.ChildrenChange
 import app.cash.redwood.protocol.ChildrenTag
@@ -31,6 +36,7 @@ import app.cash.redwood.protocol.ModifierChange
 import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.RedwoodVersion
+import app.cash.redwood.protocol.ValueChange
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.ui.Cancellable
@@ -38,6 +44,7 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Button2
@@ -285,6 +292,171 @@ class ProtocolTest {
         // text
         PropertyChange(Id(1), WidgetTag(7), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
+    )
+  }
+
+  @Test fun movableContentSameRecomposition() = runTest {
+    val (composition) = testProtocolComposition()
+
+    var state by mutableIntStateOf(0)
+    composition.setContent {
+      val oneTwoThree = remember {
+        movableContentOf {
+          Box {
+            Text("one")
+            Text("two")
+            Text("three")
+          }
+        }
+      }
+      when (state) {
+        0 -> Row { oneTwoThree() }
+        1 -> Column { oneTwoThree() }
+      }
+    }
+
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      // Row to Root
+      Create(Id(1), WidgetTag(1000001)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+      // Box
+      Create(Id(2), WidgetTag(1000004)),
+      // Text("one") to Box
+      Create(Id(3), WidgetTag(3)),
+      ChildrenChange.Add(Id(2), ChildrenTag(1), Id(3), 0),
+      // Text("two") to Box
+      Create(Id(4), WidgetTag(3)),
+      ChildrenChange.Add(Id(2), ChildrenTag(1), Id(4), 1),
+      // Text("three") to Box
+      Create(Id(5), WidgetTag(3)),
+      ChildrenChange.Add(Id(2), ChildrenTag(1), Id(5), 2),
+      // Box to Row
+      ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
+    )
+
+    state = 1
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      // Box from Row
+      ChildrenChange.Remove(Id(1), ChildrenTag(1), 0, detach = true),
+      // Row from Root
+      ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
+      // Column to Root
+      Create(Id(6), WidgetTag(1000002)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(6), 0),
+      // Box to Column
+      ChildrenChange.Add(Id(6), ChildrenTag(1), Id(2), 0),
+    )
+  }
+
+  @Test fun multipleMovableContentButOnlyOneReused() = runTest {
+    val (composition) = testProtocolComposition()
+
+    var state by mutableIntStateOf(0)
+    composition.setContent {
+      val one = remember { movableContentOf { Text("one") } }
+      val two = remember { movableContentOf { Text("two") } }
+      val three = remember { movableContentOf { Text("three") } }
+      when (state) {
+        0 -> {
+          one()
+          two()
+          three()
+        }
+        1 -> {
+          two()
+        }
+      }
+    }
+
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      Create(Id(1), WidgetTag(3)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+      Create(Id(2), WidgetTag(3)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
+      Create(Id(3), WidgetTag(3)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(3), 2),
+    )
+
+    state = 1
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
+      ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = true),
+      ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 0),
+    )
+  }
+
+  @Test fun movableContentMultipleRecompositions() = runTest {
+    val (composition) = testProtocolComposition()
+
+    var state by mutableIntStateOf(0)
+    composition.setContent {
+      val oneTwoThree = remember {
+        movableContentOf {
+          Box {
+            Text("one")
+            Text("two")
+            Text("three")
+          }
+        }
+      }
+      when (state) {
+        0 -> Row { oneTwoThree() }
+        1 -> Text("hey")
+        2 -> Column { oneTwoThree() }
+      }
+    }
+
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      // Row to Root
+      Create(Id(1), WidgetTag(1000001)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
+      // Box
+      Create(Id(2), WidgetTag(1000004)),
+      // Text("one") to Box
+      Create(Id(3), WidgetTag(3)),
+      ChildrenChange.Add(Id(2), ChildrenTag(1), Id(3), 0),
+      // Text("two") to Box
+      Create(Id(4), WidgetTag(3)),
+      ChildrenChange.Add(Id(2), ChildrenTag(1), Id(4), 1),
+      // Text("three") to Box
+      Create(Id(5), WidgetTag(3)),
+      ChildrenChange.Add(Id(2), ChildrenTag(1), Id(5), 2),
+      // Box to Row
+      ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
+    )
+
+    state = 1
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      // Box from Row
+      ChildrenChange.Remove(Id(1), ChildrenTag(1), 0, detach = false),
+      // Row from Root
+      ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
+      // Text("hey") to Root
+      Create(Id(6), WidgetTag(3)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(6), 0),
+    )
+
+    state = 2
+    assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
+      // Text from Root
+      ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
+      // Column to Root
+      Create(Id(7), WidgetTag(1000002)),
+      ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(7), 0),
+      // Box
+      Create(Id(8), WidgetTag(1000004)),
+      // Text("one") to Box
+      Create(Id(9), WidgetTag(3)),
+      ChildrenChange.Add(Id(8), ChildrenTag(1), Id(9), 0),
+      // Text("two") to Box
+      Create(Id(10), WidgetTag(3)),
+      ChildrenChange.Add(Id(8), ChildrenTag(1), Id(10), 1),
+      // Text("three") to Box
+      Create(Id(11), WidgetTag(3)),
+      ChildrenChange.Add(Id(8), ChildrenTag(1), Id(11), 2),
+      // Box to Column
+      ChildrenChange.Add(Id(7), ChildrenTag(1), Id(8), 0),
     )
   }
 

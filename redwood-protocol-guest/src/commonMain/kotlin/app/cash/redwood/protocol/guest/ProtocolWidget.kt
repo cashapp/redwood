@@ -33,6 +33,15 @@ public interface ProtocolWidget : Widget<Unit> {
   public val id: Id
   public val tag: WidgetTag
 
+  /**
+   * Used to detect when a removed widget is re-added later in the frame, such as when
+   * `movableContentOf` is used. When a widget is added with this value greater than or equal to 0,
+   * the original 'remove' operation should be changed to indicate that this node
+   * (and its entire subtree) should be retained host-side, as a future 'add' of this node
+   * will occur without associated 'create' events for the subtree.
+   */
+  public var removeIndex: Int
+
   override val value: Unit get() = Unit
 
   public fun sendEvent(event: Event)
@@ -72,5 +81,10 @@ public interface ProtocolWidget : Widget<Unit> {
       childrenTag: ChildrenTag,
       children: ProtocolWidgetChildren,
     )
+  }
+
+  @RedwoodCodegenApi // https://github.com/Kotlin/binary-compatibility-validator/issues/91
+  public companion object {
+    public const val INVALID_INDEX: Int = -1
   }
 }

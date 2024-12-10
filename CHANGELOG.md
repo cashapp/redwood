@@ -19,6 +19,7 @@ Fixed:
 - Add support for the Height modifier in `ComposeUiBox`.
 - Add support for the Width modifier in `ComposeUiBox`.
 - Call `DisposableEffect` when a screen is unbound. We were only calling these when the effect was removed from the composition.
+- Support `movableContentOf` in Treehouse (and generally in the Redwood protocol). Note: this requires the host be running version 0.17.0 or newer.
 
 
 ## [0.16.0] - 2024-11-19

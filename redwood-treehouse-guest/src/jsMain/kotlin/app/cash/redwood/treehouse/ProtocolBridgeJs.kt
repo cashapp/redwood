@@ -28,6 +28,7 @@ import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
 import app.cash.redwood.protocol.guest.ProtocolWidget
+import app.cash.redwood.protocol.guest.ProtocolWidget.Companion.INVALID_INDEX
 import app.cash.redwood.protocol.guest.ProtocolWidgetChildren
 import app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory
 import app.cash.redwood.widget.WidgetSystem
@@ -59,7 +60,7 @@ internal class FastGuestProtocolAdapter(
 ) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
-  private val removed = JsArray<Int>()
+  private val removed = JsSet<Int>()
   private val changes = JsArray<Change>()
   private lateinit var changesSinkService: ChangesSinkService
   private lateinit var sendChanges: (service: ChangesSinkService, args: Array<*>) -> Any?
@@ -178,14 +179,22 @@ internal class FastGuestProtocolAdapter(
     index: Int,
     child: ProtocolWidget,
   ) {
-    check(!widgets.has(child.id.value)) {
-      "Attempted to add widget with ID ${child.id} but one already exists"
+    val childId = child.id.value
+    val knownId = widgets.has(childId)
+    if (child.removeIndex != INVALID_INDEX) {
+      check(hostSupportsRemoveDetach) { "Host v$hostVersion does not support widget re-attach" }
+      check(knownId) { "Attempted to re-attach unknown widget with ID $childId" }
+      removed.delete(childId)
+
+      // Update the object associated with the remove change to indicate it's only a detach.
+      changes[child.removeIndex].asDynamic()[1].detach = true
+    } else {
+      check(!knownId) { "Attempted to add widget with existing ID $childId" }
+      widgets.set(childId, child)
     }
-    widgets.set(child.id.value, child)
 
     val id = id
     val tag = tag
-    val childId = child.id
     val index = index
     changes.push(js("""["add",{"id":id,"tag":tag,"childId":childId,"index":index}]"""))
   }
@@ -209,9 +218,10 @@ internal class FastGuestProtocolAdapter(
     id: Id,
     tag: ChildrenTag,
     index: Int,
-    childId: Id,
+    child: ProtocolWidget,
   ) {
-    removed.push(childId.value)
+    removed.add(child.id.value)
+    child.removeIndex = changes.length
 
     val id = id
     val tag = tag
@@ -221,8 +231,7 @@ internal class FastGuestProtocolAdapter(
 
   override fun emitChanges() {
     if (changes.length > 0) {
-      for (i in 0 until removed.length) {
-        val id = removed[i]
+      removed.forEach { id ->
         val widget = widgets[id]
           ?: throw IllegalStateException("Removed widget not present in map: $id")
         widgets.delete(id)

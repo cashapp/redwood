@@ -194,6 +194,7 @@ internal class ProtocolButton(
 ) : ProtocolWidget, Button<Unit> {
   public override val id: Id = guestAdapter.nextId()
   public override val tag: WidgetTag get() = WidgetTag(3)
+  public override var removeIndex: Int = InvalidRemoveIndex
 
   private var onClick: (() -> Unit)? = null
 
@@ -272,6 +273,12 @@ internal fun generateProtocolWidget(
                 .addStatement("return %T(%L)", Protocol.WidgetTag, widget.tag)
                 .build(),
             )
+            .build(),
+        )
+        .addProperty(
+          PropertySpec.builder("removeIndex", INT, OVERRIDE)
+            .mutable(true)
+            .initializer("%T.INVALID_INDEX", ProtocolGuest.ProtocolWidget)
             .build(),
         )
         .apply {

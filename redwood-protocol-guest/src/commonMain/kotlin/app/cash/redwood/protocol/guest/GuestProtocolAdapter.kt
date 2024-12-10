@@ -38,20 +38,19 @@ import kotlinx.serialization.json.Json
  * This interface is for generated code use only.
  */
 public abstract class GuestProtocolAdapter(
-  hostVersion: RedwoodVersion,
+  protected val hostVersion: RedwoodVersion,
 ) : EventSink {
   @RedwoodCodegenApi
   public abstract val json: Json
 
   /**
    * Whether the host supports the detach parameter on
-   * [app.cash.redwood.protocol.ChildrenChange.Remove]. This also implies that the `count`
-   * parameter does not need to be sent.
+   * [app.cash.redwood.protocol.ChildrenChange.Remove].
    *
-   * TODO Remove when minimum-supported host version is 1.17 or higher.
+   * TODO Remove when minimum-supported host version is 0.17 or higher.
    */
   @RedwoodCodegenApi
-  protected val hostSupportsRemoveDetachAndNoCount: Boolean = hostVersion >= RedwoodVersion("0.17.0-SNAPSHOT")
+  protected val hostSupportsRemoveDetach: Boolean = hostVersion >= RedwoodVersion("0.17.0-SNAPSHOT")
 
   /**
    * The provider of factories of widgets which record property changes and whose children changes
@@ -143,6 +142,6 @@ public abstract class GuestProtocolAdapter(
     id: Id,
     tag: ChildrenTag,
     index: Int,
-    childId: Id,
+    child: ProtocolWidget,
   )
 }

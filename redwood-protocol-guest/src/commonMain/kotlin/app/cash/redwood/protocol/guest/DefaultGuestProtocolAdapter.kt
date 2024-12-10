@@ -30,6 +30,7 @@ import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.guest.ProtocolWidget.Companion.INVALID_INDEX
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -136,9 +137,18 @@ public class DefaultGuestProtocolAdapter(
     index: Int,
     child: ProtocolWidget,
   ) {
-    val replaced = widgets.put(child.id.value, child)
-    check(replaced == null) {
-      "Attempted to add widget with ID ${child.id} but one already exists"
+    val childId = child.id.value
+    if (child.removeIndex != INVALID_INDEX) {
+      check(hostSupportsRemoveDetach) { "Host v$hostVersion does not support widget re-attach" }
+      check(childId in widgets) { "Attempted to re-attach unknown widget with ID $childId" }
+      removed.remove(childId)
+
+      // Update the remove change to indicate it's only a detach.
+      val remove = changes[child.removeIndex] as ChildrenChange.Remove
+      changes[child.removeIndex] = ChildrenChange.Remove(remove.id, remove.tag, remove.index, true)
+    } else {
+      val replaced = widgets.put(childId, child)
+      check(replaced == null) { "Attempted to add widget with existing ID $childId" }
     }
     changes.add(ChildrenChange.Add(id, tag, child.id, index))
   }
@@ -157,9 +167,10 @@ public class DefaultGuestProtocolAdapter(
     id: Id,
     tag: ChildrenTag,
     index: Int,
-    childId: Id,
+    child: ProtocolWidget,
   ) {
-    removed += childId.value
+    removed += child.id.value
+    child.removeIndex = changes.size
     changes.add(ChildrenChange.Remove(id, tag, index, detach = false))
   }
 

@@ -51,6 +51,8 @@ public value class RedwoodVersion(public val value: String) : Comparable<Redwood
     }
   }
 
+  override fun toString(): String = value
+
   /**
    * Compare two versions to see which is newer.
    *
