@@ -71,7 +71,7 @@ class SnapshotChangeListTest {
       |
       |Found:
       | - Move(_id=0, _tag=1, fromIndex=1, toIndex=2, count=3)
-      | - Remove(_id=0, _tag=1, index=1, count=2)
+      | - Remove(_id=0, _tag=1, index=1, count=2, detach=false)
       """.trimMargin(),
     )
   }

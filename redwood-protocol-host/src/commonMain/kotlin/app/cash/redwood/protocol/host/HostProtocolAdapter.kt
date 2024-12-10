@@ -36,7 +36,6 @@ import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
-import kotlin.collections.mutableMapOf
 import kotlin.native.ObjCName
 
 /**
@@ -107,10 +106,12 @@ public class HostProtocolAdapter<W : Any>(
             }
 
             is Remove -> {
-              for (childIndex in change.index until change.index + change.count) {
-                val child = children.nodes[childIndex]
-                child.visitIds(removeNodeById)
-                poolOrDetach(child)
+              if (!change.detach) {
+                for (childIndex in change.index until change.index + change.count) {
+                  val child = children.nodes[childIndex]
+                  child.visitIds(removeNodeById)
+                  poolOrDetach(child)
+                }
               }
               children.remove(change.index, change.count)
             }

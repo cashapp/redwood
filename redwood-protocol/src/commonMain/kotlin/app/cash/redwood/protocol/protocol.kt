@@ -248,6 +248,12 @@ public sealed interface ChildrenChange : Change {
     private val _tag: Int,
     public val index: Int,
     public val count: Int,
+    /**
+     * When true, the associated nodes should only be detached from the tree with the expectation
+     * that a future [Add] will re-attach them. Otherwise, nodes should be detached and fully
+     * removed for garbage collection.
+     */
+    public val detach: Boolean = false,
   ) : ChildrenChange {
     override val id: Id get() = Id(_id)
     override val tag: ChildrenTag get() = ChildrenTag(_tag)
@@ -258,7 +264,8 @@ public sealed interface ChildrenChange : Change {
         tag: ChildrenTag,
         index: Int,
         count: Int,
-      ): Remove = Remove(id.value, tag.value, index, count)
+        detach: Boolean = false,
+      ): Remove = Remove(id.value, tag.value, index, count, detach)
     }
   }
 }

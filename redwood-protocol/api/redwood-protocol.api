@@ -79,9 +79,10 @@ public final class app/cash/redwood/protocol/ChildrenChange$Move$Companion {
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove : app/cash/redwood/protocol/ChildrenChange {
 	public static final field Companion Lapp/cash/redwood/protocol/ChildrenChange$Remove$Companion;
-	public synthetic fun <init> (IIIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (IIIIZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCount ()I
+	public final fun getDetach ()Z
 	public fun getId-0HhLjSo ()I
 	public final fun getIndex ()I
 	public fun getTag-b0W0yNk ()I
@@ -101,7 +102,8 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializ
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove$Companion {
-	public final fun invoke-ARs5Qwk (IIII)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
+	public final fun invoke-HpxY78w (IIIIZ)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
+	public static synthetic fun invoke-HpxY78w$default (Lapp/cash/redwood/protocol/ChildrenChange$Remove$Companion;IIIIZILjava/lang/Object;)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
