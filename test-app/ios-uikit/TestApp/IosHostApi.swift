@@ -42,6 +42,9 @@ class IosHostApi : HostApi {
         }
     }
 
+    func log(message: String) {
+    }
+
     func close() {
     }
 }
