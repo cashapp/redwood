@@ -18,6 +18,8 @@ Fixed:
 - Fix inconsistency in margin application between `ComposeUiBox` and `ViewBox`.
 - Add support for the Height modifier in `ComposeUiBox`.
 - Add support for the Width modifier in `ComposeUiBox`.
+- Call `DisposableEffect` when a screen is unbound. We were only calling these when the effect was removed from the composition.
+
 
 ## [0.16.0] - 2024-11-19
 [0.16.0]: https://github.com/cashapp/redwood/releases/tag/0.16.0
