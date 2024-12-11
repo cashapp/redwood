@@ -149,7 +149,7 @@ class HostProtocolAdapterTest {
           id = Id.Root,
           tag = ChildrenTag.Root,
           index = 0,
-          count = 1,
+          detach = false,
         ),
       ),
     )
@@ -253,7 +253,7 @@ class HostProtocolAdapterTest {
     // Remove root TestRow.
     host.sendChanges(
       listOf(
-        Remove(Id.Root, ChildrenTag.Root, 0, 1),
+        Remove(Id.Root, ChildrenTag.Root, 0, false),
       ),
     )
 
@@ -308,9 +308,9 @@ class HostProtocolAdapterTest {
     host.sendChanges(
       listOf(
         // Detach inner TestRow.
-        Remove(Id(1), ChildrenTag(1), 0, 1, detach = true),
+        Remove(Id(1), ChildrenTag(1), 0, detach = true),
         // Remove outer TestRow.
-        Remove(Id.Root, ChildrenTag.Root, 0, 1),
+        Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
         // New outer TestRow.
         Create(Id(4), WidgetTag(1)),
         ModifierChange(Id(4)),

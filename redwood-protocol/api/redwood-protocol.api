@@ -102,8 +102,8 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializ
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove$Companion {
-	public final fun invoke-HpxY78w (IIIIZ)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
-	public static synthetic fun invoke-HpxY78w$default (Lapp/cash/redwood/protocol/ChildrenChange$Remove$Companion;IIIIZILjava/lang/Object;)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
+	public final fun invoke-ARs5Qwk (IIII)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
+	public final fun invoke-ARs5Qwk (IIIZ)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

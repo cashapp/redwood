@@ -41,12 +41,10 @@ import kotlinx.serialization.json.JsonPrimitive
 @OptIn(RedwoodCodegenApi::class)
 public class DefaultGuestProtocolAdapter(
   public override val json: Json = Json.Default,
-  // Just keep this parameter because we may need it in the future to vary the protocol.
-  @Suppress("unused")
   hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter() {
+) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Int, ProtocolWidget>()
   private val changes = mutableListOf<Change>()
@@ -160,7 +158,14 @@ public class DefaultGuestProtocolAdapter(
     index: Int,
     count: Int,
   ) {
-    changes.add(ChildrenChange.Remove(id, tag, index, count))
+    if (hostSupportsRemoveDetachAndNoCount) {
+      for (i in index + count - 1 downTo index) {
+        changes.add(ChildrenChange.Remove(id, tag, i, detach = false))
+      }
+    } else {
+      @Suppress("DEPRECATION") // Supporting older hosts.
+      changes.add(ChildrenChange.Remove(id, tag, index, count))
+    }
   }
 
   /** Returns the changes accumulated since the last call to this function. */

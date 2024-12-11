@@ -22,6 +22,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.PropertyTag
+import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
@@ -36,9 +37,21 @@ import kotlinx.serialization.json.Json
  *
  * This interface is for generated code use only.
  */
-public abstract class GuestProtocolAdapter : EventSink {
+public abstract class GuestProtocolAdapter(
+  hostVersion: RedwoodVersion,
+) : EventSink {
   @RedwoodCodegenApi
   public abstract val json: Json
+
+  /**
+   * Whether the host supports the detach parameter on
+   * [app.cash.redwood.protocol.ChildrenChange.Remove]. This also implies that the `count`
+   * parameter does not need to be sent.
+   *
+   * TODO Remove when minimum-supported host version is 1.17 or higher.
+   */
+  @RedwoodCodegenApi
+  protected val hostSupportsRemoveDetachAndNoCount: Boolean = hostVersion >= RedwoodVersion("0.17.0-SNAPSHOT")
 
   /**
    * The provider of factories of widgets which record property changes and whose children changes

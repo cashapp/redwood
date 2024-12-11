@@ -16,8 +16,10 @@
 package app.cash.redwood.protocol.guest
 
 import androidx.compose.runtime.BroadcastFrameClock
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.protocol.Change
@@ -38,6 +40,7 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Button2
@@ -286,6 +289,46 @@ class ProtocolTest {
         PropertyChange(Id(1), WidgetTag(7), PropertyTag(1), JsonPrimitive("state: 1")),
       ),
     )
+  }
+
+  @Test fun removeIndividuallyForLatestVersion() = runTest {
+    assertThat(removeNodeRange(latestVersion))
+      .containsExactly(
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 2, false),
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 1, false),
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, false),
+      )
+  }
+
+  @Suppress("DEPRECATION") // Testing for old behavior.
+  @Test
+  fun removeRangeForOldVersions() = runTest {
+    assertThat(removeNodeRange(RedwoodVersion("0.16.0")))
+      .containsExactly(
+        ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, 3),
+      )
+  }
+
+  private suspend fun TestScope.removeNodeRange(
+    hostVersion: RedwoodVersion,
+  ): List<Change> {
+    val (composition) = testProtocolComposition(hostVersion)
+
+    var remove by mutableStateOf(false)
+    val items = @Composable {
+      Text("one")
+      Text("two")
+      Text("three")
+    }
+    composition.setContent {
+      if (!remove) {
+        items()
+      }
+    }
+    composition.awaitSnapshot()
+
+    remove = true
+    return composition.awaitSnapshot()
   }
 
   private fun TestScope.testProtocolComposition(

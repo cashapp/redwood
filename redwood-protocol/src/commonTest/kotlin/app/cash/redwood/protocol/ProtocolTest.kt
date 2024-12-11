@@ -57,7 +57,9 @@ class ProtocolTest {
       Create(Id(1), WidgetTag(2)),
       ChildrenChange.Add(Id(1), ChildrenTag(2), Id(3), 4),
       ChildrenChange.Move(Id(1), ChildrenTag(2), 3, 4, 5),
-      ChildrenChange.Remove(Id(4), ChildrenTag(3), 2, 1),
+      @Suppress("DEPRECATION") // Testing for compatibility.
+      ChildrenChange.Remove(Id(4), ChildrenTag(3), 2, 10),
+      ChildrenChange.Remove(Id(5), ChildrenTag(3), 2, detach = true),
       ModifierChange(
         Id(1),
         listOf(
@@ -90,7 +92,8 @@ class ProtocolTest {
       """["create",{"id":1,"tag":2}],""" +
       """["add",{"id":1,"tag":2,"childId":3,"index":4}],""" +
       """["move",{"id":1,"tag":2,"fromIndex":3,"toIndex":4,"count":5}],""" +
-      """["remove",{"id":4,"tag":3,"index":2,"count":1}],""" +
+      """["remove",{"id":4,"tag":3,"index":2,"count":10}],""" +
+      """["remove",{"id":5,"tag":3,"index":2,"detach":true}],""" +
       """["modifier",{"id":1,"elements":[[1,{}],[2,3],[3,[]],[4],[5]]}],""" +
       """["property",{"id":1,"widget":2,"tag":2,"value":"hello"}],""" +
       """["property",{"id":1,"widget":2,"tag":2}]""" +

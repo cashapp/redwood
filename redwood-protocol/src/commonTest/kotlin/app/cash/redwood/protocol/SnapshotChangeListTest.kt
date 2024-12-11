@@ -62,7 +62,7 @@ class SnapshotChangeListTest {
           Move(Id.Root, ChildrenTag.Root, 1, 2, 3),
           PropertyChange(Id(1), WidgetTag(1), PropertyTag(1), JsonPrimitive("Hello")),
           Add(Id.Root, ChildrenTag.Root, Id(1), 0),
-          Remove(Id.Root, ChildrenTag.Root, 1, 2),
+          Remove(Id.Root, ChildrenTag.Root, 1, false),
         ),
       )
     }.hasMessage(
@@ -71,7 +71,7 @@ class SnapshotChangeListTest {
       |
       |Found:
       | - Move(_id=0, _tag=1, fromIndex=1, toIndex=2, count=3)
-      | - Remove(_id=0, _tag=1, index=1, count=2, detach=false)
+      | - Remove(_id=0, _tag=1, index=1, count=1, detach=false)
       """.trimMargin(),
     )
   }

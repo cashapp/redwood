@@ -43,14 +43,20 @@ internal actual fun GuestProtocolAdapter(
   hostVersion: RedwoodVersion,
   widgetSystemFactory: ProtocolWidgetSystemFactory,
   mismatchHandler: ProtocolMismatchHandler,
-): GuestProtocolAdapter = FastGuestProtocolAdapter(json, widgetSystemFactory, mismatchHandler)
+): GuestProtocolAdapter = FastGuestProtocolAdapter(
+  json = json,
+  hostVersion = hostVersion,
+  widgetSystemFactory = widgetSystemFactory,
+  mismatchHandler = mismatchHandler,
+)
 
 @OptIn(ExperimentalSerializationApi::class, RedwoodCodegenApi::class)
 internal class FastGuestProtocolAdapter(
   override val json: Json = Json.Default,
+  hostVersion: RedwoodVersion,
   private val widgetSystemFactory: ProtocolWidgetSystemFactory,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GuestProtocolAdapter() {
+) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
   private val changes = JsArray<Change>()
@@ -208,7 +214,13 @@ internal class FastGuestProtocolAdapter(
     val tag = tag
     val index = index
     val count = count
-    changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count}]"""))
+    if (hostSupportsRemoveDetachAndNoCount) {
+      for (i in index + count - 1 downTo index) {
+        changes.push(js("""["remove",{"id":id,"tag":tag,"index":i}]"""))
+      }
+    } else {
+      changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count}]"""))
+    }
   }
 
   override fun emitChanges() {

@@ -105,16 +105,18 @@ public class HostProtocolAdapter<W : Any>(
               children.move(change.fromIndex, change.toIndex, change.count)
             }
 
-            is Remove -> {
-              if (!change.detach) {
-                for (childIndex in change.index until change.index + change.count) {
-                  val child = children.nodes[childIndex]
-                  child.visitIds(removeNodeById)
-                  poolOrDetach(child)
+            is Remove ->
+              @Suppress("DEPRECATION") // For compatibility with old guests.
+              {
+                if (!change.detach) {
+                  for (childIndex in change.index until change.index + change.count) {
+                    val child = children.nodes[childIndex]
+                    child.visitIds(removeNodeById)
+                    poolOrDetach(child)
+                  }
                 }
+                children.remove(change.index, change.count)
               }
-              children.remove(change.index, change.count)
-            }
           }
 
           val widget = node.widget

@@ -21,7 +21,7 @@ abstract interface app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory {
 }
 
 abstract class app.cash.redwood.protocol.guest/GuestProtocolAdapter : app.cash.redwood.protocol/EventSink { // app.cash.redwood.protocol.guest/GuestProtocolAdapter|null[0]
-    constructor <init>() // app.cash.redwood.protocol.guest/GuestProtocolAdapter.<init>|<init>(){}[0]
+    constructor <init>(app.cash.redwood.protocol/RedwoodVersion) // app.cash.redwood.protocol.guest/GuestProtocolAdapter.<init>|<init>(app.cash.redwood.protocol.RedwoodVersion){}[0]
 
     abstract val root // app.cash.redwood.protocol.guest/GuestProtocolAdapter.root|{}root[0]
         abstract fun <get-root>(): app.cash.redwood.widget/Widget.Children<kotlin/Unit> // app.cash.redwood.protocol.guest/GuestProtocolAdapter.root.<get-root>|<get-root>(){}[0]

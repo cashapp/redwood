@@ -247,11 +247,14 @@ public sealed interface ChildrenChange : Change {
     @SerialName("tag")
     private val _tag: Int,
     public val index: Int,
-    public val count: Int,
+    @Deprecated("Always 1 after 0.17.0. Will be >1 with earlier guests.")
+    public val count: Int = 1,
     /**
      * When true, the associated nodes should only be detached from the tree with the expectation
      * that a future [Add] will re-attach them. Otherwise, nodes should be detached and fully
      * removed for garbage collection.
+     *
+     * Note: This property is only populated for hosts running 0.17.0 or newer.
      */
     public val detach: Boolean = false,
   ) : ChildrenChange {
@@ -263,9 +266,16 @@ public sealed interface ChildrenChange : Change {
         id: Id,
         tag: ChildrenTag,
         index: Int,
+        detach: Boolean,
+      ): Remove = Remove(id.value, tag.value, index, 1, detach)
+
+      @Deprecated("Count is only supported on hosts older than 0.17.0.")
+      public operator fun invoke(
+        id: Id,
+        tag: ChildrenTag,
+        index: Int,
         count: Int,
-        detach: Boolean = false,
-      ): Remove = Remove(id.value, tag.value, index, count, detach)
+      ): Remove = Remove(id.value, tag.value, index, count, false)
     }
   }
 }
