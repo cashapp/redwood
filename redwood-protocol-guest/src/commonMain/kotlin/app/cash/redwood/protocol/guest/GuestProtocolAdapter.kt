@@ -143,23 +143,6 @@ public abstract class GuestProtocolAdapter(
     id: Id,
     tag: ChildrenTag,
     index: Int,
-    count: Int,
+    childId: Id,
   )
-
-  @RedwoodCodegenApi
-  public abstract fun removeWidget(id: Id)
-
-  @RedwoodCodegenApi
-  public val childrenRemover: ProtocolWidget.ChildrenVisitor =
-    object : ProtocolWidget.ChildrenVisitor {
-      override fun visit(
-        parent: ProtocolWidget,
-        childrenTag: ChildrenTag,
-        children: ProtocolWidgetChildren,
-      ) {
-        for (childWidget in children.widgets) {
-          removeWidget(childWidget.id)
-        }
-      }
-    }
 }

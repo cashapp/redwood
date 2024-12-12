@@ -115,7 +115,6 @@ sealed interface app.cash.redwood.protocol/ChildrenChange : app.cash.redwood.pro
 
         final object Companion { // app.cash.redwood.protocol/ChildrenChange.Remove.Companion|null[0]
             final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Boolean): app.cash.redwood.protocol/ChildrenChange.Remove // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Boolean){}[0]
-            final fun invoke(app.cash.redwood.protocol/Id, app.cash.redwood.protocol/ChildrenTag, kotlin/Int, kotlin/Int): app.cash.redwood.protocol/ChildrenChange.Remove // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.invoke|invoke(app.cash.redwood.protocol.Id;app.cash.redwood.protocol.ChildrenTag;kotlin.Int;kotlin.Int){}[0]
             final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.protocol/ChildrenChange.Remove> // app.cash.redwood.protocol/ChildrenChange.Remove.Companion.serializer|serializer(){}[0]
         }
     }

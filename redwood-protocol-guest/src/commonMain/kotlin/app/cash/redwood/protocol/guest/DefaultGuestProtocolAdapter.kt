@@ -47,6 +47,7 @@ public class DefaultGuestProtocolAdapter(
 ) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = mutableMapOf<Int, ProtocolWidget>()
+  private val removed = mutableSetOf<Int>()
   private val changes = mutableListOf<Change>()
   private lateinit var changesSink: ChangesSink
 
@@ -156,22 +157,24 @@ public class DefaultGuestProtocolAdapter(
     id: Id,
     tag: ChildrenTag,
     index: Int,
-    count: Int,
+    childId: Id,
   ) {
-    if (hostSupportsRemoveDetachAndNoCount) {
-      for (i in index + count - 1 downTo index) {
-        changes.add(ChildrenChange.Remove(id, tag, i, detach = false))
-      }
-    } else {
-      @Suppress("DEPRECATION") // Supporting older hosts.
-      changes.add(ChildrenChange.Remove(id, tag, index, count))
-    }
+    removed += childId.value
+    changes.add(ChildrenChange.Remove(id, tag, index, detach = false))
   }
 
   /** Returns the changes accumulated since the last call to this function. */
   public fun takeChanges(): List<Change> {
     val result = changes.toList()
     this.changes.clear()
+
+    for (id in removed) {
+      val widget = widgets.remove(id)
+        ?: throw IllegalStateException("Removed widget not present in map: $id")
+      widget.depthFirstWalk(childrenRemover)
+    }
+    removed.clear()
+
     return result
   }
 
@@ -181,7 +184,16 @@ public class DefaultGuestProtocolAdapter(
     }
   }
 
-  public override fun removeWidget(id: Id) {
-    widgets.remove(id.value)
-  }
+  private val childrenRemover: ProtocolWidget.ChildrenVisitor =
+    object : ProtocolWidget.ChildrenVisitor {
+      override fun visit(
+        parent: ProtocolWidget,
+        childrenTag: ChildrenTag,
+        children: ProtocolWidgetChildren,
+      ) {
+        for (childWidget in children.widgets) {
+          widgets.remove(childWidget.id.value)
+        }
+      }
+    }
 }

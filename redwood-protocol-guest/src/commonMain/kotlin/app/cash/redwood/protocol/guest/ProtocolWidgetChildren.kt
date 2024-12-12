@@ -37,13 +37,10 @@ public class ProtocolWidgetChildren(
   }
 
   override fun remove(index: Int, count: Int) {
-    for (i in index until index + count) {
-      val widget = _widgets[i]
-      guestAdapter.removeWidget(widget.id)
-      widget.depthFirstWalk(guestAdapter.childrenRemover)
+    for (i in index + count - 1 downTo index) {
+      val widget = widgets[i]
+      guestAdapter.appendRemove(id, tag, index, widget.id)
     }
-    guestAdapter.appendRemove(id, tag, index, count)
-
     _widgets.remove(index, count)
   }
 

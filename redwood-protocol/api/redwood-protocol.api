@@ -102,7 +102,6 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializ
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove$Companion {
-	public final fun invoke-ARs5Qwk (IIII)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
 	public final fun invoke-ARs5Qwk (IIIZ)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }

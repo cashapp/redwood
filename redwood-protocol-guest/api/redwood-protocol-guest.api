@@ -9,14 +9,13 @@ public final class app/cash/redwood/protocol/guest/DefaultGuestProtocolAdapter :
 	public fun appendPropertyChange-13Ob0Yo (IIILkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
 	public fun appendPropertyChange-ITsWdOQ (IIIZ)V
 	public fun appendPropertyChange-hzhmVHk (IIII)V
-	public fun appendRemove-ARs5Qwk (IIII)V
+	public fun appendRemove-hx81-Ec (IIII)V
 	public fun emitChanges ()V
 	public fun getJson ()Lkotlinx/serialization/json/Json;
 	public fun getRoot ()Lapp/cash/redwood/widget/Widget$Children;
 	public fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 	public fun initChangesSink (Lapp/cash/redwood/protocol/ChangesSink;)V
 	public fun nextId-0HhLjSo ()I
-	public fun removeWidget-ou3jOuA (I)V
 	public fun sendEvent (Lapp/cash/redwood/protocol/Event;)V
 	public final fun takeChanges ()Ljava/util/List;
 }

@@ -59,6 +59,7 @@ internal class FastGuestProtocolAdapter(
 ) : GuestProtocolAdapter(hostVersion) {
   private var nextValue = Id.Root.value + 1
   private val widgets = JsMap<Int, ProtocolWidget>()
+  private val removed = JsArray<Int>()
   private val changes = JsArray<Change>()
   private lateinit var changesSinkService: ChangesSinkService
   private lateinit var sendChanges: (service: ChangesSinkService, args: Array<*>) -> Any?
@@ -208,29 +209,42 @@ internal class FastGuestProtocolAdapter(
     id: Id,
     tag: ChildrenTag,
     index: Int,
-    count: Int,
+    childId: Id,
   ) {
+    removed.push(childId.value)
+
     val id = id
     val tag = tag
     val index = index
-    val count = count
-    if (hostSupportsRemoveDetachAndNoCount) {
-      for (i in index + count - 1 downTo index) {
-        changes.push(js("""["remove",{"id":id,"tag":tag,"index":i}]"""))
-      }
-    } else {
-      changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":count}]"""))
-    }
+    changes.push(js("""["remove",{"id":id,"tag":tag,"index":index,"count":1}]"""))
   }
 
   override fun emitChanges() {
     if (changes.length > 0) {
+      for (i in 0 until removed.length) {
+        val id = removed[i]
+        val widget = widgets[id]
+          ?: throw IllegalStateException("Removed widget not present in map: $id")
+        widgets.delete(id)
+        widget.depthFirstWalk(childrenRemover)
+      }
+      removed.clear()
+
       sendChanges(changesSinkService, arrayOf(changes))
       changes.clear()
     }
   }
 
-  override fun removeWidget(id: Id) {
-    widgets.delete(id.value)
-  }
+  private val childrenRemover: ProtocolWidget.ChildrenVisitor =
+    object : ProtocolWidget.ChildrenVisitor {
+      override fun visit(
+        parent: ProtocolWidget,
+        childrenTag: ChildrenTag,
+        children: ProtocolWidgetChildren,
+      ) {
+        for (childWidget in children.widgets) {
+          widgets.delete(childWidget.id.value)
+        }
+      }
+    }
 }
