@@ -145,7 +145,7 @@ public class DefaultGuestProtocolAdapter(
 
       // Update the remove change to indicate it's only a detach.
       val remove = changes[child.removeIndex] as ChildrenChange.Remove
-      changes[child.removeIndex] = ChildrenChange.Remove(remove.id, remove.tag, remove.index, true)
+      changes[child.removeIndex] = ChildrenChange.Remove(remove.id, remove.tag, remove.index, detach = true)
     } else {
       val replaced = widgets.put(childId, child)
       check(replaced == null) { "Attempted to add widget with existing ID $childId" }
