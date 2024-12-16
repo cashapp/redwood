@@ -194,7 +194,7 @@ internal class ProtocolButton(
 ) : ProtocolWidget, Button<Unit> {
   public override val id: Id = guestAdapter.nextId()
   public override val tag: WidgetTag get() = WidgetTag(3)
-  public override var removeIndex: Int = InvalidRemoveIndex
+  public override var removeIndex: Int = INVALID_INDEX
 
   private var onClick: (() -> Unit)? = null
 
