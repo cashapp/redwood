@@ -166,9 +166,8 @@ private class WidgetRedwoodComposition<W : Any>(
         LocalOnBackPressedDispatcher provides onBackPressedDispatcher,
         LocalSaveableStateRegistry provides savedStateRegistry,
         LocalUiConfiguration provides uiConfiguration,
-      ) {
-        content()
-      }
+        content = content,
+      )
     }
   }
 
