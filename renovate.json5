@@ -1,18 +1,17 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "packageRules": [
+  packageRules: [
     {
-      // Compose compilers and Zipline are tightly coupled to Kotlin version
-      "groupName": "Kotlin, Compose, and Zipline",
-      "matchPackagePrefixes": [
-        "androidx.compose.compiler",
-        "app.cash.zipline",
-        "dev.drewhamilton.poko",
-        "org.jetbrains.compose.compiler",
-        "org.jetbrains.kotlin:kotlin",
+      groupName: 'Kotlin, Compose, and Zipline',
+      matchPackageNames: [
+        'androidx.compose.compiler{/,}**',
+        'app.cash.zipline{/,}**',
+        'dev.drewhamilton.poko{/,}**',
+        'org.jetbrains.compose.compiler{/,}**',
+        'org.jetbrains.kotlin:kotlin{/,}**',
       ],
     },
   ],
