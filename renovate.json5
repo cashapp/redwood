@@ -4,6 +4,7 @@
     'config:recommended',
   ],
   packageRules: [
+    // Compose compilers and Zipline are tightly coupled to Kotlin version.
     {
       groupName: 'Kotlin, Compose, and Zipline',
       matchPackageNames: [
