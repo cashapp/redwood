@@ -171,7 +171,6 @@ public synthetic class app/cash/redwood/treehouse/StateSnapshot$$serializer : ko
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/treehouse/StateSnapshot;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/treehouse/StateSnapshot$Companion {
@@ -201,7 +200,6 @@ public synthetic class app/cash/redwood/treehouse/StateSnapshot$Id$$serializer :
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-x1_DTDE (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/treehouse/StateSnapshot$Id$Companion {

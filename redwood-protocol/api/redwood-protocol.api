@@ -36,7 +36,6 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Add$$serializer 
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/ChildrenChange$Add;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Add$Companion {
@@ -69,7 +68,6 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Move$$serializer
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/ChildrenChange$Move;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Move$Companion {
@@ -98,7 +96,6 @@ public synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializ
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/ChildrenChange$Remove;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ChildrenChange$Remove$Companion {
@@ -129,7 +126,6 @@ public synthetic class app/cash/redwood/protocol/ChildrenTag$$serializer : kotli
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-sM9PXMU (Lkotlinx/serialization/encoding/Encoder;I)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ChildrenTag$Companion {
@@ -155,7 +151,6 @@ public synthetic class app/cash/redwood/protocol/Create$$serializer : kotlinx/se
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/Create;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/Create$Companion {
@@ -182,7 +177,6 @@ public synthetic class app/cash/redwood/protocol/Event$$serializer : kotlinx/ser
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/Event;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/Event$Companion {
@@ -218,7 +212,6 @@ public synthetic class app/cash/redwood/protocol/EventTag$$serializer : kotlinx/
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-1HQoEpw (Lkotlinx/serialization/encoding/Encoder;I)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/EventTag$Companion {
@@ -248,7 +241,6 @@ public synthetic class app/cash/redwood/protocol/Id$$serializer : kotlinx/serial
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-PGojVM4 (Lkotlinx/serialization/encoding/Encoder;I)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/Id$Companion {
@@ -274,7 +266,6 @@ public synthetic class app/cash/redwood/protocol/ModifierChange$$serializer : ko
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/ModifierChange;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ModifierChange$Companion {
@@ -316,7 +307,6 @@ public synthetic class app/cash/redwood/protocol/ModifierTag$$serializer : kotli
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-RV5jnrU (Lkotlinx/serialization/encoding/Encoder;I)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/ModifierTag$Companion {
@@ -343,7 +333,6 @@ public synthetic class app/cash/redwood/protocol/PropertyChange$$serializer : ko
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/protocol/PropertyChange;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/PropertyChange$Companion {
@@ -375,7 +364,6 @@ public synthetic class app/cash/redwood/protocol/PropertyTag$$serializer : kotli
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-DHbFMa4 (Lkotlinx/serialization/encoding/Encoder;I)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/PropertyTag$Companion {
@@ -408,7 +396,6 @@ public synthetic class app/cash/redwood/protocol/RedwoodVersion$$serializer : ko
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-E69qDtc (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/RedwoodVersion$Companion {
@@ -439,7 +426,6 @@ public synthetic class app/cash/redwood/protocol/SnapshotChangeList$$serializer 
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-rqC_l18 (Lkotlinx/serialization/encoding/Encoder;Ljava/util/List;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/SnapshotChangeList$Companion {
@@ -472,7 +458,6 @@ public synthetic class app/cash/redwood/protocol/WidgetTag$$serializer : kotlinx
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-GodUi58 (Lkotlinx/serialization/encoding/Encoder;I)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class app/cash/redwood/protocol/WidgetTag$Companion {
