@@ -56,7 +56,7 @@ androidx-test-core = "androidx.test:core-ktx:1.6.1"
 androidx-test-runner = "androidx.test:runner:1.6.2"
 androidx-test-uiautomator = "androidx.test.uiautomator:uiautomator:2.3.0"
 
-androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha02"
+androidx-gradlePluginLints = "androidx.lint:lint-gradle:1.0.0-alpha03"
 
 autoService-annotations = "com.google.auto.service:auto-service-annotations:1.1.1"
 autoService-kspCompiler = "dev.zacsweers.autoservice:auto-service-ksp:1.2.0"
