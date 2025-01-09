@@ -38,7 +38,7 @@ ksp-gradlePlugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-
 
 xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.90.3'
 
-atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.26.1"
+atomicFuPlugin = "org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.27.0"
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:2.0.0"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:7.0.1"
 gradleMavenPublishPlugin = "com.vanniktech:gradle-maven-publish-plugin:0.30.0"
