@@ -60,11 +60,11 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
       it.group = BUILD_GROUP
       it.description = "Generate parsed schema JSON"
 
-      it.toolClasspath.from(toolingConfiguration)
+      it.toolClasspath.from(project.files(toolingConfiguration))
       it.outputDir.set(project.redwoodGeneratedDir("schema-json"))
       it.schemaType.set(extension.type)
       it.sources.setFrom(sources)
-      it.classpath.from(classpath)
+      it.classpath.from(project.files(classpath))
     }
     compilation.defaultSourceSet.resources.srcDir(generateJson)
 
@@ -77,11 +77,11 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
           it.group = BUILD_GROUP
           it.description = "Write an updated API tracking file for the current schema"
 
-          it.toolClasspath.from(toolingConfiguration)
+          it.toolClasspath.from(project.files(toolingConfiguration))
           it.apiFile.set(apiFile)
           it.schemaType.set(extension.type)
           it.sources.setFrom(sources)
-          it.classpath.from(classpath)
+          it.classpath.from(project.files(classpath))
         }
 
         val apiCheck =
@@ -89,11 +89,11 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
             it.group = VERIFICATION_GROUP
             it.description = "Validate the API tracking file against the latest schema"
 
-            it.toolClasspath.from(toolingConfiguration)
+            it.toolClasspath.from(project.files(toolingConfiguration))
             it.apiFile.set(apiFile)
             it.schemaType.set(extension.type)
             it.sources.setFrom(sources)
-            it.classpath.from(classpath)
+            it.classpath.from(project.files(classpath))
 
             // Dummy output required to skip task if no inputs have changed.
             it.dummyOutputFile.set(project.layout.buildDirectory.file("tmp/redwoodApiCheckDummy.txt"))

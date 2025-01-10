@@ -107,11 +107,11 @@ public abstract class RedwoodGeneratorPlugin(
       it.group = BUILD_GROUP
       it.description = "Generate Redwood Kotlin sources"
 
-      it.toolClasspath.from(toolingConfiguration)
+      it.toolClasspath.from(project.files(toolingConfiguration))
       it.outputDir.set(project.redwoodGeneratedDir("sources"))
       it.generatorFlag.set(strategy.generatorFlag)
       it.schemaType.set(extension.type)
-      it.classpath.from(schemaConfiguration)
+      it.classpath.from(project.files(schemaConfiguration))
     }
 
     var hasMpp = false
