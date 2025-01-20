@@ -142,7 +142,7 @@ internal class UIViewFlexContainer(
     invalidateSize()
   }
 
-  internal fun invalidateSize(nodeBecameDirty: Boolean = false) {
+  override fun invalidateSize(nodeBecameDirty: Boolean) {
     val sizeListener = this.sizeListener
     if (sizeListener == null) {
       // This is a top-level flex container. Tell the enclosing view to redo its layout.

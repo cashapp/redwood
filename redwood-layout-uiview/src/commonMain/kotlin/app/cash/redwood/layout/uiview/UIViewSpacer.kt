@@ -20,6 +20,8 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Default
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
+import app.cash.redwood.widget.ResizableWidget
+import app.cash.redwood.widget.ResizableWidget.SizeListener
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
@@ -27,10 +29,14 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
-internal class UIViewSpacer : Spacer<UIView> {
+internal class UIViewSpacer :
+  Spacer<UIView>,
+  ResizableWidget<UIView> {
   private val view = SpacerUIView()
   override val value: UIView get() = view
   override var modifier: Modifier = Modifier
+
+  override var sizeListener: SizeListener? = null
 
   override fun width(width: Dp) {
     view.width = with(Density.Default) { width.toPx() }
@@ -44,6 +50,7 @@ internal class UIViewSpacer : Spacer<UIView> {
 
   private fun invalidate() {
     value.setNeedsLayout()
+    sizeListener?.invalidateSize()
   }
 }
 

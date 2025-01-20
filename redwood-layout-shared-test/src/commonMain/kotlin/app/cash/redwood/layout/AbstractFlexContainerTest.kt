@@ -581,6 +581,36 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("Empty")
   }
 
+  @Test fun testRowMarginChanges() {
+    testContainerMarginChanges(FlexDirection.Row)
+  }
+
+  @Test fun testColumnMarginChanges() {
+    testContainerMarginChanges(FlexDirection.Column)
+  }
+
+  private fun testContainerMarginChanges(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Column, FlexDirection.Row),
+  ) {
+    val container = flexContainer(flexDirection)
+    val snapshotter = snapshotter(container.value)
+
+    container.width(Constraint.Fill)
+    container.height(Constraint.Fill)
+    container.crossAxisAlignment(CrossAxisAlignment.Stretch)
+    container.mainAxisAlignment(MainAxisAlignment.SpaceBetween)
+
+    container.add(widgetFactory.text(shortText(), backgroundColor = Red))
+    container.add(widgetFactory.text(shortText(), backgroundColor = Green))
+    container.margin(Margin.Zero)
+    container.onEndChanges()
+    snapshotter.snapshot("Zero")
+
+    container.margin(Margin(10.dp, 20.dp, 30.dp, 40.dp))
+    container.onEndChanges()
+    snapshotter.snapshot("Nonzero")
+  }
+
   /** The view shouldn't crash if its displayed after being detached. */
   @Test fun testLayoutAfterDetach() {
     val container = flexContainer(FlexDirection.Column).apply {

@@ -51,6 +51,7 @@ internal interface YogaFlexContainer<W : Any> :
         marginBottom = margin.bottom.toPx().toFloat()
       }
     }
+    invalidateSize(true)
   }
 
   override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
@@ -71,11 +72,15 @@ internal interface YogaFlexContainer<W : Any> :
 
   fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     rootNode.alignItems = crossAxisAlignment.toAlignItems()
+    invalidateSize(true)
   }
 
   fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     rootNode.justifyContent = mainAxisAlignment.toJustifyContent()
+    invalidateSize(true)
   }
+
+  fun invalidateSize(nodeBecameDirty: Boolean = false)
 }
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
