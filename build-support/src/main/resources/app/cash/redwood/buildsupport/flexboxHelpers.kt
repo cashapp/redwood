@@ -80,7 +80,8 @@ internal interface YogaFlexContainer<W : Any> :
     invalidateSize(true)
   }
 
-  fun invalidateSize(nodeBecameDirty: Boolean = false)
+  open fun invalidateSize(nodeBecameDirty: Boolean = false) {
+  }
 }
 
 internal fun MainAxisAlignment.toJustifyContent() = when (this) {
