@@ -143,16 +143,16 @@ internal class UIViewFlexContainer(
   }
 
   internal fun invalidateSize(nodeBecameDirty: Boolean = false) {
-    if (rootNode.markDirty() || nodeBecameDirty) {
+    val sizeListener = this.sizeListener
+    if (sizeListener == null) {
+      // This is a top-level flex container. Tell the enclosing view to redo its layout.
+      rootNode.markDirty()
+      value.invalidateIntrinsicContentSize()
+      value.setNeedsLayout()
+    } else if (rootNode.markDirty() || nodeBecameDirty) {
       // The node was newly-dirty. Propagate that up the tree.
-      val sizeListener = this.sizeListener
-      if (sizeListener != null) {
-        value.setNeedsLayout()
-        sizeListener.invalidateSize()
-      } else {
-        value.invalidateIntrinsicContentSize() // Tell the enclosing view that our size changed.
-        value.setNeedsLayout() // Update layout of subviews.
-      }
+      value.setNeedsLayout()
+      sizeListener.invalidateSize()
     }
   }
 }
