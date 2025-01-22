@@ -20,7 +20,7 @@ Fixed:
 - Add support for the Width modifier in `ComposeUiBox`.
 - Call `DisposableEffect` when a screen is unbound. We were only calling these when the effect was removed from the composition.
 - Support `movableContentOf` in Treehouse (and generally in the Redwood protocol). Note: this requires the host be running version 0.17.0 or newer.
-
+- Fix case where `Column` and `Row` would not update their intrinsic size on iOS if they are not a child of another `Column` or `Row`.
 
 ## [0.16.0] - 2024-11-19
 [0.16.0]: https://github.com/cashapp/redwood/releases/tag/0.16.0
