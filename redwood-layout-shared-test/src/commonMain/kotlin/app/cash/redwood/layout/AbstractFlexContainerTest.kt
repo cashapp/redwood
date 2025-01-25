@@ -551,16 +551,8 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter(outerContainer.value).snapshot()
   }
 
-  @Test fun testColumnWithChildModifierChanges() {
-    testContainerWithChildrenModifierChanges(FlexDirection.Column)
-  }
-
-  @Test fun testRowWithChildModifierChanges() {
-    testContainerWithChildrenModifierChanges(FlexDirection.Row)
-  }
-
-  private fun testContainerWithChildrenModifierChanges(
-    flexDirection: FlexDirection,
+  @Test fun testContainerWithChildrenModifierChanges(
+    flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
   ) {
     val container = flexContainer(flexDirection)
     val snapshotter = snapshotter(container.value)
@@ -581,15 +573,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("Empty")
   }
 
-  @Test fun testRowMarginChanges() {
-    testContainerMarginChanges(FlexDirection.Row)
-  }
-
-  @Test fun testColumnMarginChanges() {
-    testContainerMarginChanges(FlexDirection.Column)
-  }
-
-  private fun testContainerMarginChanges(
+  @Test fun testContainerMarginChanges(
     flexDirection: FlexDirection = burstValues(FlexDirection.Column, FlexDirection.Row),
   ) {
     val container = flexContainer(flexDirection)
