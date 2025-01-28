@@ -15,8 +15,10 @@
  */
 package app.cash.redwood.testing
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,12 +30,51 @@ import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Text
+import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
+import com.example.redwood.testapp.testing.TextValue
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 
 class TestRedwoodCompositionTest {
+  @Test fun setContentAndSnapshot() = runTest {
+    TestSchemaTester {
+      var number by mutableIntStateOf(0)
+      val initial = setContentAndSnapshot {
+        Text("The number is: $number")
+        LaunchedEffect(Unit) {
+          number = 1
+        }
+      }
+
+      // Defer to allow effect to run.
+      delay(10.milliseconds)
+
+      assertThat(initial.single()).isEqualTo(TextValue(text = "The number is: 0"))
+      assertThat(awaitSnapshot().single()).isEqualTo(TextValue(text = "The number is: 1"))
+    }
+  }
+
+  @Test fun setContentThenAwaitSnapshot() = runTest {
+    TestSchemaTester {
+      var number by mutableIntStateOf(0)
+      setContent {
+        Text("The number is: $number")
+        LaunchedEffect(Unit) {
+          number = 1
+        }
+      }
+
+      // Defer to allow effect to run.
+      delay(10.milliseconds)
+
+      assertThat(awaitSnapshot().single()).isEqualTo(TextValue(text = "The number is: 1"))
+    }
+  }
+
   @Test fun awaitSnapshotCapturesMultipleChanges() = runTest {
     var count = 0
     val tester = TestRedwoodComposition(

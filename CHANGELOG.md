@@ -10,6 +10,7 @@ Breaking:
 New:
 - `UIConfiguration.viewInsets` tracks the safe area of the specific `RedwoodView` being targeted. This is currently implemented for views on Android and UIViews on iOS.
 - `ConsumeInsets {}` composable consumes insets. Most applications should call this in their root composable function.
+- Add `TestRedwoodComposition.setContentAndSnapshot` function which is a fused version of `setContent` and `awaitSnapshot`, except that it guarantees the returned snapshot is the result of the initial composition of the content without any additional frames sent.
 
 Changed:
 - Nothing yet!

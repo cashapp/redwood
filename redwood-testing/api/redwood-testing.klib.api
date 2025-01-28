@@ -11,6 +11,7 @@ abstract interface <#A: kotlin/Any?> app.cash.redwood.testing/TestRedwoodComposi
         abstract fun <get-uiConfigurations>(): kotlinx.coroutines.flow/MutableStateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.testing/TestRedwoodComposition.uiConfigurations.<get-uiConfigurations>|<get-uiConfigurations>(){}[0]
 
     abstract fun saveState(): app.cash.redwood.testing/TestSavedState // app.cash.redwood.testing/TestRedwoodComposition.saveState|saveState(){}[0]
+    abstract fun setContentAndSnapshot(kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>): #A // app.cash.redwood.testing/TestRedwoodComposition.setContentAndSnapshot|setContentAndSnapshot(kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>){}[0]
     abstract suspend fun awaitSnapshot(kotlin.time/Duration = ...): #A // app.cash.redwood.testing/TestRedwoodComposition.awaitSnapshot|awaitSnapshot(kotlin.time.Duration){}[0]
 }
 

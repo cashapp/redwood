@@ -61,7 +61,15 @@ public fun <W : Any, S> TestRedwoodComposition(
 
 public interface TestRedwoodComposition<S> : RedwoodComposition {
   /**
+   * A fused call which does both [setContent] and [awaitSnapshot], but without sending a frame
+   * to the composition. The snapshot returned will always be the result of the synchronous
+   * recomposition of [content].
+   */
+  public fun setContentAndSnapshot(content: @Composable () -> Unit): S
+
+  /**
    * Returns a snapshot, waiting if necessary for changes to occur since the previous snapshot.
+   * Each call to this function is guaranteed to send at least once frame to the composition.
    *
    * @throws TimeoutCancellationException if no new snapshot is produced before [timeout].
    */
@@ -126,6 +134,13 @@ private class RealTestRedwoodComposition<W : Any, S>(
   override fun setContent(content: @Composable () -> Unit) {
     contentSet = true
     composition.setContent(content)
+  }
+
+  override fun setContentAndSnapshot(content: @Composable () -> Unit): S {
+    setContent(content)
+    check(hasChanges)
+    hasChanges = false
+    return createSnapshot()
   }
 
   override suspend fun awaitSnapshot(timeout: Duration): S {
