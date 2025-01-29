@@ -6,10 +6,11 @@
   packageRules: [
     // Compose compilers and Zipline are tightly coupled to Kotlin version.
     {
-      groupName: 'Kotlin, Compose, and Zipline',
+      groupName: 'Kotlin, Compose, KSP, and Zipline',
       matchPackageNames: [
         'androidx.compose.compiler{/,}**',
         'app.cash.zipline{/,}**',
+        'com.google.devtools.ksp{/,}**',
         'dev.drewhamilton.poko{/,}**',
         'org.jetbrains.compose.compiler{/,}**',
         'org.jetbrains.kotlin:kotlin{/,}**',
