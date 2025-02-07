@@ -22,6 +22,7 @@ import android.view.View
 import android.view.View.OnScrollChangeListener
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
+import android.widget.ScrollView
 import androidx.core.view.children
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.NestedScrollView.OnScrollChangeListener as OnScrollChangeListenerCompat
@@ -226,7 +227,7 @@ internal class ViewFlexContainer(
           isFillViewport = true
         }
       } else {
-        NestedScrollView(context).apply {
+        ScrollView(context).apply {
           isFillViewport = true
         }
       }.apply {

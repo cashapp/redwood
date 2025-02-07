@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Don't use NestedScrollView for Android's Overflow.Scroll. It doesn't implement overscroll as well.
 
 
 ## [0.17.0] - 2025-01-30
