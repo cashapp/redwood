@@ -10,7 +10,7 @@ Changed:
 - Nothing yet!
 
 Fixed:
-- Nothing yet!
+- Don't double insets on insets-aware `UIViews`. Previously we offered the same insets via two mechanisms, which could result in double insets.
 
 
 ## [0.17.0] - 2025-01-30

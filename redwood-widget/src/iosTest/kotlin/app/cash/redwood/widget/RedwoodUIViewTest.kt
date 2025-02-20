@@ -16,13 +16,17 @@
 package app.cash.redwood.widget
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.ui.Default
+import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsMake
@@ -43,7 +47,7 @@ class RedwoodUIViewTest {
 
   /** Confirm we accept and propagates insets through [RedwoodUIView.uiConfiguration]. */
   @Test
-  fun viewInsets() {
+  fun viewInsetsAccessibleAsUiConfiguration() {
     val redwoodUIView = RedwoodUIView()
     val insetsContainer = InsetsContainer()
     insetsContainer.addSubview(redwoodUIView.value)
@@ -55,6 +59,27 @@ class RedwoodUIViewTest {
 
     assertThat(redwoodUIView.uiConfiguration.value.viewInsets)
       .isEqualTo(Margin(top = 10.0.dp, start = 20.0.dp, bottom = 30.0.dp, end = 40.0.dp))
+  }
+
+  @Test
+  fun childViewsDoNotGetDoubleInsets() {
+    val redwoodUIView = RedwoodUIView()
+    val insetsContainer = InsetsContainer()
+    insetsContainer.subviewSafeAreaInsets = UIEdgeInsetsMake(10.0, 20.0, 30.0, 40.0)
+    insetsContainer.addSubview(redwoodUIView.value)
+
+    val label = UILabel()
+    redwoodUIView.children.insert(0, UIViewWidget(label))
+
+    assertThat(label.safeAreaInsets().toMargin()).isEqualTo(Margin.Zero)
+  }
+
+  private fun CValue<UIEdgeInsets>.toMargin(density: Density = Density.Default): Margin {
+    return useContents {
+      with(density) {
+        Margin(top = top.toDp(), start = left.toDp(), bottom = bottom.toDp(), end = right.toDp())
+      }
+    }
   }
 
   class UIViewWidget(

@@ -33,6 +33,7 @@ import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIApplication
 import platform.UIKit.UIEdgeInsets
+import platform.UIKit.UIEdgeInsetsZero
 import platform.UIKit.UILayoutConstraintAxisVertical
 import platform.UIKit.UIStackView
 import platform.UIKit.UIStackViewAlignmentFill
@@ -62,7 +63,7 @@ public open class RedwoodUIView : RedwoodView<UIView> {
       computeUiConfiguration(
         density = density,
         traitCollection = valueRootView.traitCollection,
-        viewInsets = valueRootView.safeAreaInsets.toMargin(),
+        viewInsets = valueRootView.incomingSafeAreaInsets.toMargin(),
         layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
         bounds = valueRootView.bounds,
       ),
@@ -86,7 +87,7 @@ public open class RedwoodUIView : RedwoodView<UIView> {
     mutableUiConfiguration.value = computeUiConfiguration(
       density = density,
       traitCollection = valueRootView.traitCollection,
-      viewInsets = valueRootView.safeAreaInsets.toMargin(),
+      viewInsets = valueRootView.incomingSafeAreaInsets.toMargin(),
       layoutDirection = valueRootView.effectiveUserInterfaceLayoutDirection,
       bounds = valueRootView.bounds,
     )
@@ -104,12 +105,22 @@ public open class RedwoodUIView : RedwoodView<UIView> {
    * content resizes.
    */
   private inner class RootUIStackView : UIStackView(cValue { CGRectZero }) {
+    /** Safe area insets specified by the superview. */
+    val incomingSafeAreaInsets: CValue<UIEdgeInsets>
+      get() = super.safeAreaInsets
+
     init {
       this.axis = UILayoutConstraintAxisVertical
       this.alignment = UIStackViewAlignmentFill // Fill horizontal.
       this.distribution = UIStackViewDistributionFillEqually // Fill vertical.
       this.setInsetsLayoutMarginsFromSafeArea(false) // Consume insets internally.
     }
+
+    /**
+     * Safe area insets propagated to subviews is always zero. They consume insets from
+     * [UiConfiguration], and this override prevents doubling insets.
+     */
+    override fun safeAreaInsets() = cValue<UIEdgeInsets> { UIEdgeInsetsZero }
 
     override fun safeAreaInsetsDidChange() {
       super.safeAreaInsetsDidChange()
