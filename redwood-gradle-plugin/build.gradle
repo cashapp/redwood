@@ -46,6 +46,12 @@ dependencies {
 
 gradlePlugin {
   plugins {
+    redwoodComposeOptimization {
+      id = "app.cash.redwood.compose-optimization"
+      displayName = "Redwood Compose optimization"
+      description = "Redwood Compose optimmization Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodComposeOptimizationPlugin"
+    }
     redwoodLint {
       id = "app.cash.redwood.lint"
       displayName = "Redwood lint"
@@ -136,4 +142,5 @@ buildConfig {
   packageName('app.cash.redwood.gradle')
   buildConfigField("String", "redwoodVersion", "\"${project.version}\"")
   buildConfigField("String", "androidxCollectionCoordinates", "\"${libs.jetbrains.compose.collection.get()}\"")
+  buildConfigField("String", "composeSourceInformationCleanerCoordinates", "\"${libs.composeSourceInformationCleaner.compilerPlugin.get()}\"")
 }

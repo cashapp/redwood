@@ -100,4 +100,6 @@ ktlintComposeRules = "io.nlopez.compose.rules:ktlint:0.4.22"
 googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.25.2"
 poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.18.2"
 
+composeSourceInformationCleaner-compilerPlugin = "com.vk.compose-source-information-cleaner:compiler-plugin:0.7"
+
 lint-core = { module = "com.android.tools.lint:lint", version.ref = "lint" }

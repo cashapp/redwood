@@ -1,0 +1,22 @@
+import static app.cash.redwood.buildsupport.TargetGroup.Tooling
+
+redwoodBuild {
+  targets(Tooling)
+  publishing()
+}
+
+apply plugin: 'com.google.devtools.ksp'
+
+dependencies {
+  compileOnly(libs.kotlin.compilerEmbeddable)
+  compileOnly(libs.autoService.annotations)
+  ksp(libs.autoService.kspCompiler)
+}
+
+kotlin {
+  sourceSets.configureEach {
+    languageSettings {
+      optIn('org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi')
+    }
+  }
+}

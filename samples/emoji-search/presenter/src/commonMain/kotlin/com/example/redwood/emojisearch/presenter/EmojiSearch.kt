@@ -79,6 +79,7 @@ fun EmojiSearch(
 
   // Simple counter that allows us to trigger refreshes by simple incrementing the value
   var refreshSignal by remember { mutableIntStateOf(0) }
+  println("SSSS")
   var refreshing by remember { mutableStateOf(false) }
 
   val searchTermSaver = object : Saver<TextFieldState, String> {

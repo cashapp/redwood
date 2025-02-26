@@ -25,6 +25,7 @@ fun preparePresenters() {
   val hostApi = zipline.take<HostApi>(
     name = "HostApi",
   )
+  println("sdfsdfsdf")
 
   zipline.bind<EmojiSearchPresenter>(
     name = "EmojiSearchPresenter",

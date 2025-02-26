@@ -31,3 +31,13 @@ afterEvaluate {
     }
   }
 }
+
+allprojects {
+  configurations.configureEach {
+    resolutionStrategy.dependencySubstitution {
+      substitute(module("app.cash.redwood:redwood-tooling-compose-optimization-plugin"))
+        .using(project(":redwood-tooling-compose-optimization-plugin"))
+        .because("In-repo usage")
+    }
+  }
+}
