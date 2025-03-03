@@ -1,0 +1,37 @@
+public final class app/cash/redwood/basic/api/TextFieldState {
+	public static final field Companion Lapp/cash/redwood/basic/api/TextFieldState$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;IIJ)V
+	public synthetic fun <init> (Ljava/lang/String;IIJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()J
+	public final fun contentEquals (Lapp/cash/redwood/basic/api/TextFieldState;)Z
+	public final fun copy (Ljava/lang/String;IIJ)Lapp/cash/redwood/basic/api/TextFieldState;
+	public static synthetic fun copy$default (Lapp/cash/redwood/basic/api/TextFieldState;Ljava/lang/String;IIJILjava/lang/Object;)Lapp/cash/redwood/basic/api/TextFieldState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSelectionEnd ()I
+	public final fun getSelectionStart ()I
+	public final fun getText ()Ljava/lang/String;
+	public final fun getUserEditCount ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun userEdit (Ljava/lang/String;II)Lapp/cash/redwood/basic/api/TextFieldState;
+	public static synthetic fun userEdit$default (Lapp/cash/redwood/basic/api/TextFieldState;Ljava/lang/String;IIILjava/lang/Object;)Lapp/cash/redwood/basic/api/TextFieldState;
+}
+
+public synthetic class app/cash/redwood/basic/api/TextFieldState$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lapp/cash/redwood/basic/api/TextFieldState$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/basic/api/TextFieldState;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lapp/cash/redwood/basic/api/TextFieldState;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class app/cash/redwood/basic/api/TextFieldState$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+

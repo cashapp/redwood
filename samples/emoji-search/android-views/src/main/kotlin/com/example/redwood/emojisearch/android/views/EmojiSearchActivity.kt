@@ -22,6 +22,9 @@ import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
+import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
@@ -42,10 +45,8 @@ import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
-import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_INDEFINITE
 import kotlin.time.Duration.Companion.seconds
@@ -83,9 +84,9 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      EmojiSearchProtocolFactory(
-        widgetSystem = EmojiSearchWidgetSystem(
-          EmojiSearch = AndroidEmojiSearchWidgetFactory(context),
+      RedwoodBasicProtocolFactory(
+        widgetSystem = RedwoodBasicWidgetSystem(
+          RedwoodBasic = ViewRedwoodBasicWidgetFactory(context),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
         ),

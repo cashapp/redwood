@@ -1,0 +1,29 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-basic-composeui>
+final class app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory : app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> { // app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory|null[0]
+    constructor <init>(coil3/ImageLoader) // app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory.<init>|<init>(coil3.ImageLoader){}[0]
+
+    final fun Image(): app.cash.redwood.basic.widget/Image<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory.Image|Image(){}[0]
+    final fun Reuse(kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, app.cash.redwood.basic.modifier/Reuse) // app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory.Reuse|Reuse(kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;app.cash.redwood.basic.modifier.Reuse){}[0]
+    final fun Text(): app.cash.redwood.basic.widget/Text<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory.Text|Text(){}[0]
+    final fun TextInput(): app.cash.redwood.basic.widget/TextInput<kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> // app.cash.redwood.basic.composeui/ComposeUiRedwoodBasicWidgetFactory.TextInput|TextInput(){}[0]
+}
+
+final val app.cash.redwood.basic.composeui/Typography // app.cash.redwood.basic.composeui/Typography|{}Typography[0]
+    final fun <get-Typography>(): androidx.compose.material/Typography // app.cash.redwood.basic.composeui/Typography.<get-Typography>|<get-Typography>(){}[0]
+final val app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiImage$stableprop // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiImage$stableprop|#static{}app_cash_redwood_basic_composeui_ComposeUiImage$stableprop[0]
+final val app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiRedwoodBasicWidgetFactory$stableprop // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiRedwoodBasicWidgetFactory$stableprop|#static{}app_cash_redwood_basic_composeui_ComposeUiRedwoodBasicWidgetFactory$stableprop[0]
+final val app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiText$stableprop // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiText$stableprop|#static{}app_cash_redwood_basic_composeui_ComposeUiText$stableprop[0]
+final val app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiTextInput$stableprop // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiTextInput$stableprop|#static{}app_cash_redwood_basic_composeui_ComposeUiTextInput$stableprop[0]
+
+final fun app.cash.redwood.basic.composeui/RedwoodBasicTheme(kotlin/Boolean, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.basic.composeui/RedwoodBasicTheme|RedwoodBasicTheme(kotlin.Boolean;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiImage$stableprop_getter(): kotlin/Int // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiImage$stableprop_getter|app_cash_redwood_basic_composeui_ComposeUiImage$stableprop_getter(){}[0]
+final fun app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiRedwoodBasicWidgetFactory$stableprop_getter(): kotlin/Int // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiRedwoodBasicWidgetFactory$stableprop_getter|app_cash_redwood_basic_composeui_ComposeUiRedwoodBasicWidgetFactory$stableprop_getter(){}[0]
+final fun app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiText$stableprop_getter(): kotlin/Int // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiText$stableprop_getter|app_cash_redwood_basic_composeui_ComposeUiText$stableprop_getter(){}[0]
+final fun app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiTextInput$stableprop_getter(): kotlin/Int // app.cash.redwood.basic.composeui/app_cash_redwood_basic_composeui_ComposeUiTextInput$stableprop_getter|app_cash_redwood_basic_composeui_ComposeUiTextInput$stableprop_getter(){}[0]

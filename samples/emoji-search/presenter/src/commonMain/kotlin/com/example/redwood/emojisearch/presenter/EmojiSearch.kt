@@ -29,6 +29,11 @@ import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
+import app.cash.redwood.basic.api.TextFieldState
+import app.cash.redwood.basic.compose.Image
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.compose.TextInput
+import app.cash.redwood.basic.compose.reuse
 import app.cash.redwood.compose.LocalUiConfiguration
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
@@ -42,11 +47,6 @@ import app.cash.redwood.lazylayout.compose.items
 import app.cash.redwood.lazylayout.compose.rememberLazyListState
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
-import com.example.redwood.emojisearch.compose.Image
-import com.example.redwood.emojisearch.compose.Text
-import com.example.redwood.emojisearch.compose.TextInput
-import com.example.redwood.emojisearch.compose.reuse
-import example.values.TextFieldState
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 

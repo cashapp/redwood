@@ -1,0 +1,9 @@
+public final class app/cash/redwood/basic/view/ViewRedwoodBasicWidgetFactory : app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
+	public fun <init> (Landroid/content/Context;)V
+	public fun Image ()Lapp/cash/redwood/basic/widget/Image;
+	public fun Reuse (Landroid/view/View;Lapp/cash/redwood/basic/modifier/Reuse;)V
+	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V
+	public fun Text ()Lapp/cash/redwood/basic/widget/Text;
+	public fun TextInput ()Lapp/cash/redwood/basic/widget/TextInput;
+}
+

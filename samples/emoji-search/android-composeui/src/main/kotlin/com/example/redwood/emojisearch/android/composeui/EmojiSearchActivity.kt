@@ -30,6 +30,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
@@ -48,12 +52,8 @@ import app.cash.zipline.loader.withDevelopmentServerPush
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.serviceLoaderEnabled
-import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
-import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
-import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 import kotlinx.coroutines.CoroutineScope
@@ -95,9 +95,9 @@ class EmojiSearchActivity : ComponentActivity() {
       .build()
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      EmojiSearchProtocolFactory<@Composable () -> Unit>(
-        widgetSystem = EmojiSearchWidgetSystem(
-          EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
+      RedwoodBasicProtocolFactory<@Composable () -> Unit>(
+        widgetSystem = RedwoodBasicWidgetSystem(
+          RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(imageLoader),
           RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
           RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
         ),
@@ -107,7 +107,7 @@ class EmojiSearchActivity : ComponentActivity() {
     }
 
     setContent {
-      EmojiSearchTheme {
+      RedwoodBasicTheme {
         Scaffold(
           snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->

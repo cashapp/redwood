@@ -16,7 +16,7 @@ kotlin {
       dependencies {
         implementation projects.samples.emojiSearch.launcher
         implementation projects.samples.emojiSearch.presenterTreehouse
-        implementation projects.samples.emojiSearch.schema.protocolHost
+        implementation projects.samples.emojiSearch.schemaProtocolHost
         implementation projects.redwoodLayoutUiview
         implementation projects.redwoodLazylayoutUiview
       }

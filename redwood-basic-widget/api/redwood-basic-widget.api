@@ -1,0 +1,35 @@
+public abstract interface class app/cash/redwood/basic/widget/Image : app/cash/redwood/widget/Widget {
+	public abstract fun onClick (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun url (Ljava/lang/String;)V
+}
+
+public abstract interface class app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
+	public abstract fun Image ()Lapp/cash/redwood/basic/widget/Image;
+	public abstract fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V
+	public abstract fun Text ()Lapp/cash/redwood/basic/widget/Text;
+	public abstract fun TextInput ()Lapp/cash/redwood/basic/widget/TextInput;
+}
+
+public final class app/cash/redwood/basic/widget/RedwoodBasicWidgetSystem : app/cash/redwood/basic/widget/RedwoodBasicWidgetFactoryOwner, app/cash/redwood/layout/widget/RedwoodLayoutWidgetFactoryOwner, app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
+	public static final field Companion Lapp/cash/redwood/basic/widget/RedwoodBasicWidgetSystem$Companion;
+	public fun <init> (Lapp/cash/redwood/basic/widget/RedwoodBasicWidgetFactory;Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;)V
+	public fun apply (Ljava/lang/Object;Lapp/cash/redwood/Modifier$UnscopedElement;)V
+	public fun getRedwoodBasic ()Lapp/cash/redwood/basic/widget/RedwoodBasicWidgetFactory;
+	public fun getRedwoodLayout ()Lapp/cash/redwood/layout/widget/RedwoodLayoutWidgetFactory;
+	public fun getRedwoodLazyLayout ()Lapp/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory;
+}
+
+public final class app/cash/redwood/basic/widget/RedwoodBasicWidgetSystem$Companion {
+	public final fun allChildren (Lapp/cash/redwood/widget/Widget;)Ljava/util/List;
+}
+
+public abstract interface class app/cash/redwood/basic/widget/Text : app/cash/redwood/widget/Widget {
+	public abstract fun text (Ljava/lang/String;)V
+}
+
+public abstract interface class app/cash/redwood/basic/widget/TextInput : app/cash/redwood/widget/Widget {
+	public abstract fun hint (Ljava/lang/String;)V
+	public abstract fun onChange (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun state (Lapp/cash/redwood/basic/api/TextFieldState;)V
+}
+

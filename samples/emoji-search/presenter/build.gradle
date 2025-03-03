@@ -11,7 +11,7 @@ kotlin {
     commonMain {
       dependencies {
         api libs.okio
-        api projects.samples.emojiSearch.schema.compose
+        api projects.redwoodBasicCompose
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseGuestCompose
       }
@@ -22,7 +22,7 @@ kotlin {
         implementation libs.assertk
         implementation libs.kotlinx.coroutines.test
         implementation projects.redwoodTesting
-        implementation projects.samples.emojiSearch.schema.testing
+        implementation projects.redwoodBasicTesting
       }
     }
   }

@@ -15,8 +15,8 @@ dependencies {
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenter
   implementation projects.samples.emojiSearch.presenterTreehouse
-  implementation projects.samples.emojiSearch.schema.protocolHost
-  implementation projects.samples.emojiSearch.sharedComposeui
+  implementation projects.samples.emojiSearch.schemaProtocolHost
+  implementation projects.redwoodBasicComposeui
   implementation projects.redwoodComposeui
   implementation projects.redwoodLayoutComposeui
   implementation projects.redwoodLazylayoutComposeui

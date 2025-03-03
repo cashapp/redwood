@@ -20,17 +20,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.cash.redwood.basic.api.TextFieldState
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.compose.TextInput
+import app.cash.redwood.basic.testing.RedwoodBasicTester
+import app.cash.redwood.basic.testing.TextInputValue
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.testing.ColumnValue
 import app.cash.redwood.testing.flatten
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import com.example.redwood.emojisearch.compose.Text
-import com.example.redwood.emojisearch.compose.TextInput
-import com.example.redwood.emojisearch.testing.EmojiSearchTester
-import com.example.redwood.emojisearch.testing.TextInputValue
-import com.example.redwood.emojisearch.testing.TextValue
-import example.values.TextFieldState
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -40,7 +40,7 @@ import kotlinx.coroutines.test.runTest
 class EmojiSearchTest {
   @Test
   fun recomposed() = runTest {
-    EmojiSearchTester {
+    RedwoodBasicTester {
       setContent {
         BasicEmojiSearch()
       }

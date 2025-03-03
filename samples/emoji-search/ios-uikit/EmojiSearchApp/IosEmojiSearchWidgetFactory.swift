@@ -19,7 +19,7 @@ import Foundation
 import UIKit
 import EmojiSearchKt
 
-class IosEmojiSearchWidgetFactory<A : AnyObject>: EmojiSearchWidgetFactory {
+class IosEmojiSearchWidgetFactory<A : AnyObject>: RedwoodBasicWidgetFactory {
     let treehouseApp: TreehouseApp<A>
     let widgetSystem: TreehouseViewWidgetSystem
     let imageLoader = RemoteImageLoader()

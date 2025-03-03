@@ -1,0 +1,75 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-basic-testing>
+final class app.cash.redwood.basic.testing/ImageValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.basic.testing/ImageValue|null[0]
+    constructor <init>(app.cash.redwood/Modifier = ..., kotlin/String, kotlin/Function0<kotlin/Unit>? = ...) // app.cash.redwood.basic.testing/ImageValue.<init>|<init>(app.cash.redwood.Modifier;kotlin.String;kotlin.Function0<kotlin.Unit>?){}[0]
+
+    final val childrenLists // app.cash.redwood.basic.testing/ImageValue.childrenLists|{}childrenLists[0]
+        final fun <get-childrenLists>(): kotlin.collections/List<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>> // app.cash.redwood.basic.testing/ImageValue.childrenLists.<get-childrenLists>|<get-childrenLists>(){}[0]
+    final val modifier // app.cash.redwood.basic.testing/ImageValue.modifier|{}modifier[0]
+        final fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.basic.testing/ImageValue.modifier.<get-modifier>|<get-modifier>(){}[0]
+    final val onClick // app.cash.redwood.basic.testing/ImageValue.onClick|{}onClick[0]
+        final fun <get-onClick>(): kotlin/Function0<kotlin/Unit>? // app.cash.redwood.basic.testing/ImageValue.onClick.<get-onClick>|<get-onClick>(){}[0]
+    final val url // app.cash.redwood.basic.testing/ImageValue.url|{}url[0]
+        final fun <get-url>(): kotlin/String // app.cash.redwood.basic.testing/ImageValue.url.<get-url>|<get-url>(){}[0]
+
+    final fun <#A1: kotlin/Any> toWidget(app.cash.redwood.widget/WidgetSystem<#A1>): app.cash.redwood.widget/Widget<#A1> // app.cash.redwood.basic.testing/ImageValue.toWidget|toWidget(app.cash.redwood.widget.WidgetSystem<0:0>){0§<kotlin.Any>}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.basic.testing/ImageValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.basic.testing/ImageValue.hashCode|hashCode(){}[0]
+    final fun toDebugString(): kotlin/String // app.cash.redwood.basic.testing/ImageValue.toDebugString|toDebugString(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.basic.testing/ImageValue.toString|toString(){}[0]
+}
+
+final class app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory : app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory<app.cash.redwood.testing/WidgetValue> { // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory|null[0]
+    constructor <init>() // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.<init>|<init>(){}[0]
+
+    final fun Image(): app.cash.redwood.basic.widget/Image<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Image|Image(){}[0]
+    final fun Reuse(app.cash.redwood.testing/WidgetValue, app.cash.redwood.basic.modifier/Reuse) // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Reuse|Reuse(app.cash.redwood.testing.WidgetValue;app.cash.redwood.basic.modifier.Reuse){}[0]
+    final fun Text(): app.cash.redwood.basic.widget/Text<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Text|Text(){}[0]
+    final fun TextInput(): app.cash.redwood.basic.widget/TextInput<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.TextInput|TextInput(){}[0]
+}
+
+final class app.cash.redwood.basic.testing/TextInputValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.basic.testing/TextInputValue|null[0]
+    constructor <init>(app.cash.redwood/Modifier = ..., app.cash.redwood.basic.api/TextFieldState = ..., kotlin/String = ..., kotlin/Function1<app.cash.redwood.basic.api/TextFieldState, kotlin/Unit>? = ...) // app.cash.redwood.basic.testing/TextInputValue.<init>|<init>(app.cash.redwood.Modifier;app.cash.redwood.basic.api.TextFieldState;kotlin.String;kotlin.Function1<app.cash.redwood.basic.api.TextFieldState,kotlin.Unit>?){}[0]
+
+    final val childrenLists // app.cash.redwood.basic.testing/TextInputValue.childrenLists|{}childrenLists[0]
+        final fun <get-childrenLists>(): kotlin.collections/List<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>> // app.cash.redwood.basic.testing/TextInputValue.childrenLists.<get-childrenLists>|<get-childrenLists>(){}[0]
+    final val hint // app.cash.redwood.basic.testing/TextInputValue.hint|{}hint[0]
+        final fun <get-hint>(): kotlin/String // app.cash.redwood.basic.testing/TextInputValue.hint.<get-hint>|<get-hint>(){}[0]
+    final val modifier // app.cash.redwood.basic.testing/TextInputValue.modifier|{}modifier[0]
+        final fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.basic.testing/TextInputValue.modifier.<get-modifier>|<get-modifier>(){}[0]
+    final val onChange // app.cash.redwood.basic.testing/TextInputValue.onChange|{}onChange[0]
+        final fun <get-onChange>(): kotlin/Function1<app.cash.redwood.basic.api/TextFieldState, kotlin/Unit>? // app.cash.redwood.basic.testing/TextInputValue.onChange.<get-onChange>|<get-onChange>(){}[0]
+    final val state // app.cash.redwood.basic.testing/TextInputValue.state|{}state[0]
+        final fun <get-state>(): app.cash.redwood.basic.api/TextFieldState // app.cash.redwood.basic.testing/TextInputValue.state.<get-state>|<get-state>(){}[0]
+
+    final fun <#A1: kotlin/Any> toWidget(app.cash.redwood.widget/WidgetSystem<#A1>): app.cash.redwood.widget/Widget<#A1> // app.cash.redwood.basic.testing/TextInputValue.toWidget|toWidget(app.cash.redwood.widget.WidgetSystem<0:0>){0§<kotlin.Any>}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.basic.testing/TextInputValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.basic.testing/TextInputValue.hashCode|hashCode(){}[0]
+    final fun toDebugString(): kotlin/String // app.cash.redwood.basic.testing/TextInputValue.toDebugString|toDebugString(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.basic.testing/TextInputValue.toString|toString(){}[0]
+}
+
+final class app.cash.redwood.basic.testing/TextValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.basic.testing/TextValue|null[0]
+    constructor <init>(app.cash.redwood/Modifier = ..., kotlin/String) // app.cash.redwood.basic.testing/TextValue.<init>|<init>(app.cash.redwood.Modifier;kotlin.String){}[0]
+
+    final val childrenLists // app.cash.redwood.basic.testing/TextValue.childrenLists|{}childrenLists[0]
+        final fun <get-childrenLists>(): kotlin.collections/List<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>> // app.cash.redwood.basic.testing/TextValue.childrenLists.<get-childrenLists>|<get-childrenLists>(){}[0]
+    final val modifier // app.cash.redwood.basic.testing/TextValue.modifier|{}modifier[0]
+        final fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.basic.testing/TextValue.modifier.<get-modifier>|<get-modifier>(){}[0]
+    final val text // app.cash.redwood.basic.testing/TextValue.text|{}text[0]
+        final fun <get-text>(): kotlin/String // app.cash.redwood.basic.testing/TextValue.text.<get-text>|<get-text>(){}[0]
+
+    final fun <#A1: kotlin/Any> toWidget(app.cash.redwood.widget/WidgetSystem<#A1>): app.cash.redwood.widget/Widget<#A1> // app.cash.redwood.basic.testing/TextValue.toWidget|toWidget(app.cash.redwood.widget.WidgetSystem<0:0>){0§<kotlin.Any>}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.basic.testing/TextValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.basic.testing/TextValue.hashCode|hashCode(){}[0]
+    final fun toDebugString(): kotlin/String // app.cash.redwood.basic.testing/TextValue.toDebugString|toDebugString(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.basic.testing/TextValue.toString|toString(){}[0]
+}
+
+final suspend fun <#A: kotlin/Any?> app.cash.redwood.basic.testing/RedwoodBasicTester(app.cash.redwood.ui/OnBackPressedDispatcher = ..., app.cash.redwood.testing/TestSavedState? = ..., app.cash.redwood.ui/UiConfiguration = ..., kotlin.coroutines/SuspendFunction1<app.cash.redwood.testing/TestRedwoodComposition<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>>, #A>): #A // app.cash.redwood.basic.testing/RedwoodBasicTester|RedwoodBasicTester(app.cash.redwood.ui.OnBackPressedDispatcher;app.cash.redwood.testing.TestSavedState?;app.cash.redwood.ui.UiConfiguration;kotlin.coroutines.SuspendFunction1<app.cash.redwood.testing.TestRedwoodComposition<kotlin.collections.List<app.cash.redwood.testing.WidgetValue>>,0:0>){0§<kotlin.Any?>}[0]

@@ -1,0 +1,15 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-basic-compose>
+final val app.cash.redwood.basic.compose/app_cash_redwood_basic_compose_ReuseImpl$stableprop // app.cash.redwood.basic.compose/app_cash_redwood_basic_compose_ReuseImpl$stableprop|#static{}app_cash_redwood_basic_compose_ReuseImpl$stableprop[0]
+
+final fun (app.cash.redwood/Modifier).app.cash.redwood.basic.compose/reuse(): app.cash.redwood/Modifier // app.cash.redwood.basic.compose/reuse|reuse@app.cash.redwood.Modifier(){}[0]
+final fun app.cash.redwood.basic.compose/Image(kotlin/String, kotlin/Function0<kotlin/Unit>?, app.cash.redwood/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.basic.compose/Image|Image(kotlin.String;kotlin.Function0<kotlin.Unit>?;app.cash.redwood.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.basic.compose/Text(kotlin/String, app.cash.redwood/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.basic.compose/Text|Text(kotlin.String;app.cash.redwood.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.basic.compose/TextInput(app.cash.redwood.basic.api/TextFieldState?, kotlin/String?, kotlin/Function1<app.cash.redwood.basic.api/TextFieldState, kotlin/Unit>?, app.cash.redwood/Modifier?, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.basic.compose/TextInput|TextInput(app.cash.redwood.basic.api.TextFieldState?;kotlin.String?;kotlin.Function1<app.cash.redwood.basic.api.TextFieldState,kotlin.Unit>?;app.cash.redwood.Modifier?;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.basic.compose/app_cash_redwood_basic_compose_ReuseImpl$stableprop_getter(): kotlin/Int // app.cash.redwood.basic.compose/app_cash_redwood_basic_compose_ReuseImpl$stableprop_getter|app_cash_redwood_basic_compose_ReuseImpl$stableprop_getter(){}[0]

@@ -1,0 +1,14 @@
+import static app.cash.redwood.buildsupport.TargetGroup.Common
+
+redwoodBuild {
+  targets(Common)
+  publishing()
+}
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.modifiers'
+
+redwoodSchema {
+  source = projects.redwoodBasicSchema
+  type = 'app.cash.redwood.basic.RedwoodBasic'
+}

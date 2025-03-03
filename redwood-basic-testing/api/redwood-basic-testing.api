@@ -1,0 +1,57 @@
+public final class app/cash/redwood/basic/testing/ImageValue : app/cash/redwood/testing/WidgetValue {
+	public fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnClick ()Lkotlin/jvm/functions/Function0;
+	public final fun getUrl ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/basic/testing/RedwoodBasicTesterKt {
+	public static final fun RedwoodBasicTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun RedwoodBasicTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class app/cash/redwood/basic/testing/RedwoodBasicTestingWidgetFactory : app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
+	public fun <init> ()V
+	public fun Image ()Lapp/cash/redwood/basic/widget/Image;
+	public fun Reuse (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/basic/modifier/Reuse;)V
+	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V
+	public fun Text ()Lapp/cash/redwood/basic/widget/Text;
+	public fun TextInput ()Lapp/cash/redwood/basic/widget/TextInput;
+}
+
+public final class app/cash/redwood/basic/testing/TextInputValue : app/cash/redwood/testing/WidgetValue {
+	public fun <init> ()V
+	public fun <init> (Lapp/cash/redwood/Modifier;Lapp/cash/redwood/basic/api/TextFieldState;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;Lapp/cash/redwood/basic/api/TextFieldState;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getHint ()Ljava/lang/String;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnChange ()Lkotlin/jvm/functions/Function1;
+	public final fun getState ()Lapp/cash/redwood/basic/api/TextFieldState;
+	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
+public final class app/cash/redwood/basic/testing/TextValue : app/cash/redwood/testing/WidgetValue {
+	public fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+

@@ -22,6 +22,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
@@ -30,10 +33,7 @@ import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.serviceLoaderEnabled
-import com.example.redwood.emojisearch.composeui.ComposeUiEmojiSearchWidgetFactory
-import com.example.redwood.emojisearch.composeui.EmojiSearchTheme
 import com.example.redwood.emojisearch.presenter.EmojiSearch
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import okhttp3.OkHttpClient
 
 fun main() {
@@ -45,8 +45,8 @@ fun main() {
       add(OkHttpNetworkFetcherFactory(client))
     }
     .build()
-  val widgetSystem = EmojiSearchWidgetSystem(
-    EmojiSearch = ComposeUiEmojiSearchWidgetFactory(imageLoader),
+  val widgetSystem = RedwoodBasicWidgetSystem(
+    RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(imageLoader),
     RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
     RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
   )
@@ -56,7 +56,7 @@ fun main() {
       onCloseRequest = ::exitApplication,
       title = "Emoji Search",
     ) {
-      EmojiSearchTheme {
+      RedwoodBasicTheme {
         Scaffold { contentPadding ->
           RedwoodContent(widgetSystem, modifier = Modifier.padding(contentPadding)) {
             EmojiSearch(

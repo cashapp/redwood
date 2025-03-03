@@ -1,0 +1,17 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAndroid
+
+redwoodBuild {
+  targets(ToolkitAndroid)
+  publishing()
+}
+
+dependencies {
+  api projects.redwoodBasicWidget
+  api libs.coil.core
+  implementation libs.androidx.core
+  implementation libs.google.material
+}
+
+android {
+  namespace 'app.cash.redwood.basic.view'
+}

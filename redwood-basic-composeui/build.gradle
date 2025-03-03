@@ -1,0 +1,26 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
+
+redwoodBuild {
+  targets(ToolkitComposeUi)
+  publishing()
+}
+
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodBasicWidget
+        implementation projects.redwoodWidgetCompose
+        implementation libs.jetbrains.compose.material
+        implementation libs.jetbrains.compose.ui
+        implementation libs.coil.compose
+      }
+    }
+  }
+}
+
+android {
+  namespace 'app.cash.redwood.basic.composeui'
+}

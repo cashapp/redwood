@@ -18,6 +18,9 @@
 package com.example.redwood.emojisearch.ios
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
@@ -26,9 +29,6 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import com.example.redwood.emojisearch.protocol.host.EmojiSearchProtocolFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetFactory
-import com.example.redwood.emojisearch.widget.EmojiSearchWidgetSystem
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.Closeable
@@ -37,13 +37,13 @@ import platform.Foundation.NSData
 // Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
-  emojiSearchWidgetFactory: EmojiSearchWidgetFactory<*>,
-  protocolFactory: EmojiSearchProtocolFactory<*>,
+  protocolFactory: RedwoodBasicProtocolFactory<*>,
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   treehouseWidgetSystem: WidgetSystem<*>,
-  widgetSystem: EmojiSearchWidgetSystem<*>,
+  widgetFactory: RedwoodBasicWidgetFactory<*>,
+  widgetSystem: RedwoodBasicWidgetSystem<*>,
 ) {
   throw AssertionError()
 }

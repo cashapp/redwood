@@ -18,8 +18,8 @@ import EmojiSearchKt
 import UIKit
 
 class TextInputBinding: TextInput {
-    private var state = ValuesTextFieldState(text: "", selectionStart: 0, selectionEnd: 0, userEditCount: 0)
-    private var onChange: ((ValuesTextFieldState) -> Void)?
+    private var state = TextFieldState(text: "", selectionStart: 0, selectionEnd: 0, userEditCount: 0)
+    private var onChange: ((TextFieldState) -> Void)?
     private var updating = false
 
     private let root: UITextField = {
@@ -36,7 +36,7 @@ class TextInputBinding: TextInput {
         }), for: .editingChanged)
     }
 
-    func state(state: ValuesTextFieldState) {
+    func state(state: TextFieldState) {
         if (state.userEditCount < self.state.userEditCount) {
             return
         }
@@ -52,7 +52,7 @@ class TextInputBinding: TextInput {
         root.placeholder = hint
     }
 
-    func onChange(onChange: ((ValuesTextFieldState) -> Void)? = nil) {
+    func onChange(onChange: ((TextFieldState) -> Void)? = nil) {
         self.onChange = onChange
     }
 

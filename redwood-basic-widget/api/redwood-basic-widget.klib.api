@@ -1,0 +1,46 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-basic-widget>
+abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/Image : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.basic.widget/Image|null[0]
+    abstract fun onClick(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.basic.widget/Image.onClick|onClick(kotlin.Function0<kotlin.Unit>?){}[0]
+    abstract fun url(kotlin/String) // app.cash.redwood.basic.widget/Image.url|url(kotlin.String){}[0]
+}
+
+abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory { // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory|null[0]
+    abstract fun Image(): app.cash.redwood.basic.widget/Image<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Image|Image(){}[0]
+    abstract fun Reuse(#A, app.cash.redwood.basic.modifier/Reuse) // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Reuse|Reuse(1:0;app.cash.redwood.basic.modifier.Reuse){}[0]
+    abstract fun Text(): app.cash.redwood.basic.widget/Text<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Text|Text(){}[0]
+    abstract fun TextInput(): app.cash.redwood.basic.widget/TextInput<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.TextInput|TextInput(){}[0]
+}
+
+abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/Text : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.basic.widget/Text|null[0]
+    abstract fun text(kotlin/String) // app.cash.redwood.basic.widget/Text.text|text(kotlin.String){}[0]
+}
+
+abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/TextInput : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.basic.widget/TextInput|null[0]
+    abstract fun hint(kotlin/String) // app.cash.redwood.basic.widget/TextInput.hint|hint(kotlin.String){}[0]
+    abstract fun onChange(kotlin/Function1<app.cash.redwood.basic.api/TextFieldState, kotlin/Unit>?) // app.cash.redwood.basic.widget/TextInput.onChange|onChange(kotlin.Function1<app.cash.redwood.basic.api.TextFieldState,kotlin.Unit>?){}[0]
+    abstract fun state(app.cash.redwood.basic.api/TextFieldState) // app.cash.redwood.basic.widget/TextInput.state|state(app.cash.redwood.basic.api.TextFieldState){}[0]
+}
+
+final class <#A: kotlin/Any> app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem : app.cash.redwood.basic.widget/RedwoodBasicWidgetFactoryOwner<#A>, app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactoryOwner<#A>, app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactoryOwner<#A>, app.cash.redwood.widget/WidgetSystem<#A> { // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem|null[0]
+    constructor <init>(app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory<#A>, app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A>, app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<#A>) // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.<init>|<init>(app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory<1:0>;app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory<1:0>;app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory<1:0>){}[0]
+
+    final val RedwoodBasic // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.RedwoodBasic|{}RedwoodBasic[0]
+        final fun <get-RedwoodBasic>(): app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.RedwoodBasic.<get-RedwoodBasic>|<get-RedwoodBasic>(){}[0]
+    final val RedwoodLayout // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.RedwoodLayout|{}RedwoodLayout[0]
+        final fun <get-RedwoodLayout>(): app.cash.redwood.layout.widget/RedwoodLayoutWidgetFactory<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.RedwoodLayout.<get-RedwoodLayout>|<get-RedwoodLayout>(){}[0]
+    final val RedwoodLazyLayout // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.RedwoodLazyLayout|{}RedwoodLazyLayout[0]
+        final fun <get-RedwoodLazyLayout>(): app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.RedwoodLazyLayout.<get-RedwoodLazyLayout>|<get-RedwoodLazyLayout>(){}[0]
+
+    final fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
+
+    final object Companion { // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.Companion|null[0]
+        final fun <#A2: kotlin/Any> allChildren(app.cash.redwood.widget/Widget<#A2>): kotlin.collections/List<app.cash.redwood.widget/Widget<#A2>> // app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem.Companion.allChildren|allChildren(app.cash.redwood.widget.Widget<0:0>){0§<kotlin.Any>}[0]
+    }
+}
