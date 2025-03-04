@@ -1,6 +1,24 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
+module:redwood-basic-api
+app.cash.redwood.basic.api
+module:redwood-basic-compose
+app.cash.redwood.basic.compose
+module:redwood-basic-composeui
+app.cash.redwood.basic.composeui
+module:redwood-basic-dom
+app.cash.redwood.basic.dom
+module:redwood-basic-modifiers
+app.cash.redwood.basic.modifier
+module:redwood-basic-schema
+app.cash.redwood.basic
+module:redwood-basic-testing
+app.cash.redwood.basic.testing
+module:redwood-basic-view
+app.cash.redwood.basic.view
+module:redwood-basic-widget
+app.cash.redwood.basic.widget
 module:redwood-compose
 app.cash.redwood.compose
 module:redwood-composeui
