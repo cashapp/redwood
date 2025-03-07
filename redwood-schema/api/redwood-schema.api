@@ -24,6 +24,7 @@ public abstract interface annotation class app/cash/redwood/schema/Schema$Depend
 }
 
 public abstract interface annotation class app/cash/redwood/schema/Widget : java/lang/annotation/Annotation {
+	public abstract fun internalComposable ()Z
 	public abstract fun reservedChildren ()[I
 	public abstract fun reservedProperties ()[I
 	public abstract fun tag ()I

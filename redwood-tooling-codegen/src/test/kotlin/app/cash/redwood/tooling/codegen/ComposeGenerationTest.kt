@@ -171,4 +171,25 @@ class ComposeGenerationTest {
       contains("mixed: (i: Int, Long) -> Unit")
     }
   }
+
+  @Schema(
+    [
+      InternalComposableWidget::class,
+    ],
+  )
+  interface InternalComposableSchema
+
+  @Widget(1, internalComposable = true)
+  data class InternalComposableWidget(
+    @Property(1)
+    val text: String,
+  )
+
+  @Test fun internalComposable() {
+    val schema = parseTestSchema(InternalComposableSchema::class).schema
+
+    val fileSpec = generateComposable(schema, schema.widgets.single())
+    assertThat(fileSpec.toString())
+      .contains("internal fun ComposeGenerationTestInternalComposableWidget(")
+  }
 }

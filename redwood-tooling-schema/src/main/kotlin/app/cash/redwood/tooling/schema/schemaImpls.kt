@@ -116,6 +116,7 @@ internal data class ParsedProtocolWidget(
   override val deprecation: ParsedDeprecation? = null,
   override val documentation: String? = null,
   override val traits: List<ProtocolTrait> = emptyList(),
+  override val internalComposable: Boolean = false,
 ) : ProtocolWidget
 
 @Serializable

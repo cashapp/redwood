@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.17.0...HEAD
 
 New:
-- Nothing yet!
+- Schema `@Widget`s can now set `internalComposable = true` to have their `@Composable` functions generated as internal. This will require that you define a public version in the main sources of the module which generates the functions. This can be used to hide old widgets that should no longer be used, create more complex widget protocols away from callers, and to conditionally split implementation between two bindings, for example.
 
 Changed:
 - Nothing yet!

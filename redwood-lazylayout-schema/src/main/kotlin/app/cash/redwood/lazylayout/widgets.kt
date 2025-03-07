@@ -31,7 +31,7 @@ import app.cash.redwood.ui.Margin
  *
  * @see LazyList
  */
-@Widget(1)
+@Widget(1, internalComposable = true)
 public data class LazyList(
   @Property(1) val isVertical: Boolean,
   @Property(2) val onViewportChanged: (firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit,
@@ -46,7 +46,7 @@ public data class LazyList(
   @Children(2) val items: () -> Unit,
 )
 
-@Widget(2)
+@Widget(2, internalComposable = true)
 public data class RefreshableLazyList(
   /**
    * Whether the list should be vertically oriented.

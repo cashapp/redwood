@@ -12,10 +12,6 @@ public final class app/cash/redwood/lazylayout/compose/LazyDslKt {
 	public static final fun itemsIndexed (Lapp/cash/redwood/lazylayout/compose/LazyListScope;[Ljava/lang/Object;Lkotlin/jvm/functions/Function4;)V
 }
 
-public final class app/cash/redwood/lazylayout/compose/LazyListKt {
-	public static final fun LazyList-X7zwUEk (ZLkotlin/jvm/functions/Function2;IIIILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;Lapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
-}
-
 public abstract interface class app/cash/redwood/lazylayout/compose/LazyListScope {
 	public abstract fun item (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun items (ILkotlin/jvm/functions/Function3;)V
@@ -44,10 +40,6 @@ public abstract interface class app/cash/redwood/lazylayout/compose/LoadingStrat
 	public abstract fun loadRange (I)Lkotlin/ranges/IntRange;
 	public abstract fun onUserScroll (II)V
 	public abstract fun scrollTo (I)V
-}
-
-public final class app/cash/redwood/lazylayout/compose/RefreshableLazyListKt {
-	public static final fun RefreshableLazyList-usczW4I (ZLkotlin/jvm/functions/Function2;IIZLkotlin/jvm/functions/Function0;IILapp/cash/redwood/ui/Margin;ILapp/cash/redwood/lazylayout/api/ScrollItemIndex;ILapp/cash/redwood/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
 }
 
 public final class app/cash/redwood/lazylayout/compose/ScrollOptimizedLoadingStrategy : app/cash/redwood/lazylayout/compose/LoadingStrategy {

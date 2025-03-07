@@ -137,6 +137,16 @@ public annotation class Widget(
    * ```
    */
   val reservedChildren: IntArray = [],
+  /**
+   * Denotes whether the generated `@Composable` function for this widget will be marked as public
+   * or internal.
+   *
+   * Internal visibility can be used for things like:
+   * - Creating lower-level communication between the guest and host without exposing it to callers.
+   * - Hiding widget functions from callers which should no longer be used in guest code.
+   * - Conditionally delegating to multiple widget bindings while only exposing a single function.
+   */
+  val internalComposable: Boolean = false,
 )
 
 /**

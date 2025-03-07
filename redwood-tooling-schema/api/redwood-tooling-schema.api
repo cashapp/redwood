@@ -154,6 +154,7 @@ public abstract interface class app/cash/redwood/tooling/schema/SchemaSet {
 public abstract interface class app/cash/redwood/tooling/schema/Widget {
 	public abstract fun getDeprecation ()Lapp/cash/redwood/tooling/schema/Deprecation;
 	public abstract fun getDocumentation ()Ljava/lang/String;
+	public abstract fun getInternalComposable ()Z
 	public abstract fun getTraits ()Ljava/util/List;
 	public abstract fun getType ()Lapp/cash/redwood/tooling/schema/FqType;
 }

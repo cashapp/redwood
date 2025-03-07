@@ -68,6 +68,8 @@ public interface Widget {
   /** Non-empty list for a 'data class' [type] or empty list for 'object' [type]. */
   public val traits: List<Trait>
 
+  public val internalComposable: Boolean
+
   public sealed interface Trait {
     public val name: String
     public val documentation: String?
