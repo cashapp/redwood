@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2025 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package app.cash.redwood.basic.uiview
 
-import Foundation
-import EmojiSearchKt
-import UIKit
+import app.cash.redwood.Modifier
+import app.cash.redwood.basic.widget.Text
+import platform.UIKit.UILabel
+import platform.UIKit.UIView
 
-class TextBinding: Text {
-    private let root: UILabel = {
-        let view = UILabel()
-        return view
-    }()
+internal class UIViewText : Text<UIView> {
+  override val value = UILabel()
 
-    var modifier: Modifier = ExposedKt.modifier()
-    var value: Any { root }
+  override fun text(text: String) {
+    value.text = text
+    value.sizeToFit()
+  }
 
-    func text(text: String) {
-        root.text = text
-
-        // This very simple integration wraps the size of whatever text is entered. Calling
-        // this function will update the bounds and trigger relayout in the parent.
-        root.sizeToFit()
-    }
+  override var modifier: Modifier = Modifier
 }

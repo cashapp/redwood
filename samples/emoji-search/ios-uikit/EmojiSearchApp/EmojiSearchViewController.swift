@@ -103,7 +103,7 @@ class EmojiSearchTreehouseWidgetSystem : TreehouseViewWidgetSystem {
     ) -> ProtocolFactory {
         return RedwoodBasicProtocolFactory<UIView>(
             widgetSystem: RedwoodBasicWidgetSystem<UIView>(
-                RedwoodBasic: IosEmojiSearchWidgetFactory(treehouseApp: treehouseApp, widgetSystem: self),
+                RedwoodBasic: UIViewRedwoodBasicWidgetFactory(),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
                 RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
             ),

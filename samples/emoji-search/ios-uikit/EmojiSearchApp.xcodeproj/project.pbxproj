@@ -9,15 +9,10 @@
 /* Begin PBXBuildFile section */
 		1067AA792CD3CCC8004FD1D1 /* CrashedUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1067AA782CD3CCC8004FD1D1 /* CrashedUIView.swift */; };
 		1067AA7B2CD3CCE2004FD1D1 /* LoadingUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1067AA7A2CD3CCE2004FD1D1 /* LoadingUIView.swift */; };
-		10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */; };
-		10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4D28C0EA40006F125E /* TextBinding.swift */; };
 		635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635661D421F12B7E00DD7240 /* AppDelegate.swift */; };
 		635661DA21F12B7E00DD7240 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 635661D821F12B7E00DD7240 /* Main.storyboard */; };
 		635661DC21F12B8000DD7240 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 635661DB21F12B8000DD7240 /* Assets.xcassets */; };
 		635661DF21F12B8000DD7240 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 635661DD21F12B8000DD7240 /* LaunchScreen.storyboard */; };
-		AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC042528AC72AC00721342 /* RemoteImageLoader.swift */; };
-		C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */; };
-		C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */; };
 		CB5D6B092AC5326B004BF9CB /* SnackBar in Frameworks */ = {isa = PBXBuildFile; productRef = CB5D6B082AC5326B004BF9CB /* SnackBar */; };
 		CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */; };
 		CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9F76552810A8A8008CF457 /* IosHostApi.swift */; };
@@ -26,8 +21,6 @@
 /* Begin PBXFileReference section */
 		1067AA782CD3CCC8004FD1D1 /* CrashedUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashedUIView.swift; sourceTree = "<group>"; };
 		1067AA7A2CD3CCE2004FD1D1 /* LoadingUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingUIView.swift; sourceTree = "<group>"; };
-		10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosEmojiSearchWidgetFactory.swift; sourceTree = "<group>"; };
-		10AA3D4D28C0EA40006F125E /* TextBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBinding.swift; sourceTree = "<group>"; };
 		635661D121F12B7E00DD7240 /* EmojiSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmojiSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		635661D421F12B7E00DD7240 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		635661D921F12B7E00DD7240 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -35,9 +28,6 @@
 		635661DE21F12B8000DD7240 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		635661E021F12B8000DD7240 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63E90CF521FEBBB700449E04 /* main.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = main.framework; path = "../shared/build/xcode-frameworks/main.framework"; sourceTree = "<group>"; };
-		AACC042528AC72AC00721342 /* RemoteImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageLoader.swift; sourceTree = "<group>"; };
-		C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBinding.swift; sourceTree = "<group>"; };
-		C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputBinding.swift; sourceTree = "<group>"; };
 		CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSearchViewController.swift; sourceTree = "<group>"; };
 		CB9F76552810A8A8008CF457 /* IosHostApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosHostApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -76,16 +66,11 @@
 			children = (
 				635661D421F12B7E00DD7240 /* AppDelegate.swift */,
 				CB85C0B625AFE61A007A2CC7 /* EmojiSearchViewController.swift */,
-				AACC042528AC72AC00721342 /* RemoteImageLoader.swift */,
-				C2F7CE6528BEAB6C00A66A69 /* ImageBinding.swift */,
-				C2F7FBA128BEB54200A66A69 /* TextInputBinding.swift */,
 				635661D821F12B7E00DD7240 /* Main.storyboard */,
 				635661DB21F12B8000DD7240 /* Assets.xcassets */,
 				635661DD21F12B8000DD7240 /* LaunchScreen.storyboard */,
 				635661E021F12B8000DD7240 /* Info.plist */,
 				CB9F76552810A8A8008CF457 /* IosHostApi.swift */,
-				10AA3D4B28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift */,
-				10AA3D4D28C0EA40006F125E /* TextBinding.swift */,
 				1067AA782CD3CCC8004FD1D1 /* CrashedUIView.swift */,
 				1067AA7A2CD3CCE2004FD1D1 /* LoadingUIView.swift */,
 			);
@@ -191,15 +176,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10AA3D4C28C03D32006F125E /* IosEmojiSearchWidgetFactory.swift in Sources */,
 				CB85C0B725AFE61A007A2CC7 /* EmojiSearchViewController.swift in Sources */,
 				1067AA792CD3CCC8004FD1D1 /* CrashedUIView.swift in Sources */,
-				C2F7FBA228BEB54200A66A69 /* TextInputBinding.swift in Sources */,
-				10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */,
 				635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */,
-				AACC042628AC72AC00721342 /* RemoteImageLoader.swift in Sources */,
 				CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */,
-				C2F7CE6628BEAB6C00A66A69 /* ImageBinding.swift in Sources */,
 				1067AA7B2CD3CCE2004FD1D1 /* LoadingUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

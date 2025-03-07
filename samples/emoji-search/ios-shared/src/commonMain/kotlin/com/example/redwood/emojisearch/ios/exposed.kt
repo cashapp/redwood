@@ -19,6 +19,7 @@ package com.example.redwood.emojisearch.ios
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
+import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetFactory
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
@@ -29,16 +30,14 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import okio.ByteString
-import okio.ByteString.Companion.toByteString
 import okio.Closeable
-import platform.Foundation.NSData
 
 // Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   protocolFactory: RedwoodBasicProtocolFactory<*>,
   treehouseUIView: TreehouseUIView,
+  uiViewRedwoodBasicWidgetFactory: UIViewRedwoodBasicWidgetFactory,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   treehouseWidgetSystem: WidgetSystem<*>,
@@ -47,8 +46,6 @@ fun exposedTypes(
 ) {
   throw AssertionError()
 }
-
-fun byteStringOf(data: NSData): ByteString = data.toByteString()
 
 fun modifier(): Modifier = Modifier
 

@@ -1,0 +1,16 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitIos
+
+redwoodBuild {
+  targets(ToolkitIos)
+  publishing()
+}
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodBasicWidget
+      }
+    }
+  }
+}

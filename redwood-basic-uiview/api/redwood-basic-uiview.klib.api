@@ -1,0 +1,16 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-basic-uiview>
+final class app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory : app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory<platform.UIKit/UIView> { // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory|null[0]
+    constructor <init>() // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.<init>|<init>(){}[0]
+
+    final fun Image(): app.cash.redwood.basic.widget/Image<platform.UIKit/UIView> // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.Image|Image(){}[0]
+    final fun Reuse(platform.UIKit/UIView, app.cash.redwood.basic.modifier/Reuse) // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.Reuse|Reuse(platform.UIKit.UIView;app.cash.redwood.basic.modifier.Reuse){}[0]
+    final fun Text(): app.cash.redwood.basic.widget/Text<platform.UIKit/UIView> // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.Text|Text(){}[0]
+    final fun TextInput(): app.cash.redwood.basic.widget/TextInput<platform.UIKit/UIView> // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.TextInput|TextInput(){}[0]
+}
