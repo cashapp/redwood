@@ -15,6 +15,8 @@ module:redwood-basic-schema
 app.cash.redwood.basic
 module:redwood-basic-testing
 app.cash.redwood.basic.testing
+module:redwood-basic-uiview
+app.cash.redwood.basic.uiview
 module:redwood-basic-view
 app.cash.redwood.basic.view
 module:redwood-basic-widget
