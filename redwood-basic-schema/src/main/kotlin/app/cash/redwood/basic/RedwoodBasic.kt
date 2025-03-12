@@ -29,6 +29,7 @@ import app.cash.redwood.schema.Widget
     TextInput::class,
     Text::class,
     Image::class,
+    Button::class,
     Reuse::class,
   ],
   dependencies = [
@@ -57,6 +58,13 @@ public data class Text(
 public data class Image(
   @Property(1) val url: String,
   @Property(2) val onClick: (() -> Unit)? = null,
+)
+
+@Widget(4)
+public data class Button(
+  @Property(1) val text: String?,
+  @Property(2) val enabled: Boolean = true,
+  @Property(3) val onClick: (() -> Unit)? = null,
 )
 
 @Modifier(-4_543_827) // -4_543_827 is a reserved tag.

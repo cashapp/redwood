@@ -17,12 +17,14 @@ package com.example.redwood.counter.android.views
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.RedwoodLayout
 import com.example.redwood.counter.presenter.Counter
-import com.example.redwood.counter.widget.SchemaWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 
@@ -38,9 +40,10 @@ class MainActivity : AppCompatActivity() {
     val composition = RedwoodComposition(
       scope = scope,
       view = redwoodView,
-      widgetSystem = SchemaWidgetSystem(
-        Schema = AndroidWidgetFactory(this),
+      widgetSystem = RedwoodBasicWidgetSystem(
+        RedwoodBasic = ViewRedwoodBasicWidgetFactory(this),
         RedwoodLayout = ViewRedwoodLayoutWidgetFactory(this),
+        RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(this),
       ),
     )
     composition.setContent {

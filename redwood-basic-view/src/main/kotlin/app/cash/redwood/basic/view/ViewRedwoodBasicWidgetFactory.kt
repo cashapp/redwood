@@ -17,9 +17,11 @@ package app.cash.redwood.basic.view
 
 import android.content.Context
 import android.view.View
+import android.widget.Button as PlatformButton
 import android.widget.ImageView
 import android.widget.TextView
 import app.cash.redwood.basic.modifier.Reuse
+import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
 import app.cash.redwood.basic.widget.Text
@@ -31,6 +33,7 @@ public class ViewRedwoodBasicWidgetFactory(
   override fun TextInput(): TextInput<View> = ViewTextInput(context)
   override fun Text(): Text<View> = ViewText(TextView(context))
   override fun Image(): Image<View> = ViewImage(ImageView(context))
+  override fun Button(): Button<View> = ViewButton(PlatformButton(context))
   override fun Reuse(value: View, modifier: Reuse) {
   }
 }

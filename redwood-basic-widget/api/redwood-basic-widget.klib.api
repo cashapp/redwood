@@ -6,12 +6,19 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-basic-widget>
+abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/Button : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.basic.widget/Button|null[0]
+    abstract fun enabled(kotlin/Boolean) // app.cash.redwood.basic.widget/Button.enabled|enabled(kotlin.Boolean){}[0]
+    abstract fun onClick(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.basic.widget/Button.onClick|onClick(kotlin.Function0<kotlin.Unit>?){}[0]
+    abstract fun text(kotlin/String?) // app.cash.redwood.basic.widget/Button.text|text(kotlin.String?){}[0]
+}
+
 abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/Image : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.basic.widget/Image|null[0]
     abstract fun onClick(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.basic.widget/Image.onClick|onClick(kotlin.Function0<kotlin.Unit>?){}[0]
     abstract fun url(kotlin/String) // app.cash.redwood.basic.widget/Image.url|url(kotlin.String){}[0]
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory { // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory|null[0]
+    abstract fun Button(): app.cash.redwood.basic.widget/Button<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Button|Button(){}[0]
     abstract fun Image(): app.cash.redwood.basic.widget/Image<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Image|Image(){}[0]
     abstract fun Reuse(#A, app.cash.redwood.basic.modifier/Reuse) // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Reuse|Reuse(1:0;app.cash.redwood.basic.modifier.Reuse){}[0]
     abstract fun Text(): app.cash.redwood.basic.widget/Text<#A> // app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory.Text|Text(){}[0]

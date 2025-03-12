@@ -13,30 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.counter.composeui
+package app.cash.redwood.basic.composeui
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.cash.redwood.Modifier
-import com.example.redwood.counter.widget.Text
+import androidx.compose.ui.Modifier
+import app.cash.redwood.Modifier as RedwoodModifier
+import app.cash.redwood.basic.widget.Button
 
-internal class ComposeUiText : Text<@Composable () -> Unit> {
+internal class ComposeUiButton : Button<@Composable () -> Unit> {
   private var text by mutableStateOf("")
+  private var isEnabled by mutableStateOf(false)
+  private var onClick by mutableStateOf({})
 
-  override var modifier: Modifier = Modifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
   override val value = @Composable {
-    Text(
-      text = text,
-      color = MaterialTheme.colors.onBackground,
-    )
+    Button(
+      onClick = onClick,
+      enabled = isEnabled,
+      modifier = Modifier.fillMaxWidth(),
+    ) {
+      Text(text)
+    }
   }
 
   override fun text(text: String?) {
     this.text = text ?: ""
+  }
+
+  override fun enabled(enabled: Boolean) {
+    this.isEnabled = enabled
+  }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    this.onClick = onClick ?: {}
   }
 }

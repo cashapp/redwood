@@ -16,6 +16,7 @@
 package app.cash.redwood.basic.uiview
 
 import app.cash.redwood.basic.modifier.Reuse
+import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
 import app.cash.redwood.basic.widget.Text
@@ -29,6 +30,7 @@ public class UIViewRedwoodBasicWidgetFactory : RedwoodBasicWidgetFactory<UIView>
   override fun TextInput(): TextInput<UIView> = UIViewTextInput()
   override fun Text(): Text<UIView> = UIViewText()
   override fun Image(): Image<UIView> = UIViewImage(imageLoader)
+  override fun Button(): Button<UIView> = UIViewButton()
 
   override fun Reuse(value: UIView, modifier: Reuse) {}
 }

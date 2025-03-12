@@ -23,17 +23,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
-import com.example.redwood.counter.composeui.ComposeUiWidgetFactory
-import com.example.redwood.counter.composeui.CounterTheme
+import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
+import coil3.ImageLoader
+import coil3.PlatformContext
 import com.example.redwood.counter.presenter.Counter
-import com.example.redwood.counter.widget.SchemaWidgetSystem
 
 fun main() {
-  val widgetSystem = SchemaWidgetSystem(
-    Schema = ComposeUiWidgetFactory,
+  val widgetSystem = RedwoodBasicWidgetSystem(
+    RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(ImageLoader(PlatformContext.INSTANCE)),
     RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
+    RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
   )
 
   application {
@@ -42,7 +46,7 @@ fun main() {
       title = "Counter",
       state = rememberWindowState(width = 300.dp, height = 300.dp),
     ) {
-      CounterTheme {
+      RedwoodBasicTheme {
         RedwoodContent(widgetSystem, modifier = Modifier.padding(16.dp)) {
           Counter()
         }

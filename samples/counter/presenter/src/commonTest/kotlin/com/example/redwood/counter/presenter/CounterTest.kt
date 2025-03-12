@@ -15,20 +15,20 @@
  */
 package com.example.redwood.counter.presenter
 
+import app.cash.redwood.basic.testing.ButtonValue
+import app.cash.redwood.basic.testing.RedwoodBasicTester
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.testing.flatten
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.redwood.counter.testing.ButtonValue
-import com.example.redwood.counter.testing.SchemaTester
-import com.example.redwood.counter.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 class CounterTest {
   @Test fun counts() = runTest {
-    SchemaTester {
+    RedwoodBasicTester {
       setCounter()
 
       awaitSnapshot().apply {
@@ -50,13 +50,13 @@ class CounterTest {
   }
 
   @Test fun savesCount() = runTest {
-    val state = SchemaTester {
+    val state = RedwoodBasicTester {
       setCounter()
       awaitSnapshot().clickButton("+1")
       awaitSnapshot().clickButton("+1")
       saveState()
     }
-    SchemaTester(savedState = state) {
+    RedwoodBasicTester(savedState = state) {
       setCounter()
       assertThat(awaitSnapshot().labelText()).isEqualTo("Count: 2")
     }

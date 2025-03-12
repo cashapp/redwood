@@ -18,11 +18,13 @@ package app.cash.redwood.basic.dom
 import app.cash.redwood.Modifier
 import app.cash.redwood.basic.api.TextFieldState
 import app.cash.redwood.basic.modifier.Reuse
+import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
 import app.cash.redwood.basic.widget.Text
 import app.cash.redwood.basic.widget.TextInput
 import org.w3c.dom.Document
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.HTMLInputElement
@@ -34,6 +36,7 @@ public class HTMLElementRedwoodBasicWidgetFactory(
   override fun TextInput(): TextInput<HTMLElement> = HtmlTextInput(document.createElement("input") as HTMLInputElement)
   override fun Text(): Text<HTMLElement> = HtmlText(document.createElement("span") as HTMLSpanElement)
   override fun Image(): Image<HTMLElement> = HtmlImage(document.createElement("img") as HTMLImageElement)
+  override fun Button(): Button<HTMLElement> = HtmlButton(document.createElement("button") as HTMLButtonElement)
   override fun Reuse(value: HTMLElement, modifier: Reuse) {
   }
 }
@@ -110,5 +113,27 @@ private class HtmlImage(
 
   override fun onClick(onClick: (() -> Unit)?) {
     value.onclick = { onClick?.invoke() }
+  }
+}
+
+internal class HtmlButton(
+  override val value: HTMLButtonElement,
+) : Button<HTMLElement> {
+  override var modifier: Modifier = Modifier
+
+  override fun text(text: String?) {
+    value.textContent = text
+  }
+
+  override fun enabled(enabled: Boolean) {
+    value.disabled = !enabled
+  }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    value.onclick = if (onClick != null) {
+      { onClick() }
+    } else {
+      null
+    }
   }
 }

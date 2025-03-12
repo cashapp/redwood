@@ -11,5 +11,10 @@
     <property tag="1" name="url" type="kotlin.String"/>
     <event tag="2" name="onClick" nullable="true"/>
   </widget>
+  <widget tag="4" type="app.cash.redwood.basic.Button">
+    <property tag="1" name="text" type="kotlin.String?"/>
+    <property tag="2" name="enabled" type="kotlin.Boolean"/>
+    <event tag="3" name="onClick" nullable="true"/>
+  </widget>
   <modifier tag="-4543827" type="app.cash.redwood.basic.Reuse"/>
 </schema>

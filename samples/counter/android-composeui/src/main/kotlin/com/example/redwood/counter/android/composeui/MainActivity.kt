@@ -18,24 +18,27 @@ package com.example.redwood.counter.android.composeui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
-import com.example.redwood.counter.composeui.ComposeUiWidgetFactory
-import com.example.redwood.counter.composeui.CounterTheme
+import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
+import coil3.ImageLoader
 import com.example.redwood.counter.presenter.Counter
-import com.example.redwood.counter.widget.SchemaWidgetSystem
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val widgetSystem = SchemaWidgetSystem(
-      Schema = ComposeUiWidgetFactory,
+    val widgetSystem = RedwoodBasicWidgetSystem(
+      RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(ImageLoader(this)),
       RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
+      RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
     )
 
     setContent {
-      CounterTheme {
+      RedwoodBasicTheme {
         RedwoodContent(widgetSystem) {
           Counter()
         }

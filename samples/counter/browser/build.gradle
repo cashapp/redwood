@@ -19,9 +19,10 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.samples.counter.schema.widget
         implementation projects.samples.counter.presenter
+        implementation projects.redwoodBasicDom
         implementation projects.redwoodLayoutDom
+        implementation projects.redwoodLazylayoutDom
         implementation libs.kotlinx.coroutines.core
       }
     }

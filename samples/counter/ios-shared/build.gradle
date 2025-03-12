@@ -31,9 +31,10 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation projects.samples.counter.schema.widget
         implementation projects.samples.counter.presenter
+        implementation projects.redwoodBasicUiview
         implementation projects.redwoodLayoutUiview
+        implementation projects.redwoodLazylayoutUiview
       }
     }
   }

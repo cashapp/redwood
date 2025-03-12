@@ -15,12 +15,14 @@
  */
 package com.example.redwood.counter.browser
 
+import app.cash.redwood.basic.dom.HTMLElementRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
+import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.counter.presenter.Counter
-import com.example.redwood.counter.widget.SchemaWidgetSystem
 import kotlinx.browser.document
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -34,9 +36,10 @@ fun main() {
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     view = content.asRedwoodView(),
-    widgetSystem = SchemaWidgetSystem(
-      Schema = HtmlWidgetFactory(document),
+    widgetSystem = RedwoodBasicWidgetSystem(
+      RedwoodBasic = HTMLElementRedwoodBasicWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
+      RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),
     ),
   )
   composition.setContent {

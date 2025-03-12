@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.redwood.counter.android.views
+package app.cash.redwood.basic.view
 
 import android.view.View
-import android.widget.TextView
+import android.widget.Button as WidgetButton
 import app.cash.redwood.Modifier
-import com.example.redwood.counter.widget.Text
+import app.cash.redwood.basic.widget.Button
 
-internal class AndroidText(
-  override val value: TextView,
-) : Text<View> {
+internal class ViewButton(
+  override val value: WidgetButton,
+) : Button<View> {
   override var modifier: Modifier = Modifier
 
   override fun text(text: String?) {
     value.text = text
+  }
+
+  override fun enabled(enabled: Boolean) {
+    value.isEnabled = enabled
+  }
+
+  override fun onClick(onClick: (() -> Unit)?) {
+    if (onClick != null) {
+      value.setOnClickListener { onClick() }
+    } else {
+      value.setOnClickListener(null)
+      value.isClickable = false
+    }
   }
 }

@@ -1,3 +1,7 @@
+public final class app/cash/redwood/basic/compose/ButtonKt {
+	public static final fun Button (Ljava/lang/String;ZLkotlin/jvm/functions/Function0;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class app/cash/redwood/basic/compose/ImageKt {
 	public static final fun Image (Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
 }

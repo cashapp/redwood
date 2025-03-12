@@ -1,9 +1,16 @@
+public abstract interface class app/cash/redwood/basic/widget/Button : app/cash/redwood/widget/Widget {
+	public abstract fun enabled (Z)V
+	public abstract fun onClick (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun text (Ljava/lang/String;)V
+}
+
 public abstract interface class app/cash/redwood/basic/widget/Image : app/cash/redwood/widget/Widget {
 	public abstract fun onClick (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun url (Ljava/lang/String;)V
 }
 
 public abstract interface class app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
+	public abstract fun Button ()Lapp/cash/redwood/basic/widget/Button;
 	public abstract fun Image ()Lapp/cash/redwood/basic/widget/Image;
 	public abstract fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V
 	public abstract fun Text ()Lapp/cash/redwood/basic/widget/Text;

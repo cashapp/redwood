@@ -1,3 +1,18 @@
+public final class app/cash/redwood/basic/testing/ButtonValue : app/cash/redwood/testing/WidgetValue {
+	public fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;ZLkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;ZLkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChildrenLists ()Ljava/util/List;
+	public final fun getEnabled ()Z
+	public fun getModifier ()Lapp/cash/redwood/Modifier;
+	public final fun getOnClick ()Lkotlin/jvm/functions/Function0;
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toDebugString ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
+}
+
 public final class app/cash/redwood/basic/testing/ImageValue : app/cash/redwood/testing/WidgetValue {
 	public fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
 	public synthetic fun <init> (Lapp/cash/redwood/Modifier;Ljava/lang/String;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -19,6 +34,7 @@ public final class app/cash/redwood/basic/testing/RedwoodBasicTesterKt {
 
 public final class app/cash/redwood/basic/testing/RedwoodBasicTestingWidgetFactory : app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
 	public fun <init> ()V
+	public fun Button ()Lapp/cash/redwood/basic/widget/Button;
 	public fun Image ()Lapp/cash/redwood/basic/widget/Image;
 	public fun Reuse (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/basic/modifier/Reuse;)V
 	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V

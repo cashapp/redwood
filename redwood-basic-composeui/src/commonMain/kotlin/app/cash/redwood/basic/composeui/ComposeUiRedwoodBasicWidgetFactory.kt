@@ -17,6 +17,7 @@ package app.cash.redwood.basic.composeui
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.basic.modifier.Reuse
+import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
 import app.cash.redwood.basic.widget.Text
@@ -29,6 +30,7 @@ public class ComposeUiRedwoodBasicWidgetFactory(
   override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
   override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage(imageLoader)
+  override fun Button(): Button<@Composable (() -> Unit)> = ComposeUiButton()
   override fun Reuse(value: @Composable () -> Unit, modifier: Reuse) {
   }
 }

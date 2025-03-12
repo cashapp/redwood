@@ -3,9 +3,10 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 dependencies {
-  implementation projects.samples.counter.schema.widget
   implementation projects.samples.counter.presenter
+  implementation projects.redwoodBasicView
   implementation projects.redwoodLayoutView
+  implementation projects.redwoodLazylayoutView
   implementation projects.redwoodWidget
   implementation libs.kotlinx.coroutines.android
   implementation libs.google.material

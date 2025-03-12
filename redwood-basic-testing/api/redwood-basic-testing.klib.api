@@ -6,6 +6,27 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-basic-testing>
+final class app.cash.redwood.basic.testing/ButtonValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.basic.testing/ButtonValue|null[0]
+    constructor <init>(app.cash.redwood/Modifier = ..., kotlin/String?, kotlin/Boolean = ..., kotlin/Function0<kotlin/Unit>? = ...) // app.cash.redwood.basic.testing/ButtonValue.<init>|<init>(app.cash.redwood.Modifier;kotlin.String?;kotlin.Boolean;kotlin.Function0<kotlin.Unit>?){}[0]
+
+    final val childrenLists // app.cash.redwood.basic.testing/ButtonValue.childrenLists|{}childrenLists[0]
+        final fun <get-childrenLists>(): kotlin.collections/List<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>> // app.cash.redwood.basic.testing/ButtonValue.childrenLists.<get-childrenLists>|<get-childrenLists>(){}[0]
+    final val enabled // app.cash.redwood.basic.testing/ButtonValue.enabled|{}enabled[0]
+        final fun <get-enabled>(): kotlin/Boolean // app.cash.redwood.basic.testing/ButtonValue.enabled.<get-enabled>|<get-enabled>(){}[0]
+    final val modifier // app.cash.redwood.basic.testing/ButtonValue.modifier|{}modifier[0]
+        final fun <get-modifier>(): app.cash.redwood/Modifier // app.cash.redwood.basic.testing/ButtonValue.modifier.<get-modifier>|<get-modifier>(){}[0]
+    final val onClick // app.cash.redwood.basic.testing/ButtonValue.onClick|{}onClick[0]
+        final fun <get-onClick>(): kotlin/Function0<kotlin/Unit>? // app.cash.redwood.basic.testing/ButtonValue.onClick.<get-onClick>|<get-onClick>(){}[0]
+    final val text // app.cash.redwood.basic.testing/ButtonValue.text|{}text[0]
+        final fun <get-text>(): kotlin/String? // app.cash.redwood.basic.testing/ButtonValue.text.<get-text>|<get-text>(){}[0]
+
+    final fun <#A1: kotlin/Any> toWidget(app.cash.redwood.widget/WidgetSystem<#A1>): app.cash.redwood.widget/Widget<#A1> // app.cash.redwood.basic.testing/ButtonValue.toWidget|toWidget(app.cash.redwood.widget.WidgetSystem<0:0>){0§<kotlin.Any>}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.basic.testing/ButtonValue.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.basic.testing/ButtonValue.hashCode|hashCode(){}[0]
+    final fun toDebugString(): kotlin/String // app.cash.redwood.basic.testing/ButtonValue.toDebugString|toDebugString(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.basic.testing/ButtonValue.toString|toString(){}[0]
+}
+
 final class app.cash.redwood.basic.testing/ImageValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.basic.testing/ImageValue|null[0]
     constructor <init>(app.cash.redwood/Modifier = ..., kotlin/String, kotlin/Function0<kotlin/Unit>? = ...) // app.cash.redwood.basic.testing/ImageValue.<init>|<init>(app.cash.redwood.Modifier;kotlin.String;kotlin.Function0<kotlin.Unit>?){}[0]
 
@@ -28,6 +49,7 @@ final class app.cash.redwood.basic.testing/ImageValue : app.cash.redwood.testing
 final class app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory : app.cash.redwood.basic.widget/RedwoodBasicWidgetFactory<app.cash.redwood.testing/WidgetValue> { // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory|null[0]
     constructor <init>() // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.<init>|<init>(){}[0]
 
+    final fun Button(): app.cash.redwood.basic.widget/Button<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Button|Button(){}[0]
     final fun Image(): app.cash.redwood.basic.widget/Image<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Image|Image(){}[0]
     final fun Reuse(app.cash.redwood.testing/WidgetValue, app.cash.redwood.basic.modifier/Reuse) // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Reuse|Reuse(app.cash.redwood.testing.WidgetValue;app.cash.redwood.basic.modifier.Reuse){}[0]
     final fun Text(): app.cash.redwood.basic.widget/Text<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.basic.testing/RedwoodBasicTestingWidgetFactory.Text|Text(){}[0]

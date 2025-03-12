@@ -1,6 +1,7 @@
 public final class app/cash/redwood/basic/composeui/ComposeUiRedwoodBasicWidgetFactory : app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
 	public static final field $stable I
 	public fun <init> (Lcoil3/ImageLoader;)V
+	public fun Button ()Lapp/cash/redwood/basic/widget/Button;
 	public fun Image ()Lapp/cash/redwood/basic/widget/Image;
 	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V
 	public fun Reuse (Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/basic/modifier/Reuse;)V

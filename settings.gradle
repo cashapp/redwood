@@ -127,11 +127,6 @@ if (!hasProperty('redwoodNoApps')) {
   include ':samples:counter:desktop-composeui'
   include ':samples:counter:ios-shared'
   include ':samples:counter:presenter'
-  include ':samples:counter:schema'
-  include ':samples:counter:schema:compose'
-  include ':samples:counter:schema:testing'
-  include ':samples:counter:schema:widget'
-  include ':samples:counter:shared-composeui'
 
   include ':samples:emoji-search:android-composeui'
   include ':samples:emoji-search:android-tests'
