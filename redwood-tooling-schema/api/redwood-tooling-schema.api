@@ -99,6 +99,7 @@ public abstract interface class app/cash/redwood/tooling/schema/ProtocolSchema :
 	public abstract fun getTaggedDependencies ()Ljava/util/Map;
 	public abstract fun getWidgets ()Ljava/util/List;
 	public abstract fun toEmbeddedSchema ()Lapp/cash/redwood/tooling/schema/EmbeddedSchema;
+	public abstract fun withTagOffset (I)Lapp/cash/redwood/tooling/schema/ProtocolSchema;
 }
 
 public abstract interface class app/cash/redwood/tooling/schema/ProtocolSchemaSet : app/cash/redwood/tooling/schema/SchemaSet {

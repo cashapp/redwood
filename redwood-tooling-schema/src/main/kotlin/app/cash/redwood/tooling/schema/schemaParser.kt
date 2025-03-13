@@ -34,8 +34,18 @@ internal fun loadProtocolSchemaDependencies(
 ): ParsedProtocolSchemaSet {
   val dependencies = schema.taggedDependencies.entries
     .associate { (tag, type) ->
-      require(tag != 0) { "Dependency $type tag must be non-zero" }
-      type to loadProtocolSchema(type, classLoader, tag)
+      require(tag in 1..MAX_SCHEMA_TAG) {
+        "Dependency $type tag must be in range (0, $MAX_SCHEMA_TAG]: $tag"
+      }
+      val dependency = loadProtocolSchema(type, classLoader)
+        .withTagOffset(tag * MAX_MEMBER_TAG)
+
+      require(dependency.dependencies.isEmpty()) {
+        "Schema dependency $type also has its own dependencies. " +
+          "For now, only a single level of dependencies is supported."
+      }
+
+      type to dependency
     }
   return ParsedProtocolSchemaSet(schema, dependencies)
 }
@@ -43,27 +53,14 @@ internal fun loadProtocolSchemaDependencies(
 internal fun loadProtocolSchema(
   type: FqType,
   classLoader: ClassLoader,
-  tag: Int = 0,
 ): ProtocolSchema {
-  require(tag in 0..MAX_SCHEMA_TAG) {
-    "$type tag must be 0 for the root or in range (0, $MAX_SCHEMA_TAG] as a dependency: $tag"
-  }
-  val tagOffset = tag * MAX_MEMBER_TAG
-
   val path = ParsedProtocolSchema.toEmbeddedPath(type)
-  val schema = classLoader
+  return classLoader
     .getResourceAsStream(path)
     ?.use(InputStream::readBytes)
     ?.decodeToString()
-    ?.let { json -> ParsedProtocolSchema.parseEmbeddedJson(json, tagOffset) }
+    ?.let { json -> ParsedProtocolSchema.parseEmbeddedJson(json) }
     ?: throw IllegalArgumentException("Unable to locate JSON for $type at $path")
-
-  require(tag == 0 || schema.dependencies.isEmpty()) {
-    "Schema dependency $type also has its own dependencies. " +
-      "For now, only a single level of dependencies is supported."
-  }
-
-  return schema
 }
 
 /** Returns true if [memberType] is a known special modifier tag and name. */

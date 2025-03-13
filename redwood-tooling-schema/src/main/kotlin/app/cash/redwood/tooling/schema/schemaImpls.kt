@@ -64,27 +64,24 @@ internal data class ParsedProtocolSchema(
     )
   }
 
+  override fun withTagOffset(offset: Int): ParsedProtocolSchema {
+    return copy(
+      widgets = widgets.map { widget ->
+        widget.copy(tag = offset + widget.tag)
+      },
+      modifiers = modifiers.map { modifier ->
+        modifier.copy(tag = offset + modifier.tag)
+      },
+    )
+  }
+
   companion object {
     fun toEmbeddedPath(type: FqType): String {
       return type.names[0].replace('.', '/') + "/" + type.names.drop(1).joinToString(".") + ".json"
     }
 
-    fun parseEmbeddedJson(json: String, tagOffset: Int = 0): ProtocolSchema {
-      val schema = jsonFormat.decodeFromString(serializer(), json)
-      if (tagOffset == 0) {
-        return schema
-      }
-      // The schema JSON was generated locally from at its source with its normal tag numbers.
-      // If we are consuming it as a tagged dependency, offset the widget and modifier tag numbers
-      // to simplify usage downstream.
-      return schema.copy(
-        widgets = schema.widgets.map { widget ->
-          widget.copy(tag = tagOffset + widget.tag)
-        },
-        modifiers = schema.modifiers.map { modifier ->
-          modifier.copy(tag = tagOffset + modifier.tag)
-        },
-      )
+    fun parseEmbeddedJson(json: String): ProtocolSchema {
+      return jsonFormat.decodeFromString(serializer(), json)
     }
 
     @OptIn(ExperimentalSerializationApi::class) // For custom indent, which is only a nice-to-have.

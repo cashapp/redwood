@@ -154,6 +154,9 @@ public interface ProtocolSchema : Schema {
    * This JSON will be read when the schema is used as a dependency.
    */
   public fun toEmbeddedSchema(): EmbeddedSchema
+
+  /** Return a copy of this schema with all widget and modifier tags adjusted by [offset]. */
+  public fun withTagOffset(offset: Int): ProtocolSchema
 }
 
 public interface ProtocolWidget : Widget {

@@ -1100,6 +1100,14 @@ class SchemaParserTest {
   )
   object SchemaDependencyTagTooHigh
 
+  @Test fun dependencyTagTooHighThrows() {
+    assertFailure { parseTestSchema(SchemaDependencyTagTooHigh::class) }
+      .isInstanceOf<IllegalArgumentException>()
+      .hasMessage(
+        "Dependency app.cash.redwood.layout.RedwoodLayout tag must be in range (0, 2000]: 2001",
+      )
+  }
+
   @Schema(
     members = [],
     dependencies = [
@@ -1108,17 +1116,11 @@ class SchemaParserTest {
   )
   object SchemaDependencyTagTooLow
 
-  @Test fun dependencyTagTooHighThrows() {
-    assertFailure { parseTestSchema(SchemaDependencyTagTooHigh::class) }
-      .isInstanceOf<IllegalArgumentException>()
-      .hasMessage(
-        "app.cash.redwood.layout.RedwoodLayout tag must be 0 for the root or in range (0, 2000] as a dependency: 2001",
-      )
-
+  @Test fun dependencyTagTooLowThrows() {
     assertFailure { parseTestSchema(SchemaDependencyTagTooLow::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "app.cash.redwood.layout.RedwoodLayout tag must be 0 for the root or in range (0, 2000] as a dependency: -1",
+        "Dependency app.cash.redwood.layout.RedwoodLayout tag must be in range (0, 2000]: -1",
       )
   }
 
@@ -1134,7 +1136,7 @@ class SchemaParserTest {
     assertFailure { parseTestSchema(SchemaDependencyTagZero::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "Dependency app.cash.redwood.layout.RedwoodLayout tag must be non-zero",
+        "Dependency app.cash.redwood.layout.RedwoodLayout tag must be in range (0, 2000]: 0",
       )
   }
 
