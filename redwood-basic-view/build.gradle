@@ -8,6 +8,8 @@ redwoodBuild {
 dependencies {
   api projects.redwoodBasicWidget
   api libs.coil.core
+  implementation projects.redwoodLayoutView
+  implementation projects.redwoodLazylayoutView
   implementation libs.androidx.core
   implementation libs.google.material
 }

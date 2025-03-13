@@ -23,11 +23,8 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
-import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.Crashed
 import app.cash.redwood.treehouse.DynamicContentWidgetFactory
@@ -44,6 +41,9 @@ import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import com.example.redwood.emojisearch.launcher.EmojiSearchAppSpec
 import com.example.redwood.emojisearch.treehouse.EmojiSearchPresenter
 import com.example.redwood.emojisearch.treehouse.emojiSearchSerializersModule
@@ -83,13 +83,16 @@ class EmojiSearchActivity : ComponentActivity() {
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
+    val imageLoader = ImageLoader.Builder(this)
+      .serviceLoaderEnabled(false)
+      .components {
+        add(OkHttpNetworkFetcherFactory())
+      }
+      .build()
+
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       RedwoodBasicProtocolFactory(
-        widgetSystem = RedwoodBasicWidgetSystem(
-          RedwoodBasic = ViewRedwoodBasicWidgetFactory(context),
-          RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
-          RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
-        ),
+        widgetSystem = ViewRedwoodBasicWidgetSystem(this, imageLoader),
         json = json,
         mismatchHandler = protocolMismatchHandler,
       )

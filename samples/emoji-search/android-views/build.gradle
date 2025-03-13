@@ -19,7 +19,6 @@ android {
 }
 
 dependencies {
-  implementation libs.coil.core
   implementation libs.coil.network.okhttp
   implementation libs.google.material
   implementation libs.kotlinx.coroutines.android
@@ -29,8 +28,6 @@ dependencies {
   implementation projects.samples.emojiSearch.schemaProtocolHost
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
-  implementation projects.redwoodLayoutView
-  implementation projects.redwoodLazylayoutView
   implementation projects.redwoodTreehouse
   implementation projects.redwoodTreehouseHost
   implementation libs.okio.assetfilesystem

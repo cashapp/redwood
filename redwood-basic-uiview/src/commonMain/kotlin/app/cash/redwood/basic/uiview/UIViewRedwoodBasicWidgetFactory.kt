@@ -19,8 +19,11 @@ import app.cash.redwood.basic.modifier.Reuse
 import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.basic.widget.Text
 import app.cash.redwood.basic.widget.TextInput
+import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
+import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodBasicWidgetFactory", exact = true)
@@ -33,4 +36,13 @@ public class UIViewRedwoodBasicWidgetFactory : RedwoodBasicWidgetFactory<UIView>
   override fun Button(): Button<UIView> = UIViewButton()
 
   override fun Reuse(value: UIView, modifier: Reuse) {}
+}
+
+@Suppress("FunctionName") // Acting like a type.
+public fun UIViewRedwoodBasicWidgetSystem(): RedwoodBasicWidgetSystem<UIView> {
+  return RedwoodBasicWidgetSystem(
+    RedwoodBasic = UIViewRedwoodBasicWidgetFactory(),
+    RedwoodLayout = UIViewRedwoodLayoutWidgetFactory(),
+    RedwoodLazyLayout = UIViewRedwoodLazyLayoutWidgetFactory(),
+  )
 }

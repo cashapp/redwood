@@ -10,6 +10,8 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodBasicWidget
+        implementation projects.redwoodLayoutUiview
+        implementation projects.redwoodLazylayoutUiview
       }
     }
   }

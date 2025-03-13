@@ -30,13 +30,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
 import app.cash.redwood.basic.composeui.RedwoodBasicTheme
 import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
-import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
@@ -96,11 +93,7 @@ class EmojiSearchActivity : ComponentActivity() {
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
       RedwoodBasicProtocolFactory<@Composable () -> Unit>(
-        widgetSystem = RedwoodBasicWidgetSystem(
-          RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(imageLoader),
-          RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
-          RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
-        ),
+        widgetSystem = ComposeUiRedwoodBasicWidgetSystem(imageLoader),
         json = json,
         mismatchHandler = protocolMismatchHandler,
       )

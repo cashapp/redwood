@@ -15,3 +15,5 @@ final class app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory : app.
     final fun Text(): app.cash.redwood.basic.widget/Text<platform.UIKit/UIView> // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.Text|Text(){}[0]
     final fun TextInput(): app.cash.redwood.basic.widget/TextInput<platform.UIKit/UIView> // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetFactory.TextInput|TextInput(){}[0]
 }
+
+final fun app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetSystem(): app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem<platform.UIKit/UIView> // app.cash.redwood.basic.uiview/UIViewRedwoodBasicWidgetSystem|UIViewRedwoodBasicWidgetSystem(){}[0]

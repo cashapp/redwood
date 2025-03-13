@@ -9,6 +9,10 @@ public final class app/cash/redwood/basic/composeui/ComposeUiRedwoodBasicWidgetF
 	public fun TextInput ()Lapp/cash/redwood/basic/widget/TextInput;
 }
 
+public final class app/cash/redwood/basic/composeui/ComposeUiRedwoodBasicWidgetFactoryKt {
+	public static final fun ComposeUiRedwoodBasicWidgetSystem (Lcoil3/ImageLoader;)Lapp/cash/redwood/basic/widget/RedwoodBasicWidgetSystem;
+}
+
 public final class app/cash/redwood/basic/composeui/ThemeKt {
 	public static final fun RedwoodBasicTheme (ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun getTypography ()Landroidx/compose/material/Typography;

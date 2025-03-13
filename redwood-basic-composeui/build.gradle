@@ -12,10 +12,12 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodBasicWidget
+        api libs.coil.compose
+        api libs.jetbrains.compose.material
+        implementation projects.redwoodLayoutComposeui
+        implementation projects.redwoodLazylayoutComposeui
         implementation projects.redwoodWidgetCompose
-        implementation libs.jetbrains.compose.material
         implementation libs.jetbrains.compose.ui
-        implementation libs.coil.compose
       }
     }
   }

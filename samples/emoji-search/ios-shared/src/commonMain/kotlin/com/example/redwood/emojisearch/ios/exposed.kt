@@ -19,11 +19,7 @@ package com.example.redwood.emojisearch.ios
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
-import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
-import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetSystem
 import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.TreehouseUIView
@@ -37,15 +33,12 @@ fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
   protocolFactory: RedwoodBasicProtocolFactory<*>,
   treehouseUIView: TreehouseUIView,
-  uiViewRedwoodBasicWidgetFactory: UIViewRedwoodBasicWidgetFactory,
-  uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
-  uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   treehouseWidgetSystem: WidgetSystem<*>,
-  widgetFactory: RedwoodBasicWidgetFactory<*>,
-  widgetSystem: RedwoodBasicWidgetSystem<*>,
 ) {
   throw AssertionError()
 }
+
+fun basicWidgetSystem() = UIViewRedwoodBasicWidgetSystem()
 
 fun modifier(): Modifier = Modifier
 

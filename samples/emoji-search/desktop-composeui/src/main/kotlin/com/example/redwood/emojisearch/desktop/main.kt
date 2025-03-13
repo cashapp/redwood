@@ -22,12 +22,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
 import app.cash.redwood.basic.composeui.RedwoodBasicTheme
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.composeui.RedwoodContent
-import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.Margin
 import coil3.ImageLoader
 import coil3.PlatformContext
@@ -45,11 +42,7 @@ fun main() {
       add(OkHttpNetworkFetcherFactory(client))
     }
     .build()
-  val widgetSystem = RedwoodBasicWidgetSystem(
-    RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(imageLoader),
-    RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
-    RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
-  )
+  val widgetSystem = ComposeUiRedwoodBasicWidgetSystem(imageLoader)
 
   application {
     Window(

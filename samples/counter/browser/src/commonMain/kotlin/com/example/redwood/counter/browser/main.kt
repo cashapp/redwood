@@ -15,12 +15,9 @@
  */
 package com.example.redwood.counter.browser
 
-import app.cash.redwood.basic.dom.HTMLElementRedwoodBasicWidgetFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.basic.dom.HTMLElementRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
-import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.counter.presenter.Counter
 import kotlinx.browser.document
@@ -36,11 +33,7 @@ fun main() {
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     view = content.asRedwoodView(),
-    widgetSystem = RedwoodBasicWidgetSystem(
-      RedwoodBasic = HTMLElementRedwoodBasicWidgetFactory(document),
-      RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
-      RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),
-    ),
+    widgetSystem = HTMLElementRedwoodBasicWidgetSystem(document),
   )
   composition.setContent {
     Counter()

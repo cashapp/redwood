@@ -102,11 +102,7 @@ class EmojiSearchTreehouseWidgetSystem : TreehouseViewWidgetSystem {
         protocolMismatchHandler: ProtocolMismatchHandler
     ) -> ProtocolFactory {
         return RedwoodBasicProtocolFactory<UIView>(
-            widgetSystem: RedwoodBasicWidgetSystem<UIView>(
-                RedwoodBasic: UIViewRedwoodBasicWidgetFactory(),
-                RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
-                RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
-            ),
+            widgetSystem: ExposedKt.basicWidgetSystem(),
             json: json,
             mismatchHandler: protocolMismatchHandler
         );

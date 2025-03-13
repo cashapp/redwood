@@ -21,10 +21,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import app.cash.redwood.Modifier
 import app.cash.redwood.basic.widget.Image
-import coil3.load
+import coil3.ImageLoader
+import coil3.request.ImageRequest
+import coil3.request.target
 
 internal class ViewImage(
   override val value: ImageView,
+  private val imageLoader: ImageLoader,
 ) : Image<View> {
   init {
     val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48F, value.resources.displayMetrics).toInt()
@@ -34,7 +37,10 @@ internal class ViewImage(
   override var modifier: Modifier = Modifier
 
   override fun url(url: String) {
-    value.load(url)
+    val request = ImageRequest.Builder(value.context)
+      .target(value)
+      .build()
+    imageLoader.enqueue(request)
   }
 
   override fun onClick(onClick: (() -> Unit)?) {

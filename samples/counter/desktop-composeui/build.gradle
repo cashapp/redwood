@@ -15,7 +15,5 @@ dependencies {
   implementation projects.samples.counter.presenter
   implementation projects.redwoodComposeui
   implementation projects.redwoodBasicComposeui
-  implementation projects.redwoodLayoutComposeui
-  implementation projects.redwoodLazylayoutComposeui
   implementation libs.coil.network.okhttp
 }

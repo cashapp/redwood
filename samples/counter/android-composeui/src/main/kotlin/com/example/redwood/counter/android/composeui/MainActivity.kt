@@ -18,24 +18,26 @@ package com.example.redwood.counter.android.composeui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
 import app.cash.redwood.basic.composeui.RedwoodBasicTheme
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.composeui.RedwoodContent
-import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import com.example.redwood.counter.presenter.Counter
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val widgetSystem = RedwoodBasicWidgetSystem(
-      RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(ImageLoader(this)),
-      RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
-      RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
-    )
+    val imageLoader = ImageLoader.Builder(this)
+      .serviceLoaderEnabled(false)
+      .components {
+        add(OkHttpNetworkFetcherFactory())
+      }
+      .build()
+
+    val widgetSystem = ComposeUiRedwoodBasicWidgetSystem(imageLoader)
 
     setContent {
       RedwoodBasicTheme {

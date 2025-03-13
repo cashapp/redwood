@@ -17,13 +17,13 @@ package com.example.redwood.counter.android.views
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.RedwoodLayout
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import com.example.redwood.counter.presenter.Counter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -37,14 +37,17 @@ class MainActivity : AppCompatActivity() {
     val redwoodView = RedwoodLayout(this, onBackPressedDispatcher)
     setContentView(redwoodView)
 
+    val imageLoader = ImageLoader.Builder(this)
+      .serviceLoaderEnabled(false)
+      .components {
+        add(OkHttpNetworkFetcherFactory())
+      }
+      .build()
+
     val composition = RedwoodComposition(
       scope = scope,
       view = redwoodView,
-      widgetSystem = RedwoodBasicWidgetSystem(
-        RedwoodBasic = ViewRedwoodBasicWidgetFactory(this),
-        RedwoodLayout = ViewRedwoodLayoutWidgetFactory(this),
-        RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(this),
-      ),
+      widgetSystem = ViewRedwoodBasicWidgetSystem(this, imageLoader),
     )
     composition.setContent {
       Counter()

@@ -23,23 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetFactory
+import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
 import app.cash.redwood.basic.composeui.RedwoodBasicTheme
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.composeui.RedwoodContent
-import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import coil3.ImageLoader
 import coil3.PlatformContext
 import com.example.redwood.counter.presenter.Counter
 
 fun main() {
-  val widgetSystem = RedwoodBasicWidgetSystem(
-    RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(ImageLoader(PlatformContext.INSTANCE)),
-    RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
-    RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
-  )
-
+  val widgetSystem = ComposeUiRedwoodBasicWidgetSystem(ImageLoader(PlatformContext.INSTANCE))
   application {
     Window(
       onCloseRequest = ::exitApplication,

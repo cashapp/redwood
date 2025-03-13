@@ -15,3 +15,5 @@ final class app.cash.redwood.basic.dom/HTMLElementRedwoodBasicWidgetFactory : ap
     final fun Text(): app.cash.redwood.basic.widget/Text<org.w3c.dom/HTMLElement> // app.cash.redwood.basic.dom/HTMLElementRedwoodBasicWidgetFactory.Text|Text(){}[0]
     final fun TextInput(): app.cash.redwood.basic.widget/TextInput<org.w3c.dom/HTMLElement> // app.cash.redwood.basic.dom/HTMLElementRedwoodBasicWidgetFactory.TextInput|TextInput(){}[0]
 }
+
+final fun app.cash.redwood.basic.dom/HTMLElementRedwoodBasicWidgetSystem(org.w3c.dom/Document): app.cash.redwood.basic.widget/RedwoodBasicWidgetSystem<org.w3c.dom/HTMLElement> // app.cash.redwood.basic.dom/HTMLElementRedwoodBasicWidgetSystem|HTMLElementRedwoodBasicWidgetSystem(org.w3c.dom.Document){}[0]

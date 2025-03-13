@@ -21,8 +21,11 @@ import app.cash.redwood.basic.modifier.Reuse
 import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.basic.widget.Text
 import app.cash.redwood.basic.widget.TextInput
+import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
+import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
@@ -39,6 +42,17 @@ public class HTMLElementRedwoodBasicWidgetFactory(
   override fun Button(): Button<HTMLElement> = HtmlButton(document.createElement("button") as HTMLButtonElement)
   override fun Reuse(value: HTMLElement, modifier: Reuse) {
   }
+}
+
+@Suppress("FunctionName") // Acting like a type.
+public fun HTMLElementRedwoodBasicWidgetSystem(
+  document: Document,
+): RedwoodBasicWidgetSystem<HTMLElement> {
+  return RedwoodBasicWidgetSystem(
+    RedwoodBasic = HTMLElementRedwoodBasicWidgetFactory(document),
+    RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
+    RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),
+  )
 }
 
 private class HtmlTextInput(

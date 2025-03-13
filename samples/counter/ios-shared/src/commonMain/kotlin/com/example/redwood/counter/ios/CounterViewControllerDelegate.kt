@@ -15,12 +15,9 @@
  */
 package com.example.redwood.counter.ios
 
-import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetFactory
-import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.DisplayLinkClock
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
-import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.widget.RedwoodUIView
 import com.example.redwood.counter.presenter.Counter
 import kotlinx.coroutines.MainScope
@@ -37,12 +34,7 @@ class CounterViewControllerDelegate(
     val composition = RedwoodComposition(
       scope = scope,
       view = redwoodUIView,
-      // TODO Have basic provide these default widget system instances for each toolkit.
-      widgetSystem = RedwoodBasicWidgetSystem(
-        RedwoodBasic = UIViewRedwoodBasicWidgetFactory(),
-        RedwoodLayout = UIViewRedwoodLayoutWidgetFactory(),
-        RedwoodLazyLayout = UIViewRedwoodLazyLayoutWidgetFactory(),
-      ),
+      widgetSystem = UIViewRedwoodBasicWidgetSystem(),
     )
     composition.setContent {
       Counter()

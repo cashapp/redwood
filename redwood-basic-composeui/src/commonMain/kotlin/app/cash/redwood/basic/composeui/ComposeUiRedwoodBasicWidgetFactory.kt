@@ -20,8 +20,11 @@ import app.cash.redwood.basic.modifier.Reuse
 import app.cash.redwood.basic.widget.Button
 import app.cash.redwood.basic.widget.Image
 import app.cash.redwood.basic.widget.RedwoodBasicWidgetFactory
+import app.cash.redwood.basic.widget.RedwoodBasicWidgetSystem
 import app.cash.redwood.basic.widget.Text
 import app.cash.redwood.basic.widget.TextInput
+import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
+import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import coil3.ImageLoader
 
 public class ComposeUiRedwoodBasicWidgetFactory(
@@ -33,4 +36,15 @@ public class ComposeUiRedwoodBasicWidgetFactory(
   override fun Button(): Button<@Composable (() -> Unit)> = ComposeUiButton()
   override fun Reuse(value: @Composable () -> Unit, modifier: Reuse) {
   }
+}
+
+@Suppress("FunctionName") // Acting like a type.
+public fun ComposeUiRedwoodBasicWidgetSystem(
+  imageLoader: ImageLoader,
+): RedwoodBasicWidgetSystem<@Composable (() -> Unit)> {
+  return RedwoodBasicWidgetSystem(
+    RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(imageLoader),
+    RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
+    RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
+  )
 }

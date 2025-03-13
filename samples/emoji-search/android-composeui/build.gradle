@@ -34,8 +34,6 @@ dependencies {
   implementation libs.jetbrains.compose.material
   implementation libs.jetbrains.compose.ui
   debugImplementation libs.jetbrains.compose.ui.tooling
-  implementation projects.redwoodLayoutComposeui
-  implementation projects.redwoodLazylayoutComposeui
   implementation projects.redwoodTreehouseHost
   implementation projects.redwoodTreehouseHostComposeui
   implementation projects.redwoodWidgetCompose
