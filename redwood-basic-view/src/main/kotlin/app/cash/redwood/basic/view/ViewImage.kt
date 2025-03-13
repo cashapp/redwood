@@ -39,6 +39,7 @@ internal class ViewImage(
   override fun url(url: String) {
     val request = ImageRequest.Builder(value.context)
       .target(value)
+      .data(url)
       .build()
     imageLoader.enqueue(request)
   }
