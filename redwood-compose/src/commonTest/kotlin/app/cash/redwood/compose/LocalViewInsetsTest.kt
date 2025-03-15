@@ -15,20 +15,20 @@
  */
 package app.cash.redwood.compose
 
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.testing.RedwoodBasicTester
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.testing.TestSchemaTester
-import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 class LocalViewInsetsTest {
   @Test
   fun localInsetsUpdated() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       uiConfigurations.value = uiConfigurations.value.copy(
         viewInsets = Margin(top = 30.dp),
       )
@@ -53,7 +53,7 @@ class LocalViewInsetsTest {
 
   @Test
   fun consumeInsets() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       uiConfigurations.value = uiConfigurations.value.copy(
         viewInsets = Margin(top = 30.dp),
       )
@@ -80,7 +80,7 @@ class LocalViewInsetsTest {
 
   @Test
   fun consumeInsetsWithMax() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       uiConfigurations.value = uiConfigurations.value.copy(
         viewInsets = Margin(top = 30.dp),
       )
@@ -107,7 +107,7 @@ class LocalViewInsetsTest {
 
   @Test
   fun consumeAllInsetsWithMaxAndUpdates() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       uiConfigurations.value = uiConfigurations.value.copy(
         viewInsets = Margin(10.0.dp, 20.0.dp, 30.0.dp, 40.0.dp),
       )

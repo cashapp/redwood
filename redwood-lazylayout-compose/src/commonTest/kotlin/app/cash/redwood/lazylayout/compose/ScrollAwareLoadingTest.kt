@@ -16,12 +16,12 @@
 package app.cash.redwood.lazylayout.compose
 
 import androidx.compose.runtime.mutableIntStateOf
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.testing.RedwoodBasicTester
 import app.cash.redwood.lazylayout.testing.LazyListValue
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.testing.TestSchemaTester
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -29,7 +29,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun onlyLoadTheScrollWindowUntilScrollingStops() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -61,7 +61,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun onlyLoadTheScrollWindowUntilScrollingStopsWhenScrollingUp() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -100,7 +100,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun scrollToEndOfRange() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -131,7 +131,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun dontUnloadTheExistingLoadedWindow() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -169,7 +169,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun itemCountIsConsistentDuringScroll() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -247,7 +247,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun itemCountChanges() = runTest {
-    TestSchemaTester {
+    RedwoodBasicTester {
       val itemCount = mutableIntStateOf(100)
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {

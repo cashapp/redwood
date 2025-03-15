@@ -20,6 +20,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.testing.RedwoodBasicTester
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
@@ -34,9 +37,6 @@ import assertk.assertions.extracting
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.single
-import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.testing.TestSchemaTester
-import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.runTest
@@ -47,7 +47,7 @@ class BackHandlerTest {
   @Test
   fun enabledBackHandler() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler {
@@ -65,7 +65,7 @@ class BackHandlerTest {
   @Test
   fun disabledBackHandler() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       setContent {
         val backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
@@ -81,7 +81,7 @@ class BackHandlerTest {
   @Test
   fun disabledToEnabledBackHandler() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       var enabled by mutableStateOf(false)
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
@@ -104,7 +104,7 @@ class BackHandlerTest {
   @Test
   fun outermostEnabledAndInnermostEnabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
@@ -126,7 +126,7 @@ class BackHandlerTest {
   @Test
   fun outermostEnabledAndInnermostDisabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler {
@@ -148,7 +148,7 @@ class BackHandlerTest {
   @Test
   fun outermostDisabledAndInnermostEnabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
@@ -170,7 +170,7 @@ class BackHandlerTest {
   @Test
   fun outermostDisabledAndInnermostDisabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    TestSchemaTester(onBackPressedDispatcher) {
+    RedwoodBasicTester(onBackPressedDispatcher) {
       setContent {
         val backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
