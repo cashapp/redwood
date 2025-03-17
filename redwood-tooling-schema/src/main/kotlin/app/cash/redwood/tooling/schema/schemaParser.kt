@@ -40,13 +40,25 @@ internal fun loadProtocolSchemaDependencies(
       val dependency = loadProtocolSchema(type, classLoader)
         .withTagOffset(tag * MAX_MEMBER_TAG)
 
-      require(dependency.dependencies.isEmpty()) {
-        "Schema dependency $type also has its own dependencies. " +
-          "For now, only a single level of dependencies is supported."
-      }
-
       type to dependency
     }
+
+  val missingTransitiveDependencies = buildMap {
+    val declaredDependencies = schema.dependencies.toSet()
+    for (dependency in dependencies.values) {
+      val missing = dependency.dependencies.filter { it !in declaredDependencies }
+      if (missing.isNotEmpty()) {
+        this[dependency.type] = missing
+      }
+    }
+  }
+  require(missingTransitiveDependencies.isEmpty()) {
+    "Dependencies contain transitive dependencies which need declared directly:\n\n" +
+      missingTransitiveDependencies.entries.joinToString("\n") { (type, missing) ->
+        "$type depends on:\n - " + missing.joinToString("\n - ")
+      }
+  }
+
   return ParsedProtocolSchemaSet(schema, dependencies)
 }
 

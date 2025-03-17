@@ -15,8 +15,10 @@
  */
 package app.cash.redwood.tooling.schema
 
+import app.cash.redwood.basic.RedwoodBasic
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.layout.Row
+import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Children
 import app.cash.redwood.schema.Modifier
 import app.cash.redwood.schema.Property
@@ -46,7 +48,6 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.message
 import assertk.assertions.prop
-import com.example.redwood.testapp.TestSchema
 import kotlin.DeprecationLevel.ERROR
 import kotlin.DeprecationLevel.HIDDEN
 import kotlinx.serialization.Serializable
@@ -1194,7 +1195,7 @@ class SchemaParserTest {
   @Schema(
     members = [],
     dependencies = [
-      Dependency(1, TestSchema::class),
+      Dependency(1, RedwoodBasic::class),
     ],
   )
   object SchemaDependencyHasDependency
@@ -1203,9 +1204,32 @@ class SchemaParserTest {
     assertFailure { parseTestSchema(SchemaDependencyHasDependency::class) }
       .isInstanceOf<IllegalArgumentException>()
       .hasMessage(
-        "Schema dependency com.example.redwood.testapp.TestSchema also has its own dependencies. " +
-          "For now, only a single level of dependencies is supported.",
+        """
+        |Dependencies contain transitive dependencies which need declared directly:
+        |
+        |app.cash.redwood.basic.RedwoodBasic depends on:
+        | - app.cash.redwood.layout.RedwoodLayout
+        | - app.cash.redwood.lazylayout.RedwoodLazyLayout
+        """.trimMargin(),
       )
+  }
+
+  @Schema(
+    members = [],
+    dependencies = [
+      Dependency(1, RedwoodBasic::class),
+      Dependency(2, RedwoodLayout::class),
+      Dependency(3, RedwoodLazyLayout::class),
+    ],
+  )
+  object SchemaDependencyHasDependencyButDeclared
+
+  @Test fun schemaDependencyHasDependencyButDeclared() {
+    val schemaSet = parseTestSchema(SchemaDependencyHasDependencyButDeclared::class)
+    assertThat(schemaSet).all {
+      prop(ProtocolSchemaSet::all).hasSize(4)
+      prop(ProtocolSchemaSet::dependencies).hasSize(3)
+    }
   }
 
   @Test fun schemaTypeMustBeInSource() {
