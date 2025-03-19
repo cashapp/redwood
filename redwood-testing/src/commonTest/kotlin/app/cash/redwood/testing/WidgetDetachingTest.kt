@@ -20,6 +20,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.compose.reuse
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
@@ -30,8 +32,6 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isNotNull
 import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testapp.compose.TestRow
-import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.compose.reuse
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest

@@ -22,6 +22,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
@@ -29,10 +32,8 @@ import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testapp.testing.TextValue
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
@@ -81,6 +82,7 @@ class TestRedwoodCompositionTest {
       scope = backgroundScope,
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
