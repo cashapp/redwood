@@ -16,23 +16,15 @@
 package com.example.redwood.testapp.browser
 
 import com.example.redwood.testapp.modifier.BackgroundColor
-import com.example.redwood.testapp.modifier.Reuse
 import com.example.redwood.testapp.widget.Button
 import com.example.redwood.testapp.widget.TestSchemaWidgetFactory
-import com.example.redwood.testapp.widget.Text
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLSpanElement
 
 class HtmlWidgetFactory(
   private val document: Document,
 ) : TestSchemaWidgetFactory<HTMLElement> {
-  override fun Text(): Text<HTMLElement> {
-    val span = document.createElement("span") as HTMLSpanElement
-    return HtmlText(span)
-  }
-
   override fun Button(): Button<HTMLElement> {
     val button = document.createElement("button") as HTMLButtonElement
     return HtmlButton(button)
@@ -51,6 +43,4 @@ class HtmlWidgetFactory(
     value.style.backgroundColor = "#" + modifier.color.toHexString()
   }
   override fun Split() = TODO()
-  override fun Reuse(value: HTMLElement, modifier: Reuse) {
-  }
 }

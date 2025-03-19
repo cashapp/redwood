@@ -10,6 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api projects.redwoodBasicWidget
         api projects.redwoodLayoutWidget
         api projects.redwoodLazylayoutWidget
         api projects.testApp.schema.modifiers
@@ -20,8 +21,8 @@ kotlin {
   // Ensure our codegen correctly works in explicit API mode.
   explicitApi()
 
-  targets.all {
-    compilations.all {
+  targets.configureEach {
+    compilations.configureEach {
       kotlinOptions {
         // Ensure our codegen does not produce any warnings.
         allWarningsAsErrors = true

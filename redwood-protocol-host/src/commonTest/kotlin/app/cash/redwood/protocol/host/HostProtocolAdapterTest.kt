@@ -16,6 +16,8 @@
 package app.cash.redwood.protocol.host
 
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
@@ -40,7 +42,6 @@ import assertk.assertions.message
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestRowValue
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testapp.testing.TextValue
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -55,6 +56,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -82,6 +84,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -110,6 +113,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -178,6 +182,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -214,6 +219,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -234,8 +240,8 @@ class HostProtocolAdapterTest {
         Create(Id(2), WidgetTag(1)),
         ModifierChange(Id(2)),
         // Text
-        Create(Id(3), WidgetTag(3)),
-        PropertyChange(Id(3), WidgetTag(3), PropertyTag(1), JsonPrimitive("hello")),
+        Create(Id(3), WidgetTag(1_000_003)),
+        PropertyChange(Id(3), WidgetTag(1_000_003), PropertyTag(1), JsonPrimitive("hello")),
         ModifierChange(Id(3)),
         Add(Id(2), ChildrenTag(1), Id(3), 0),
         Add(Id(1), ChildrenTag(1), Id(2), 0),
@@ -276,6 +282,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
+          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -296,8 +303,8 @@ class HostProtocolAdapterTest {
         Create(Id(2), WidgetTag(1)),
         ModifierChange(Id(2)),
         // Text
-        Create(Id(3), WidgetTag(3)),
-        PropertyChange(Id(3), WidgetTag(3), PropertyTag(1), JsonPrimitive("hello")),
+        Create(Id(3), WidgetTag(1_000_003)),
+        PropertyChange(Id(3), WidgetTag(1_000_003), PropertyTag(1), JsonPrimitive("hello")),
         ModifierChange(Id(3)),
         Add(Id(2), ChildrenTag(1), Id(3), 0),
         Add(Id(1), ChildrenTag(1), Id(2), 0),

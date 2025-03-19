@@ -15,6 +15,7 @@
  */
 package com.example.redwood.testapp
 
+import app.cash.redwood.basic.RedwoodBasic
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Children
@@ -36,48 +37,42 @@ import kotlin.time.Duration
     CustomTypeWithDefault::class,
     CustomTypeWithMultipleScopes::class,
     CustomTypeDataObject::class,
-    Text::class,
     Button::class,
     Button2::class,
     TextInput::class,
     BackgroundColor::class,
     Split::class,
-    Reuse::class,
   ],
   dependencies = [
-    Dependency(1, RedwoodLayout::class),
-    Dependency(2, RedwoodLazyLayout::class),
+    Dependency(1, RedwoodBasic::class),
+    Dependency(2, RedwoodLayout::class),
+    Dependency(3, RedwoodLazyLayout::class),
   ],
 )
-public interface TestSchema
+interface TestSchema
 
 /**
  * A trivial row-like type for testing purposes only.
  * Use redwood-layout for any real views in the test app.
  */
 @Widget(1)
-public data class TestRow(
+data class TestRow(
   @Children(1) val children: () -> Unit,
 )
 
-public object TestRowScope
+object TestRowScope
 
 /**
  * A trivial row-like type with a scope for testing purposes only.
  * Use redwood-layout for any real views in the test app.
  */
 @Widget(2)
-public data class ScopedTestRow(
+data class ScopedTestRow(
   @Children(1) val children: TestRowScope.() -> Unit,
 )
 
-@Widget(3)
-public data class Text(
-  @Property(1) val text: String?,
-)
-
 @Widget(4)
-public data class Button(
+data class Button(
   @Property(1) val text: String?,
   @Property(2) val onClick: (() -> Unit)?,
   @Property(3) val color: UInt = 0u,
@@ -85,13 +80,13 @@ public data class Button(
 
 /** Like [Button] but with a required lambda. */
 @Widget(7)
-public data class Button2(
+data class Button2(
   @Property(1) val text: String?,
   @Property(2) val onClick: () -> Unit,
 )
 
 @Widget(5)
-public data class TextInput(
+data class TextInput(
   @Property(1) val text: String?,
   @Property(2) val customType: Duration?,
   @Property(3) val onChange: ((String) -> Unit)? = null,
@@ -100,51 +95,48 @@ public data class TextInput(
 )
 
 @Widget(9)
-public data class Split(
+data class Split(
   @Children(1) val left: () -> Unit,
   @Children(2) val right: () -> Unit,
 )
 
-public object TestScope
+object TestScope
 
-public object SecondaryTestScope
+object SecondaryTestScope
 
 @Modifier(1, TestRowScope::class)
-public data class TestRowVerticalAlignment(
+data class TestRowVerticalAlignment(
   /** -1 for top, 0 for middle, 1 for bottom. */
   val direction: Int,
 )
 
 @Modifier(2, TestScope::class)
-public data class AccessibilityDescription(
+data class AccessibilityDescription(
   val value: String,
 )
 
 @Modifier(3, TestScope::class)
-public data class CustomType(
+data class CustomType(
   val customType: Duration,
 )
 
 @Modifier(4, TestScope::class)
-public object CustomTypeStateless
+object CustomTypeStateless
 
 @Modifier(5, TestScope::class)
-public data class CustomTypeWithDefault(
+data class CustomTypeWithDefault(
   val customType: Duration,
   val string: String = "sup",
 )
 
 @Modifier(6, TestScope::class, SecondaryTestScope::class)
-public object CustomTypeWithMultipleScopes
+object CustomTypeWithMultipleScopes
 
 @Modifier(7, TestScope::class)
-public data object CustomTypeDataObject
+data object CustomTypeDataObject
 
 @Modifier(8)
-public data class BackgroundColor(
+data class BackgroundColor(
   /** Expects argb format: `0xAARRGGBBu`. */
   val color: UInt,
 )
-
-@Modifier(-4_543_827) // -4_543_827 is a reserved tag.
-public object Reuse

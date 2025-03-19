@@ -17,12 +17,12 @@ package com.example.redwood.testapp.presenter
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.Modifier
+import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.compose.current
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp
-import com.example.redwood.testapp.compose.Text
 
 @Composable
 fun UiConfigurationValues(modifier: Modifier = Modifier) {

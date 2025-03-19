@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
+import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.compose.BackHandler
 import app.cash.redwood.layout.api.Constraint.Companion.Fill
 import app.cash.redwood.layout.api.CrossAxisAlignment.Companion.Stretch
@@ -30,7 +31,6 @@ import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import com.example.redwood.testapp.compose.Button
-import com.example.redwood.testapp.compose.Text
 
 private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
   put("Repo Search") { RepoSearch(httpClient) }

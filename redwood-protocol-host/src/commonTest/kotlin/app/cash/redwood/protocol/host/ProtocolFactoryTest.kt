@@ -17,6 +17,7 @@ package app.cash.redwood.protocol.host
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.protocol.ChildrenTag
@@ -54,6 +55,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -70,6 +72,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -89,6 +92,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -118,6 +122,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -147,6 +152,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -173,6 +179,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -211,6 +218,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -228,6 +236,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -249,6 +258,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -266,6 +276,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -285,6 +296,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
@@ -306,6 +318,7 @@ class ProtocolFactoryTest {
     val factory = TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),

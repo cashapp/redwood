@@ -13,10 +13,12 @@ dependencies {
   implementation projects.testApp.launcher
   implementation projects.testApp.presenterTreehouse
   implementation projects.testApp.schema.protocolHost
+  implementation projects.redwoodBasicView
   implementation projects.redwoodLayoutView
   implementation projects.redwoodLazylayoutView
   implementation libs.androidx.appCompat
   implementation libs.androidx.core
   implementation libs.google.material
   implementation libs.okio.assetfilesystem
+  implementation libs.coil.network.okhttp
 }

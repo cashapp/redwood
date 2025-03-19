@@ -21,6 +21,7 @@ import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
@@ -49,7 +50,6 @@ import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Button2
 import com.example.redwood.testapp.compose.TestRow
-import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import kotlin.test.Test
 import kotlin.test.fail
@@ -317,18 +317,18 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
       // Row to Root
-      Create(Id(1), WidgetTag(1000001)),
+      Create(Id(1), WidgetTag(2000001)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       // Box
-      Create(Id(2), WidgetTag(1000004)),
+      Create(Id(2), WidgetTag(2000004)),
       // Text("one") to Box
-      Create(Id(3), WidgetTag(3)),
+      Create(Id(3), WidgetTag(1000003)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(3), 0),
       // Text("two") to Box
-      Create(Id(4), WidgetTag(3)),
+      Create(Id(4), WidgetTag(1000003)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(4), 1),
       // Text("three") to Box
-      Create(Id(5), WidgetTag(3)),
+      Create(Id(5), WidgetTag(1000003)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(5), 2),
       // Box to Row
       ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
@@ -409,18 +409,18 @@ class ProtocolTest {
 
     assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
       // Row to Root
-      Create(Id(1), WidgetTag(1000001)),
+      Create(Id(1), WidgetTag(2000001)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
       // Box
-      Create(Id(2), WidgetTag(1000004)),
+      Create(Id(2), WidgetTag(2000004)),
       // Text("one") to Box
-      Create(Id(3), WidgetTag(3)),
+      Create(Id(3), WidgetTag(1000003)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(3), 0),
       // Text("two") to Box
-      Create(Id(4), WidgetTag(3)),
+      Create(Id(4), WidgetTag(1000003)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(4), 1),
       // Text("three") to Box
-      Create(Id(5), WidgetTag(3)),
+      Create(Id(5), WidgetTag(1000003)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(5), 2),
       // Box to Row
       ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
@@ -433,7 +433,7 @@ class ProtocolTest {
       // Row from Root
       ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
       // Text("hey") to Root
-      Create(Id(6), WidgetTag(3)),
+      Create(Id(6), WidgetTag(1000003)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(6), 0),
     )
 
@@ -442,18 +442,18 @@ class ProtocolTest {
       // Text from Root
       ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
       // Column to Root
-      Create(Id(7), WidgetTag(1000002)),
+      Create(Id(7), WidgetTag(2000002)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(7), 0),
       // Box
-      Create(Id(8), WidgetTag(1000004)),
+      Create(Id(8), WidgetTag(2000004)),
       // Text("one") to Box
-      Create(Id(9), WidgetTag(3)),
+      Create(Id(9), WidgetTag(1000003)),
       ChildrenChange.Add(Id(8), ChildrenTag(1), Id(9), 0),
       // Text("two") to Box
-      Create(Id(10), WidgetTag(3)),
+      Create(Id(10), WidgetTag(1000003)),
       ChildrenChange.Add(Id(8), ChildrenTag(1), Id(10), 1),
       // Text("three") to Box
-      Create(Id(11), WidgetTag(3)),
+      Create(Id(11), WidgetTag(1000003)),
       ChildrenChange.Add(Id(8), ChildrenTag(1), Id(11), 2),
       // Box to Column
       ChildrenChange.Add(Id(7), ChildrenTag(1), Id(8), 0),

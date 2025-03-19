@@ -25,13 +25,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
+import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import com.example.redwood.testapp.compose.Button
-import com.example.redwood.testapp.compose.Text
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 

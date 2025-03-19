@@ -20,6 +20,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.compose.reuse
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.testing.BoxValue
@@ -37,11 +40,8 @@ import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isSameInstanceAs
 import com.example.redwood.testapp.compose.Button
 import com.example.redwood.testapp.compose.Split
-import com.example.redwood.testapp.compose.Text
-import com.example.redwood.testapp.compose.reuse
 import com.example.redwood.testapp.testing.ButtonValue
 import com.example.redwood.testapp.testing.SplitValue
-import com.example.redwood.testapp.testing.TextValue
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 

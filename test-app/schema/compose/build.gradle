@@ -13,15 +13,17 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api projects.redwoodBasicCompose
         api projects.redwoodLayoutCompose
+        api projects.redwoodLazylayoutCompose
         api projects.testApp.schema.widget
         api projects.testApp.schema.modifiers
       }
     }
   }
 
-  targets.all {
-    compilations.all {
+  targets.configureEach {
+    compilations.configureEach {
       kotlinOptions {
         // Ensure our codegen does not produce any warnings.
         allWarningsAsErrors = true

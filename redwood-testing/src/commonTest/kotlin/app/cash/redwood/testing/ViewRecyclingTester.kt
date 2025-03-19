@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
@@ -54,6 +55,7 @@ class ViewRecyclingTester(
   private val widgetProtocolFactory = TestSchemaProtocolFactory(
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     ),
@@ -201,11 +203,11 @@ private suspend fun SequenceScope<Widget<WidgetValue>>.flattenRecursive(
   yield(widget)
 
   val childrenLists = when (widget) {
+    is app.cash.redwood.basic.testing.MutableText -> listOf()
     is app.cash.redwood.layout.testing.MutableBox -> listOf(widget.children)
     is app.cash.redwood.layout.testing.MutableColumn -> listOf(widget.children)
     is com.example.redwood.testapp.testing.MutableButton -> listOf()
     is com.example.redwood.testapp.testing.MutableSplit -> listOf(widget.left, widget.right)
-    is com.example.redwood.testapp.testing.MutableText -> listOf()
     else -> error("unexpected widget: $widget")
   }
 

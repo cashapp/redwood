@@ -18,18 +18,14 @@ package com.example.redwood.testapp.android.views
 import android.content.Context
 import android.view.View
 import android.widget.Button as ButtonWidget
-import android.widget.TextView
 import com.example.redwood.testapp.modifier.BackgroundColor
-import com.example.redwood.testapp.modifier.Reuse
 import com.example.redwood.testapp.widget.Button
 import com.example.redwood.testapp.widget.Split
 import com.example.redwood.testapp.widget.TestSchemaWidgetFactory
-import com.example.redwood.testapp.widget.Text
 
 class AndroidTestSchemaWidgetFactory(
   private val context: Context,
 ) : TestSchemaWidgetFactory<View> {
-  override fun Text(): Text<View> = ViewText(TextView(context))
   override fun TestRow() = throw UnsupportedOperationException()
   override fun ScopedTestRow() = throw UnsupportedOperationException()
   override fun Button(): Button<View> = ViewButton(ButtonWidget(context))
@@ -39,6 +35,4 @@ class AndroidTestSchemaWidgetFactory(
     value.setBackgroundColor(modifier.color.toInt())
   }
   override fun Split(): Split<View> = TODO()
-  override fun Reuse(value: View, modifier: Reuse) {
-  }
 }

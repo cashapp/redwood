@@ -18,6 +18,9 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
+import app.cash.redwood.basic.compose.Text
+import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.compose.current
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
@@ -45,12 +48,10 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Split
 import com.example.redwood.testapp.compose.TestRow
-import com.example.redwood.testapp.compose.Text
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
-import com.example.redwood.testapp.testing.TextValue
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlin.test.Test
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,6 +141,7 @@ class ViewTreesTest {
     // Ensure when the changes are applied with the widget protocol we get equivalent values.
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )

@@ -18,6 +18,7 @@
 package com.example.redwood.testapp.ios
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetFactory
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
@@ -42,6 +43,7 @@ fun exposedTypes(
   testSchemaWidgetFactory: TestSchemaWidgetFactory<*>,
   protocolFactory: TestSchemaProtocolFactory<*>,
   treehouseUIView: TreehouseUIView,
+  uiViewRedwoodBasicWidgetFactory: UIViewRedwoodBasicWidgetFactory,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   treehouseWidgetSystem: WidgetSystem<*>,

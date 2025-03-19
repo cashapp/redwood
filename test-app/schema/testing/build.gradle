@@ -1,5 +1,3 @@
-import app.cash.redwood.buildsupport.TargetGroup
-
 import static app.cash.redwood.buildsupport.TargetGroup.Common
 
 redwoodBuild {
@@ -12,8 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLayoutWidget
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodBasicTesting
         api projects.redwoodLayoutTesting
         api projects.redwoodLazylayoutTesting
         api projects.testApp.schema.widget
@@ -24,8 +21,8 @@ kotlin {
   // Ensure our codegen correctly works in explicit API mode.
   explicitApi()
 
-  targets.all {
-    compilations.all {
+  targets.configureEach {
+    compilations.configureEach {
       kotlinOptions {
         // Ensure our codegen does not produce any warnings.
         allWarningsAsErrors = true

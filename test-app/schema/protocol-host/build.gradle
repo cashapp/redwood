@@ -19,8 +19,8 @@ kotlin {
     }
   }
 
-  targets.all {
-    compilations.all {
+  targets.configureEach {
+    compilations.configureEach {
       kotlinOptions {
         // Ensure our codegen does not produce any warnings.
         allWarningsAsErrors = true

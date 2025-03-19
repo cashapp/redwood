@@ -17,20 +17,8 @@ package com.example.redwood.testapp.browser
 
 import app.cash.redwood.Modifier
 import com.example.redwood.testapp.widget.Button
-import com.example.redwood.testapp.widget.Text
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLSpanElement
-
-class HtmlText(
-  override val value: HTMLSpanElement,
-) : Text<HTMLElement> {
-  override var modifier: Modifier = Modifier
-
-  override fun text(text: String?) {
-    value.textContent = text
-  }
-}
 
 class HtmlButton(
   override val value: HTMLButtonElement,

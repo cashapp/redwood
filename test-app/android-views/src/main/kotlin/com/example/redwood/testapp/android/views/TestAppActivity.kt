@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
+import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetFactory
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
@@ -35,6 +36,9 @@ import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.asZiplineHttpClient
 import app.cash.zipline.loader.withDevelopmentServerPush
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.serviceLoaderEnabled
 import com.example.redwood.testapp.launcher.TestAppSpec
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.treehouse.TestAppPresenter
@@ -63,6 +67,13 @@ class TestAppActivity : ComponentActivity() {
     val treehouseApp = createTreehouseApp()
     val treehouseContentSource = TreehouseContentSource(TestAppPresenter::launchForApp)
 
+    val imageLoader = ImageLoader.Builder(this)
+      .serviceLoaderEnabled(false)
+      .components {
+        add(OkHttpNetworkFetcherFactory())
+      }
+      .build()
+
     val widgetSystem = object : TreehouseView.WidgetSystem<View> {
       override fun widgetFactory(
         json: Json,
@@ -70,6 +81,7 @@ class TestAppActivity : ComponentActivity() {
       ) = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = AndroidTestSchemaWidgetFactory(context),
+          RedwoodBasic = ViewRedwoodBasicWidgetFactory(context, imageLoader),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
         ),
