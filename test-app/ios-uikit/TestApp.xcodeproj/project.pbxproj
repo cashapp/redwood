@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		10AA3D4C28C03D32006F125E /* IosTestSchemaWidgetFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4B28C03D32006F125E /* IosTestSchemaWidgetFactory.swift */; };
-		10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AA3D4D28C0EA40006F125E /* TextBinding.swift */; };
 		635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635661D421F12B7E00DD7240 /* AppDelegate.swift */; };
 		635661DA21F12B7E00DD7240 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 635661D821F12B7E00DD7240 /* Main.storyboard */; };
 		635661DC21F12B8000DD7240 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 635661DB21F12B8000DD7240 /* Assets.xcassets */; };
@@ -20,7 +19,6 @@
 
 /* Begin PBXFileReference section */
 		10AA3D4B28C03D32006F125E /* IosTestSchemaWidgetFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IosTestSchemaWidgetFactory.swift; sourceTree = "<group>"; };
-		10AA3D4D28C0EA40006F125E /* TextBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBinding.swift; sourceTree = "<group>"; };
 		635661D121F12B7E00DD7240 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		635661D421F12B7E00DD7240 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		635661D921F12B7E00DD7240 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -72,7 +70,6 @@
 				635661E021F12B8000DD7240 /* Info.plist */,
 				CB9F76552810A8A8008CF457 /* IosHostApi.swift */,
 				10AA3D4B28C03D32006F125E /* IosTestSchemaWidgetFactory.swift */,
-				10AA3D4D28C0EA40006F125E /* TextBinding.swift */,
 				CB9E3E812AB379C4007A87CD /* ButtonBinding.swift */,
 			);
 			path = TestApp;
@@ -174,7 +171,6 @@
 				10AA3D4C28C03D32006F125E /* IosTestSchemaWidgetFactory.swift in Sources */,
 				CB9E3E822AB379C4007A87CD /* ButtonBinding.swift in Sources */,
 				CB85C0B725AFE61A007A2CC7 /* TestAppViewController.swift in Sources */,
-				10AA3D4E28C0EA40006F125E /* TextBinding.swift in Sources */,
 				635661D521F12B7E00DD7240 /* AppDelegate.swift in Sources */,
 				CB9F76562810A8A8008CF457 /* IosHostApi.swift in Sources */,
 			);

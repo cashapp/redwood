@@ -24,10 +24,6 @@ class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
         fatalError()
     }
 
-    func Text() -> Text {
-        return TextBinding()
-    }
-
     func Button() -> Button {
         return ButtonBinding()
     }
@@ -50,9 +46,6 @@ class IosTestSchemaWidgetFactory: TestSchemaWidgetFactory {
 
     func Split() -> Split {
         fatalError()
-    }
-
-    func Reuse(value: Any, modifier: Reuse) {
     }
 }
 

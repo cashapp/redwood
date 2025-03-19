@@ -303,8 +303,8 @@ class HostProtocolAdapterTest {
         Create(Id(2), WidgetTag(1)),
         ModifierChange(Id(2)),
         // Text
-        Create(Id(3), WidgetTag(1_000_003)),
-        PropertyChange(Id(3), WidgetTag(1_000_003), PropertyTag(1), JsonPrimitive("hello")),
+        Create(Id(3), WidgetTag(1_000_002)),
+        PropertyChange(Id(3), WidgetTag(1_000_002), PropertyTag(1), JsonPrimitive("hello")),
         ModifierChange(Id(3)),
         Add(Id(2), ChildrenTag(1), Id(3), 0),
         Add(Id(1), ChildrenTag(1), Id(2), 0),

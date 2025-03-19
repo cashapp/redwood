@@ -29,7 +29,7 @@ class WidgetProtocolGenerationTest {
     val fileSpec = generateProtocolFactory(schema)
     assertThat(fileSpec.toString()).all {
       contains("1 -> TestRowVerticalAlignmentImpl.serializer()")
-      contains("1_000_001 -> GrowImpl.serializer()")
+      contains("2_000_001 -> GrowImpl.serializer()")
     }
   }
 }

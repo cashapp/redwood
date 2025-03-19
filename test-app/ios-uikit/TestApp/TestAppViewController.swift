@@ -66,6 +66,7 @@ class TestSchemaTreehouseWidgetSystem : TreehouseViewWidgetSystem {
         return TestSchemaProtocolFactory<UIView>(
             widgetSystem: TestSchemaWidgetSystem<UIView>(
                 TestSchema: IosTestSchemaWidgetFactory(),
+                RedwoodBasic: UIViewRedwoodBasicWidgetFactory(),
                 RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
                 RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
             ),

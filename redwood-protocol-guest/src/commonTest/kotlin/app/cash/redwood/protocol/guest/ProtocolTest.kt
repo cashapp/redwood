@@ -111,18 +111,18 @@ class ProtocolTest {
         Create(Id(1), WidgetTag(1)),
         ModifierChange(Id(1)),
         // Text
-        Create(Id(2), WidgetTag(3)),
+        Create(Id(2), WidgetTag(1000002)),
         // text
-        PropertyChange(Id(2), WidgetTag(3), PropertyTag(1), JsonPrimitive("hey")),
+        PropertyChange(Id(2), WidgetTag(1000002), PropertyTag(1), JsonPrimitive("hey")),
         ModifierChange(Id(2)),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
         // Row
         Create(Id(3), WidgetTag(1)),
         ModifierChange(Id(3)),
         // Text
-        Create(Id(4), WidgetTag(3)),
+        Create(Id(4), WidgetTag(1000002)),
         // text
-        PropertyChange(Id(4), WidgetTag(3), PropertyTag(1), JsonPrimitive("hello")),
+        PropertyChange(Id(4), WidgetTag(1000002), PropertyTag(1), JsonPrimitive("hello")),
         ModifierChange(Id(4)),
         ChildrenChange.Add(Id(3), ChildrenTag(1), Id(4), 0),
         ChildrenChange.Add(Id(1), ChildrenTag(1), Id(3), 1),
@@ -322,13 +322,13 @@ class ProtocolTest {
       // Box
       Create(Id(2), WidgetTag(2000004)),
       // Text("one") to Box
-      Create(Id(3), WidgetTag(1000003)),
+      Create(Id(3), WidgetTag(1000002)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(3), 0),
       // Text("two") to Box
-      Create(Id(4), WidgetTag(1000003)),
+      Create(Id(4), WidgetTag(1000002)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(4), 1),
       // Text("three") to Box
-      Create(Id(5), WidgetTag(1000003)),
+      Create(Id(5), WidgetTag(1000002)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(5), 2),
       // Box to Row
       ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
@@ -341,7 +341,7 @@ class ProtocolTest {
       // Row from Root
       ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
       // Column to Root
-      Create(Id(6), WidgetTag(1000002)),
+      Create(Id(6), WidgetTag(2000002)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(6), 0),
       // Box to Column
       ChildrenChange.Add(Id(6), ChildrenTag(1), Id(2), 0),
@@ -369,11 +369,11 @@ class ProtocolTest {
     }
 
     assertThat(composition.awaitSnapshot().filter { it !is ValueChange }).containsExactly(
-      Create(Id(1), WidgetTag(3)),
+      Create(Id(1), WidgetTag(1000002)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(1), 0),
-      Create(Id(2), WidgetTag(3)),
+      Create(Id(2), WidgetTag(1000002)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(2), 1),
-      Create(Id(3), WidgetTag(3)),
+      Create(Id(3), WidgetTag(1000002)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(3), 2),
     )
 
@@ -414,13 +414,13 @@ class ProtocolTest {
       // Box
       Create(Id(2), WidgetTag(2000004)),
       // Text("one") to Box
-      Create(Id(3), WidgetTag(1000003)),
+      Create(Id(3), WidgetTag(1000002)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(3), 0),
       // Text("two") to Box
-      Create(Id(4), WidgetTag(1000003)),
+      Create(Id(4), WidgetTag(1000002)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(4), 1),
       // Text("three") to Box
-      Create(Id(5), WidgetTag(1000003)),
+      Create(Id(5), WidgetTag(1000002)),
       ChildrenChange.Add(Id(2), ChildrenTag(1), Id(5), 2),
       // Box to Row
       ChildrenChange.Add(Id(1), ChildrenTag(1), Id(2), 0),
@@ -433,7 +433,7 @@ class ProtocolTest {
       // Row from Root
       ChildrenChange.Remove(Id.Root, ChildrenTag.Root, 0, detach = false),
       // Text("hey") to Root
-      Create(Id(6), WidgetTag(1000003)),
+      Create(Id(6), WidgetTag(1000002)),
       ChildrenChange.Add(Id.Root, ChildrenTag.Root, Id(6), 0),
     )
 
@@ -447,13 +447,13 @@ class ProtocolTest {
       // Box
       Create(Id(8), WidgetTag(2000004)),
       // Text("one") to Box
-      Create(Id(9), WidgetTag(1000003)),
+      Create(Id(9), WidgetTag(1000002)),
       ChildrenChange.Add(Id(8), ChildrenTag(1), Id(9), 0),
       // Text("two") to Box
-      Create(Id(10), WidgetTag(1000003)),
+      Create(Id(10), WidgetTag(1000002)),
       ChildrenChange.Add(Id(8), ChildrenTag(1), Id(10), 1),
       // Text("three") to Box
-      Create(Id(11), WidgetTag(1000003)),
+      Create(Id(11), WidgetTag(1000002)),
       ChildrenChange.Add(Id(8), ChildrenTag(1), Id(11), 2),
       // Box to Column
       ChildrenChange.Add(Id(7), ChildrenTag(1), Id(8), 0),
