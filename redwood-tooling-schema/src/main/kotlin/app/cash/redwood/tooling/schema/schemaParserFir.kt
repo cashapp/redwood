@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
 import org.jetbrains.kotlin.builtins.StandardNames
 import org.jetbrains.kotlin.cli.common.GroupedKtSources
+import org.jetbrains.kotlin.cli.common.LegacyK2CliPipeline
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.ERROR
@@ -38,9 +39,9 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.cli.jvm.compiler.VfsBasedProjectEnvironment
-import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.IncrementalCompilationApi
-import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.ModuleCompilerInput
-import org.jetbrains.kotlin.cli.jvm.compiler.pipeline.compileModuleToAnalyzedFirViaLightTreeIncrementally
+import org.jetbrains.kotlin.cli.jvm.compiler.legacy.pipeline.IncrementalCompilationApi
+import org.jetbrains.kotlin.cli.jvm.compiler.legacy.pipeline.ModuleCompilerInput
+import org.jetbrains.kotlin.cli.jvm.compiler.legacy.pipeline.compileModuleToAnalyzedFirViaLightTreeIncrementally
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.com.intellij.openapi.util.Disposer
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems
@@ -155,6 +156,7 @@ public fun parseProtocolSchema(
     .map { localFileSystem.findFileByPath(it.absolutePath)!! }
 
   val sourceFiles = files.map(::KtVirtualFileSourceFile).toSet()
+  @OptIn(LegacyK2CliPipeline::class)
   val input = ModuleCompilerInput(
     targetId = TargetId(DEFAULT_MODULE_NAME, "redwood-parser"),
     groupedSources = GroupedKtSources(
@@ -175,7 +177,7 @@ public fun parseProtocolSchema(
     getPackagePartProviderFn = { packagePartProvider },
   )
 
-  @OptIn(IncrementalCompilationApi::class)
+  @OptIn(IncrementalCompilationApi::class, LegacyK2CliPipeline::class)
   val output = compileModuleToAnalyzedFirViaLightTreeIncrementally(
     projectEnvironment = projectEnvironment,
     messageCollector = messageCollector,
