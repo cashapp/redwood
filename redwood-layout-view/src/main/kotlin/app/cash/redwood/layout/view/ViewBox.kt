@@ -103,6 +103,7 @@ private class BoxViewGroup(
     }
 
     measurer.box(
+      measureForLayout = false,
       layoutDirection = layoutDirection,
       boxDensity = density,
       boxHorizontalAlignment = horizontalAlignment,
@@ -141,6 +142,7 @@ private class BoxViewGroup(
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
     measurer.box(
+      measureForLayout = true,
       layoutDirection = layoutDirection,
       boxDensity = density,
       boxHorizontalAlignment = horizontalAlignment,
@@ -164,6 +166,7 @@ private class BoxViewGroup(
  */
 private class Measurer {
   // Inputs from the box.
+  var measureForLayout = false
   var layoutDirection = LAYOUT_DIRECTION_LTR
   var boxDensity = Density(1.0)
   var boxHorizontalAlignment = CrossAxisAlignment.Start
@@ -200,6 +203,7 @@ private class Measurer {
 
   /** Configure the enclosing box. */
   fun box(
+    measureForLayout: Boolean,
     layoutDirection: Int,
     boxDensity: Density,
     boxHorizontalAlignment: CrossAxisAlignment,
@@ -210,6 +214,7 @@ private class Measurer {
     boxHeight: Int,
     boxHeightUnspecified: Boolean = false,
   ) {
+    this.measureForLayout = measureForLayout
     this.layoutDirection = layoutDirection
     this.boxDensity = boxDensity
     this.boxHorizontalAlignment = boxHorizontalAlignment
@@ -262,18 +267,19 @@ private class Measurer {
     val availableWidth = (frameWidth - marginWidth).coerceAtLeast(0)
     val availableHeight = (frameHeight - marginHeight).coerceAtLeast(0)
 
+    val verticalStretch = measureForLayout && verticalAlignment == CrossAxisAlignment.Stretch
+    val horizontalStretch = measureForLayout && horizontalAlignment == CrossAxisAlignment.Stretch
+
     val widthMeasureSpec = when {
       requestedWidth != -1 -> makeMeasureSpec(requestedWidth, MeasureSpec.EXACTLY)
-      horizontalAlignment == CrossAxisAlignment.Stretch ->
-        makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY)
+      horizontalStretch -> makeMeasureSpec(availableWidth, MeasureSpec.EXACTLY)
       boxWidthUnspecified -> makeMeasureSpec(availableWidth, MeasureSpec.UNSPECIFIED)
       else -> makeMeasureSpec(availableWidth, MeasureSpec.AT_MOST)
     }
 
     val heightMeasureSpec = when {
       requestedHeight != -1 -> makeMeasureSpec(requestedHeight, MeasureSpec.EXACTLY)
-      verticalAlignment == CrossAxisAlignment.Stretch ->
-        makeMeasureSpec(availableHeight, MeasureSpec.EXACTLY)
+      verticalStretch -> makeMeasureSpec(availableHeight, MeasureSpec.EXACTLY)
       boxHeightUnspecified -> makeMeasureSpec(availableHeight, MeasureSpec.UNSPECIFIED)
       else -> makeMeasureSpec(availableHeight, MeasureSpec.AT_MOST)
     }
@@ -282,13 +288,13 @@ private class Measurer {
 
     width = when {
       requestedWidth != -1 -> requestedWidth
-      horizontalAlignment == CrossAxisAlignment.Stretch -> availableWidth
+      horizontalStretch -> availableWidth
       else -> widget.value.measuredWidth
     }
 
     height = when {
       requestedHeight != -1 -> requestedHeight
-      verticalAlignment == CrossAxisAlignment.Stretch -> availableHeight
+      verticalStretch -> availableHeight
       else -> widget.value.measuredHeight
     }
   }

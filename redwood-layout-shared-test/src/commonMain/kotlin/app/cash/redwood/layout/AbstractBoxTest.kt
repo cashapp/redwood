@@ -26,6 +26,7 @@ import app.cash.redwood.snapshot.testing.Green
 import app.cash.redwood.snapshot.testing.Red
 import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
+import app.cash.redwood.snapshot.testing.argb
 import app.cash.redwood.snapshot.testing.color
 import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.Margin
@@ -449,6 +450,46 @@ abstract class AbstractBoxTest<T : Any> {
     widgetFactory.text(
       text = "foreground",
     ).also { box.children.insert(1, it) }
+
+    snapshotter.snapshot()
+  }
+
+  /** We had a bug where stretch alignment impacted measurement. It shouldn't. */
+  @Test
+  fun testStretchDoesNotImpactMeasurement() {
+    val container = box()
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+        horizontalAlignment(CrossAxisAlignment.Start)
+        verticalAlignment(CrossAxisAlignment.Start)
+      }
+    val snapshotter = snapshotter(container.value)
+
+    val box = box()
+      .apply {
+        width(Constraint.Wrap)
+        height(Constraint.Wrap)
+        horizontalAlignment(CrossAxisAlignment.Stretch)
+        verticalAlignment(CrossAxisAlignment.Stretch)
+        modifier = MarginImpl(Margin(all = 5.dp))
+      }
+      .also { container.children.insert(0, it) }
+
+    widgetFactory.text(
+      text = "This text is in a green box",
+      backgroundColor = argb(0, 0, 0, 0),
+    ).apply {
+      modifier = MarginImpl(Margin(all = 20.dp))
+    }.also { box.children.insert(0, it) }
+
+    widgetFactory.color().apply {
+      color(argb(51, 0, 255, 0))
+      modifier = Modifier
+        .then(VerticalAlignmentImpl(CrossAxisAlignment.Stretch))
+        .then(HorizontalAlignmentImpl(CrossAxisAlignment.Stretch))
+        .then(MarginImpl(Margin(all = 5.dp)))
+    }.also { box.children.insert(1, it) }
 
     snapshotter.snapshot()
   }
