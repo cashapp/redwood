@@ -34,7 +34,7 @@ class ApiMergeCommandTest {
       """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="2"/>
+      |    <trait tag="1" since="2" />
       |  </widget>
       |</api>
       |
@@ -46,7 +46,7 @@ class ApiMergeCommandTest {
       """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="3"/>
+      |    <trait tag="1" since="3" />
       |  </widget>
       |</api>
       |
@@ -62,7 +62,7 @@ class ApiMergeCommandTest {
       """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="3"/>
+      |    <trait tag="1" since="3" />
       |  </widget>
       |</api>
       """.trimMargin(),
