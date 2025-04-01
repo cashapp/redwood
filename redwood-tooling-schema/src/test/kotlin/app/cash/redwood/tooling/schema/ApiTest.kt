@@ -55,18 +55,18 @@ class ApiTest {
       """
       |<schema version="1" type="com.example.TestSchema">
       |  <widget tag="1" type="com.example.Widget">
-      |    <property tag="1" name="first" type="kotlin.String"/>
-      |    <property tag="2" name="second" type="kotlin.Double"/>
-      |    <event tag="3" name="event" params="kotlin.String"/>
+      |    <property tag="1" name="first" type="kotlin.String" />
+      |    <property tag="2" name="second" type="kotlin.Double" />
+      |    <event tag="3" name="event" params="kotlin.String" />
       |    <event tag="4" name="none"/>
-      |    <event tag="5" name="eventOpt" params="kotlin.String" nullable="true"/>
-      |    <event tag="6" name="noneOpt" nullable="true"/>
-      |    <children tag="1" name="left"/>
-      |    <children tag="2" name="right"/>
+      |    <event tag="5" name="eventOpt" params="kotlin.String" nullable="true" />
+      |    <event tag="6" name="noneOpt" nullable="true" />
+      |    <children tag="1" name="left" />
+      |    <children tag="2" name="right" />
       |  </widget>
       |  <modifier tag="1" type="com.example.Modifier">
-      |    <property name="first" type="kotlin.String"/>
-      |    <property name="second" type="kotlin.Double"/>
+      |    <property name="first" type="kotlin.String" />
+      |    <property name="second" type="kotlin.Double" />
       |  </modifier>
       |</schema>
       |
@@ -110,16 +110,16 @@ class ApiTest {
       """
       |<schema version="1" type="com.example.TestSchema">
       |  <widget tag="1" type="com.example.Widget">
-      |    <property tag="1" name="first" type="kotlin.String"/>
-      |    <property tag="2" name="second" type="kotlin.Double"/>
-      |    <event tag="4" name="event" params="kotlin.String"/>
-      |    <event tag="5" name="nullableChange" nullable="true"/>
+      |    <property tag="1" name="first" type="kotlin.String" />
+      |    <property tag="2" name="second" type="kotlin.Double" />
+      |    <event tag="4" name="event" params="kotlin.String" />
+      |    <event tag="5" name="nullableChange" nullable="true" />
       |    <children tag="1" name="left"/>
       |    <children tag="2" name="right"/>
       |  </widget>
       |  <modifier tag="1" type="com.example.Modifier">
-      |    <property name="first" type="kotlin.String"/>
-      |    <property name="second" type="kotlin.Double"/>
+      |    <property name="first" type="kotlin.String" />
+      |    <property name="second" type="kotlin.Double" />
       |  </modifier>
       |</schema>
       |
@@ -191,19 +191,19 @@ class ApiTest {
       """
       |<schema version="1" type="com.example.TestSchema">
       |  <widget tag="1" type="com.example.Widget">
-      |    <property tag="1" name="typeChange" type="kotlin.String"/>
-      |    <property tag="2" name="extraInFile" type="kotlin.Int"/>
-      |    <event tag="3" name="paramChange" params="kotlin.String"/>
+      |    <property tag="1" name="typeChange" type="kotlin.String" />
+      |    <property tag="2" name="extraInFile" type="kotlin.Int" />
+      |    <event tag="3" name="paramChange" params="kotlin.String" />
       |    <event tag="4" name="nullableChange"/>
-      |    <event tag="5" name="extraInFile" nullable="true"/>
+      |    <event tag="5" name="extraInFile" nullable="true" />
       |    <children tag="1" name="extraInFile"/>
       |  </widget>
-      |  <widget tag="2" type="com.example.WidgetExtraInFile"/>
+      |  <widget tag="2" type="com.example.WidgetExtraInFile" />
       |  <modifier tag="1" type="com.example.Modifier">
-      |    <property name="first" type="kotlin.String"/>
-      |    <property name="extraInFile" type="kotlin.String"/>
+      |    <property name="first" type="kotlin.String" />
+      |    <property name="extraInFile" type="kotlin.String" />
       |  </modifier>
-      |  <modifier tag="2" type="com.example.ModifierExtraInFile"/>
+      |  <modifier tag="2" type="com.example.ModifierExtraInFile" />
       |</schema>
       |
       """.trimMargin(),
@@ -264,7 +264,7 @@ class ApiTest {
     assertThat(result).isSuccess()
     assertThat(apiFile.readText()).isEqualTo(
       """
-      |<schema version="1" type="com.example.Schema"/>
+      |<schema version="1" type="com.example.Schema" />
       |
       """.trimMargin(),
     )
@@ -273,7 +273,7 @@ class ApiTest {
   @Test fun generateFileUpToDate() {
     apiFile.writeText(
       """
-      |<schema version="1" type="com.example.Schema"/>
+      |<schema version="1" type="com.example.Schema" />
       |
       """.trimMargin(),
     )
@@ -282,7 +282,7 @@ class ApiTest {
     assertThat(result).isSuccess()
     assertThat(apiFile.readText()).isEqualTo(
       """
-      |<schema version="1" type="com.example.Schema"/>
+      |<schema version="1" type="com.example.Schema" />
       |
       """.trimMargin(),
     )
@@ -291,7 +291,7 @@ class ApiTest {
   @Test fun generateFileOutOfDateWarning() {
     apiFile.writeText(
       """
-      |<schema version="1" type="com.example.Schema"/>
+      |<schema version="1" type="com.example.Schema" />
       |
       """.trimMargin(),
     )
@@ -300,7 +300,7 @@ class ApiTest {
     assertThat(result).isSuccess()
     assertThat(apiFile.readText()).isEqualTo(
       """
-      |<schema version="1" type="com.example.SchemaNew"/>
+      |<schema version="1" type="com.example.SchemaNew" />
       |
       """.trimMargin(),
     )
@@ -309,7 +309,7 @@ class ApiTest {
   @Test fun generateFileOutOfDateFixable() {
     apiFile.writeText(
       """
-      |<schema version="1" type="com.example.Schema"/>
+      |<schema version="1" type="com.example.Schema" />
       |
       """.trimMargin(),
     )
@@ -324,7 +324,7 @@ class ApiTest {
     assertThat(apiFile.readText()).isEqualTo(
       """
       |<schema version="1" type="com.example.Schema">
-      |  <widget tag="1" type="com.example.Widget"/>
+      |  <widget tag="1" type="com.example.Widget" />
       |</schema>
       |
       """.trimMargin(),
@@ -334,7 +334,7 @@ class ApiTest {
   @Test fun generateFileOutOfDateFatal() {
     val xml = """
       |<schema version="1" type="com.example.Schema">
-      |  <widget tag="1" type="com.example.Widget"/>
+      |  <widget tag="1" type="com.example.Widget" />
       |</schema>
       |
     """.trimMargin()
