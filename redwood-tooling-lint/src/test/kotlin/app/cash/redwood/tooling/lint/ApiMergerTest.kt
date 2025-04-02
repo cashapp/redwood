@@ -33,7 +33,7 @@ class ApiMergerTest {
   @Test fun version1Only() {
     val merger = ApiMerger()
     val t = assertFailsWith<IllegalArgumentException> {
-      merger.add("""<api version="2"/>""")
+      merger.add("""<api version="2" />""")
     }
     assertThat(t).hasMessage("Only Redwood API XML version 1 is supported. Found: 2")
   }
@@ -42,13 +42,13 @@ class ApiMergerTest {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
-      |  <widget tag="1" since="2"/>
+      |  <widget tag="1" since="2" />
       |</api>
       |
     """.trimMargin()
     merger += """
       |<api version="1">
-      |  <widget tag="1" since="3"/>
+      |  <widget tag="1" since="3" />
       |</api>
       |
     """.trimMargin()
@@ -57,7 +57,7 @@ class ApiMergerTest {
     assertThat(actual).isEqualTo(
       """
       |<api version="1">
-      |  <widget tag="1" since="3"/>
+      |  <widget tag="1" since="3" />
       |</api>
       """.trimMargin(),
     )
@@ -67,19 +67,19 @@ class ApiMergerTest {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
-      |  <widget tag="1" since="2"/>
+      |  <widget tag="1" since="2" />
       |</api>
       |
     """.trimMargin()
     merger += """
-      |<api version="1"/>
+      |<api version="1" />
       |
     """.trimMargin()
     val actual = merger.merge()
 
     assertThat(actual).isEqualTo(
       """
-      |<api version="1"/>
+      |<api version="1" />
       """.trimMargin(),
     )
   }
@@ -89,7 +89,7 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="2"/>
+      |    <trait tag="1" since="2" />
       |  </widget>
       |</api>
       |
@@ -97,7 +97,7 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="3"/>
+      |    <trait tag="1" since="3" />
       |  </widget>
       |</api>
       |
@@ -108,7 +108,7 @@ class ApiMergerTest {
       """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="3"/>
+      |    <trait tag="1" since="3" />
       |  </widget>
       |</api>
       """.trimMargin(),
@@ -120,14 +120,14 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <widget tag="1" since="2">
-      |    <trait tag="1" since="2"/>
+      |    <trait tag="1" since="2" />
       |  </widget>
       |</api>
       |
     """.trimMargin()
     merger += """
       |<api version="1">
-      |  <widget tag="1" since="2"/>
+      |  <widget tag="1" since="2" />
       |</api>
       |
     """.trimMargin()
@@ -136,7 +136,7 @@ class ApiMergerTest {
     assertThat(actual).isEqualTo(
       """
       |<api version="1">
-      |  <widget tag="1" since="2"/>
+      |  <widget tag="1" since="2" />
       |</api>
       """.trimMargin(),
     )
@@ -146,13 +146,13 @@ class ApiMergerTest {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
-      |  <layout-modifier tag="1" since="2"/>
+      |  <layout-modifier tag="1" since="2" />
       |</api>
       |
     """.trimMargin()
     merger += """
       |<api version="1">
-      |  <layout-modifier tag="1" since="3"/>
+      |  <layout-modifier tag="1" since="3" />
       |</api>
       |
     """.trimMargin()
@@ -161,7 +161,7 @@ class ApiMergerTest {
     assertThat(actual).isEqualTo(
       """
       |<api version="1">
-      |  <layout-modifier tag="1" since="3"/>
+      |  <layout-modifier tag="1" since="3" />
       |</api>
       """.trimMargin(),
     )
@@ -171,19 +171,19 @@ class ApiMergerTest {
     val merger = ApiMerger()
     merger += """
       |<api version="1">
-      |  <layout-modifier tag="1" since="2"/>
+      |  <layout-modifier tag="1" since="2" />
       |</api>
       |
     """.trimMargin()
     merger += """
-      |<api version="1"/>
+      |<api version="1" />
       |
     """.trimMargin()
     val actual = merger.merge()
 
     assertThat(actual).isEqualTo(
       """
-      |<api version="1"/>
+      |<api version="1" />
       """.trimMargin(),
     )
   }
@@ -193,7 +193,7 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <layout-modifier tag="1" since="2">
-      |    <property tag="1" since="2"/>
+      |    <property tag="1" since="2" />
       |  </layout-modifier>
       |</api>
       |
@@ -201,7 +201,7 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <layout-modifier tag="1" since="2">
-      |    <property tag="1" since="3"/>
+      |    <property tag="1" since="3" />
       |  </layout-modifier>
       |</api>
       |
@@ -212,7 +212,7 @@ class ApiMergerTest {
       """
       |<api version="1">
       |  <layout-modifier tag="1" since="2">
-      |    <property tag="1" since="3"/>
+      |    <property tag="1" since="3" />
       |  </layout-modifier>
       |</api>
       """.trimMargin(),
@@ -224,14 +224,14 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <layout-modifier tag="1" since="2">
-      |    <property tag="1" since="2"/>
+      |    <property tag="1" since="2" />
       |  </layout-modifier>
       |</api>
       |
     """.trimMargin()
     merger += """
       |<api version="1">
-      |  <layout-modifier tag="1" since="2"/>
+      |  <layout-modifier tag="1" since="2" />
       |</api>
       |
     """.trimMargin()
@@ -240,7 +240,7 @@ class ApiMergerTest {
     assertThat(actual).isEqualTo(
       """
       |<api version="1">
-      |  <layout-modifier tag="1" since="2"/>
+      |  <layout-modifier tag="1" since="2" />
       |</api>
       """.trimMargin(),
     )
@@ -251,20 +251,20 @@ class ApiMergerTest {
     merger += """
       |<api version="1">
       |  <widget tag="2" since="1">
-      |    <trait tag="4" since="1"/>
-      |    <trait tag="2" since="1"/>
+      |    <trait tag="4" since="1" />
+      |    <trait tag="2" since="1" />
       |  </widget>
       |  <widget tag="1" since="1">
-      |    <trait tag="3" since="1"/>
-      |    <trait tag="1" since="1"/>
+      |    <trait tag="3" since="1" />
+      |    <trait tag="1" since="1" />
       |  </widget>
       |  <layout-modifier tag="2" since="1">
-      |    <property tag="4" since="1"/>
-      |    <property tag="2" since="1"/>
+      |    <property tag="4" since="1" />
+      |    <property tag="2" since="1" />
       |  </layout-modifier>
       |  <layout-modifier tag="1" since="1">
-      |    <property tag="3" since="1"/>
-      |    <property tag="1" since="1"/>
+      |    <property tag="3" since="1" />
+      |    <property tag="1" since="1" />
       |  </layout-modifier>
       |</api>
       |
@@ -275,20 +275,20 @@ class ApiMergerTest {
       """
       |<api version="1">
       |  <widget tag="1" since="1">
-      |    <trait tag="1" since="1"/>
-      |    <trait tag="3" since="1"/>
+      |    <trait tag="1" since="1" />
+      |    <trait tag="3" since="1" />
       |  </widget>
       |  <widget tag="2" since="1">
-      |    <trait tag="2" since="1"/>
-      |    <trait tag="4" since="1"/>
+      |    <trait tag="2" since="1" />
+      |    <trait tag="4" since="1" />
       |  </widget>
       |  <layout-modifier tag="1" since="1">
-      |    <property tag="1" since="1"/>
-      |    <property tag="3" since="1"/>
+      |    <property tag="1" since="1" />
+      |    <property tag="3" since="1" />
       |  </layout-modifier>
       |  <layout-modifier tag="2" since="1">
-      |    <property tag="2" since="1"/>
-      |    <property tag="4" since="1"/>
+      |    <property tag="2" since="1" />
+      |    <property tag="4" since="1" />
       |  </layout-modifier>
       |</api>
       """.trimMargin(),

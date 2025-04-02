@@ -125,6 +125,7 @@ internal class UIViewBox :
       super.layoutSubviews()
 
       measurer.box(
+        measureForLayout = true,
         boxDensity = Density.Default,
         boxHorizontalAlignment = horizontalAlignment,
         boxVerticalAlignment = verticalAlignment,
@@ -141,6 +142,7 @@ internal class UIViewBox :
 
     override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
       measurer.box(
+        measureForLayout = false,
         boxDensity = Density.Default,
         boxHorizontalAlignment = horizontalAlignment,
         boxVerticalAlignment = verticalAlignment,
@@ -172,6 +174,7 @@ internal class UIViewBox :
  */
 private class Measurer {
   // Inputs from the box.
+  var measureForLayout = false
   var boxDensity = Density.Default
   var boxHorizontalAlignment = CrossAxisAlignment.Start
   var boxVerticalAlignment = CrossAxisAlignment.Start
@@ -205,6 +208,7 @@ private class Measurer {
 
   /** Configure the enclosing box. */
   fun box(
+    measureForLayout: Boolean,
     boxDensity: Density,
     boxHorizontalAlignment: CrossAxisAlignment,
     boxVerticalAlignment: CrossAxisAlignment,
@@ -212,6 +216,7 @@ private class Measurer {
     boxWidth: CGFloat,
     boxHeight: CGFloat,
   ) {
+    this.measureForLayout = measureForLayout
     this.boxDensity = boxDensity
     this.boxHorizontalAlignment = boxHorizontalAlignment
     this.boxVerticalAlignment = boxVerticalAlignment
@@ -275,22 +280,23 @@ private class Measurer {
       else -> (frameHeight - marginHeight).coerceAtLeast(0.0)
     }
 
+    val horizontalStretch = measureForLayout && horizontalAlignment == CrossAxisAlignment.Stretch
+    val verticalStretch = measureForLayout && verticalAlignment == CrossAxisAlignment.Stretch
+
     val fitWidth = when {
       !requestedWidth.isNaN() -> requestedWidth
-      horizontalAlignment == CrossAxisAlignment.Stretch -> availableWidth
+      horizontalStretch -> availableWidth
       else -> availableWidth
     }
     val fitHeight = when {
       !requestedHeight.isNaN() -> requestedHeight
-      verticalAlignment == CrossAxisAlignment.Stretch -> availableHeight
+      verticalStretch -> availableHeight
       else -> availableHeight
     }
 
     // Measure the view if don't have an exact width or height.
-    val mustMeasureWidth = requestedWidth.isNaN() &&
-      horizontalAlignment != CrossAxisAlignment.Stretch
-    val mustMeasureHeight = requestedHeight.isNaN() &&
-      verticalAlignment != CrossAxisAlignment.Stretch
+    val mustMeasureWidth = requestedWidth.isNaN() && !horizontalStretch
+    val mustMeasureHeight = requestedHeight.isNaN() && !verticalStretch
 
     if (!mustMeasureWidth && !mustMeasureHeight) {
       this.width = fitWidth
@@ -303,13 +309,13 @@ private class Measurer {
 
     width = when {
       !requestedWidth.isNaN() -> requestedWidth
-      horizontalAlignment == CrossAxisAlignment.Stretch -> availableWidth
+      horizontalStretch -> availableWidth
       else -> measuredSize.useContents { width }
     }
 
     height = when {
       !requestedHeight.isNaN() -> requestedHeight
-      verticalAlignment == CrossAxisAlignment.Stretch -> availableHeight
+      verticalStretch -> availableHeight
       else -> measuredSize.useContents { height }
     }
   }

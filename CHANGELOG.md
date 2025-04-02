@@ -11,6 +11,7 @@ Changed:
 
 Fixed:
 - Don't double insets on insets-aware `UIViews`. Previously we offered the same insets via two mechanisms, which could result in double insets.
+- Don't conflate `CrossAxisAlignment.Stretch` with `Contraint.Fill`. We had a bug where `CrossAxisAlignment.Stretch` would cause children to fill their parent container.
 
 
 ## [0.17.0] - 2025-01-30
