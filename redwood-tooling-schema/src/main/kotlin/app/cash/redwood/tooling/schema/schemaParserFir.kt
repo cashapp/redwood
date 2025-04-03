@@ -26,7 +26,6 @@ import java.io.File
 import java.net.URLClassLoader
 import org.jetbrains.kotlin.KtSourceElement
 import org.jetbrains.kotlin.KtVirtualFileSourceFile
-import org.jetbrains.kotlin.builtins.StandardNames
 import org.jetbrains.kotlin.cli.common.GroupedKtSources
 import org.jetbrains.kotlin.cli.common.LegacyK2CliPipeline
 import org.jetbrains.kotlin.cli.common.config.addKotlinSourceRoots
@@ -59,7 +58,6 @@ import org.jetbrains.kotlin.fir.declarations.FirDeclaration
 import org.jetbrains.kotlin.fir.declarations.FirProperty
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
 import org.jetbrains.kotlin.fir.declarations.primaryConstructorIfAny
-import org.jetbrains.kotlin.fir.declarations.toAnnotationClassId
 import org.jetbrains.kotlin.fir.declarations.utils.classId
 import org.jetbrains.kotlin.fir.declarations.utils.isData
 import org.jetbrains.kotlin.fir.expressions.FirAnnotation
@@ -82,9 +80,9 @@ import org.jetbrains.kotlin.fir.types.ConeStarProjection
 import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
 import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.classId
-import org.jetbrains.kotlin.fir.types.customAnnotations
 import org.jetbrains.kotlin.fir.types.isBasicFunctionType
 import org.jetbrains.kotlin.fir.types.isMarkedNullable
+import org.jetbrains.kotlin.fir.types.parameterName
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.type
@@ -156,6 +154,7 @@ public fun parseProtocolSchema(
     .map { localFileSystem.findFileByPath(it.absolutePath)!! }
 
   val sourceFiles = files.map(::KtVirtualFileSourceFile).toSet()
+
   @OptIn(LegacyK2CliPipeline::class)
   val input = ModuleCompilerInput(
     targetId = TargetId(DEFAULT_MODULE_NAME, "redwood-parser"),
@@ -428,7 +427,7 @@ private fun FirContext.parseWidget(
             documentation = documentation,
             parameters = arguments.map {
               ParsedParameter(
-                name = (it as? ConeClassLikeType)?.extractParameterName(firSession),
+                name = it.type?.parameterName?.identifier,
                 type = it.toFqType(),
               )
             },
@@ -887,16 +886,6 @@ private fun ConeTypeProjection.toFqType(): FqType {
 }
 
 private fun FirLiteralExpression.valueAsInt() = (value as Long).toInt()
-
-private fun ConeClassLikeType.extractParameterName(firSession: FirSession): String? {
-  val annotation = customAnnotations
-    .find { it.toAnnotationClassId(firSession) == StandardNames.FqNames.parameterNameClassId }
-    ?: return null
-  val name = annotation.argumentMapping
-    .mapping[Name.identifier("name")] as? FirLiteralExpression
-    ?: throw AssertionError(annotation.source?.text ?: annotation)
-  return name.value as String
-}
 
 private fun ClassId.toFqType() = FqType(
   buildList {
