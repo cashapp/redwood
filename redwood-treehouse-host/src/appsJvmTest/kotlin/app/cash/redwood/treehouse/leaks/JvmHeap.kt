@@ -21,6 +21,7 @@ import app.cash.redwood.treehouse.EventLog
 import com.example.redwood.testapp.treehouse.HostApi
 import java.lang.ref.WeakReference
 import java.lang.reflect.Field
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
@@ -92,6 +93,7 @@ internal object JvmHeap : Heap {
       instance is SerializersModule -> listOf()
       instance is String -> listOf()
       instance is WeakReference<*> -> listOf()
+      instance is AtomicReferenceFieldUpdater<*, *> -> listOf()
 
       // Explore everything else by reflecting on its fields.
       javaPackageName.isDescendant(
