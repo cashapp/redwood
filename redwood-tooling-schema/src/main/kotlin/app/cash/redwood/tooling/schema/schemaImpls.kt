@@ -70,7 +70,12 @@ internal data class ParsedProtocolSchema(
         widget.copy(tag = offset + widget.tag)
       },
       modifiers = modifiers.map { modifier ->
-        modifier.copy(tag = offset + modifier.tag)
+        // This value is our special "reuse" modifier, which we should not update.
+        if (modifier.tag == -4_543_827) {
+          modifier
+        } else {
+          modifier.copy(tag = offset + modifier.tag)
+        }
       },
     )
   }
