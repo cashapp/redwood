@@ -15,9 +15,9 @@
  */
 package com.example.redwood.counter.ios
 
-import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.DisplayLinkClock
 import app.cash.redwood.compose.RedwoodComposition
+import app.cash.redwood.ui.basic.uiview.UIViewRedwoodBasicWidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
 import com.example.redwood.counter.presenter.Counter
 import kotlinx.coroutines.MainScope

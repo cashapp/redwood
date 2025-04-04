@@ -18,9 +18,6 @@ package app.cash.redwood.testing
 import androidx.compose.runtime.BroadcastFrameClock
 import androidx.compose.runtime.Composable
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.basic.compose.Text
-import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
-import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.compose.current
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
@@ -42,6 +39,9 @@ import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.basic.compose.Text
+import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.ui.basic.testing.TextValue
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly

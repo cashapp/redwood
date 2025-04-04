@@ -17,7 +17,6 @@ package com.example.redwood.testapp.presenter
 
 import androidx.compose.runtime.Composable
 import app.cash.redwood.Modifier
-import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Constraint.Companion.Fill
 import app.cash.redwood.layout.api.Constraint.Companion.Wrap
@@ -34,6 +33,7 @@ import app.cash.redwood.layout.compose.ColumnScope
 import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.layout.compose.Spacer
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.basic.compose.Text
 import app.cash.redwood.ui.dp
 import com.example.redwood.testapp.compose.backgroundColor
 

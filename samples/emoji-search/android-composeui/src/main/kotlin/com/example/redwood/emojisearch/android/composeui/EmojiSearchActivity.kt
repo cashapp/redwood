@@ -30,9 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.basic.composeui.RedwoodBasicTheme
-import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.EventListener
@@ -41,6 +38,9 @@ import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.composeui.TreehouseContent
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.ui.basic.protocol.host.RedwoodBasicProtocolFactory
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier

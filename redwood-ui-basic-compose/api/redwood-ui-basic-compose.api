@@ -1,20 +1,20 @@
-public final class app/cash/redwood/basic/compose/ButtonKt {
+public final class app/cash/redwood/ui/basic/compose/ButtonKt {
 	public static final fun Button (Ljava/lang/String;ZLkotlin/jvm/functions/Function0;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class app/cash/redwood/basic/compose/ImageKt {
+public final class app/cash/redwood/ui/basic/compose/ImageKt {
 	public static final fun Image (Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class app/cash/redwood/basic/compose/TextInputKt {
-	public static final fun TextInput (Lapp/cash/redwood/basic/api/TextFieldState;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
+public final class app/cash/redwood/ui/basic/compose/TextInputKt {
+	public static final fun TextInput (Lapp/cash/redwood/ui/basic/api/TextFieldState;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class app/cash/redwood/basic/compose/TextKt {
+public final class app/cash/redwood/ui/basic/compose/TextKt {
 	public static final fun Text (Ljava/lang/String;Lapp/cash/redwood/Modifier;Landroidx/compose/runtime/Composer;II)V
 }
 
-public final class app/cash/redwood/basic/compose/UnscopedKt {
+public final class app/cash/redwood/ui/basic/compose/UnscopedKt {
 	public static final fun reuse (Lapp/cash/redwood/Modifier;)Lapp/cash/redwood/Modifier;
 }
 

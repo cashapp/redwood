@@ -15,7 +15,6 @@
  */
 package com.example.redwood.testapp
 
-import app.cash.redwood.basic.RedwoodBasic
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.lazylayout.RedwoodLazyLayout
 import app.cash.redwood.schema.Children
@@ -24,6 +23,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
+import app.cash.redwood.ui.basic.RedwoodBasic
 import kotlin.time.Duration
 
 @Schema(

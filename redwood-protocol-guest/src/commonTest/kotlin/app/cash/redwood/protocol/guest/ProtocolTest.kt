@@ -21,7 +21,6 @@ import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.compose.WidgetVersion
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
@@ -44,6 +43,7 @@ import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.basic.compose.Text
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo

@@ -15,11 +15,11 @@
  */
 package com.example.redwood.testapp.browser
 
-import app.cash.redwood.basic.dom.HTMLElementRedwoodBasicWidgetFactory
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
+import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodBasicWidgetFactory
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.testapp.presenter.HttpClient
 import com.example.redwood.testapp.presenter.TestApp

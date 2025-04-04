@@ -20,9 +20,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.Modifier
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.basic.compose.Text
-import app.cash.redwood.basic.compose.reuse
-import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.layout.compose.Box
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.layout.testing.BoxValue
@@ -31,6 +28,9 @@ import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.host.HostProtocolAdapter
+import app.cash.redwood.ui.basic.compose.Text
+import app.cash.redwood.ui.basic.compose.reuse
+import app.cash.redwood.ui.basic.testing.TextValue
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.hasSize

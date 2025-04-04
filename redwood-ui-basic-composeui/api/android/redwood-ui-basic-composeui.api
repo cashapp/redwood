@@ -1,19 +1,19 @@
-public final class app/cash/redwood/basic/composeui/ComposeUiRedwoodBasicWidgetFactory : app/cash/redwood/basic/widget/RedwoodBasicWidgetFactory {
+public final class app/cash/redwood/ui/basic/composeui/ComposeUiRedwoodBasicWidgetFactory : app/cash/redwood/ui/basic/widget/RedwoodBasicWidgetFactory {
 	public static final field $stable I
 	public fun <init> (Lcoil3/ImageLoader;)V
-	public fun Button ()Lapp/cash/redwood/basic/widget/Button;
-	public fun Image ()Lapp/cash/redwood/basic/widget/Image;
-	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/basic/modifier/Reuse;)V
-	public fun Reuse (Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/basic/modifier/Reuse;)V
-	public fun Text ()Lapp/cash/redwood/basic/widget/Text;
-	public fun TextInput ()Lapp/cash/redwood/basic/widget/TextInput;
+	public fun Button ()Lapp/cash/redwood/ui/basic/widget/Button;
+	public fun Image ()Lapp/cash/redwood/ui/basic/widget/Image;
+	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
+	public fun Reuse (Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
+	public fun Text ()Lapp/cash/redwood/ui/basic/widget/Text;
+	public fun TextInput ()Lapp/cash/redwood/ui/basic/widget/TextInput;
 }
 
-public final class app/cash/redwood/basic/composeui/ComposeUiRedwoodBasicWidgetFactoryKt {
-	public static final fun ComposeUiRedwoodBasicWidgetSystem (Lcoil3/ImageLoader;)Lapp/cash/redwood/basic/widget/RedwoodBasicWidgetSystem;
+public final class app/cash/redwood/ui/basic/composeui/ComposeUiRedwoodBasicWidgetFactoryKt {
+	public static final fun ComposeUiRedwoodBasicWidgetSystem (Lcoil3/ImageLoader;)Lapp/cash/redwood/ui/basic/widget/RedwoodBasicWidgetSystem;
 }
 
-public final class app/cash/redwood/basic/composeui/ThemeKt {
+public final class app/cash/redwood/ui/basic/composeui/ThemeKt {
 	public static final fun RedwoodBasicTheme (ZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 	public static final fun getTypography ()Landroidx/compose/material/Typography;
 }

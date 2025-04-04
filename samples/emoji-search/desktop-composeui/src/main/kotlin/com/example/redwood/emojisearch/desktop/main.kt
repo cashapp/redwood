@@ -22,10 +22,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.basic.composeui.RedwoodBasicTheme
 import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory

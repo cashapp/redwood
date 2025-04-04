@@ -18,7 +18,6 @@
 package com.example.redwood.testapp.ios
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.basic.uiview.UIViewRedwoodBasicWidgetFactory
 import app.cash.redwood.layout.uiview.UIViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.treehouse.AppService
@@ -27,6 +26,7 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.redwood.ui.basic.uiview.UIViewRedwoodBasicWidgetFactory
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.treehouse.TestAppPresenter
 import com.example.redwood.testapp.widget.TestSchemaWidgetFactory

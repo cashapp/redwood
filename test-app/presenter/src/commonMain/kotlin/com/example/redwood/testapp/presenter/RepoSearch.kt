@@ -28,11 +28,11 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import app.cash.paging.createPager
 import app.cash.paging.createPagingConfig
 import app.cash.redwood.Modifier
-import app.cash.redwood.basic.compose.Text
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.compose.Column
 import app.cash.redwood.lazylayout.compose.LazyColumn
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.basic.compose.Text
 import app.cash.redwood.ui.dp
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -15,9 +15,9 @@
  */
 package com.example.redwood.counter.browser
 
-import app.cash.redwood.basic.dom.HTMLElementRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
+import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodBasicWidgetSystem
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.counter.presenter.Counter
 import kotlinx.browser.document

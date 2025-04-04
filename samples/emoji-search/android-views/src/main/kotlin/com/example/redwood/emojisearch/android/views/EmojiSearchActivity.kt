@@ -22,8 +22,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import app.cash.redwood.basic.protocol.host.RedwoodBasicProtocolFactory
-import app.cash.redwood.basic.view.ViewRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.Crashed
@@ -36,6 +34,8 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
+import app.cash.redwood.ui.basic.protocol.host.RedwoodBasicProtocolFactory
+import app.cash.redwood.ui.basic.view.ViewRedwoodBasicWidgetSystem
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier

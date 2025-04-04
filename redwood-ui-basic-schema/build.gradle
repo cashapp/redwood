@@ -14,5 +14,5 @@ dependencies {
 }
 
 redwoodSchema {
-  type = 'app.cash.redwood.basic.RedwoodBasic'
+  type = 'app.cash.redwood.ui.basic.RedwoodBasic'
 }

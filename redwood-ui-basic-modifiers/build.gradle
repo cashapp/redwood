@@ -10,5 +10,5 @@ apply plugin: 'app.cash.redwood.generator.modifiers'
 
 redwoodSchema {
   source = projects.redwoodUiBasicSchema
-  type = 'app.cash.redwood.basic.RedwoodBasic'
+  type = 'app.cash.redwood.ui.basic.RedwoodBasic'
 }

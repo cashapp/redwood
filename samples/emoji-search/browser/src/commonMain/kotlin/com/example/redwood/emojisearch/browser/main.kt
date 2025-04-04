@@ -15,9 +15,9 @@
  */
 package com.example.redwood.emojisearch.browser
 
-import app.cash.redwood.basic.dom.HTMLElementRedwoodBasicWidgetSystem
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
+import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodBasicWidgetSystem
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.presenter.HttpClient

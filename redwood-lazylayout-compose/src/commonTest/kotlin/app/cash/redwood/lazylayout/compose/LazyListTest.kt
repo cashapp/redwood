@@ -16,10 +16,10 @@
 package app.cash.redwood.lazylayout.compose
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.basic.compose.Text
-import app.cash.redwood.basic.testing.RedwoodBasicTester
-import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.lazylayout.testing.LazyListValue
+import app.cash.redwood.ui.basic.compose.Text
+import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.TextValue
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo

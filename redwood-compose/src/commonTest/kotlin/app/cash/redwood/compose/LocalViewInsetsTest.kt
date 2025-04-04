@@ -15,10 +15,10 @@
  */
 package app.cash.redwood.compose
 
-import app.cash.redwood.basic.compose.Text
-import app.cash.redwood.basic.testing.RedwoodBasicTester
-import app.cash.redwood.basic.testing.TextValue
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.basic.compose.Text
+import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.TextValue
 import app.cash.redwood.ui.dp
 import assertk.assertThat
 import assertk.assertions.containsExactly

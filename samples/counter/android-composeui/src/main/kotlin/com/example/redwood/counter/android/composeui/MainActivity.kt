@@ -18,9 +18,9 @@ package com.example.redwood.counter.android.composeui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import app.cash.redwood.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.basic.composeui.RedwoodBasicTheme
 import app.cash.redwood.composeui.RedwoodContent
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.serviceLoaderEnabled

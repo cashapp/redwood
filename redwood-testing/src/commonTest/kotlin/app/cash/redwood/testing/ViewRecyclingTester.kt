@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import app.cash.redwood.RedwoodCodegenApi
-import app.cash.redwood.basic.testing.RedwoodBasicTestingWidgetFactory
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
@@ -29,6 +28,7 @@ import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.hostRedwoodVersion
+import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
@@ -203,7 +203,7 @@ private suspend fun SequenceScope<Widget<WidgetValue>>.flattenRecursive(
   yield(widget)
 
   val childrenLists = when (widget) {
-    is app.cash.redwood.basic.testing.MutableText -> listOf()
+    is app.cash.redwood.ui.basic.testing.MutableText -> listOf()
     is app.cash.redwood.layout.testing.MutableBox -> listOf(widget.children)
     is app.cash.redwood.layout.testing.MutableColumn -> listOf(widget.children)
     is com.example.redwood.testapp.testing.MutableButton -> listOf()

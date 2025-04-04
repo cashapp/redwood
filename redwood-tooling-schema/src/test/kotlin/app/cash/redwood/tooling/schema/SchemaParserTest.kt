@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.tooling.schema
 
-import app.cash.redwood.basic.RedwoodBasic
 import app.cash.redwood.layout.RedwoodLayout
 import app.cash.redwood.layout.Row
 import app.cash.redwood.lazylayout.RedwoodLazyLayout
@@ -31,6 +30,7 @@ import app.cash.redwood.tooling.schema.ProtocolWidget.ProtocolProperty
 import app.cash.redwood.tooling.schema.Widget.Children as ChildrenTrait
 import app.cash.redwood.tooling.schema.Widget.Event
 import app.cash.redwood.tooling.schema.Widget.Property as PropertyTrait
+import app.cash.redwood.ui.basic.RedwoodBasic
 import assertk.all
 import assertk.assertAll
 import assertk.assertFailure
@@ -1207,7 +1207,7 @@ class SchemaParserTest {
         """
         |Dependencies contain transitive dependencies which need declared directly:
         |
-        |app.cash.redwood.basic.RedwoodBasic depends on:
+        |app.cash.redwood.ui.basic.RedwoodBasic depends on:
         | - app.cash.redwood.layout.RedwoodLayout
         | - app.cash.redwood.lazylayout.RedwoodLazyLayout
         """.trimMargin(),
