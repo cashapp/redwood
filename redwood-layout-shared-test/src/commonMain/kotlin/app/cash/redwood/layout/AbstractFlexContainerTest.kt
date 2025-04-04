@@ -1031,6 +1031,63 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     snapshotter(column.value).snapshot()
   }
+
+  @Test
+  fun testFlexWithWrappingChild() {
+    val row = row().apply {
+      width(Constraint.Fill)
+    }
+
+    row.children.insert(
+      row.children.widgets.size,
+      widgetFactory.text().apply {
+        text("A")
+        bgColor(Blue)
+      },
+    )
+
+    row.children.insert(
+      row.children.widgets.size,
+      widgetFactory.text().apply {
+        modifier = FlexImpl(1.0)
+        text("B ".repeat(100))
+        bgColor(Red)
+      },
+    )
+
+    snapshotter(row.value).snapshot()
+  }
+
+  @Test
+  fun testFlexWithChildContainingWrappingChild() {
+    val row = row().apply {
+      width(Constraint.Fill)
+    }
+
+    row.children.insert(
+      row.children.widgets.size,
+      widgetFactory.text().apply {
+        text("A")
+        bgColor(Blue)
+      },
+    )
+
+    val column = column().apply {
+      modifier = FlexImpl(1.0)
+    }
+
+    row.children.insert(row.children.widgets.size, column)
+
+    column.children.insert(
+      column.children.widgets.size,
+      widgetFactory.text().apply {
+        text("B ".repeat(100))
+        bgColor(Red)
+      },
+    )
+
+    snapshotter(row.value).snapshot()
+  }
 }
 
 interface TestFlexContainer<T : Any> :
