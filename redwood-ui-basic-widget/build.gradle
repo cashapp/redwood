@@ -1,0 +1,27 @@
+import static app.cash.redwood.buildsupport.TargetGroup.Common
+
+redwoodBuild {
+  targets(Common)
+  publishing()
+}
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'app.cash.redwood.generator.widget'
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodUiBasicApi
+        api projects.redwoodUiBasicModifiers
+        api projects.redwoodLayoutWidget
+        api projects.redwoodLazylayoutWidget
+      }
+    }
+  }
+}
+
+redwoodSchema {
+  source = projects.redwoodUiBasicSchema
+  type = 'app.cash.redwood.basic.RedwoodBasic'
+}

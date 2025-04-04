@@ -4,7 +4,7 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 dependencies {
   implementation projects.samples.counter.presenter
-  implementation projects.redwoodBasicView
+  implementation projects.redwoodUiBasicView
   implementation projects.redwoodWidget
   implementation libs.kotlinx.coroutines.android
   implementation libs.google.material

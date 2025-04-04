@@ -17,7 +17,7 @@ dependencies {
   implementation libs.kotlin.compilerEmbeddable
   implementation libs.clikt
 
-  testImplementation projects.redwoodBasicSchema
+  testImplementation projects.redwoodUiBasicSchema
   testImplementation libs.junit
   testImplementation libs.assertk
   testImplementation libs.jimfs

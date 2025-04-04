@@ -23,7 +23,7 @@ kotlin {
         implementation projects.testApp.schema.modifiers
         implementation projects.testApp.schema.widget
         implementation projects.testApp.presenter
-        implementation projects.redwoodBasicDom
+        implementation projects.redwoodUiBasicDom
         implementation projects.redwoodLayoutDom
         implementation projects.redwoodLazylayoutDom
         implementation libs.kotlinx.coroutines.core

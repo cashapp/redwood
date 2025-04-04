@@ -24,7 +24,7 @@ dependencies {
   implementation libs.kotlinx.coroutines.android
   implementation projects.samples.emojiSearch.launcher
   implementation projects.samples.emojiSearch.presenterTreehouse
-  implementation projects.redwoodBasicView
+  implementation projects.redwoodUiBasicView
   implementation projects.samples.emojiSearch.schemaProtocolHost
   implementation libs.androidx.appCompat
   implementation libs.androidx.core

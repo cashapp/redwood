@@ -36,8 +36,8 @@ kotlin {
         implementation libs.kotlin.test
         implementation libs.kotlinx.coroutines.test
         implementation libs.assertk
-        implementation projects.redwoodBasicCompose
-        implementation projects.redwoodBasicTesting
+        implementation projects.redwoodUiBasicCompose
+        implementation projects.redwoodUiBasicTesting
         implementation projects.testApp.schema.compose
         implementation projects.testApp.schema.protocolGuest
         implementation projects.testApp.schema.protocolHost

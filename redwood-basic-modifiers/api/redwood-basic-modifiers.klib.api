@@ -1,9 +1,0 @@
-// Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
-// Rendering settings:
-// - Signature version: 2
-// - Show manifest properties: true
-// - Show declarations: true
-
-// Library unique name: <app.cash.redwood:redwood-basic-modifiers>
-abstract interface app.cash.redwood.basic.modifier/Reuse : app.cash.redwood/Modifier.UnscopedElement // app.cash.redwood.basic.modifier/Reuse|null[0]

@@ -5,7 +5,7 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 dependencies {
   implementation projects.samples.counter.presenter
   implementation projects.redwoodComposeui
-  implementation projects.redwoodBasicComposeui
+  implementation projects.redwoodUiBasicComposeui
   implementation libs.coil.network.okhttp
   implementation libs.kotlinx.coroutines.android
   implementation libs.google.material

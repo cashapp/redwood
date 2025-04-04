@@ -17,7 +17,7 @@ kotlin {
         implementation projects.samples.emojiSearch.launcher
         implementation projects.samples.emojiSearch.presenterTreehouse
         implementation projects.samples.emojiSearch.schemaProtocolHost
-        implementation projects.redwoodBasicUiview
+        implementation projects.redwoodUiBasicUiview
       }
     }
   }

@@ -1,0 +1,18 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitHtml
+
+redwoodBuild {
+  targets(ToolkitHtml)
+  publishing()
+}
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        api projects.redwoodUiBasicWidget
+        implementation projects.redwoodLayoutDom
+        implementation projects.redwoodLazylayoutDom
+      }
+    }
+  }
+}

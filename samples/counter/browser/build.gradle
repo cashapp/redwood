@@ -20,7 +20,7 @@ kotlin {
     commonMain {
       dependencies {
         implementation projects.samples.counter.presenter
-        implementation projects.redwoodBasicDom
+        implementation projects.redwoodUiBasicDom
         implementation projects.redwoodLayoutDom
         implementation projects.redwoodLazylayoutDom
         implementation libs.kotlinx.coroutines.core

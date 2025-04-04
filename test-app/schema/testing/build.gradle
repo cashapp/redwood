@@ -10,7 +10,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodBasicTesting
+        api projects.redwoodUiBasicTesting
         api projects.redwoodLayoutTesting
         api projects.redwoodLazylayoutTesting
         api projects.testApp.schema.widget
