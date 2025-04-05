@@ -879,6 +879,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     }
 
     val rootChild0 = row().apply {
+      modifier = FlexImpl(1.0)
       width(Constraint.Fill)
       horizontalAlignment(MainAxisAlignment.Center)
       root.children.insert(0, this)

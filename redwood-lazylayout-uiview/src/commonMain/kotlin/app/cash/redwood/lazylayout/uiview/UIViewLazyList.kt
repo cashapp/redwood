@@ -43,6 +43,7 @@ import platform.CoreGraphics.CGPoint
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSIndexPath
 import platform.Foundation.classForCoder
 import platform.UIKit.UIColor
@@ -62,6 +63,7 @@ import platform.UIKit.UITableViewRowAnimationNone
 import platform.UIKit.UITableViewScrollPosition
 import platform.UIKit.UITableViewStyle
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.UIKit.indexPathForItem
 import platform.UIKit.item
 import platform.darwin.NSInteger
@@ -402,7 +404,8 @@ internal class LazyListContainerCell(
 
   override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
     val content = this.content ?: return super.sizeThatFits(size)
-    return content.value.sizeThatFits(size)
+    val sizeNoHeight = size.useContents { CGSizeMake(width, UIViewNoIntrinsicMetric) }
+    return content.value.sizeThatFits(sizeNoHeight)
   }
 
   internal fun setContent(widget: Widget<UIView>?) {

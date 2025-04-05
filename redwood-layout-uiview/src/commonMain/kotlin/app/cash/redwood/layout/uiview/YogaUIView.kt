@@ -94,7 +94,9 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
   override fun intrinsicContentSize(): CValue<CGSize> {
     return calculateLayout(
       width = fillWidth.toYogaWithWidthConstraint(),
+      maxWidth = fillWidth.toYoga(),
       height = fillHeight.toYogaWithWidthConstraint(),
+      maxHeight = fillHeight.toYoga(),
     )
   }
 
@@ -102,7 +104,9 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
     return size.useContents<CGSize, CValue<CGSize>> {
       calculateLayout(
         width = width.toYogaWithWidthConstraint(),
+        maxWidth = width.toYoga(),
         height = height.toYogaWithHeightConstraint(),
+        maxHeight = height.toYoga(),
       )
     }
   }
@@ -156,10 +160,14 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
 
   private fun calculateLayout(
     width: Float = Size.UNDEFINED,
+    maxWidth: Float = Size.UNDEFINED,
     height: Float = Size.UNDEFINED,
+    maxHeight: Float = Size.UNDEFINED,
   ): CValue<CGSize> {
     rootNode.requestedWidth = width
+    rootNode.requestedMaxWidth = maxWidth
     rootNode.requestedHeight = height
+    rootNode.requestedMaxHeight = maxHeight
 
     rootNode.measureOnly(Size.UNDEFINED, Size.UNDEFINED)
 
