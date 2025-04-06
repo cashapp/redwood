@@ -18,7 +18,7 @@ package app.cash.redwood.lazylayout.compose
 import app.cash.redwood.Modifier
 import app.cash.redwood.lazylayout.testing.LazyListValue
 import app.cash.redwood.ui.basic.compose.Text
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTester
 import app.cash.redwood.ui.basic.testing.TextValue
 import assertk.assertThat
 import assertk.assertions.isEmpty
@@ -29,7 +29,7 @@ import kotlinx.coroutines.test.runTest
 class LazyListTest {
   @Test
   fun emptyLazyColumn() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
         }
@@ -59,7 +59,7 @@ class LazyListTest {
     expectedItemsAfter: Int,
     expectedItemCount: Int,
   ) = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(
           state = rememberLazyListState(),
@@ -85,7 +85,7 @@ class LazyListTest {
 
   @Test
   fun scrollPopulatedLazyColumn() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -113,7 +113,7 @@ class LazyListTest {
 
   @Test
   fun scrollDoesNotTriggerRecompose() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       var index5ComposeCount = 0
       setContent {
         val lazyListState = rememberLazyListState(TestLoadingStrategy())

@@ -22,5 +22,5 @@ kotlin {
 
 redwoodSchema {
   source = projects.redwoodUiBasicSchema
-  type = 'app.cash.redwood.ui.basic.RedwoodBasic'
+  type = 'app.cash.redwood.ui.basic.RedwoodUiBasic'
 }

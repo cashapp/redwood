@@ -1,4 +1,4 @@
-<schema version="1" type="app.cash.redwood.ui.basic.RedwoodBasic">
+<schema version="1" type="app.cash.redwood.ui.basic.RedwoodUiBasic">
   <widget tag="1" type="app.cash.redwood.ui.basic.TextInput">
     <property tag="1" name="state" type="app.cash.redwood.ui.basic.api.TextFieldState" />
     <property tag="2" name="hint" type="kotlin.String" />

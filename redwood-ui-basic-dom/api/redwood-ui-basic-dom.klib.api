@@ -6,14 +6,14 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-ui-basic-dom>
-final class app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory : app.cash.redwood.ui.basic.widget/RedwoodBasicWidgetFactory<org.w3c.dom/HTMLElement> { // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory|null[0]
-    constructor <init>(org.w3c.dom/Document) // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory.<init>|<init>(org.w3c.dom.Document){}[0]
+final class app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory : app.cash.redwood.ui.basic.widget/RedwoodUiBasicWidgetFactory<org.w3c.dom/HTMLElement> { // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory|null[0]
+    constructor <init>(org.w3c.dom/Document) // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory.<init>|<init>(org.w3c.dom.Document){}[0]
 
-    final fun Button(): app.cash.redwood.ui.basic.widget/Button<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory.Button|Button(){}[0]
-    final fun Image(): app.cash.redwood.ui.basic.widget/Image<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory.Image|Image(){}[0]
-    final fun Reuse(org.w3c.dom/HTMLElement, app.cash.redwood.ui.basic.modifier/Reuse) // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory.Reuse|Reuse(org.w3c.dom.HTMLElement;app.cash.redwood.ui.basic.modifier.Reuse){}[0]
-    final fun Text(): app.cash.redwood.ui.basic.widget/Text<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory.Text|Text(){}[0]
-    final fun TextInput(): app.cash.redwood.ui.basic.widget/TextInput<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetFactory.TextInput|TextInput(){}[0]
+    final fun Button(): app.cash.redwood.ui.basic.widget/Button<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory.Button|Button(){}[0]
+    final fun Image(): app.cash.redwood.ui.basic.widget/Image<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory.Image|Image(){}[0]
+    final fun Reuse(org.w3c.dom/HTMLElement, app.cash.redwood.ui.basic.modifier/Reuse) // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory.Reuse|Reuse(org.w3c.dom.HTMLElement;app.cash.redwood.ui.basic.modifier.Reuse){}[0]
+    final fun Text(): app.cash.redwood.ui.basic.widget/Text<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory.Text|Text(){}[0]
+    final fun TextInput(): app.cash.redwood.ui.basic.widget/TextInput<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetFactory.TextInput|TextInput(){}[0]
 }
 
-final fun app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetSystem(org.w3c.dom/Document): app.cash.redwood.ui.basic.widget/RedwoodBasicWidgetSystem<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodBasicWidgetSystem|HTMLElementRedwoodBasicWidgetSystem(org.w3c.dom.Document){}[0]
+final fun app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetSystem(org.w3c.dom/Document): app.cash.redwood.ui.basic.widget/RedwoodUiBasicWidgetSystem<org.w3c.dom/HTMLElement> // app.cash.redwood.ui.basic.dom/HTMLElementRedwoodUiBasicWidgetSystem|HTMLElementRedwoodUiBasicWidgetSystem(org.w3c.dom.Document){}[0]

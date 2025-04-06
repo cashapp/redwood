@@ -26,7 +26,7 @@ import app.cash.redwood.testing.flatten
 import app.cash.redwood.ui.basic.api.TextFieldState
 import app.cash.redwood.ui.basic.compose.Text
 import app.cash.redwood.ui.basic.compose.TextInput
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTester
 import app.cash.redwood.ui.basic.testing.TextInputValue
 import app.cash.redwood.ui.basic.testing.TextValue
 import assertk.assertThat
@@ -40,7 +40,7 @@ import kotlinx.coroutines.test.runTest
 class EmojiSearchTest {
   @Test
   fun recomposed() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         BasicEmojiSearch()
       }

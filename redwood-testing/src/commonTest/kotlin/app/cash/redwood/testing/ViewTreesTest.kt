@@ -40,7 +40,7 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.basic.compose.Text
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.ui.basic.testing.TextValue
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
@@ -141,7 +141,7 @@ class ViewTreesTest {
     // Ensure when the changes are applied with the widget protocol we get equivalent values.
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
-      RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )

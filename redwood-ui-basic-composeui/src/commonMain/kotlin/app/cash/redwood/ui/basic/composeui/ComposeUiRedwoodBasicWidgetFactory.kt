@@ -21,15 +21,15 @@ import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFac
 import app.cash.redwood.ui.basic.modifier.Reuse
 import app.cash.redwood.ui.basic.widget.Button
 import app.cash.redwood.ui.basic.widget.Image
-import app.cash.redwood.ui.basic.widget.RedwoodBasicWidgetFactory
-import app.cash.redwood.ui.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.widget.RedwoodUiBasicWidgetFactory
+import app.cash.redwood.ui.basic.widget.RedwoodUiBasicWidgetSystem
 import app.cash.redwood.ui.basic.widget.Text
 import app.cash.redwood.ui.basic.widget.TextInput
 import coil3.ImageLoader
 
-public class ComposeUiRedwoodBasicWidgetFactory(
+public class ComposeUiRedwoodUiBasicWidgetFactory(
   private val imageLoader: ImageLoader,
-) : RedwoodBasicWidgetFactory<@Composable () -> Unit> {
+) : RedwoodUiBasicWidgetFactory<@Composable () -> Unit> {
   override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
   override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
   override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage(imageLoader)
@@ -39,11 +39,11 @@ public class ComposeUiRedwoodBasicWidgetFactory(
 }
 
 @Suppress("FunctionName") // Acting like a type.
-public fun ComposeUiRedwoodBasicWidgetSystem(
+public fun ComposeUiRedwoodUiBasicWidgetSystem(
   imageLoader: ImageLoader,
-): RedwoodBasicWidgetSystem<@Composable (() -> Unit)> {
-  return RedwoodBasicWidgetSystem(
-    RedwoodBasic = ComposeUiRedwoodBasicWidgetFactory(imageLoader),
+): RedwoodUiBasicWidgetSystem<@Composable (() -> Unit)> {
+  return RedwoodUiBasicWidgetSystem(
+    RedwoodUiBasic = ComposeUiRedwoodUiBasicWidgetFactory(imageLoader),
     RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),
     RedwoodLazyLayout = ComposeUiRedwoodLazyLayoutWidgetFactory(),
   )

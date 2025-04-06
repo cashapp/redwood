@@ -37,7 +37,7 @@ import app.cash.redwood.ui.basic.api.TextFieldState
     Dependency(2, RedwoodLazyLayout::class),
   ],
 )
-public interface RedwoodBasic
+public interface RedwoodUiBasic
 
 @Widget(1)
 public data class TextInput(

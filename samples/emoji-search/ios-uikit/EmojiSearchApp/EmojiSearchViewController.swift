@@ -101,7 +101,7 @@ class EmojiSearchTreehouseWidgetSystem : TreehouseViewWidgetSystem {
         json: Kotlinx_serialization_jsonJson,
         protocolMismatchHandler: ProtocolMismatchHandler
     ) -> ProtocolFactory {
-        return RedwoodBasicProtocolFactory<UIView>(
+        return RedwoodUiBasicProtocolFactory<UIView>(
             widgetSystem: ExposedKt.basicWidgetSystem(),
             json: json,
             mismatchHandler: protocolMismatchHandler

@@ -27,12 +27,12 @@ public final class app/cash/redwood/ui/basic/testing/ImageValue : app/cash/redwo
 	public fun toWidget (Lapp/cash/redwood/widget/WidgetSystem;)Lapp/cash/redwood/widget/Widget;
 }
 
-public final class app/cash/redwood/ui/basic/testing/RedwoodBasicTesterKt {
-	public static final fun RedwoodBasicTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun RedwoodBasicTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+public final class app/cash/redwood/ui/basic/testing/RedwoodUiBasicTesterKt {
+	public static final fun RedwoodUiBasicTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun RedwoodUiBasicTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class app/cash/redwood/ui/basic/testing/RedwoodBasicTestingWidgetFactory : app/cash/redwood/ui/basic/widget/RedwoodBasicWidgetFactory {
+public final class app/cash/redwood/ui/basic/testing/RedwoodUiBasicTestingWidgetFactory : app/cash/redwood/ui/basic/widget/RedwoodUiBasicWidgetFactory {
 	public fun <init> ()V
 	public fun Button ()Lapp/cash/redwood/ui/basic/widget/Button;
 	public fun Image ()Lapp/cash/redwood/ui/basic/widget/Image;

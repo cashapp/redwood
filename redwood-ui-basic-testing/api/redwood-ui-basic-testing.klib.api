@@ -46,14 +46,14 @@ final class app.cash.redwood.ui.basic.testing/ImageValue : app.cash.redwood.test
     final fun toString(): kotlin/String // app.cash.redwood.ui.basic.testing/ImageValue.toString|toString(){}[0]
 }
 
-final class app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory : app.cash.redwood.ui.basic.widget/RedwoodBasicWidgetFactory<app.cash.redwood.testing/WidgetValue> { // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory|null[0]
-    constructor <init>() // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory.<init>|<init>(){}[0]
+final class app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory : app.cash.redwood.ui.basic.widget/RedwoodUiBasicWidgetFactory<app.cash.redwood.testing/WidgetValue> { // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory|null[0]
+    constructor <init>() // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory.<init>|<init>(){}[0]
 
-    final fun Button(): app.cash.redwood.ui.basic.widget/Button<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory.Button|Button(){}[0]
-    final fun Image(): app.cash.redwood.ui.basic.widget/Image<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory.Image|Image(){}[0]
-    final fun Reuse(app.cash.redwood.testing/WidgetValue, app.cash.redwood.ui.basic.modifier/Reuse) // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory.Reuse|Reuse(app.cash.redwood.testing.WidgetValue;app.cash.redwood.ui.basic.modifier.Reuse){}[0]
-    final fun Text(): app.cash.redwood.ui.basic.widget/Text<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory.Text|Text(){}[0]
-    final fun TextInput(): app.cash.redwood.ui.basic.widget/TextInput<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodBasicTestingWidgetFactory.TextInput|TextInput(){}[0]
+    final fun Button(): app.cash.redwood.ui.basic.widget/Button<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory.Button|Button(){}[0]
+    final fun Image(): app.cash.redwood.ui.basic.widget/Image<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory.Image|Image(){}[0]
+    final fun Reuse(app.cash.redwood.testing/WidgetValue, app.cash.redwood.ui.basic.modifier/Reuse) // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory.Reuse|Reuse(app.cash.redwood.testing.WidgetValue;app.cash.redwood.ui.basic.modifier.Reuse){}[0]
+    final fun Text(): app.cash.redwood.ui.basic.widget/Text<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory.Text|Text(){}[0]
+    final fun TextInput(): app.cash.redwood.ui.basic.widget/TextInput<app.cash.redwood.testing/WidgetValue> // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTestingWidgetFactory.TextInput|TextInput(){}[0]
 }
 
 final class app.cash.redwood.ui.basic.testing/TextInputValue : app.cash.redwood.testing/WidgetValue { // app.cash.redwood.ui.basic.testing/TextInputValue|null[0]
@@ -94,4 +94,4 @@ final class app.cash.redwood.ui.basic.testing/TextValue : app.cash.redwood.testi
     final fun toString(): kotlin/String // app.cash.redwood.ui.basic.testing/TextValue.toString|toString(){}[0]
 }
 
-final suspend fun <#A: kotlin/Any?> app.cash.redwood.ui.basic.testing/RedwoodBasicTester(app.cash.redwood.ui/OnBackPressedDispatcher = ..., app.cash.redwood.testing/TestSavedState? = ..., app.cash.redwood.ui/UiConfiguration = ..., kotlin.coroutines/SuspendFunction1<app.cash.redwood.testing/TestRedwoodComposition<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>>, #A>): #A // app.cash.redwood.ui.basic.testing/RedwoodBasicTester|RedwoodBasicTester(app.cash.redwood.ui.OnBackPressedDispatcher;app.cash.redwood.testing.TestSavedState?;app.cash.redwood.ui.UiConfiguration;kotlin.coroutines.SuspendFunction1<app.cash.redwood.testing.TestRedwoodComposition<kotlin.collections.List<app.cash.redwood.testing.WidgetValue>>,0:0>){0§<kotlin.Any?>}[0]
+final suspend fun <#A: kotlin/Any?> app.cash.redwood.ui.basic.testing/RedwoodUiBasicTester(app.cash.redwood.ui/OnBackPressedDispatcher = ..., app.cash.redwood.testing/TestSavedState? = ..., app.cash.redwood.ui/UiConfiguration = ..., kotlin.coroutines/SuspendFunction1<app.cash.redwood.testing/TestRedwoodComposition<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>>, #A>): #A // app.cash.redwood.ui.basic.testing/RedwoodUiBasicTester|RedwoodUiBasicTester(app.cash.redwood.ui.OnBackPressedDispatcher;app.cash.redwood.testing.TestSavedState?;app.cash.redwood.ui.UiConfiguration;kotlin.coroutines.SuspendFunction1<app.cash.redwood.testing.TestRedwoodComposition<kotlin.collections.List<app.cash.redwood.testing.WidgetValue>>,0:0>){0§<kotlin.Any?>}[0]

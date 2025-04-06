@@ -34,8 +34,8 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.ui.basic.protocol.host.RedwoodBasicProtocolFactory
-import app.cash.redwood.ui.basic.view.ViewRedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicProtocolFactory
+import app.cash.redwood.ui.basic.view.ViewRedwoodUiBasicWidgetSystem
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -91,8 +91,8 @@ class EmojiSearchActivity : ComponentActivity() {
       .build()
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      RedwoodBasicProtocolFactory(
-        widgetSystem = ViewRedwoodBasicWidgetSystem(this, imageLoader),
+      RedwoodUiBasicProtocolFactory(
+        widgetSystem = ViewRedwoodUiBasicWidgetSystem(this, imageLoader),
         json = json,
         mismatchHandler = protocolMismatchHandler,
       )

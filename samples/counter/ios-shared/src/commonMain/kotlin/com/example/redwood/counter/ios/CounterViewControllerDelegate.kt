@@ -17,7 +17,7 @@ package com.example.redwood.counter.ios
 
 import app.cash.redwood.compose.DisplayLinkClock
 import app.cash.redwood.compose.RedwoodComposition
-import app.cash.redwood.ui.basic.uiview.UIViewRedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.uiview.UIViewRedwoodUiBasicWidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
 import com.example.redwood.counter.presenter.Counter
 import kotlinx.coroutines.MainScope
@@ -34,7 +34,7 @@ class CounterViewControllerDelegate(
     val composition = RedwoodComposition(
       scope = scope,
       view = redwoodUIView,
-      widgetSystem = UIViewRedwoodBasicWidgetSystem(),
+      widgetSystem = UIViewRedwoodUiBasicWidgetSystem(),
     )
     composition.setContent {
       Counter()

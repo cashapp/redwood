@@ -38,9 +38,9 @@ import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.composeui.TreehouseContent
-import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
-import app.cash.redwood.ui.basic.protocol.host.RedwoodBasicProtocolFactory
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodUiBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodUiBasicTheme
+import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicProtocolFactory
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -92,15 +92,15 @@ class EmojiSearchActivity : ComponentActivity() {
       .build()
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      RedwoodBasicProtocolFactory<@Composable () -> Unit>(
-        widgetSystem = ComposeUiRedwoodBasicWidgetSystem(imageLoader),
+      RedwoodUiBasicProtocolFactory<@Composable () -> Unit>(
+        widgetSystem = ComposeUiRedwoodUiBasicWidgetSystem(imageLoader),
         json = json,
         mismatchHandler = protocolMismatchHandler,
       )
     }
 
     setContent {
-      RedwoodBasicTheme {
+      RedwoodUiBasicTheme {
         Scaffold(
           snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->

@@ -18,7 +18,7 @@ package com.example.redwood.emojisearch.treehouse
 import app.cash.redwood.treehouse.StandardAppLifecycle
 import app.cash.redwood.treehouse.ZiplineTreehouseUi
 import app.cash.redwood.treehouse.asZiplineTreehouseUi
-import app.cash.redwood.ui.basic.protocol.guest.RedwoodBasicProtocolWidgetSystemFactory
+import app.cash.redwood.ui.basic.protocol.guest.RedwoodUiBasicProtocolWidgetSystemFactory
 import com.example.redwood.emojisearch.presenter.EmojiSearchTreehouseUi
 import com.example.redwood.emojisearch.presenter.Navigator
 import kotlinx.serialization.json.Json
@@ -28,7 +28,7 @@ class RealEmojiSearchPresenter(
   json: Json,
 ) : EmojiSearchPresenter {
   override val appLifecycle = StandardAppLifecycle(
-    protocolWidgetSystemFactory = RedwoodBasicProtocolWidgetSystemFactory,
+    protocolWidgetSystemFactory = RedwoodUiBasicProtocolWidgetSystemFactory,
     json = json,
     widgetVersion = 0U,
   )

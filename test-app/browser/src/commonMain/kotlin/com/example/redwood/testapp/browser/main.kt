@@ -19,7 +19,7 @@ import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
 import app.cash.redwood.layout.dom.HTMLElementRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.dom.HTMLElementRedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodBasicWidgetFactory
+import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodUiBasicWidgetFactory
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.testapp.presenter.HttpClient
 import com.example.redwood.testapp.presenter.TestApp
@@ -44,7 +44,7 @@ fun main() {
     view = content.asRedwoodView(),
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = HtmlWidgetFactory(document),
-      RedwoodBasic = HTMLElementRedwoodBasicWidgetFactory(document),
+      RedwoodUiBasic = HTMLElementRedwoodUiBasicWidgetFactory(document),
       RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
       RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),
     ),

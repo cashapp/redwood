@@ -24,8 +24,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import app.cash.redwood.composeui.RedwoodContent
 import app.cash.redwood.ui.Margin
-import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodUiBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodUiBasicTheme
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
@@ -42,14 +42,14 @@ fun main() {
       add(OkHttpNetworkFetcherFactory(client))
     }
     .build()
-  val widgetSystem = ComposeUiRedwoodBasicWidgetSystem(imageLoader)
+  val widgetSystem = ComposeUiRedwoodUiBasicWidgetSystem(imageLoader)
 
   application {
     Window(
       onCloseRequest = ::exitApplication,
       title = "Emoji Search",
     ) {
-      RedwoodBasicTheme {
+      RedwoodUiBasicTheme {
         Scaffold { contentPadding ->
           RedwoodContent(widgetSystem, modifier = Modifier.padding(contentPadding)) {
             EmojiSearch(

@@ -17,7 +17,7 @@ package com.example.redwood.emojisearch.browser
 
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.compose.WindowAnimationFrameClock
-import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.dom.HTMLElementRedwoodUiBasicWidgetSystem
 import app.cash.redwood.widget.asRedwoodView
 import com.example.redwood.emojisearch.presenter.EmojiSearch
 import com.example.redwood.emojisearch.presenter.HttpClient
@@ -45,7 +45,7 @@ fun main() {
   val composition = RedwoodComposition(
     scope = GlobalScope + WindowAnimationFrameClock,
     view = content.asRedwoodView(),
-    widgetSystem = HTMLElementRedwoodBasicWidgetSystem(document),
+    widgetSystem = HTMLElementRedwoodUiBasicWidgetSystem(document),
   )
   val httpClient = FetchHttpClient(window)
   composition.setContent {

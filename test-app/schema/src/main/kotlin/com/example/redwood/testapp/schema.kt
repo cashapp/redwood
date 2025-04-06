@@ -23,7 +23,7 @@ import app.cash.redwood.schema.Property
 import app.cash.redwood.schema.Schema
 import app.cash.redwood.schema.Schema.Dependency
 import app.cash.redwood.schema.Widget
-import app.cash.redwood.ui.basic.RedwoodBasic
+import app.cash.redwood.ui.basic.RedwoodUiBasic
 import kotlin.time.Duration
 
 @Schema(
@@ -44,7 +44,7 @@ import kotlin.time.Duration
     Split::class,
   ],
   dependencies = [
-    Dependency(1, RedwoodBasic::class),
+    Dependency(1, RedwoodUiBasic::class),
     Dependency(2, RedwoodLayout::class),
     Dependency(3, RedwoodLazyLayout::class),
   ],

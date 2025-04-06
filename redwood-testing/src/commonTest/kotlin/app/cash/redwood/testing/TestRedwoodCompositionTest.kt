@@ -27,7 +27,7 @@ import app.cash.redwood.layout.compose.Row
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.ui.basic.compose.Text
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.ui.basic.testing.TextValue
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
@@ -82,7 +82,7 @@ class TestRedwoodCompositionTest {
       scope = backgroundScope,
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),

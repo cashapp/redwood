@@ -30,7 +30,7 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.ui.basic.view.ViewRedwoodBasicWidgetFactory
+import app.cash.redwood.ui.basic.view.ViewRedwoodUiBasicWidgetFactory
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -81,7 +81,7 @@ class TestAppActivity : ComponentActivity() {
       ) = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = AndroidTestSchemaWidgetFactory(context),
-          RedwoodBasic = ViewRedwoodBasicWidgetFactory(context, imageLoader),
+          RedwoodUiBasic = ViewRedwoodUiBasicWidgetFactory(context, imageLoader),
           RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
           RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
         ),

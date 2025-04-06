@@ -28,7 +28,7 @@ import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.hostRedwoodVersion
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
@@ -55,7 +55,7 @@ class ViewRecyclingTester(
   private val widgetProtocolFactory = TestSchemaProtocolFactory(
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
-      RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     ),

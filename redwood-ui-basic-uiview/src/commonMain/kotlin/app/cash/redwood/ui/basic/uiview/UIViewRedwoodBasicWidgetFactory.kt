@@ -20,14 +20,14 @@ import app.cash.redwood.lazylayout.uiview.UIViewRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.basic.modifier.Reuse
 import app.cash.redwood.ui.basic.widget.Button
 import app.cash.redwood.ui.basic.widget.Image
-import app.cash.redwood.ui.basic.widget.RedwoodBasicWidgetFactory
-import app.cash.redwood.ui.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.widget.RedwoodUiBasicWidgetFactory
+import app.cash.redwood.ui.basic.widget.RedwoodUiBasicWidgetSystem
 import app.cash.redwood.ui.basic.widget.Text
 import app.cash.redwood.ui.basic.widget.TextInput
 import platform.UIKit.UIView
 
-@ObjCName("UIViewRedwoodBasicWidgetFactory", exact = true)
-public class UIViewRedwoodBasicWidgetFactory : RedwoodBasicWidgetFactory<UIView> {
+@ObjCName("UIViewRedwoodUiBasicWidgetFactory", exact = true)
+public class UIViewRedwoodUiBasicWidgetFactory : RedwoodUiBasicWidgetFactory<UIView> {
   private val imageLoader = RemoteImageLoader()
 
   override fun TextInput(): TextInput<UIView> = UIViewTextInput()
@@ -39,9 +39,9 @@ public class UIViewRedwoodBasicWidgetFactory : RedwoodBasicWidgetFactory<UIView>
 }
 
 @Suppress("FunctionName") // Acting like a type.
-public fun UIViewRedwoodBasicWidgetSystem(): RedwoodBasicWidgetSystem<UIView> {
-  return RedwoodBasicWidgetSystem(
-    RedwoodBasic = UIViewRedwoodBasicWidgetFactory(),
+public fun UIViewRedwoodUiBasicWidgetSystem(): RedwoodUiBasicWidgetSystem<UIView> {
+  return RedwoodUiBasicWidgetSystem(
+    RedwoodUiBasic = UIViewRedwoodUiBasicWidgetFactory(),
     RedwoodLayout = UIViewRedwoodLayoutWidgetFactory(),
     RedwoodLazyLayout = UIViewRedwoodLazyLayoutWidgetFactory(),
   )

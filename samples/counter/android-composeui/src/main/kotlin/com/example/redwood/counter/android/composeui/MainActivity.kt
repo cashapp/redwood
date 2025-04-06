@@ -19,8 +19,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import app.cash.redwood.composeui.RedwoodContent
-import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodUiBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodUiBasicTheme
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.serviceLoaderEnabled
@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
       }
       .build()
 
-    val widgetSystem = ComposeUiRedwoodBasicWidgetSystem(imageLoader)
+    val widgetSystem = ComposeUiRedwoodUiBasicWidgetSystem(imageLoader)
 
     setContent {
-      RedwoodBasicTheme {
+      RedwoodUiBasicTheme {
         RedwoodContent(widgetSystem) {
           Counter()
         }

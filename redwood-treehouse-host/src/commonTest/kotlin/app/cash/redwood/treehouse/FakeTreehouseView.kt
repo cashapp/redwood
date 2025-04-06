@@ -21,7 +21,7 @@ import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
 import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
@@ -50,7 +50,7 @@ internal class FakeTreehouseView(
     TestSchemaProtocolFactory(
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),

@@ -22,8 +22,8 @@ import app.cash.redwood.ui.basic.api.TextFieldState
 import app.cash.redwood.ui.basic.modifier.Reuse
 import app.cash.redwood.ui.basic.widget.Button
 import app.cash.redwood.ui.basic.widget.Image
-import app.cash.redwood.ui.basic.widget.RedwoodBasicWidgetFactory
-import app.cash.redwood.ui.basic.widget.RedwoodBasicWidgetSystem
+import app.cash.redwood.ui.basic.widget.RedwoodUiBasicWidgetFactory
+import app.cash.redwood.ui.basic.widget.RedwoodUiBasicWidgetSystem
 import app.cash.redwood.ui.basic.widget.Text
 import app.cash.redwood.ui.basic.widget.TextInput
 import org.w3c.dom.Document
@@ -33,9 +33,9 @@ import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSpanElement
 
-public class HTMLElementRedwoodBasicWidgetFactory(
+public class HTMLElementRedwoodUiBasicWidgetFactory(
   private val document: Document,
-) : RedwoodBasicWidgetFactory<HTMLElement> {
+) : RedwoodUiBasicWidgetFactory<HTMLElement> {
   override fun TextInput(): TextInput<HTMLElement> = HtmlTextInput(document.createElement("input") as HTMLInputElement)
   override fun Text(): Text<HTMLElement> = HtmlText(document.createElement("span") as HTMLSpanElement)
   override fun Image(): Image<HTMLElement> = HtmlImage(document.createElement("img") as HTMLImageElement)
@@ -45,11 +45,11 @@ public class HTMLElementRedwoodBasicWidgetFactory(
 }
 
 @Suppress("FunctionName") // Acting like a type.
-public fun HTMLElementRedwoodBasicWidgetSystem(
+public fun HTMLElementRedwoodUiBasicWidgetSystem(
   document: Document,
-): RedwoodBasicWidgetSystem<HTMLElement> {
-  return RedwoodBasicWidgetSystem(
-    RedwoodBasic = HTMLElementRedwoodBasicWidgetFactory(document),
+): RedwoodUiBasicWidgetSystem<HTMLElement> {
+  return RedwoodUiBasicWidgetSystem(
+    RedwoodUiBasic = HTMLElementRedwoodUiBasicWidgetFactory(document),
     RedwoodLayout = HTMLElementRedwoodLayoutWidgetFactory(document),
     RedwoodLazyLayout = HTMLElementRedwoodLazyLayoutWidgetFactory(document),
   )

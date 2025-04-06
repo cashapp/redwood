@@ -24,21 +24,21 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import app.cash.redwood.composeui.RedwoodContent
-import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodBasicWidgetSystem
-import app.cash.redwood.ui.basic.composeui.RedwoodBasicTheme
+import app.cash.redwood.ui.basic.composeui.ComposeUiRedwoodUiBasicWidgetSystem
+import app.cash.redwood.ui.basic.composeui.RedwoodUiBasicTheme
 import coil3.ImageLoader
 import coil3.PlatformContext
 import com.example.redwood.counter.presenter.Counter
 
 fun main() {
-  val widgetSystem = ComposeUiRedwoodBasicWidgetSystem(ImageLoader(PlatformContext.INSTANCE))
+  val widgetSystem = ComposeUiRedwoodUiBasicWidgetSystem(ImageLoader(PlatformContext.INSTANCE))
   application {
     Window(
       onCloseRequest = ::exitApplication,
       title = "Counter",
       state = rememberWindowState(width = 300.dp, height = 300.dp),
     ) {
-      RedwoodBasicTheme {
+      RedwoodUiBasicTheme {
         RedwoodContent(widgetSystem, modifier = Modifier.padding(16.dp)) {
           Counter()
         }

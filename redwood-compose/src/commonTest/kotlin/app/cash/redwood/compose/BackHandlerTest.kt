@@ -27,7 +27,7 @@ import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.basic.compose.Text
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTester
 import app.cash.redwood.ui.basic.testing.TextValue
 import assertk.assertFailure
 import assertk.assertThat
@@ -47,7 +47,7 @@ class BackHandlerTest {
   @Test
   fun enabledBackHandler() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler {
@@ -65,7 +65,7 @@ class BackHandlerTest {
   @Test
   fun disabledBackHandler() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       setContent {
         val backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
@@ -81,7 +81,7 @@ class BackHandlerTest {
   @Test
   fun disabledToEnabledBackHandler() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       var enabled by mutableStateOf(false)
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
@@ -104,7 +104,7 @@ class BackHandlerTest {
   @Test
   fun outermostEnabledAndInnermostEnabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
@@ -126,7 +126,7 @@ class BackHandlerTest {
   @Test
   fun outermostEnabledAndInnermostDisabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler {
@@ -148,7 +148,7 @@ class BackHandlerTest {
   @Test
   fun outermostDisabledAndInnermostEnabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       setContent {
         var backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)
@@ -170,7 +170,7 @@ class BackHandlerTest {
   @Test
   fun outermostDisabledAndInnermostDisabledBackHandlers() = runTest {
     val onBackPressedDispatcher = FakeOnBackPressedDispatcher()
-    RedwoodBasicTester(onBackPressedDispatcher) {
+    RedwoodUiBasicTester(onBackPressedDispatcher) {
       setContent {
         val backCounter by remember { mutableIntStateOf(0) }
         BackHandler(enabled = false, throwingOnBack)

@@ -18,7 +18,7 @@ package app.cash.redwood.lazylayout.compose
 import androidx.compose.runtime.mutableIntStateOf
 import app.cash.redwood.lazylayout.testing.LazyListValue
 import app.cash.redwood.ui.basic.compose.Text
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTester
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
@@ -29,7 +29,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun onlyLoadTheScrollWindowUntilScrollingStops() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -61,7 +61,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun onlyLoadTheScrollWindowUntilScrollingStopsWhenScrollingUp() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -100,7 +100,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun scrollToEndOfRange() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -131,7 +131,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun dontUnloadTheExistingLoadedWindow() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -169,7 +169,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun itemCountIsConsistentDuringScroll() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {
           items(100) {
@@ -247,7 +247,7 @@ class ScrollAwareLoadingTest {
 
   @Test
   fun itemCountChanges() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       val itemCount = mutableIntStateOf(100)
       setContent {
         LazyColumn(placeholder = { Text("Placeholder") }) {

@@ -19,7 +19,7 @@ import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.testing.flatten
 import app.cash.redwood.ui.basic.testing.ButtonValue
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTester
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTester
 import app.cash.redwood.ui.basic.testing.TextValue
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -28,7 +28,7 @@ import kotlinx.coroutines.test.runTest
 
 class CounterTest {
   @Test fun counts() = runTest {
-    RedwoodBasicTester {
+    RedwoodUiBasicTester {
       setCounter()
 
       awaitSnapshot().apply {
@@ -50,13 +50,13 @@ class CounterTest {
   }
 
   @Test fun savesCount() = runTest {
-    val state = RedwoodBasicTester {
+    val state = RedwoodUiBasicTester {
       setCounter()
       awaitSnapshot().clickButton("+1")
       awaitSnapshot().clickButton("+1")
       saveState()
     }
-    RedwoodBasicTester(savedState = state) {
+    RedwoodUiBasicTester(savedState = state) {
       setCounter()
       assertThat(awaitSnapshot().labelText()).isEqualTo("Count: 2")
     }

@@ -30,7 +30,7 @@ import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.testing.WidgetValue
-import app.cash.redwood.ui.basic.testing.RedwoodBasicTestingWidgetFactory
+import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.ui.basic.testing.TextValue
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertFailure
@@ -56,7 +56,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -84,7 +84,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -113,7 +113,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -182,7 +182,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -219,7 +219,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),
@@ -282,7 +282,7 @@ class HostProtocolAdapterTest {
       factory = TestSchemaProtocolFactory(
         widgetSystem = TestSchemaWidgetSystem(
           TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodBasic = RedwoodBasicTestingWidgetFactory(),
+          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
           RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
           RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
         ),

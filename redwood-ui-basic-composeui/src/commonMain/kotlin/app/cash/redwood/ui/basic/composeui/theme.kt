@@ -61,7 +61,7 @@ private val Shapes = Shapes(
 )
 
 @Composable
-public fun RedwoodBasicTheme(
+public fun RedwoodUiBasicTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
   content: @Composable () -> Unit,
 ) {
