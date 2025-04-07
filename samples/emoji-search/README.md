@@ -48,7 +48,7 @@ Or this (to use the Android View frontend):
 ```
 
 This Android app assumes it's running in an emulator and will attempt to fetch JavaScript from the
-devserver running on the host machine (10.0.2.2). It will crash if that server is not reachable (see above).
+server running on the host machine (10.0.2.2). It will crash if that server is not reachable (see above).
 
 
 Running Emoji-Search on iOS
