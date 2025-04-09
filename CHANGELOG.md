@@ -14,6 +14,7 @@ Fixed:
 - Don't double insets on insets-aware `UIViews`. Previously we offered the same insets via two mechanisms, which could result in double insets.
 - Don't conflate `CrossAxisAlignment.Stretch` with `Contraint.Fill`. We had a bug where `CrossAxisAlignment.Stretch` would cause children to fill their parent container.
 - Honor the inbound max width for `Row` and `Column` layouts using `Constraint.Wrap` on iOS. This is necessary for child components that can wrap, like text.
+- Using "stretch" cross-axis alignment on a lazy list now works correctly in Compose UI.
 
 
 ## [0.17.0] - 2025-01-30
