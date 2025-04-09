@@ -42,7 +42,7 @@ import org.junit.Rule
 @Burst
 class ComposeUiLazyListTest(
   layoutDirection: LayoutDirection = LayoutDirection.LTR,
-) : AbstractFlexContainerTest<@Composable () -> Unit>() {
+) : AbstractFlexContainerTest<@Composable (Modifier) -> Unit>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
@@ -61,15 +61,15 @@ class ComposeUiLazyListTest(
       .apply { applyDefaults() }
   }
 
-  override fun row(): Row<@Composable () -> Unit> {
+  override fun row(): Row<@Composable (Modifier) -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Row()
   }
 
-  override fun column(): Column<@Composable () -> Unit> {
+  override fun column(): Column<@Composable (Modifier) -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Column()
   }
 
-  override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
+  override fun spacer(backgroundColor: Int): Spacer<@Composable (Modifier) -> Unit> {
     return ComposeUiRedwoodLayoutWidgetFactory().Spacer().apply {
       @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
       (this as ComposeUiSpacer).testOnlyModifier =
@@ -77,15 +77,14 @@ class ComposeUiLazyListTest(
     }
   }
 
-  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
+  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,
-  ) : TestFlexContainer<@Composable () -> Unit>,
-    LazyList<@Composable () -> Unit> by delegate {
+  ) : TestFlexContainer<@Composable (Modifier) -> Unit>,
+    LazyList<@Composable (Modifier) -> Unit> by delegate {
 
-    // Work around https://youtrack.jetbrains.com/issue/KT-68850
-    override val value: @Composable () -> Unit get() = delegate.value
+    override val value get() = delegate.value
 
     private var onScroll: ((Px) -> Unit)? = null
 

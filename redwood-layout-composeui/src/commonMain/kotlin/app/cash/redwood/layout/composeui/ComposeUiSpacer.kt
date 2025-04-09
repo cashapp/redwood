@@ -27,13 +27,13 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.dp
 
-internal class ComposeUiSpacer : Spacer<@Composable () -> Unit> {
+internal class ComposeUiSpacer : Spacer<@Composable (Modifier) -> Unit> {
   private var width by mutableStateOf(0.dp)
   private var height by mutableStateOf(0.dp)
   var testOnlyModifier: Modifier? = null
 
-  override val value = @Composable {
-    var modifier = Modifier.defaultMinSize(width.toDp(), height.toDp())
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
+    var modifier = modifier.defaultMinSize(width.toDp(), height.toDp())
     testOnlyModifier?.let { modifier = modifier.then(it) }
     Spacer(modifier)
   }

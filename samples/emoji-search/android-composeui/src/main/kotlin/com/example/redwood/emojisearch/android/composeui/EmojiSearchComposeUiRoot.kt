@@ -29,17 +29,17 @@ import app.cash.redwood.treehouse.Crashed
 import app.cash.redwood.treehouse.DynamicContentWidgetFactory
 import app.cash.redwood.treehouse.Loading
 
-internal class EmojiSearchDynamicContentWidgetFactory : DynamicContentWidgetFactory<@Composable () -> Unit> {
+internal class EmojiSearchDynamicContentWidgetFactory : DynamicContentWidgetFactory<@Composable (Modifier) -> Unit> {
 
   override fun Loading() = RealLoading()
 
   override fun Crashed() = RealCrashed()
 
-  internal class RealLoading : Loading<@Composable () -> Unit> {
+  internal class RealLoading : Loading<@Composable (Modifier) -> Unit> {
     override var modifier: RedwoodModifier = RedwoodModifier
-    override val value = @Composable {
+    override val value: @Composable (Modifier) -> Unit = { modifier ->
       Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
       ) {
         BasicText("loading...")
@@ -47,13 +47,13 @@ internal class EmojiSearchDynamicContentWidgetFactory : DynamicContentWidgetFact
     }
   }
 
-  internal class RealCrashed : Crashed<@Composable () -> Unit> {
+  internal class RealCrashed : Crashed<@Composable (Modifier) -> Unit> {
     private var uncaughtException by mutableStateOf<Throwable?>(null)
 
     override var modifier: RedwoodModifier = RedwoodModifier
-    override val value = @Composable {
+    override val value: @Composable (Modifier) -> Unit = { modifier ->
       Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
       ) {
         BasicText(uncaughtException?.stackTraceToString() ?: "")

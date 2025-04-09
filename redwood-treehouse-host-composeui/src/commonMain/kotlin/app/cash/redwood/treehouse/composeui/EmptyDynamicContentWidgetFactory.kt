@@ -16,27 +16,28 @@
 package app.cash.redwood.treehouse.composeui
 
 import androidx.compose.runtime.Composable
-import app.cash.redwood.Modifier
+import androidx.compose.ui.Modifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.treehouse.Crashed
 import app.cash.redwood.treehouse.DynamicContentWidgetFactory
 import app.cash.redwood.treehouse.Loading
 
 /** Don't show anything for loading or error screens. */
 internal object EmptyDynamicContentWidgetFactory :
-  DynamicContentWidgetFactory<@Composable () -> Unit> {
+  DynamicContentWidgetFactory<@Composable (Modifier) -> Unit> {
   override fun Loading() = EmptyLoading()
 
   override fun Crashed() = EmptyCrashed()
 
-  internal class EmptyLoading : Loading<@Composable () -> Unit> {
-    override var modifier: Modifier = Modifier
-    override val value = @Composable {
+  internal class EmptyLoading : Loading<@Composable (Modifier) -> Unit> {
+    override var modifier: RedwoodModifier = RedwoodModifier
+    override val value: @Composable (Modifier) -> Unit = {
     }
   }
 
-  internal class EmptyCrashed : Crashed<@Composable () -> Unit> {
-    override var modifier: Modifier = Modifier
-    override val value = @Composable {
+  internal class EmptyCrashed : Crashed<@Composable (Modifier) -> Unit> {
+    override var modifier: RedwoodModifier = RedwoodModifier
+    override val value: @Composable (Modifier) -> Unit = {
     }
 
     override fun uncaughtException(uncaughtException: Throwable) {

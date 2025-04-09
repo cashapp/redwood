@@ -40,21 +40,21 @@ import app.cash.redwood.snapshot.testing.Color as ColorWidget
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.toPlatformDp
 
-object ComposeUiTestWidgetFactory : TestWidgetFactory<@Composable () -> Unit> {
-  override fun color(): ColorWidget<@Composable () -> Unit> = ComposeUiColor()
+object ComposeUiTestWidgetFactory : TestWidgetFactory<@Composable (Modifier) -> Unit> {
+  override fun color(): ColorWidget<@Composable (Modifier) -> Unit> = ComposeUiColor()
 
-  override fun text(): Text<@Composable () -> Unit> = ComposeUiText()
+  override fun text(): Text<@Composable (Modifier) -> Unit> = ComposeUiText()
 
-  override fun column(): SimpleColumn<@Composable () -> Unit> = ComposeUiColumn()
+  override fun column(): SimpleColumn<@Composable (Modifier) -> Unit> = ComposeUiColumn()
 
-  override fun scrollWrapper(): ScrollWrapper<@Composable () -> Unit> = ComposeUiScrollWrapper()
+  override fun scrollWrapper(): ScrollWrapper<@Composable (Modifier) -> Unit> = ComposeUiScrollWrapper()
 }
 
-class ComposeUiText : Text<@Composable () -> Unit> {
+class ComposeUiText : Text<@Composable (Modifier) -> Unit> {
   private var text by mutableStateOf("")
   private var bgColor by mutableStateOf(Transparent)
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     Box(
       modifier = Modifier.background(Color(bgColor)),
       contentAlignment = Alignment.CenterStart,
@@ -79,13 +79,13 @@ class ComposeUiText : Text<@Composable () -> Unit> {
   }
 }
 
-class ComposeUiColor : ColorWidget<@Composable () -> Unit> {
+class ComposeUiColor : ColorWidget<@Composable (Modifier) -> Unit> {
   private var width by mutableStateOf(0.dp)
   private var height by mutableStateOf(0.dp)
   private var color by mutableStateOf(Transparent)
 
-  override val value = @Composable {
-    Spacer(Modifier.size(width, height).background(Color(color)))
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
+    Spacer(modifier.size(width, height).background(Color(color)))
   }
 
   override fun width(width: Dp) {
@@ -107,36 +107,36 @@ internal fun Dp.toDp(): ComposeDp {
   return ComposeDp(toPlatformDp().toFloat())
 }
 
-class ComposeUiColumn : SimpleColumn<@Composable () -> Unit> {
-  private val children = mutableStateListOf<@Composable () -> Unit>()
+class ComposeUiColumn : SimpleColumn<@Composable (Modifier) -> Unit> {
+  private val children = mutableStateListOf<@Composable (Modifier) -> Unit>()
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     // We'd like to pass Modifier.fillMaxWidth() to all children.
     Column {
       for (child in children) {
-        child()
+        child(Modifier)
       }
     }
   }
 
-  override fun add(child: @Composable () -> Unit) {
+  override fun add(child: @Composable (Modifier) -> Unit) {
     children.add(child)
   }
 }
 
-class ComposeUiScrollWrapper : ScrollWrapper<@Composable () -> Unit> {
-  override var content: (@Composable () -> Unit)? = null
+class ComposeUiScrollWrapper : ScrollWrapper<@Composable (Modifier) -> Unit> {
+  override var content: (@Composable (Modifier) -> Unit)? = null
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     val state = rememberScrollState()
     Column(
       modifier = Modifier.verticalScroll(state),
     ) {
-      content?.invoke()
+      content?.invoke(Modifier)
     }
   }
 }

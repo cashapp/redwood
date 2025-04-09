@@ -22,25 +22,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import app.cash.redwood.Modifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.ui.basic.api.TextFieldState
 import app.cash.redwood.ui.basic.widget.TextInput
 
-internal class ComposeUiTextInput : TextInput<@Composable () -> Unit> {
+internal class ComposeUiTextInput : TextInput<@Composable (Modifier) -> Unit> {
   private var state by mutableStateOf(TextFieldState())
   private var hint by mutableStateOf("")
   private var onChange: ((TextFieldState) -> Unit)? = null
   private var updating = false
 
-  override var modifier: Modifier = Modifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     // Preserve 'composition' and other state properties that we don't modify.
     var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
 
     TextField(
+      modifier = modifier,
       value = textFieldValue.copy(
         text = state.text,
         selection = TextRange(state.selectionStart, state.selectionEnd),

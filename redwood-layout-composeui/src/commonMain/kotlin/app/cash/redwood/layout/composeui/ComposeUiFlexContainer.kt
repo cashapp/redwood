@@ -58,7 +58,7 @@ import app.cash.redwood.yoga.Node
 import app.cash.redwood.yoga.Size
 import app.cash.redwood.yoga.isHorizontal
 
-internal class ComposeUiColumn : Column<@Composable () -> Unit> {
+internal class ComposeUiColumn : Column<@Composable (Modifier) -> Unit> {
   internal val container = ComposeUiFlexContainer(FlexDirection.Column)
 
   override val value get() = container.value
@@ -74,7 +74,7 @@ internal class ComposeUiColumn : Column<@Composable () -> Unit> {
   override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
 }
 
-internal class ComposeUiRow : Row<@Composable () -> Unit> {
+internal class ComposeUiRow : Row<@Composable (Modifier) -> Unit> {
   internal val container = ComposeUiFlexContainer(FlexDirection.Row)
 
   override val value get() = container.value
@@ -92,7 +92,7 @@ internal class ComposeUiRow : Row<@Composable () -> Unit> {
 
 internal class ComposeUiFlexContainer(
   private val flexDirection: FlexDirection,
-) : YogaFlexContainer<@Composable () -> Unit> {
+) : YogaFlexContainer<@Composable (Modifier) -> Unit> {
   override val rootNode = Node().apply {
     flexDirection = this@ComposeUiFlexContainer.flexDirection
   }
@@ -145,7 +145,7 @@ internal class ComposeUiFlexContainer(
     recomposeTick++
   }
 
-  override val value: @Composable () -> Unit = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     Layout(
       content = {
         // Observe this so we can manually trigger recomposition.
@@ -163,14 +163,14 @@ internal class ComposeUiFlexContainer(
 
         children.Render()
       },
-      modifier = computeModifier(),
+      modifier = modifier.computeModifier(),
       measurePolicy = ::measure,
     )
   }
 
   @Composable
-  private fun computeModifier(): Modifier {
-    var modifier: Modifier = Modifier
+  private fun Modifier.computeModifier(): Modifier {
+    var modifier = this
     modifier = if (width == Constraint.Fill) {
       modifier.fillMaxWidth()
     } else {

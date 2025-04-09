@@ -13,7 +13,7 @@ kotlin {
       kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.widget.compose'))
       dependencies {
         api projects.redwoodWidget
-        api libs.jetbrains.compose.runtime
+        api libs.jetbrains.compose.ui
       }
     }
     commonTest {

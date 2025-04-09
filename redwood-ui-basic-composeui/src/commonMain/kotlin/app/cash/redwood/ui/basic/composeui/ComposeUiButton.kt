@@ -26,18 +26,18 @@ import androidx.compose.ui.Modifier
 import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.ui.basic.widget.Button
 
-internal class ComposeUiButton : Button<@Composable () -> Unit> {
+internal class ComposeUiButton : Button<@Composable (Modifier) -> Unit> {
   private var text by mutableStateOf("")
   private var isEnabled by mutableStateOf(false)
   private var onClick by mutableStateOf({})
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     Button(
       onClick = onClick,
       enabled = isEnabled,
-      modifier = Modifier.fillMaxWidth(),
+      modifier = modifier.fillMaxWidth(),
     ) {
       Text(text)
     }

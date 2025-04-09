@@ -20,7 +20,6 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
-        implementation projects.redwoodWidgetCompose
       }
     }
     commonTest {

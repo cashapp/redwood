@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractSpacerTest
@@ -31,7 +32,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ComposeUiSpacerTest : AbstractSpacerTest<@Composable () -> Unit>() {
+class ComposeUiSpacerTest : AbstractSpacerTest<@Composable (Modifier) -> Unit>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
@@ -40,23 +41,26 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable () -> Unit>() {
     renderingMode = SessionParams.RenderingMode.SHRINK,
   )
 
-  override fun widget(): Spacer<@Composable () -> Unit> = ComposeUiSpacer()
+  override fun widget(): Spacer<@Composable (Modifier) -> Unit> = ComposeUiSpacer()
 
-  override fun wrap(widget: Widget<@Composable () -> Unit>, horizontal: Boolean) = @Composable {
+  override fun wrap(
+    widget: Widget<@Composable (Modifier) -> Unit>,
+    horizontal: Boolean,
+  ): @Composable (Modifier) -> Unit = { modifier ->
     if (horizontal) {
-      Row {
+      Row(modifier) {
         BasicText("Text 1")
-        widget.value()
+        widget.value(Modifier)
         BasicText("Text 2")
       }
     } else {
-      Column {
+      Column(modifier) {
         BasicText("Text 1")
-        widget.value()
+        widget.value(Modifier)
         BasicText("Text 2")
       }
     }
   }
 
-  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
+  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

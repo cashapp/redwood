@@ -21,16 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.cash.redwood.Modifier
+import androidx.compose.ui.Modifier
+import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.ui.basic.widget.Text
 
-internal class ComposeUiText : Text<@Composable () -> Unit> {
+internal class ComposeUiText : Text<@Composable (Modifier) -> Unit> {
   private var text by mutableStateOf("")
 
-  override var modifier: Modifier = Modifier
+  override var modifier: RedwoodModifier = RedwoodModifier
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     Text(
+      modifier = modifier,
       text = text,
       color = MaterialTheme.colors.onBackground,
     )

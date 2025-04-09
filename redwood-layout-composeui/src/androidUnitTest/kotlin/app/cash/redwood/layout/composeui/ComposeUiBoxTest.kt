@@ -16,6 +16,7 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
@@ -29,7 +30,7 @@ import org.junit.Rule
 @Burst
 class ComposeUiBoxTest(
   layoutDirection: LayoutDirection = LayoutDirection.LTR,
-) : AbstractBoxTest<@Composable () -> Unit>() {
+) : AbstractBoxTest<@Composable (Modifier) -> Unit>() {
 
   @get:Rule
   val paparazzi = Paparazzi(
@@ -40,8 +41,8 @@ class ComposeUiBoxTest(
 
   override val widgetFactory = ComposeUiTestWidgetFactory
 
-  override fun box(): Box<@Composable () -> Unit> = ComposeUiBox(0x88000000.toInt())
+  override fun box(): Box<@Composable (Modifier) -> Unit> = ComposeUiBox(0x88000000.toInt())
     .apply { applyDefaults() }
 
-  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
+  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

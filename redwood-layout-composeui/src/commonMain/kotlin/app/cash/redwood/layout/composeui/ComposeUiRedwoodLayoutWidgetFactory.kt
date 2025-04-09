@@ -16,15 +16,16 @@
 package app.cash.redwood.layout.composeui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 
-public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable () -> Unit> {
-  override fun Box(): Box<@Composable () -> Unit> = ComposeUiBox()
-  override fun Column(): Column<@Composable () -> Unit> = ComposeUiColumn()
-  override fun Row(): Row<@Composable () -> Unit> = ComposeUiRow()
-  override fun Spacer(): Spacer<@Composable () -> Unit> = ComposeUiSpacer()
+public class ComposeUiRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<@Composable (Modifier) -> Unit> {
+  override fun Box(): Box<@Composable (Modifier) -> Unit> = ComposeUiBox()
+  override fun Column(): Column<@Composable (Modifier) -> Unit> = ComposeUiColumn()
+  override fun Row(): Row<@Composable (Modifier) -> Unit> = ComposeUiRow()
+  override fun Spacer(): Spacer<@Composable (Modifier) -> Unit> = ComposeUiSpacer()
 }

@@ -36,7 +36,7 @@ dependencies {
   debugImplementation libs.jetbrains.compose.ui.tooling
   implementation projects.redwoodTreehouseHost
   implementation projects.redwoodTreehouseHostComposeui
-  implementation projects.redwoodWidgetCompose
+  implementation projects.redwoodWidgetComposeui
   implementation libs.okio.assetfilesystem
 
   androidTestImplementation libs.androidx.test.runner

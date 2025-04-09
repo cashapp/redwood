@@ -30,18 +30,18 @@ import coil3.compose.AsyncImage
 
 internal class ComposeUiImage(
   private val imageLoader: ImageLoader,
-) : Image<@Composable () -> Unit> {
+) : Image<@Composable (Modifier) -> Unit> {
   private var url by mutableStateOf("")
   private var onClick by mutableStateOf({})
 
   override var modifier: RedwoodModifier = RedwoodModifier
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     AsyncImage(
       model = url,
       imageLoader = imageLoader,
       contentDescription = null,
-      modifier = Modifier
+      modifier = modifier
         .size(48.dp)
         .clickable(onClick = onClick),
     )

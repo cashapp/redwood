@@ -16,6 +16,7 @@
 package app.cash.redwood.ui.basic.composeui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import app.cash.redwood.layout.composeui.ComposeUiRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.composeui.ComposeUiRedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.ui.basic.modifier.Reuse
@@ -29,19 +30,19 @@ import coil3.ImageLoader
 
 public class ComposeUiRedwoodUiBasicWidgetFactory(
   private val imageLoader: ImageLoader,
-) : RedwoodUiBasicWidgetFactory<@Composable () -> Unit> {
-  override fun TextInput(): TextInput<@Composable () -> Unit> = ComposeUiTextInput()
-  override fun Text(): Text<@Composable () -> Unit> = ComposeUiText()
-  override fun Image(): Image<@Composable () -> Unit> = ComposeUiImage(imageLoader)
-  override fun Button(): Button<@Composable (() -> Unit)> = ComposeUiButton()
-  override fun Reuse(value: @Composable () -> Unit, modifier: Reuse) {
+) : RedwoodUiBasicWidgetFactory<@Composable (Modifier) -> Unit> {
+  override fun TextInput(): TextInput<@Composable (Modifier) -> Unit> = ComposeUiTextInput()
+  override fun Text(): Text<@Composable (Modifier) -> Unit> = ComposeUiText()
+  override fun Image(): Image<@Composable (Modifier) -> Unit> = ComposeUiImage(imageLoader)
+  override fun Button(): Button<@Composable ((Modifier) -> Unit)> = ComposeUiButton()
+  override fun Reuse(value: @Composable (Modifier) -> Unit, modifier: Reuse) {
   }
 }
 
 @Suppress("FunctionName") // Acting like a type.
 public fun ComposeUiRedwoodUiBasicWidgetSystem(
   imageLoader: ImageLoader,
-): RedwoodUiBasicWidgetSystem<@Composable (() -> Unit)> {
+): RedwoodUiBasicWidgetSystem<@Composable (Modifier) -> Unit> {
   return RedwoodUiBasicWidgetSystem(
     RedwoodUiBasic = ComposeUiRedwoodUiBasicWidgetFactory(imageLoader),
     RedwoodLayout = ComposeUiRedwoodLayoutWidgetFactory(),

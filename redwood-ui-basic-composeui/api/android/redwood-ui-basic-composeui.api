@@ -8,7 +8,7 @@ public final class app/cash/redwood/ui/basic/composeui/ComposeUiRedwoodUiBasicWi
 	public fun Button ()Lapp/cash/redwood/ui/basic/widget/Button;
 	public fun Image ()Lapp/cash/redwood/ui/basic/widget/Image;
 	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
-	public fun Reuse (Lkotlin/jvm/functions/Function2;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
+	public fun Reuse (Lkotlin/jvm/functions/Function3;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
 	public fun Text ()Lapp/cash/redwood/ui/basic/widget/Text;
 	public fun TextInput ()Lapp/cash/redwood/ui/basic/widget/TextInput;
 }

@@ -16,7 +16,7 @@ kotlin {
         api libs.jetbrains.compose.material
         implementation projects.redwoodLayoutComposeui
         implementation projects.redwoodLazylayoutComposeui
-        implementation projects.redwoodWidgetCompose
+        implementation projects.redwoodWidgetComposeui
         implementation libs.jetbrains.compose.ui
       }
     }

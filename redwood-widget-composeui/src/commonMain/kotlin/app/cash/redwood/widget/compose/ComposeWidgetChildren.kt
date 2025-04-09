@@ -20,16 +20,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import app.cash.redwood.widget.Widget
 import kotlin.jvm.JvmOverloads
 
 public class ComposeWidgetChildren @JvmOverloads constructor(
   private val onModifierUpdated: () -> Unit = {},
-) : Widget.Children<@Composable () -> Unit> {
+) : Widget.Children<@Composable (Modifier) -> Unit> {
   private var modifierTick by mutableIntStateOf(0)
 
-  private val _widgets = mutableStateListOf<Widget<@Composable () -> Unit>>()
-  override val widgets: List<Widget<@Composable () -> Unit>> get() = _widgets
+  private val _widgets = mutableStateListOf<Widget<@Composable (Modifier) -> Unit>>()
+  override val widgets: List<Widget<@Composable (Modifier) -> Unit>> get() = _widgets
 
   @Composable
   public fun Render() {
@@ -37,11 +38,11 @@ public class ComposeWidgetChildren @JvmOverloads constructor(
     modifierTick
 
     for (index in _widgets.indices) {
-      _widgets[index].value()
+      _widgets[index].value(Modifier)
     }
   }
 
-  override fun insert(index: Int, widget: Widget<@Composable () -> Unit>) {
+  override fun insert(index: Int, widget: Widget<@Composable (Modifier) -> Unit>) {
     _widgets.add(index, widget)
   }
 
@@ -53,7 +54,7 @@ public class ComposeWidgetChildren @JvmOverloads constructor(
     _widgets.remove(index, count)
   }
 
-  override fun onModifierUpdated(index: Int, widget: Widget<@Composable () -> Unit>) {
+  override fun onModifierUpdated(index: Int, widget: Widget<@Composable (Modifier) -> Unit>) {
     modifierTick++
     onModifierUpdated.invoke()
   }

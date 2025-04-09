@@ -40,7 +40,7 @@ import org.junit.Rule
 @Burst
 class ComposeUiFlexContainerTest(
   layoutDirection: LayoutDirection = LayoutDirection.LTR,
-) : AbstractFlexContainerTest<@Composable () -> Unit>() {
+) : AbstractFlexContainerTest<@Composable (Modifier) -> Unit>() {
 
   override val widgetFactory = ComposeUiTestWidgetFactory
 
@@ -54,35 +54,35 @@ class ComposeUiFlexContainerTest(
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
-  ): TestFlexContainer<@Composable () -> Unit> {
+  ): TestFlexContainer<@Composable (Modifier) -> Unit> {
     return ComposeTestFlexContainer(direction, backgroundColor)
       .apply { (this as TestFlexContainer<*>).applyDefaults() }
   }
 
-  override fun row(): Row<@Composable () -> Unit> = ComposeUiRow()
+  override fun row(): Row<@Composable (Modifier) -> Unit> = ComposeUiRow()
     .apply {
       container.testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
       applyDefaults()
     }
 
-  override fun column(): Column<@Composable () -> Unit> = ComposeUiColumn()
+  override fun column(): Column<@Composable (Modifier) -> Unit> = ComposeUiColumn()
     .apply {
       container.testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
       applyDefaults()
     }
 
-  override fun spacer(backgroundColor: Int): Spacer<@Composable () -> Unit> {
+  override fun spacer(backgroundColor: Int): Spacer<@Composable (Modifier) -> Unit> {
     return ComposeUiSpacer().apply {
       testOnlyModifier = Modifier.background(Color(backgroundColor))
     }
   }
 
-  override fun snapshotter(widget: @Composable () -> Unit) = ComposeSnapshotter(paparazzi, widget)
+  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiFlexContainer,
-  ) : TestFlexContainer<@Composable () -> Unit>,
-    YogaFlexContainer<@Composable () -> Unit> by delegate {
+  ) : TestFlexContainer<@Composable (Modifier) -> Unit>,
+    YogaFlexContainer<@Composable (Modifier) -> Unit> by delegate {
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiFlexContainer(direction).apply {

@@ -14,7 +14,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLazylayoutWidget
-        implementation projects.redwoodWidgetCompose
+        implementation projects.redwoodWidgetComposeui
         implementation libs.jetbrains.compose.foundation
         implementation libs.jetbrains.compose.material
       }

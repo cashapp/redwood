@@ -49,7 +49,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 internal class ComposeUiBox(
   private val backgroundColor: Int = 0,
-) : Box<@Composable () -> Unit> {
+) : Box<@Composable (Modifier) -> Unit> {
   private var modifierTick by mutableIntStateOf(0)
   override val children = ComposeWidgetChildren(onModifierUpdated = { modifierTick++ })
 
@@ -61,12 +61,12 @@ internal class ComposeUiBox(
   private var matchParentHeight by mutableStateOf(false)
   private var density by mutableStateOf(Density(1.0))
 
-  override val value = @Composable {
+  override val value: @Composable (Modifier) -> Unit = { modifier ->
     density = Density(LocalDensity.current.density.toDouble())
 
     Box(
       childrenLayoutInfo = computeChildrenLayoutInfo(),
-      modifier = computeModifier(),
+      modifier = modifier.computeModifier(),
     ) {
       children.Render()
     }
@@ -142,9 +142,8 @@ internal class ComposeUiBox(
     )
   }
 
-  @Composable
-  private fun computeModifier(): Modifier {
-    var modifier: Modifier = Modifier
+  private fun Modifier.computeModifier(): Modifier {
+    var modifier = this
     modifier = if (width == Constraint.Fill) {
       modifier.fillMaxWidth()
     } else {

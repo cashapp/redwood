@@ -16,14 +16,15 @@
 package app.cash.redwood.lazylayout.composeui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RedwoodLazyLayoutWidgetFactory
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 
-public class ComposeUiRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<@Composable () -> Unit> {
-  override fun LazyList(): LazyList<@Composable () -> Unit> =
+public class ComposeUiRedwoodLazyLayoutWidgetFactory : RedwoodLazyLayoutWidgetFactory<@Composable (Modifier) -> Unit> {
+  override fun LazyList(): LazyList<@Composable (Modifier) -> Unit> =
     ComposeUiLazyList()
 
-  override fun RefreshableLazyList(): RefreshableLazyList<@Composable () -> Unit> =
+  override fun RefreshableLazyList(): RefreshableLazyList<@Composable (Modifier) -> Unit> =
     ComposeUiRefreshableLazyList()
 }

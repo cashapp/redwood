@@ -34,7 +34,6 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodLayoutWidget
-        implementation projects.redwoodWidgetCompose
         implementation projects.redwoodWidgetSharedTest
         implementation projects.redwoodYoga
       }

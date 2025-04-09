@@ -22,13 +22,14 @@ import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Modifier
 import app.cash.redwood.widget.testing.AbstractWidgetChildrenTest
 import kotlinx.coroutines.Job
 
-class ComposeWidgetChildrenTest : AbstractWidgetChildrenTest<@Composable () -> Unit>() {
+class ComposeWidgetChildrenTest : AbstractWidgetChildrenTest<@Composable (Modifier) -> Unit>() {
   override val children = ComposeWidgetChildren()
 
-  override fun widget(name: String): @Composable () -> Unit {
+  override fun widget(name: String): @Composable (Modifier) -> Unit {
     // There's no way to peek inside a composable function to identify it. Instead we
     // side-effect into a mutable list composition local in order to observe them.
     return { LocalNames.current += name }

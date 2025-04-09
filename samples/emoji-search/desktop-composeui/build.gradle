@@ -20,7 +20,6 @@ dependencies {
   implementation projects.redwoodComposeui
   implementation projects.redwoodTreehouseHost
   implementation projects.redwoodTreehouseHostComposeui
-  implementation projects.redwoodWidgetCompose
   implementation libs.coil.network.okhttp
   implementation libs.okhttp
   implementation libs.zipline.loader

@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 /** Render a Redwood composition inside of Compose UI. */
 @Composable
 public fun RedwoodContent(
-  widgetSystem: WidgetSystem<@Composable () -> Unit>,
+  widgetSystem: WidgetSystem<@Composable (Modifier) -> Unit>,
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
 ) {

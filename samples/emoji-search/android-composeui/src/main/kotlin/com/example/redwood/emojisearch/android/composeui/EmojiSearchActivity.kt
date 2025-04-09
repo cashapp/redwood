@@ -26,7 +26,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration.Indefinite
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NoLiveLiterals
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
@@ -92,7 +91,7 @@ class EmojiSearchActivity : ComponentActivity() {
       .build()
 
     val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      RedwoodUiBasicProtocolFactory<@Composable () -> Unit>(
+      RedwoodUiBasicProtocolFactory(
         widgetSystem = ComposeUiRedwoodUiBasicWidgetSystem(imageLoader),
         json = json,
         mismatchHandler = protocolMismatchHandler,

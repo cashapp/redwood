@@ -13,7 +13,7 @@ kotlin {
       dependencies {
         implementation libs.jetbrains.compose.foundation
         api projects.redwoodCompose
-        implementation projects.redwoodWidgetCompose
+        implementation projects.redwoodWidgetComposeui
       }
     }
     commonTest {
