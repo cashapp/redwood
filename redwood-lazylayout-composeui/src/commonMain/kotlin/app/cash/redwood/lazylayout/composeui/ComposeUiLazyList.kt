@@ -124,8 +124,14 @@ internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
   override val value: @Composable (Modifier) -> Unit = { modifier ->
     val content: LazyListScope.() -> Unit = {
       items(items.widgets) { item ->
-        // TODO If CrossAxisAlignment is Stretch, pass Modifier.fillParentMaxWidth() to child widget.
-        item.value.invoke(Modifier)
+        val modifier = if (crossAxisAlignment != CrossAxisAlignment.Stretch) {
+          Modifier
+        } else if (isVertical) {
+          Modifier.fillMaxWidth()
+        } else {
+          Modifier.fillMaxHeight()
+        }
+        item.value.invoke(modifier)
       }
     }
     Box(modifier) {
