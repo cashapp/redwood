@@ -97,7 +97,7 @@ module:redwood-ui-basic-widget
 app.cash.redwood.ui.basic.widget
 module:redwood-widget
 app.cash.redwood.widget
-module:redwood-widget-compose
+module:redwood-widget-composeui
 app.cash.redwood.widget.compose
 module:redwood-widget-testing
 app.cash.redwood.widget.testing
