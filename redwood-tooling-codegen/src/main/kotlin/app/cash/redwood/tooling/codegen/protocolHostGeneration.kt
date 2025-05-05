@@ -641,7 +641,7 @@ private fun generateEventHandler(
     val parameterType = parameter.type.asTypeName()
     val serializerType = KotlinxSerialization.KSerializer.parameterizedBy(parameterType)
     val serializerId = "serializer_$index"
-    val parameterName = "arg$index"
+    val parameterName = parameter.name ?: "arg$index"
 
     addConstructorParameterAndProperty(classBuilder, constructor, serializerId, serializerType)
     invoke.addParameter(ParameterSpec(parameterName, parameterType))
