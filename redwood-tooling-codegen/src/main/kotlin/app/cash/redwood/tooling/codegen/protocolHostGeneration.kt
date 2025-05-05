@@ -650,7 +650,7 @@ private fun generateEventHandler(
     serializers += CodeBlock.of(
       "%L as %T",
       serializerId,
-      KotlinxSerialization.KSerializer.parameterizedBy(ANY.copy(nullable = true)),
+      KotlinxSerialization.SerializationStrategy.parameterizedBy(ANY.copy(nullable = true)),
     )
   }
 

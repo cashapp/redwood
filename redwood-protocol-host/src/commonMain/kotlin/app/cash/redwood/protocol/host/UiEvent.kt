@@ -30,7 +30,7 @@ public class UiEvent(
   public val id: Id,
   public val tag: EventTag,
   public val args: Array<Any?>?,
-  public val serializationStrategies: Array<SerializationStrategy<Any?>>?,
+  public val serializationStrategies: Array<out SerializationStrategy<Any?>>?,
 ) {
   /** Serialize [args] into a JSON model using [serializationStrategies] into an [Event]. */
   public fun toProtocol(json: Json): Event {
