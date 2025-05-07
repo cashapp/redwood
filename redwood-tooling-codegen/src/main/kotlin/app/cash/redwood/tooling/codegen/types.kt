@@ -59,6 +59,7 @@ internal object ProtocolHost {
   val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
   val ProtocolChildren = ClassName("app.cash.redwood.protocol.host", "ProtocolChildren")
   val UiEventSink = ClassName("app.cash.redwood.protocol.host", "UiEventSink")
+  val UiPropertyChange = ClassName("app.cash.redwood.protocol.host", "UiPropertyChange")
   val WidgetHostProtocol = ClassName("app.cash.redwood.protocol.host", "WidgetHostProtocol")
 }
 
@@ -131,6 +132,7 @@ internal val typeVariableW = TypeVariableName("W", listOf(ANY))
 internal object KotlinxSerialization {
   val Contextual = ClassName("kotlinx.serialization", "Contextual")
   val ContextualSerializer = ClassName("kotlinx.serialization", "ContextualSerializer")
+  val DeserializationStrategy = ClassName("kotlinx.serialization", "DeserializationStrategy")
   val ExperimentalSerializationApi = ClassName("kotlinx.serialization", "ExperimentalSerializationApi")
   val KSerializer = ClassName("kotlinx.serialization", "KSerializer")
   val Serializable = ClassName("kotlinx.serialization", "Serializable")
@@ -146,10 +148,6 @@ internal object KotlinxSerialization {
 
   val Json = ClassName("kotlinx.serialization.json", "Json")
   val JsonDefault = Json.nestedClass("Default")
-  val JsonPrimitive = MemberName("kotlinx.serialization.json", "JsonPrimitive")
-  val jsonBoolean = MemberName("kotlinx.serialization.json", "boolean")
-
-  @JvmField val jsonPrimitive = MemberName("kotlinx.serialization.json", "jsonPrimitive")
 }
 
 internal object KotlinxCoroutines {

@@ -26,6 +26,7 @@ import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
+import app.cash.redwood.protocol.host.UiChange
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
@@ -72,15 +73,21 @@ enum class ComposeLauncher {
         hostVersion = hostRedwoodVersion,
         widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
       )
+      val hostProtocol = TestSchemaHostProtocol.create()
       val hostAdapter = HostProtocolAdapter(
         guestVersion = guestRedwoodVersion,
         container = MutableListChildren(),
-        protocol = TestSchemaHostProtocol.create(),
+        protocol = hostProtocol,
         widgetSystem = widgetSystem,
         eventSink = { throw AssertionError() },
         leakDetector = LeakDetector.none(),
       )
-      guestAdapter.initChangesSink(hostAdapter)
+      guestAdapter.initChangesSink { changes ->
+        val uiChanges = changes.mapNotNull { change ->
+          UiChange.fromProtocol(hostProtocol, change)
+        }
+        hostAdapter.sendChanges(uiChanges)
+      }
       return TestRedwoodComposition(
         scope = scope,
         widgetSystem = guestAdapter.widgetSystem,

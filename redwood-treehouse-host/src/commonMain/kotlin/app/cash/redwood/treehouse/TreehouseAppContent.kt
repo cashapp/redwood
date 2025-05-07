@@ -19,6 +19,7 @@ import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.host.HostProtocolAdapter
+import app.cash.redwood.protocol.host.UiChange
 import app.cash.redwood.protocol.host.UiEvent
 import app.cash.redwood.protocol.host.UiEventSink
 import app.cash.redwood.treehouse.Content.State
@@ -370,7 +371,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private val eventBridge = EventBridge(dispatchers.zipline, bindingScope)
 
   /** Only accessed on [TreehouseDispatchers.ui]. Empty after [initView]. */
-  private val changesAwaitingInitView = ArrayDeque<List<Change>>()
+  private val changesAwaitingInitView = ArrayDeque<List<UiChange>>()
 
   /** Changes applied to the UI. Only accessed on [TreehouseDispatchers.ui]. */
   private var deliveredChangeCount = 0
@@ -416,13 +417,20 @@ private class ViewContentCodeBinding<A : AppService>(
 
   /** Send changes from Zipline to the UI. */
   override fun sendChanges(changes: List<Change>) {
+    val uiChanges = changes.mapNotNull { change ->
+      UiChange.fromProtocol(
+        protocol = codeSession.hostProtocol,
+        change = change,
+      )
+    }
+
     // Receive UI updates on the UI dispatcher.
     bindingScope.launch(dispatchers.ui) {
-      receiveChangesOnUiDispatcher(changes)
+      receiveChangesOnUiDispatcher(uiChanges)
     }
   }
 
-  private fun receiveChangesOnUiDispatcher(changes: List<Change>) {
+  private fun receiveChangesOnUiDispatcher(changes: List<UiChange>) {
     if (canceled) {
       return
     }

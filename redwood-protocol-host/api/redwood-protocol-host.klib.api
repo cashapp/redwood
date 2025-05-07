@@ -6,6 +6,10 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-protocol-host>
+abstract fun interface app.cash.redwood.protocol.host/UiChangesSink { // app.cash.redwood.protocol.host/UiChangesSink|null[0]
+    abstract fun sendChanges(kotlin.collections/List<app.cash.redwood.protocol.host/UiChange>) // app.cash.redwood.protocol.host/UiChangesSink.sendChanges|sendChanges(kotlin.collections.List<app.cash.redwood.protocol.host.UiChange>){}[0]
+}
+
 abstract fun interface app.cash.redwood.protocol.host/UiEventSink { // app.cash.redwood.protocol.host/UiEventSink|null[0]
     abstract fun sendEvent(app.cash.redwood.protocol.host/UiEvent) // app.cash.redwood.protocol.host/UiEventSink.sendEvent|sendEvent(app.cash.redwood.protocol.host.UiEvent){}[0]
 }
@@ -27,16 +31,30 @@ abstract interface app.cash.redwood.protocol.host/UiEvent { // app.cash.redwood.
 }
 
 sealed interface app.cash.redwood.protocol.host/HostProtocol { // app.cash.redwood.protocol.host/HostProtocol|null[0]
+    abstract val json // app.cash.redwood.protocol.host/HostProtocol.json|{}json[0]
+        abstract fun <get-json>(): kotlinx.serialization.json/Json // app.cash.redwood.protocol.host/HostProtocol.json.<get-json>|<get-json>(){}[0]
+    abstract val mismatchHandler // app.cash.redwood.protocol.host/HostProtocol.mismatchHandler|{}mismatchHandler[0]
+        abstract fun <get-mismatchHandler>(): app.cash.redwood.protocol.host/ProtocolMismatchHandler // app.cash.redwood.protocol.host/HostProtocol.mismatchHandler.<get-mismatchHandler>|<get-mismatchHandler>(){}[0]
+
     abstract interface Factory { // app.cash.redwood.protocol.host/HostProtocol.Factory|null[0]
         abstract fun create(kotlinx.serialization.json/Json = ..., app.cash.redwood.protocol.host/ProtocolMismatchHandler = ...): app.cash.redwood.protocol.host/HostProtocol // app.cash.redwood.protocol.host/HostProtocol.Factory.create|create(kotlinx.serialization.json.Json;app.cash.redwood.protocol.host.ProtocolMismatchHandler){}[0]
     }
 }
 
-final class <#A: kotlin/Any> app.cash.redwood.protocol.host/HostProtocolAdapter : app.cash.redwood.protocol/ChangesSink { // app.cash.redwood.protocol.host/HostProtocolAdapter|null[0]
+sealed interface app.cash.redwood.protocol.host/UiChange { // app.cash.redwood.protocol.host/UiChange|null[0]
+    abstract val id // app.cash.redwood.protocol.host/UiChange.id|{}id[0]
+        abstract fun <get-id>(): app.cash.redwood.protocol/Id // app.cash.redwood.protocol.host/UiChange.id.<get-id>|<get-id>(){}[0]
+
+    final object Companion { // app.cash.redwood.protocol.host/UiChange.Companion|null[0]
+        final fun fromProtocol(app.cash.redwood.protocol.host/HostProtocol, app.cash.redwood.protocol/Change): app.cash.redwood.protocol.host/UiChange? // app.cash.redwood.protocol.host/UiChange.Companion.fromProtocol|fromProtocol(app.cash.redwood.protocol.host.HostProtocol;app.cash.redwood.protocol.Change){}[0]
+    }
+}
+
+final class <#A: kotlin/Any> app.cash.redwood.protocol.host/HostProtocolAdapter : app.cash.redwood.protocol.host/UiChangesSink { // app.cash.redwood.protocol.host/HostProtocolAdapter|null[0]
     constructor <init>(app.cash.redwood.protocol/RedwoodVersion, app.cash.redwood.widget/Widget.Children<#A>, app.cash.redwood.protocol.host/HostProtocol, app.cash.redwood.widget/WidgetSystem<#A>, app.cash.redwood.protocol.host/UiEventSink, app.cash.redwood.leaks/LeakDetector) // app.cash.redwood.protocol.host/HostProtocolAdapter.<init>|<init>(app.cash.redwood.protocol.RedwoodVersion;app.cash.redwood.widget.Widget.Children<1:0>;app.cash.redwood.protocol.host.HostProtocol;app.cash.redwood.widget.WidgetSystem<1:0>;app.cash.redwood.protocol.host.UiEventSink;app.cash.redwood.leaks.LeakDetector){}[0]
 
     final fun close() // app.cash.redwood.protocol.host/HostProtocolAdapter.close|close(){}[0]
-    final fun sendChanges(kotlin.collections/List<app.cash.redwood.protocol/Change>) // app.cash.redwood.protocol.host/HostProtocolAdapter.sendChanges|sendChanges(kotlin.collections.List<app.cash.redwood.protocol.Change>){}[0]
+    final fun sendChanges(kotlin.collections/List<app.cash.redwood.protocol.host/UiChange>) // app.cash.redwood.protocol.host/HostProtocolAdapter.sendChanges|sendChanges(kotlin.collections.List<app.cash.redwood.protocol.host.UiChange>){}[0]
 }
 
 final val app.cash.redwood.protocol.host/hostRedwoodVersion // app.cash.redwood.protocol.host/hostRedwoodVersion|{}hostRedwoodVersion[0]

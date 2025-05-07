@@ -28,6 +28,7 @@ import app.cash.redwood.tooling.schema.Schema
 import app.cash.redwood.tooling.schema.Widget
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -50,8 +51,8 @@ import com.squareup.kotlinpoet.jvm.jvmField
 /*
 @ObjCName("ExampleProtocolFactory", exact = true)
 public class ExampleProtocolFactory(
-  private val json: Json = Json.Default,
-  private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
+  override val json: Json = Json.Default,
+  override val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
 ) : GeneratedHostProtocol {
   private val widgets: IntObjectMap<WidgetHostProtocol> =
       MutableIntObjectMap(4).apply {
@@ -104,12 +105,12 @@ internal fun generateHostProtocol(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
+          PropertySpec.builder("json", KotlinxSerialization.Json, OVERRIDE)
             .initializer("json")
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, OVERRIDE)
             .initializer("mismatchHandler")
             .build(),
         )
@@ -286,6 +287,9 @@ internal fun generateProtocolNode(
         }
       }
       is ProtocolEvent -> {
+        serializerIds.computeIfAbsent(BOOLEAN) {
+          nextSerializerId++
+        }
         for (parameter in trait.parameters) {
           serializerIds.computeIfAbsent(parameter.type.asTypeName()) {
             nextSerializerId++
@@ -370,6 +374,34 @@ internal fun generateProtocolNode(
             .addStatement("return %T(id, widget, this)", widgetNodeType)
             .build(),
         )
+        .addFunction(
+          FunSpec.builder("propertyDeserializer")
+            .addModifiers(OVERRIDE)
+            .addParameter("tag", Protocol.PropertyTag)
+            .returns(KotlinxSerialization.DeserializationStrategy.parameterizedBy(ANY.copy(nullable = true)).copy(nullable = true))
+            .beginControlFlow("return when (tag.value)")
+            .apply {
+              for (trait in widget.traits) {
+                val traitType = when (trait) {
+                  is ProtocolProperty -> trait.type.asTypeName()
+                  is ProtocolEvent -> BOOLEAN
+                  is ProtocolChildren -> continue
+                }
+                val serializerId = serializerIds.getValue(traitType)
+                addStatement("%L -> serializer_%L", trait.tag, serializerId)
+              }
+            }
+            .beginControlFlow("else ->")
+            .addStatement(
+              "mismatchHandler.onUnknownProperty(%T(%L), tag)",
+              Protocol.WidgetTag,
+              widget.tag,
+            )
+            .addStatement("null")
+            .endControlFlow()
+            .endControlFlow()
+            .build(),
+        )
         .build(),
     )
     addType(
@@ -434,35 +466,31 @@ internal fun generateProtocolNode(
           addFunction(
             FunSpec.builder("apply")
               .addModifiers(OVERRIDE)
-              .addParameter("change", Protocol.PropertyChange)
+              .addParameter("change", ProtocolHost.UiPropertyChange)
               .addParameter("eventSink", ProtocolHost.UiEventSink)
               .apply {
                 if (properties.isNotEmpty()) {
                   addStatement("val widget = _widget ?: error(%S)", "detached")
                 }
-                beginControlFlow("when (change.propertyTag.value)")
+                beginControlFlow("when (change.tag.value)")
                 for (trait in properties) {
                   when (trait) {
                     is ProtocolProperty -> {
-                      val propertyType = trait.type.asTypeName()
-                      val serializerId = serializerIds.getValue(propertyType)
-
                       addStatement(
-                        "%L -> widget.%N(protocol.json.decodeFromJsonElement(protocol.serializer_%L, change.value))",
+                        "%L -> widget.%N(change.value as %T)",
                         trait.tag,
                         trait.name,
-                        serializerId,
+                        trait.type.asTypeName(),
                       )
                     }
 
                     is ProtocolEvent -> {
                       beginControlFlow("%L ->", trait.tag)
                       beginControlFlow(
-                        "val %N: %T = if (change.value.%M.%M)",
+                        "val %N: %T = if (change.value as %T)",
                         trait.name,
                         trait.lambdaType,
-                        KotlinxSerialization.jsonPrimitive,
-                        KotlinxSerialization.jsonBoolean,
+                        BOOLEAN,
                       )
                       if (trait.parameters.isEmpty()) {
                         addStatement(
@@ -492,7 +520,7 @@ internal fun generateProtocolNode(
                 }
               }
               .addStatement(
-                "else -> protocol.mismatchHandler.onUnknownProperty(%T(%L), change.propertyTag)",
+                "else -> protocol.mismatchHandler.onUnknownProperty(%T(%L), change.tag)",
                 Protocol.WidgetTag,
                 widget.tag,
               )

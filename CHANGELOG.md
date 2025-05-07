@@ -5,6 +5,7 @@
 
 New:
 - Schema `@Widget`s can now set `internalComposable = true` to have their `@Composable` functions generated as internal. This will require that you define a public version in the main sources of the module which generates the functions. This can be used to hide old widgets that should no longer be used, create more complex widget protocols away from callers, and to conditionally split implementation between two bindings, for example.
+- UI changes which come from Treehouse are now converted to their final value on a background thread. Previously JSON deserialization happened on the background thread to an intermediate model, but mapping that model to the final value still occurred on the main thread.
 
 Changed:
 - Schema dependencies can now be a graph (i.e., dependencies can have their own dependencies), but the entire transitive set needs to be redeclared on the root schema (for the protocol to work properly).
