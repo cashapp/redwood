@@ -67,7 +67,7 @@ class LayoutTester(
     when (subject) {
       Subject.Reference -> referenceView
 
-      Subject.TreehouseView -> TreehouseUIView(throwingWidgetSystem)
+      Subject.TreehouseView -> TreehouseUIView(emptyWidgetSystem)
         .apply {
           (this.children as UIViewChildren).insert(0, viewWidget(referenceView))
         }

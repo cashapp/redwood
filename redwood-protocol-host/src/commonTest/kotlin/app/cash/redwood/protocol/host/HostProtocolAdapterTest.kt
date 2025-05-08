@@ -39,7 +39,7 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.message
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.testing.TestRowValue
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -53,13 +53,12 @@ class HostProtocolAdapterTest {
     val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
-      factory = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-        ),
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       eventSink = ::error,
       leakDetector = LeakDetector.none(),
@@ -81,13 +80,12 @@ class HostProtocolAdapterTest {
     val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
-      factory = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-        ),
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       eventSink = ::error,
       leakDetector = LeakDetector.none(),
@@ -110,13 +108,12 @@ class HostProtocolAdapterTest {
     val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(),
-      factory = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-        ),
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       eventSink = ::error,
       leakDetector = LeakDetector.none(),
@@ -179,13 +176,12 @@ class HostProtocolAdapterTest {
     val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = MutableListChildren(modifierUpdated = { modifierUpdateCount++ }),
-      factory = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-        ),
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       eventSink = ::error,
       leakDetector = LeakDetector.none(),
@@ -216,13 +212,12 @@ class HostProtocolAdapterTest {
     val host = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = container,
-      factory = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-        ),
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       eventSink = ::error,
       leakDetector = LeakDetector.none(),
@@ -279,13 +274,12 @@ class HostProtocolAdapterTest {
     val host = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = container,
-      factory = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = TestSchemaTestingWidgetFactory(),
-          RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-          RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-          RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-        ),
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = TestSchemaWidgetSystem(
+        TestSchema = TestSchemaTestingWidgetFactory(),
+        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),
       eventSink = ::error,
       leakDetector = LeakDetector.none(),

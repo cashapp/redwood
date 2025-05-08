@@ -49,7 +49,7 @@ import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.compose.Split
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -145,12 +145,12 @@ class ViewTreesTest {
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val protocolNodes = TestSchemaProtocolFactory(widgetSystem)
     val widgetContainer = MutableListChildren<WidgetValue>()
     val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = widgetContainer,
-      factory = protocolNodes,
+      protocol = TestSchemaHostProtocol.create(),
+      widgetSystem = widgetSystem,
       eventSink = { throw AssertionError() },
       leakDetector = LeakDetector.none(),
     )

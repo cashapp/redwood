@@ -25,11 +25,11 @@ import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import app.cash.redwood.Modifier
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.LayoutDirection
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -50,7 +50,7 @@ class TreehouseLayoutTest {
   private val activity = Robolectric.buildActivity(ComponentActivity::class.java).resume().visible().get()
 
   @Test fun widgetsAddChildViews() {
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, emptyWidgetSystem, activity.onBackPressedDispatcher)
     val rootView = layout.value as ViewGroup
 
     val view = View(activity)
@@ -61,7 +61,7 @@ class TreehouseLayoutTest {
 
   @Test fun attachAndDetachSendsStateChange() {
     val parent = activity.findViewById<ViewGroup>(android.R.id.content)
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, emptyWidgetSystem, activity.onBackPressedDispatcher)
     val listener = CountingReadyForContentChangeListener<View>()
 
     layout.readyForContentChangeListener = listener
@@ -78,12 +78,12 @@ class TreehouseLayoutTest {
     val newConfig = Configuration(activity.resources.configuration)
     newConfig.uiMode = (newConfig.uiMode and UI_MODE_NIGHT_MASK.inv()) or UI_MODE_NIGHT_YES
     val newContext = activity.createConfigurationContext(newConfig) // Needs API 26.
-    val layout = TreehouseLayout(newContext, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(newContext, emptyWidgetSystem, activity.onBackPressedDispatcher)
     assertThat(layout.uiConfiguration.value.darkMode).isTrue()
   }
 
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, emptyWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
       assertThat(awaitItem().darkMode).isFalse()
 
@@ -96,7 +96,7 @@ class TreehouseLayoutTest {
   }
 
   @Test fun uiConfigurationEmitsSystemBarsSafeAreaInsetsChanges() = runTest {
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, emptyWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
       val value1 = awaitItem()
       assertThat(value1.safeAreaInsets).isEqualTo(Margin.Zero)
@@ -122,7 +122,7 @@ class TreehouseLayoutTest {
   }
 
   @Test fun uiConfigurationEmitsLayoutDirectionChanges() = runTest {
-    val layout = TreehouseLayout(activity, throwingWidgetSystem, activity.onBackPressedDispatcher)
+    val layout = TreehouseLayout(activity, emptyWidgetSystem, activity.onBackPressedDispatcher)
     layout.uiConfiguration.test {
       assertThat(awaitItem().layoutDirection).isEqualTo(LayoutDirection.Ltr)
 
@@ -140,6 +140,7 @@ class TreehouseLayoutTest {
     override var modifier: Modifier = Modifier
   }
 
-  private val throwingWidgetSystem =
-    WidgetSystem<View> { _, _ -> throw UnsupportedOperationException() }
+  private val emptyWidgetSystem = object : WidgetSystem<View> {
+    override fun apply(value: View, element: Modifier.UnscopedElement) {}
+  }
 }

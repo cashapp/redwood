@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import android.content.Context
 import app.cash.redwood.leaks.LeakDetector
+import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.zipline.loader.LoaderEventListener
 import app.cash.zipline.loader.ManifestVerifier
 import app.cash.zipline.loader.ZiplineHttpClient
@@ -39,6 +40,7 @@ public fun TreehouseAppFactory(
   concurrentDownloads: Int = 8,
   stateStore: StateStore = MemoryStateStore(),
   leakDetector: LeakDetector = LeakDetector.none(),
+  hostProtocolFactory: HostProtocol.Factory,
 ): TreehouseApp.Factory = TreehouseAppFactory(
   context = context,
   httpClient = httpClient.asZiplineHttpClient(),
@@ -51,6 +53,7 @@ public fun TreehouseAppFactory(
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,
   leakDetector = leakDetector,
+  hostProtocolFactory = hostProtocolFactory,
 )
 
 @Suppress("FunctionName")
@@ -66,6 +69,7 @@ public fun TreehouseAppFactory(
   concurrentDownloads: Int = 8,
   stateStore: StateStore = MemoryStateStore(),
   leakDetector: LeakDetector = LeakDetector.none(),
+  hostProtocolFactory: HostProtocol.Factory,
 ): TreehouseApp.Factory = RealTreehouseApp.Factory(
   platform = AndroidTreehousePlatform(context),
   httpClient = httpClient,
@@ -80,4 +84,5 @@ public fun TreehouseAppFactory(
   concurrentDownloads = concurrentDownloads,
   stateStore = stateStore,
   leakDetector = leakDetector,
+  hostProtocolFactory = hostProtocolFactory,
 )

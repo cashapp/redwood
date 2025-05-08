@@ -31,7 +31,7 @@ import app.cash.redwood.protocol.host.HostProtocolAdapter.ReuseNode
  */
 @OptIn(RedwoodCodegenApi::class)
 internal fun shapesEqual(
-  factory: GeneratedHostProtocol<*>,
+  protocol: GeneratedHostProtocol,
   a: ReuseNode<*>,
   b: ProtocolNode<*>,
 ): Boolean {
@@ -39,14 +39,14 @@ internal fun shapesEqual(
   if (a.widgetTag == UnknownWidgetTag) return false // No 'Create' for this.
   if (b.widgetTag != a.widgetTag) return false // Widget types don't match.
 
-  val widgetChildren = factory.widget(a.widgetTag)
+  val widgetChildren = protocol.widget(a.widgetTag)
     ?.childrenTags
     ?: return true // Widget has no children.
 
   return widgetChildren.all { childrenTag ->
     val childrenTag = ChildrenTag(childrenTag)
     childrenEqual(
-      factory = factory,
+      protocol = protocol,
       aChildren = a.children,
       bChildren = b.children(childrenTag)?.nodes ?: listOf(),
       childrenTag = childrenTag,
@@ -60,7 +60,7 @@ internal fun shapesEqual(
  */
 @OptIn(RedwoodCodegenApi::class)
 private fun childrenEqual(
-  factory: GeneratedHostProtocol<*>,
+  protocol: GeneratedHostProtocol,
   aChildren: List<ReuseNode<*>>,
   bChildren: List<ProtocolNode<*>>,
   childrenTag: ChildrenTag,
@@ -72,7 +72,7 @@ private fun childrenEqual(
     if (a.indexInParent != aChildCount) return false // Out of order child?
     if (aChildCount >= bChildren.size) return false // b has fewer children.
     val b = bChildren[aChildCount++]
-    if (!shapesEqual(factory, a, b)) return false // Subtree mismatch.
+    if (!shapesEqual(protocol, a, b)) return false // Subtree mismatch.
   }
 
   if (aChildCount != bChildren.size) return false // b has more children.
@@ -82,7 +82,7 @@ private fun childrenEqual(
 /** Returns a hash of this node, or 0L if this node isn't eligible for reuse. */
 @OptIn(RedwoodCodegenApi::class)
 internal fun shapeHash(
-  factory: GeneratedHostProtocol<*>,
+  protocol: GeneratedHostProtocol,
   node: ReuseNode<*>,
 ): Long {
   if (!node.eligibleForReuse) return 0L // This node is ineligible.
@@ -90,14 +90,14 @@ internal fun shapeHash(
 
   var result = node.widgetTag.value.toLong()
 
-  factory.widget(node.widgetTag)?.childrenTags?.forEach { childrenTag ->
+  protocol.widget(node.widgetTag)?.childrenTags?.forEach { childrenTag ->
     result = (result * 37L) + childrenTag
     var childCount = 0
     for (child in node.children) {
       if (child.childrenTag.value != childrenTag) continue
       if (child.indexInParent != childCount) return 0L // Out of order child?
       childCount++
-      result = (result * 41L) + shapeHash(factory, child)
+      result = (result * 41L) + shapeHash(protocol, child)
     }
   }
 
@@ -107,16 +107,16 @@ internal fun shapeHash(
 /** Returns the same hash as [shapeHash], but on an already-built [ProtocolNode]. */
 @OptIn(RedwoodCodegenApi::class)
 internal fun shapeHash(
-  factory: GeneratedHostProtocol<*>,
+  protocol: GeneratedHostProtocol,
   node: ProtocolNode<*>,
 ): Long {
   var result = node.widgetTag.value.toLong()
-  factory.widget(node.widgetTag)?.childrenTags?.forEach { childrenTag ->
+  protocol.widget(node.widgetTag)?.childrenTags?.forEach { childrenTag ->
     result = (result * 37L) + childrenTag
     val children = node.children(ChildrenTag(childrenTag))
       ?: return@forEach // This acts like a 'continue'.
     for (child in children.nodes) {
-      result = (result * 41L) + shapeHash(factory, child)
+      result = (result * 41L) + shapeHash(protocol, child)
     }
   }
 

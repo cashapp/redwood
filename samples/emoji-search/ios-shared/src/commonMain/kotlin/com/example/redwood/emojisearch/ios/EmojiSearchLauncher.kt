@@ -19,6 +19,7 @@ import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
+import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicHostProtocol
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -74,6 +75,7 @@ class EmojiSearchLauncher(
           NSLog("Leak detected! $reference $note")
         },
       ),
+      hostProtocolFactory = RedwoodUiBasicHostProtocol,
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)

@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.leaks.LeakDetector
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -298,6 +299,7 @@ class CodeHostTest {
       dispatchers = dispatchers,
       source = { app -> app.newUi() },
       leakDetector = LeakDetector.none(),
+      hostProtocolFactory = TestSchemaHostProtocol,
     )
   }
 

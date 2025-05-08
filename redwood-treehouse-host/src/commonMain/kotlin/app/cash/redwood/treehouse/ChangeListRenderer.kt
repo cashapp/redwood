@@ -17,11 +17,10 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.SnapshotChangeList
+import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.redwood.protocol.host.HostProtocolAdapter
-import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.redwood.protocol.host.UiEventSink
 import app.cash.redwood.protocol.host.hostRedwoodVersion
-import kotlinx.serialization.json.Json
 
 /**
  * Renders a [SnapshotChangeList] into a target view by creating all of the widgets and
@@ -30,7 +29,7 @@ import kotlinx.serialization.json.Json
  * The rendered widgets are not interactive.
  */
 public class ChangeListRenderer<W : Any>(
-  private val json: Json,
+  private val protocol: HostProtocol,
 ) {
   private val refuseAllEvents = UiEventSink { event ->
     throw IllegalStateException("unexpected event: $event")
@@ -46,10 +45,8 @@ public class ChangeListRenderer<W : Any>(
       // Use latest host version as the guest version to avoid any compatibility behavior.
       guestVersion = hostRedwoodVersion,
       container = view.children,
-      factory = view.widgetSystem.widgetFactory(
-        json,
-        ProtocolMismatchHandler.Throwing,
-      ),
+      protocol = protocol,
+      widgetSystem = view.widgetSystem,
       eventSink = refuseAllEvents,
       leakDetector = LeakDetector.none(),
     )

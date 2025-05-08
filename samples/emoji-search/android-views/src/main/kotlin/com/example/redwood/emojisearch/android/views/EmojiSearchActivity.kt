@@ -32,9 +32,8 @@ import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicProtocolFactory
+import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicHostProtocol
 import app.cash.redwood.ui.basic.view.ViewRedwoodUiBasicWidgetSystem
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
@@ -90,17 +89,9 @@ class EmojiSearchActivity : ComponentActivity() {
       }
       .build()
 
-    val widgetSystem = WidgetSystem { json, protocolMismatchHandler ->
-      RedwoodUiBasicProtocolFactory(
-        widgetSystem = ViewRedwoodUiBasicWidgetSystem(this, imageLoader),
-        json = json,
-        mismatchHandler = protocolMismatchHandler,
-      )
-    }
-
     treehouseLayout = TreehouseLayout(
       context = this,
-      widgetSystem = widgetSystem,
+      widgetSystem = ViewRedwoodUiBasicWidgetSystem(this, imageLoader),
       androidOnBackPressedDispatcher = onBackPressedDispatcher,
       dynamicContentWidgetFactory = EmojiSearchDynamicContentWidgetFactory(context),
     ).apply {
@@ -169,6 +160,7 @@ class EmojiSearchActivity : ComponentActivity() {
         directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
       ),
       leakDetector = leakDetector,
+      hostProtocolFactory = RedwoodUiBasicHostProtocol,
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")

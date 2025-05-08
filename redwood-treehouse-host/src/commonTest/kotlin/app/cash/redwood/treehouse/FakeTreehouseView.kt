@@ -24,7 +24,6 @@ import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,17 +45,12 @@ internal class FakeTreehouseView(
   override val value: WidgetValue
     get() = error("unexpected call")
 
-  override val widgetSystem = TreehouseView.WidgetSystem { json, protocolMismatchHandler ->
-    TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
-      mismatchHandler = protocolMismatchHandler,
-    )
-  }
+  override val widgetSystem = TestSchemaWidgetSystem(
+    TestSchema = TestSchemaTestingWidgetFactory(),
+    RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+    RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+    RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+  )
 
   override val dynamicContentWidgetFactory = FakeDynamicContentWidgetFactory()
 

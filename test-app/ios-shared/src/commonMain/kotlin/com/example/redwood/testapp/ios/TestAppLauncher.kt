@@ -15,6 +15,7 @@
  */
 package com.example.redwood.testapp.ios
 
+import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
@@ -35,6 +36,7 @@ import platform.Foundation.NSURLSession
 class TestAppLauncher(
   private val nsurlSession: NSURLSession,
   private val hostApi: HostApi,
+  private val hostProtocolFactory: HostProtocol.Factory,
 ) {
   private val coroutineScope: CoroutineScope = MainScope()
   private val manifestUrl = "http://localhost:8080/manifest.zipline.json"
@@ -56,6 +58,7 @@ class TestAppLauncher(
     val treehouseAppFactory = TreehouseAppFactory(
       httpClient = ziplineHttpClient,
       manifestVerifier = NO_SIGNATURE_CHECKS,
+      hostProtocolFactory = hostProtocolFactory,
     )
 
     val manifestUrlFlow = flowOf(manifestUrl)

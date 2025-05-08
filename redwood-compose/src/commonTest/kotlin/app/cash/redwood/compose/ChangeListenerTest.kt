@@ -40,7 +40,7 @@ import com.example.redwood.testapp.compose.ScopedTestRow
 import com.example.redwood.testapp.compose.TestRow
 import com.example.redwood.testapp.compose.TestScope
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -75,7 +75,8 @@ enum class ComposeLauncher {
       val hostAdapter = HostProtocolAdapter(
         guestVersion = guestRedwoodVersion,
         container = MutableListChildren(),
-        factory = TestSchemaProtocolFactory(widgetSystem),
+        protocol = TestSchemaHostProtocol.create(),
+        widgetSystem = widgetSystem,
         eventSink = { throw AssertionError() },
         leakDetector = LeakDetector.none(),
       )

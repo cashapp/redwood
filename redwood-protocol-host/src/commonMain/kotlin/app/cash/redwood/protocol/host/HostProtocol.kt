@@ -23,24 +23,31 @@ import app.cash.redwood.protocol.ModifierElement
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.WidgetSystem
 import kotlin.native.ObjCName
+import kotlinx.serialization.json.Json
 
 /**
- * A marker interface for the widget-side factory of the protocol.
+ * A marker interface for the host-side of the protocol.
  *
  * @see HostProtocolAdapter
  */
-@ObjCName("ProtocolFactory", exact = true)
-public sealed interface ProtocolFactory<W : Any> {
-  public val widgetSystem: WidgetSystem<W>
+@ObjCName("HostProtocol", exact = true)
+public sealed interface HostProtocol {
+  @ObjCName("HostProtocolFactory", exact = true)
+  public interface Factory {
+    public fun create(
+      json: Json = Json.Default,
+      mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
+    ): HostProtocol
+  }
 }
 
 /**
- * [ProtocolFactory] but containing codegen APIs for a schema.
+ * [HostProtocol] but containing codegen APIs for a schema.
  *
  * @suppress
  */
 @RedwoodCodegenApi
-public interface GeneratedHostProtocol<W : Any> : ProtocolFactory<W> {
+public interface GeneratedHostProtocol : HostProtocol {
   /**
    * Look up host protocol information for a widget with the given [tag].
    *
@@ -48,7 +55,7 @@ public interface GeneratedHostProtocol<W : Any> : ProtocolFactory<W> {
    * If `null` is returned, the caller should make every effort to ignore this node and
    * continue executing.
    */
-  public fun widget(tag: WidgetTag): WidgetHostProtocol<W>?
+  public fun widget(tag: WidgetTag): WidgetHostProtocol?
 
   /**
    * Create a new modifier from the specified [element].
@@ -65,9 +72,9 @@ public interface GeneratedHostProtocol<W : Any> : ProtocolFactory<W> {
  * @suppress
  */
 @RedwoodCodegenApi
-public interface WidgetHostProtocol<W : Any> {
+public interface WidgetHostProtocol {
   /** Create an instance of this widget wrapped as a [ProtocolNode] with the given [id]. */
-  public fun createNode(id: Id): ProtocolNode<W>
+  public fun <W : Any> createNode(id: Id, widgetSystem: WidgetSystem<W>): ProtocolNode<W>
 
   /**
    * Look up known children tags for this widget. These are stored as a bare [IntArray]

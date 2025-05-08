@@ -18,15 +18,14 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
+import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.redwood.protocol.host.HostProtocolAdapter
-import app.cash.redwood.protocol.host.ProtocolFactory
 import app.cash.redwood.protocol.host.UiEvent
 import app.cash.redwood.protocol.host.UiEventSink
 import app.cash.redwood.treehouse.Content.State
 import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.widget.Widget
 import app.cash.zipline.ZiplineScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -93,6 +92,7 @@ internal class TreehouseAppContent<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val source: TreehouseContentSource<A>,
   private val leakDetector: LeakDetector,
+  private val hostProtocolFactory: HostProtocol.Factory,
 ) : Content,
   CodeHost.Listener<A>,
   CodeSession.Listener<A> {
@@ -309,6 +309,7 @@ internal class TreehouseAppContent<A : AppService>(
       onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
       leakDetector = leakDetector,
+      hostProtocolFactory = hostProtocolFactory,
     ).apply {
       start()
     }
@@ -335,6 +336,7 @@ private class ViewContentCodeBinding<A : AppService>(
   val internalStateFlow: MutableStateFlow<InternalState<A>>,
   val externalStateFlow: MutableStateFlow<State>,
   val codeSession: CodeSession<A>,
+  val hostProtocolFactory: HostProtocol.Factory,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
   private val leakDetector: LeakDetector,
@@ -441,17 +443,7 @@ private class ViewContentCodeBinding<A : AppService>(
 
     var hostAdapter = hostAdapterOrNull
     if (hostAdapter == null) {
-      @Suppress("UNCHECKED_CAST") // We don't have a type parameter for the widget type.
-      hostAdapter = HostProtocolAdapter(
-        guestVersion = codeSession.guestProtocolVersion,
-        container = view.children as Widget.Children<Any>,
-        factory = view.widgetSystem.widgetFactory(
-          json = codeSession.json,
-          protocolMismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
-        ) as ProtocolFactory<Any>,
-        eventSink = eventBridge,
-        leakDetector = leakDetector,
-      )
+      hostAdapter = createHostProtocolAdapter(view)
       hostAdapterOrNull = hostAdapter
     }
 
@@ -463,6 +455,21 @@ private class ViewContentCodeBinding<A : AppService>(
     updateChangeCount()
 
     hostAdapter.sendChanges(changes)
+  }
+
+  private fun <W : Any> createHostProtocolAdapter(view: TreehouseView<W>): HostProtocolAdapter<W> {
+    val hostProtocol = hostProtocolFactory.create(
+      json = codeSession.json,
+      mismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
+    )
+    return HostProtocolAdapter(
+      guestVersion = codeSession.guestProtocolVersion,
+      container = view.children,
+      protocol = hostProtocol,
+      widgetSystem = view.widgetSystem,
+      eventSink = eventBridge,
+      leakDetector = leakDetector,
+    )
   }
 
   /** Unblock coroutines suspended on TreehouseAppContent.awaitContent(). */

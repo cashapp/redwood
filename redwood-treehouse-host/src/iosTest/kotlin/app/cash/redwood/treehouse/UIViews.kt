@@ -16,8 +16,8 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.Modifier
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.WidgetSystem
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.useContents
@@ -31,7 +31,9 @@ fun viewWidget(view: UIView): Widget<UIView> = object : Widget<UIView> {
   override var modifier: Modifier = Modifier
 }
 
-val throwingWidgetSystem = WidgetSystem<UIView> { _, _ -> throw UnsupportedOperationException() }
+val emptyWidgetSystem = object : WidgetSystem<UIView> {
+  override fun apply(value: UIView, element: Modifier.UnscopedElement) {}
+}
 
 val UIView.frameRectangle: Rectangle
   get() = frame.useContents { Rectangle(origin.x, origin.y, size.width, size.height) }

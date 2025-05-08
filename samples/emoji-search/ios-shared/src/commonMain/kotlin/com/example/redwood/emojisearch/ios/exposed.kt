@@ -22,18 +22,18 @@ import app.cash.redwood.treehouse.AppService
 import app.cash.redwood.treehouse.Content
 import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.treehouse.bindWhenReady
-import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicProtocolFactory
+import app.cash.redwood.ui.basic.protocol.host.RedwoodUiBasicHostProtocol
 import app.cash.redwood.ui.basic.uiview.UIViewRedwoodUiBasicWidgetSystem
+import app.cash.redwood.widget.WidgetSystem
 import okio.Closeable
 
 // Used to export types to Objective-C / Swift.
 fun exposedTypes(
   emojiSearchLauncher: EmojiSearchLauncher,
-  protocolFactory: RedwoodUiBasicProtocolFactory<*>,
+  hostProtocol: RedwoodUiBasicHostProtocol,
   treehouseUIView: TreehouseUIView,
-  treehouseWidgetSystem: WidgetSystem<*>,
+  widgetSystem: WidgetSystem<*>,
 ) {
   throw AssertionError()
 }

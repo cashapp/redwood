@@ -16,8 +16,8 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodUIView
+import app.cash.redwood.widget.WidgetSystem
 import platform.UIKit.UIView
 
 @ObjCName("TreehouseUIView", exact = true)

@@ -17,18 +17,15 @@ package com.example.redwood.testapp.android.views
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.ComponentActivity
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.layout.view.ViewRedwoodLayoutWidgetFactory
 import app.cash.redwood.lazylayout.view.ViewRedwoodLazyLayoutWidgetFactory
-import app.cash.redwood.protocol.host.ProtocolMismatchHandler
 import app.cash.redwood.treehouse.EventListener
 import app.cash.redwood.treehouse.TreehouseApp
 import app.cash.redwood.treehouse.TreehouseAppFactory
 import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
-import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.basic.view.ViewRedwoodUiBasicWidgetFactory
 import app.cash.zipline.Zipline
@@ -40,7 +37,7 @@ import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.serviceLoaderEnabled
 import com.example.redwood.testapp.launcher.TestAppSpec
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.treehouse.TestAppPresenter
 import com.example.redwood.testapp.treehouse.testAppSerializersModule
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -74,21 +71,12 @@ class TestAppActivity : ComponentActivity() {
       }
       .build()
 
-    val widgetSystem = object : TreehouseView.WidgetSystem<View> {
-      override fun widgetFactory(
-        json: Json,
-        protocolMismatchHandler: ProtocolMismatchHandler,
-      ) = TestSchemaProtocolFactory(
-        widgetSystem = TestSchemaWidgetSystem(
-          TestSchema = AndroidTestSchemaWidgetFactory(context),
-          RedwoodUiBasic = ViewRedwoodUiBasicWidgetFactory(context, imageLoader),
-          RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
-          RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
-        ),
-        json = json,
-        mismatchHandler = protocolMismatchHandler,
-      )
-    }
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = AndroidTestSchemaWidgetFactory(context),
+      RedwoodUiBasic = ViewRedwoodUiBasicWidgetFactory(context, imageLoader),
+      RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
+      RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
+    )
 
     treehouseLayout = TreehouseLayout(this, widgetSystem, onBackPressedDispatcher).apply {
       treehouseContentSource.bindWhenReady(this, treehouseApp)
@@ -147,6 +135,7 @@ class TestAppActivity : ComponentActivity() {
         fileSystem = FileSystem.SYSTEM,
         directory = applicationContext.getDir("TreehouseState", MODE_PRIVATE).toOkioPath(),
       ),
+      hostProtocolFactory = TestSchemaHostProtocol,
     )
 
     val manifestUrlFlow = flowOf("http://10.0.2.2:8080/manifest.zipline.json")

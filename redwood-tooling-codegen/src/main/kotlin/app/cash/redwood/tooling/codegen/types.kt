@@ -49,12 +49,14 @@ internal object ProtocolGuest {
 }
 
 internal object ProtocolHost {
+  val HostProtocol = ClassName("app.cash.redwood.protocol.host", "HostProtocol")
+  val HostProtocolFactory = HostProtocol.nestedClass("Factory")
   val IdVisitor = ClassName("app.cash.redwood.protocol.host", "IdVisitor")
   val ProtocolMismatchHandler =
     ClassName("app.cash.redwood.protocol.host", "ProtocolMismatchHandler")
   val ProtocolNode = ClassName("app.cash.redwood.protocol.host", "ProtocolNode")
   val ProtocolChildren = ClassName("app.cash.redwood.protocol.host", "ProtocolChildren")
-  val GeneratedProtocolHost = ClassName("app.cash.redwood.protocol.host", "GeneratedHostProtocol")
+  val GeneratedHostProtocol = ClassName("app.cash.redwood.protocol.host", "GeneratedHostProtocol")
   val UiEvent = ClassName("app.cash.redwood.protocol.host", "UiEvent")
   val UiEventSink = ClassName("app.cash.redwood.protocol.host", "UiEventSink")
   val WidgetHostProtocol = ClassName("app.cash.redwood.protocol.host", "WidgetHostProtocol")

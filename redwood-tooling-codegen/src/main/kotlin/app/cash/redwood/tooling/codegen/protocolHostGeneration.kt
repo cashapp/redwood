@@ -40,7 +40,6 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -50,17 +49,16 @@ import com.squareup.kotlinpoet.jvm.jvmField
 
 /*
 @ObjCName("ExampleProtocolFactory", exact = true)
-public class ExampleProtocolFactory<W : Any>(
-  override val widgetSystem: ExampleWidgetSystem<W>,
+public class ExampleProtocolFactory(
   private val json: Json = Json.Default,
   private val mismatchHandler: ProtocolMismatchHandler = ProtocolMismatchHandler.Throwing,
-) : GeneratedHostProtocol<W> {
+) : GeneratedHostProtocol {
   private val widgets: IntObjectMap<WidgetHostProtocol> =
       MutableIntObjectMap(4).apply {
-        put(1, ButtonHostProtocol(widgetSystem, json, mismatchHandler))
-        put(3, TextHostProtocol(widgetSystem, json, mismatchHandler))
-        put(1_000_001, RowHostProtocol(widgetSystem, json, mismatchHandler))
-        put(1_000_002, ColumnHostProtocol(widgetSystem, json, mismatchHandler))
+        put(1, ButtonHostProtocol(json, mismatchHandler))
+        put(3, TextHostProtocol(json, mismatchHandler))
+        put(1_000_001, RowHostProtocol(json, mismatchHandler))
+        put(1_000_002, ColumnHostProtocol(json, mismatchHandler))
       }
 
   override fun widget(tag: WidgetTag): WidgetHostProtocol? {
@@ -81,18 +79,16 @@ public class ExampleProtocolFactory<W : Any>(
   }
 }
 */
-internal fun generateProtocolFactory(
+internal fun generateHostProtocol(
   schemaSet: ProtocolSchemaSet,
 ): FileSpec {
   val schema = schemaSet.schema
-  val widgetSystem = schema.getWidgetSystemType().parameterizedBy(typeVariableW)
-  val type = ClassName(schema.hostProtocolPackage(), "${schema.type.flatName}ProtocolFactory")
+  val type = ClassName(schema.hostProtocolPackage(), "${schema.type.flatName}HostProtocol")
   return buildFileSpec(type) {
     addAnnotation(suppressDeprecations)
     addType(
       TypeSpec.classBuilder(type)
-        .addTypeVariable(typeVariableW)
-        .addSuperinterface(ProtocolHost.GeneratedProtocolHost.parameterizedBy(typeVariableW))
+        .addSuperinterface(ProtocolHost.GeneratedHostProtocol)
         .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
         .addAnnotation(
           AnnotationSpec.builder(Stdlib.ObjCName)
@@ -102,22 +98,9 @@ internal fun generateProtocolFactory(
         )
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("widgetSystem", widgetSystem)
-            .addParameter(
-              ParameterSpec.builder("json", KotlinxSerialization.Json)
-                .defaultValue("%T", KotlinxSerialization.JsonDefault)
-                .build(),
-            )
-            .addParameter(
-              ParameterSpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
-                .defaultValue("%T.Throwing", ProtocolHost.ProtocolMismatchHandler)
-                .build(),
-            )
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("widgetSystem", widgetSystem, OVERRIDE)
-            .initializer("widgetSystem")
+            .addModifiers(PRIVATE)
+            .addParameter("json", KotlinxSerialization.Json)
+            .addParameter("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
@@ -134,10 +117,7 @@ internal fun generateProtocolFactory(
           PropertySpec.builder(
             "widgets",
             AndroidxCollection.IntObjectMap
-              .parameterizedBy(
-                ProtocolHost.WidgetHostProtocol
-                  .parameterizedBy(typeVariableW),
-              ),
+              .parameterizedBy(ProtocolHost.WidgetHostProtocol),
             PRIVATE,
           )
             .initializer(
@@ -149,12 +129,12 @@ internal fun generateProtocolFactory(
                 beginControlFlow(
                   "%T<%T>(%L).apply",
                   AndroidxCollection.MutableIntObjectMap,
-                  ProtocolHost.WidgetHostProtocol.parameterizedBy(typeVariableW),
+                  ProtocolHost.WidgetHostProtocol,
                   allWidgets.size,
                 )
                 for ((widget, widgetSchema) in allWidgets) {
                   addStatement(
-                    "put(%L, %T(widgetSystem, json, mismatchHandler))",
+                    "put(%L, %T(json, mismatchHandler))",
                     widget.tag,
                     schema.widgetHostProtocolType(widget, widgetSchema),
                   )
@@ -168,10 +148,7 @@ internal fun generateProtocolFactory(
           FunSpec.builder("widget")
             .addModifiers(OVERRIDE)
             .addParameter("tag", WidgetTag)
-            .returns(
-              ProtocolHost.WidgetHostProtocol.parameterizedBy(typeVariableW)
-                .copy(nullable = true),
-            )
+            .returns(ProtocolHost.WidgetHostProtocol.copy(nullable = true))
             .addStatement("widgets[tag.value]?.let { return it }")
             .addStatement("mismatchHandler.onUnknownWidget(tag)")
             .addStatement("return null")
@@ -209,6 +186,26 @@ internal fun generateProtocolFactory(
             }
             .build(),
         )
+        .addType(
+          TypeSpec.companionObjectBuilder("Factory")
+            .addSuperinterface(ProtocolHost.HostProtocolFactory)
+            .addAnnotation(
+              AnnotationSpec.builder(Stdlib.ObjCName)
+                .addMember("%S", type.simpleName + "Factory")
+                .addMember("exact = true")
+                .build(),
+            )
+            .addFunction(
+              FunSpec.builder("create")
+                .addModifiers(OVERRIDE)
+                .addParameter("json", KotlinxSerialization.Json)
+                .addParameter("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
+                .returns(type)
+                .addStatement("return %T(json, mismatchHandler)", type)
+                .build(),
+            )
+            .build(),
+        )
         .build(),
     )
   }
@@ -216,19 +213,19 @@ internal fun generateProtocolFactory(
 
 /*
 internal class ButtonHostProtocol<W : Any>(
-  private val widgetSystem: EmojiSearchWidgetSystem<W>,
-  private val json: Json,
-  private val mismatchHandler: ProtocolMismatchHandler,
-) : WidgetHostProtocol<W> {
+  val json: Json,
+  val mismatchHandler: ProtocolMismatchHandler,
+) : WidgetHostProtocol {
   override val childrenTags: IntArray?
     get() = null
 
   val serializer_0: KSerializer<String?> = json.serializersModule.serializer()
   val serializer_1: KSerializer<Boolean> = json.serializersModule.serializer()
 
-  override fun createNode(id: Id): ProtocolNode<W> {
-    val widget = widgetSystem.RedwoodLayout.Box()
-    return BoxProtocolNode(id, widget, json, this, mismatchHandler)
+  override fun createNode(id: Id, widgetSystem: WidgetSystem<W>): ProtocolNode<W> {
+    val schemaOwner = widgetSystem as RedwoodLayoutWidgetFactoryOwner<W>
+    val widget = schemaOwner.RedwoodLayout.Box()
+    return BoxProtocolNode(id, widget, this)
   }
 }
 
@@ -236,7 +233,6 @@ private class ButtonProtocolNode<W : Any>(
   id: Id,
   widget: Button<W>,
   private val protocol: ButtonHostProtocol<W>,
-  private val mismatchHandler: ProtocolMismatchHandler,
 ) : ProtocolNode<W>(id) {
   override val widgetTag: WidgetTag get() = WidgetTag(4)
 
@@ -309,29 +305,24 @@ internal fun generateProtocolNode(
     addType(
       TypeSpec.classBuilder(widgetProtocolType)
         .addModifiers(INTERNAL)
-        .addTypeVariable(typeVariableW)
-        .addSuperinterface(ProtocolHost.WidgetHostProtocol.parameterizedBy(typeVariableW))
+        .addSuperinterface(ProtocolHost.WidgetHostProtocol)
         .addAnnotation(Redwood.RedwoodCodegenApi)
         .primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("widgetSystem", widgetSystem)
             .addParameter("json", KotlinxSerialization.Json)
             .addParameter("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("widgetSystem", widgetSystem, PRIVATE)
-            .initializer("widgetSystem")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
+          PropertySpec.builder("json", KotlinxSerialization.Json)
             .initializer("json")
+            .jvmField()
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, PRIVATE)
+          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
             .initializer("mismatchHandler")
+            .jvmField()
             .build(),
         )
         .addProperty(
@@ -370,10 +361,13 @@ internal fun generateProtocolNode(
         .addFunction(
           FunSpec.builder("createNode")
             .addModifiers(OVERRIDE)
+            .addTypeVariable(typeVariableW)
             .addParameter("id", Protocol.Id)
+            .addParameter("widgetSystem", RedwoodWidget.WidgetSystem.parameterizedBy(typeVariableW))
             .returns(ProtocolHost.ProtocolNode.parameterizedBy(typeVariableW))
-            .addStatement("val widget = widgetSystem.%L.%L()", widgetSchema.type.flatName, widget.type.flatName)
-            .addStatement("return %T(id, widget, json, this, mismatchHandler)", widgetNodeType)
+            .addStatement("val schemaWidgetSystem = widgetSystem as %T", widgetSystem)
+            .addStatement("val widget = schemaWidgetSystem.%L.%L()", widgetSchema.type.flatName, widget.type.flatName)
+            .addStatement("return %T(id, widget, this)", widgetNodeType)
             .build(),
         )
         .build(),
@@ -388,9 +382,7 @@ internal fun generateProtocolNode(
           FunSpec.constructorBuilder()
             .addParameter("id", Id)
             .addParameter("widget", widgetType)
-            .addParameter("json", KotlinxSerialization.Json)
-            .addParameter("protocol", widgetProtocolType.parameterizedBy(typeVariableW))
-            .addParameter("mismatchHandler", ProtocolHost.ProtocolMismatchHandler)
+            .addParameter("protocol", widgetProtocolType)
             .build(),
         )
         .addSuperclassConstructorParameter("id")
@@ -428,18 +420,8 @@ internal fun generateProtocolNode(
             .build(),
         )
         .addProperty(
-          PropertySpec.builder("json", KotlinxSerialization.Json, PRIVATE)
-            .initializer("json")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("protocol", widgetProtocolType.parameterizedBy(typeVariableW), PRIVATE)
+          PropertySpec.builder("protocol", widgetProtocolType, PRIVATE)
             .initializer("protocol")
-            .build(),
-        )
-        .addProperty(
-          PropertySpec.builder("mismatchHandler", ProtocolHost.ProtocolMismatchHandler, PRIVATE)
-            .initializer("mismatchHandler")
             .build(),
         )
         .apply {
@@ -466,7 +448,7 @@ internal fun generateProtocolNode(
                       val serializerId = serializerIds.getValue(propertyType)
 
                       addStatement(
-                        "%L -> widget.%N(json.decodeFromJsonElement(protocol.serializer_%L, change.value))",
+                        "%L -> widget.%N(protocol.json.decodeFromJsonElement(protocol.serializer_%L, change.value))",
                         trait.tag,
                         trait.name,
                         serializerId,
@@ -510,7 +492,7 @@ internal fun generateProtocolNode(
                 }
               }
               .addStatement(
-                "else -> mismatchHandler.onUnknownProperty(%T(%L), change.propertyTag)",
+                "else -> protocol.mismatchHandler.onUnknownProperty(%T(%L), change.propertyTag)",
                 Protocol.WidgetTag,
                 widget.tag,
               )
@@ -540,7 +522,7 @@ internal fun generateProtocolNode(
                 }
                 beginControlFlow("else ->")
                 addStatement(
-                  "mismatchHandler.onUnknownChildren(%T(%L), tag)",
+                  "protocol.mismatchHandler.onUnknownChildren(%T(%L), tag)",
                   Protocol.WidgetTag,
                   widget.tag,
                 )
@@ -549,7 +531,7 @@ internal fun generateProtocolNode(
                 endControlFlow()
               } else {
                 addStatement(
-                  "mismatchHandler.onUnknownChildren(%T(%L), tag)",
+                  "protocol.mismatchHandler.onUnknownChildren(%T(%L), tag)",
                   Protocol.WidgetTag,
                   widget.tag,
                 )
@@ -646,7 +628,7 @@ private fun generateEventHandler(
   addConstructorParameterAndProperty(classBuilder, constructor, "id", Protocol.Id)
   addConstructorParameterAndProperty(classBuilder, constructor, "eventSink", ProtocolHost.UiEventSink)
   if (trait.parameters.isNotEmpty()) {
-    addConstructorParameterAndProperty(classBuilder, constructor, "protocol", widgetProtocolType.parameterizedBy(STAR))
+    addConstructorParameterAndProperty(classBuilder, constructor, "protocol", widgetProtocolType)
   }
 
   val arguments = mutableListOf<CodeBlock>()

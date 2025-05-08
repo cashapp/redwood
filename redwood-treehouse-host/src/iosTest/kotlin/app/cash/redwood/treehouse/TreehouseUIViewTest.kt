@@ -40,7 +40,7 @@ import platform.UIKit.UIWindow
 
 class TreehouseUIViewTest {
   @Test fun widgetsAddChildViews() {
-    val layout = TreehouseUIView(throwingWidgetSystem)
+    val layout = TreehouseUIView(emptyWidgetSystem)
 
     val view = UIView()
     layout.children.insert(0, viewWidget(view))
@@ -51,7 +51,7 @@ class TreehouseUIViewTest {
 
   @Test fun attachAndDetachSendsStateChange() {
     val parent = UIView()
-    val layout = TreehouseUIView(throwingWidgetSystem)
+    val layout = TreehouseUIView(emptyWidgetSystem)
     val listener = CountingReadyForContentChangeListener<UIView>()
 
     layout.readyForContentChangeListener = listener
@@ -69,7 +69,7 @@ class TreehouseUIViewTest {
     val parent = UIWindow()
     parent.overrideUserInterfaceStyle = UIUserInterfaceStyleDark
 
-    val layout = TreehouseUIView(throwingWidgetSystem)
+    val layout = TreehouseUIView(emptyWidgetSystem)
     parent.addSubview(layout.value)
 
     assertThat(layout.uiConfiguration.value.darkMode).isTrue()
@@ -78,7 +78,7 @@ class TreehouseUIViewTest {
   @Test fun uiConfigurationEmitsUiModeChanges() = runTest {
     val parent = UIWindow()
 
-    val layout = TreehouseUIView(throwingWidgetSystem)
+    val layout = TreehouseUIView(emptyWidgetSystem)
     parent.addSubview(layout.value)
 
     layout.uiConfiguration.test {
@@ -102,7 +102,7 @@ class TreehouseUIViewTest {
       }
     }
 
-    val layout = TreehouseUIView(throwingWidgetSystem)
+    val layout = TreehouseUIView(emptyWidgetSystem)
     parent.addSubview(layout.value)
 
     assertThat(layout.uiConfiguration.value.safeAreaInsets).isEqualTo(expectedInsets)
@@ -112,7 +112,7 @@ class TreehouseUIViewTest {
   fun uiConfigurationReflectsInitialLayoutDirection() {
     val parent = UIWindow()
 
-    val layout = TreehouseUIView(throwingWidgetSystem)
+    val layout = TreehouseUIView(emptyWidgetSystem)
     parent.addSubview(layout.value)
 
     val expectedLayoutDirection = when (val direction = parent.effectiveUserInterfaceLayoutDirection) {

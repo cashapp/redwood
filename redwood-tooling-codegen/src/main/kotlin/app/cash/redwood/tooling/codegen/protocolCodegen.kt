@@ -47,7 +47,7 @@ internal fun ProtocolSchemaSet.generateFileSpecs(type: ProtocolCodegenType): Lis
       }
 
       Host -> {
-        add(generateProtocolFactory(this@generateFileSpecs))
+        add(generateHostProtocol(this@generateFileSpecs))
         for (dependency in all) {
           generateProtocolModifierImpls(schema, dependency)?.let { add(it) }
           for (widget in dependency.widgets) {

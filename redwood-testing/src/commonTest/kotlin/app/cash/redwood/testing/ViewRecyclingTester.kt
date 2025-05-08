@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.layout.testing.RedwoodLayoutTestingWidgetFactory
 import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.leaks.LeakDetector
@@ -36,7 +35,7 @@ import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.testing.TestSchemaTester
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -51,22 +50,18 @@ import kotlinx.serialization.json.Json
 class ViewRecyclingTester(
   coroutineScope: CoroutineScope,
 ) {
-  @OptIn(RedwoodCodegenApi::class)
-  private val widgetProtocolFactory = TestSchemaProtocolFactory(
+  private val widgetContainer = MutableListChildren<WidgetValue>()
+
+  val hostAdapter: HostProtocolAdapter<WidgetValue> = HostProtocolAdapter(
+    guestVersion = guestRedwoodVersion,
+    container = widgetContainer,
+    protocol = TestSchemaHostProtocol.create(),
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     ),
-  )
-
-  private val widgetContainer = MutableListChildren<WidgetValue>()
-
-  val hostAdapter: HostProtocolAdapter<WidgetValue> = HostProtocolAdapter(
-    guestVersion = guestRedwoodVersion,
-    container = widgetContainer,
-    factory = widgetProtocolFactory,
     eventSink = { event ->
       guestAdapter.sendEvent(event.toProtocol(Json.Default))
     },

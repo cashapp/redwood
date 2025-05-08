@@ -22,8 +22,8 @@ import android.os.Parcelable
 import android.view.View
 import androidx.activity.OnBackPressedDispatcher as AndroidOnBackPressedDispatcher
 import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
-import app.cash.redwood.treehouse.TreehouseView.WidgetSystem
 import app.cash.redwood.widget.RedwoodLayout
+import app.cash.redwood.widget.WidgetSystem
 import app.cash.treehouse.host.R
 import java.util.UUID
 

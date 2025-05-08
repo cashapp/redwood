@@ -37,9 +37,8 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     override func loadView() {
         let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
         let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
-        let widgetSystem = EmojiSearchTreehouseWidgetSystem(treehouseApp: treehouseApp)
         let treehouseView = TreehouseUIView(
-            widgetSystem: widgetSystem,
+            widgetSystem: ExposedKt.basicWidgetSystem(),
             dynamicContentWidgetFactory: EmojiSearchDynamicContentWidgetFactory()
         )
         let content = treehouseApp.createContent(
@@ -87,24 +86,5 @@ class EmojiSearchContent : TreehouseContentSource {
     func get(app: AppService) -> ZiplineTreehouseUi {
         let treehouesUi = (app as! EmojiSearchPresenter)
         return treehouesUi.launch()
-    }
-}
-
-class EmojiSearchTreehouseWidgetSystem : TreehouseViewWidgetSystem {
-    let treehouseApp: TreehouseApp<EmojiSearchPresenter>
-
-    init(treehouseApp: TreehouseApp<EmojiSearchPresenter>) {
-        self.treehouseApp = treehouseApp
-    }
-
-    func widgetFactory(
-        json: Kotlinx_serialization_jsonJson,
-        protocolMismatchHandler: ProtocolMismatchHandler
-    ) -> ProtocolFactory {
-        return RedwoodUiBasicProtocolFactory<UIView>(
-            widgetSystem: ExposedKt.basicWidgetSystem(),
-            json: json,
-            mismatchHandler: protocolMismatchHandler
-        );
     }
 }

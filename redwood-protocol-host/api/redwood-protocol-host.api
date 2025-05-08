@@ -1,11 +1,15 @@
-public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash/redwood/protocol/ChangesSink {
-	public synthetic fun <init> (Ljava/lang/String;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/ProtocolFactory;Lapp/cash/redwood/protocol/host/UiEventSink;Lapp/cash/redwood/leaks/LeakDetector;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun close ()V
-	public fun sendChanges (Ljava/util/List;)V
+public abstract interface class app/cash/redwood/protocol/host/HostProtocol {
 }
 
-public abstract interface class app/cash/redwood/protocol/host/ProtocolFactory {
-	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
+public abstract interface class app/cash/redwood/protocol/host/HostProtocol$Factory {
+	public abstract fun create (Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/host/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/host/HostProtocol;
+	public static synthetic fun create$default (Lapp/cash/redwood/protocol/host/HostProtocol$Factory;Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/host/ProtocolMismatchHandler;ILjava/lang/Object;)Lapp/cash/redwood/protocol/host/HostProtocol;
+}
+
+public final class app/cash/redwood/protocol/host/HostProtocolAdapter : app/cash/redwood/protocol/ChangesSink {
+	public synthetic fun <init> (Ljava/lang/String;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/protocol/host/HostProtocol;Lapp/cash/redwood/widget/WidgetSystem;Lapp/cash/redwood/protocol/host/UiEventSink;Lapp/cash/redwood/leaks/LeakDetector;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun close ()V
+	public fun sendChanges (Ljava/util/List;)V
 }
 
 public abstract interface class app/cash/redwood/protocol/host/ProtocolMismatchHandler {

@@ -31,9 +31,18 @@ class TestAppViewController : UIViewController {
 
         view.backgroundColor = .white
 
-        let testAppLauncher = TestAppLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
+        let testAppLauncher = TestAppLauncher(
+          nsurlSession: urlSession,
+          hostApi: IosHostApi(),
+          hostProtocolFactory: TestSchemaHostProtocolFactory.shared
+        )
         let treehouseApp = testAppLauncher.createTreehouseApp()
-        let widgetSystem = TestSchemaTreehouseWidgetSystem()
+        let widgetSystem = TestSchemaWidgetSystem<UIView>(
+          TestSchema: IosTestSchemaWidgetFactory(),
+          RedwoodUiBasic: UIViewRedwoodUiBasicWidgetFactory(),
+          RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
+          RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
+        )
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
             source: TestAppContent()
@@ -55,23 +64,5 @@ class TestAppContent : TreehouseContentSource {
     func get(app: AppService) -> ZiplineTreehouseUi {
         let treehouseUi = (app as! TestAppPresenter)
         return treehouseUi.launchForApp()
-    }
-}
-
-class TestSchemaTreehouseWidgetSystem : TreehouseViewWidgetSystem {
-    func widgetFactory(
-        json: Kotlinx_serialization_jsonJson,
-        protocolMismatchHandler: ProtocolMismatchHandler
-    ) -> ProtocolFactory {
-        return TestSchemaProtocolFactory<UIView>(
-            widgetSystem: TestSchemaWidgetSystem<UIView>(
-                TestSchema: IosTestSchemaWidgetFactory(),
-                RedwoodUiBasic: UIViewRedwoodUiBasicWidgetFactory(),
-                RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
-                RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
-            ),
-            json: json,
-            mismatchHandler: protocolMismatchHandler
-        );
     }
 }

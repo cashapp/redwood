@@ -34,7 +34,7 @@ import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import com.example.redwood.testapp.compose.TestScope
-import com.example.redwood.testapp.protocol.host.TestSchemaProtocolFactory
+import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.testing.TextInputValue
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
@@ -50,36 +50,23 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.modules.SerializersModule
 
 @OptIn(RedwoodCodegenApi::class)
-class ProtocolFactoryTest {
+class HostProtocolTest {
   @Test fun unknownWidgetThrowsDefault() {
-    val factory = TestSchemaProtocolFactory(
-      TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
-    )
+    val protocol = TestSchemaHostProtocol.create()
 
     val t = assertFailsWith<IllegalArgumentException> {
-      factory.widget(WidgetTag(345432))
+      protocol.widget(WidgetTag(345432))
     }
     assertThat(t).hasMessage("Unknown widget tag 345432")
   }
 
   @Test fun unknownWidgetCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       mismatchHandler = handler,
     )
 
-    assertThat(factory.widget(WidgetTag(345432))).isNull()
+    assertThat(protocol.widget(WidgetTag(345432))).isNull()
     assertThat(handler.events.single()).isEqualTo("Unknown widget 345432")
   }
 
@@ -89,17 +76,11 @@ class ProtocolFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       json = json,
     )
 
-    val modifier = factory.createModifier(
+    val modifier = protocol.createModifier(
       ModifierElement(
         tag = ModifierTag(3),
         value = buildJsonObject {
@@ -119,17 +100,11 @@ class ProtocolFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       json = json,
     )
 
-    val modifier = factory.createModifier(
+    val modifier = protocol.createModifier(
       ModifierElement(
         tag = ModifierTag(5),
         value = buildJsonObject {
@@ -149,17 +124,10 @@ class ProtocolFactoryTest {
   }
 
   @Test fun unknownModifierThrowsDefault() {
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
-    )
+    val protocol = TestSchemaHostProtocol.create()
 
     val t = assertFailsWith<IllegalArgumentException> {
-      factory.createModifier(
+      protocol.createModifier(
         ModifierElement(
           tag = ModifierTag(345432),
           value = JsonObject(mapOf()),
@@ -176,18 +144,12 @@ class ProtocolFactoryTest {
       }
     }
     val handler = RecordingProtocolMismatchHandler()
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       json = json,
       mismatchHandler = handler,
     )
 
-    val modifier = factory.createModifier(
+    val modifier = protocol.createModifier(
       ModifierElement(
         tag = ModifierTag(345432),
         value = buildJsonArray {
@@ -195,7 +157,7 @@ class ProtocolFactoryTest {
           add(JsonObject(mapOf()))
         },
       ),
-    ) then factory.createModifier(
+    ) then protocol.createModifier(
       ModifierElement(
         tag = ModifierTag(2),
         value = buildJsonObject { put("value", JsonPrimitive("hi")) },
@@ -215,15 +177,14 @@ class ProtocolFactoryTest {
   }
 
   @Test fun unknownChildrenThrowsDefault() {
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create()
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val button = factory.widget(WidgetTag(4))!!.createNode(Id(1))
+    val button = protocol.widget(WidgetTag(4))!!.createNode(Id(1), widgetSystem)
 
     val t = assertFailsWith<IllegalArgumentException> {
       button.children(ChildrenTag(345432))
@@ -233,17 +194,17 @@ class ProtocolFactoryTest {
 
   @Test fun unknownChildrenCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       mismatchHandler = handler,
     )
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+    )
 
-    val button = factory.widget(WidgetTag(4))!!.createNode(Id(1))
+    val button = protocol.widget(WidgetTag(4))!!.createNode(Id(1), widgetSystem)
     assertThat(button.children(ChildrenTag(345432))).isNull()
 
     assertThat(handler.events.single()).isEqualTo("Unknown children 345432 for 4")
@@ -255,16 +216,16 @@ class ProtocolFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       json = json,
     )
-    val textInput = factory.widget(WidgetTag(5))!!.createNode(Id(1))
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+    )
+    val textInput = protocol.widget(WidgetTag(5))!!.createNode(Id(1), widgetSystem)
 
     val throwingEventSink = UiEventSink { error(it) }
     textInput.apply(PropertyChange(Id(1), WidgetTag(5), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
@@ -273,15 +234,14 @@ class ProtocolFactoryTest {
   }
 
   @Test fun unknownPropertyThrowsDefaults() {
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create()
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
-    val button = factory.widget(WidgetTag(4))!!.createNode(Id(1))
+    val button = protocol.widget(WidgetTag(4))!!.createNode(Id(1), widgetSystem)
 
     val change = PropertyChange(Id(1), WidgetTag(4), PropertyTag(345432))
     val eventSink = UiEventSink { throw UnsupportedOperationException() }
@@ -293,16 +253,16 @@ class ProtocolFactoryTest {
 
   @Test fun unknownPropertyCallsHandler() {
     val handler = RecordingProtocolMismatchHandler()
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       mismatchHandler = handler,
     )
-    val button = factory.widget(WidgetTag(4))!!.createNode(Id(1))
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+    )
+    val button = protocol.widget(WidgetTag(4))!!.createNode(Id(1), widgetSystem)
 
     button.apply(PropertyChange(Id(1), WidgetTag(4), PropertyTag(345432))) { throw UnsupportedOperationException() }
 
@@ -315,16 +275,16 @@ class ProtocolFactoryTest {
         contextual(Duration::class, DurationIsoSerializer)
       }
     }
-    val factory = TestSchemaProtocolFactory(
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
+    val protocol = TestSchemaHostProtocol.create(
       json = json,
     )
-    val textInput = factory.widget(WidgetTag(5))!!.createNode(Id(1))
+    val widgetSystem = TestSchemaWidgetSystem(
+      TestSchema = TestSchemaTestingWidgetFactory(),
+      RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
+      RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
+    )
+    val textInput = protocol.widget(WidgetTag(5))!!.createNode(Id(1), widgetSystem)
 
     val eventSink = RecordingUiEventSink()
     textInput.apply(PropertyChange(Id(1), WidgetTag(5), PropertyTag(4), JsonPrimitive(true)), eventSink)

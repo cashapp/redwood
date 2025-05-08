@@ -1,5 +1,5 @@
 public final class app/cash/redwood/treehouse/ChangeListRenderer {
-	public fun <init> (Lkotlinx/serialization/json/Json;)V
+	public fun <init> (Lapp/cash/redwood/protocol/host/HostProtocol;)V
 	public final fun render-rqC_l18 (Lapp/cash/redwood/treehouse/TreehouseView;Ljava/util/List;)V
 }
 
@@ -130,10 +130,10 @@ public abstract class app/cash/redwood/treehouse/TreehouseApp$Spec {
 }
 
 public final class app/cash/redwood/treehouse/TreehouseAppFactoryAndroidKt {
-	public static final fun TreehouseAppFactory (Landroid/content/Context;Lapp/cash/zipline/loader/ZiplineHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
-	public static final fun TreehouseAppFactory (Landroid/content/Context;Lokhttp3/OkHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
-	public static synthetic fun TreehouseAppFactory$default (Landroid/content/Context;Lapp/cash/zipline/loader/ZiplineHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
-	public static synthetic fun TreehouseAppFactory$default (Landroid/content/Context;Lokhttp3/OkHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
+	public static final fun TreehouseAppFactory (Landroid/content/Context;Lapp/cash/zipline/loader/ZiplineHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;Lapp/cash/redwood/protocol/host/HostProtocol$Factory;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
+	public static final fun TreehouseAppFactory (Landroid/content/Context;Lokhttp3/OkHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;Lapp/cash/redwood/protocol/host/HostProtocol$Factory;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
+	public static synthetic fun TreehouseAppFactory$default (Landroid/content/Context;Lapp/cash/zipline/loader/ZiplineHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;Lapp/cash/redwood/protocol/host/HostProtocol$Factory;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
+	public static synthetic fun TreehouseAppFactory$default (Landroid/content/Context;Lokhttp3/OkHttpClient;Lapp/cash/zipline/loader/ManifestVerifier;Lokio/FileSystem;Lokio/Path;Ljava/lang/String;JLapp/cash/zipline/loader/LoaderEventListener;ILapp/cash/redwood/treehouse/StateStore;Lapp/cash/redwood/leaks/LeakDetector;Lapp/cash/redwood/protocol/host/HostProtocol$Factory;ILjava/lang/Object;)Lapp/cash/redwood/treehouse/TreehouseApp$Factory;
 }
 
 public abstract interface class app/cash/redwood/treehouse/TreehouseContentSource {
@@ -149,14 +149,14 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseDispatchers 
 }
 
 public class app/cash/redwood/treehouse/TreehouseLayout : app/cash/redwood/widget/RedwoodLayout, app/cash/redwood/treehouse/TreehouseView {
-	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;)V
-	public synthetic fun <init> (Landroid/content/Context;Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/content/Context;Lapp/cash/redwood/widget/WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;)V
+	public synthetic fun <init> (Landroid/content/Context;Lapp/cash/redwood/widget/WidgetSystem;Landroidx/activity/OnBackPressedDispatcher;Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getDynamicContentWidgetFactory ()Lapp/cash/redwood/treehouse/DynamicContentWidgetFactory;
 	public final fun getReadyForContent ()Z
 	public fun getReadyForContentChangeListener ()Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;
 	public fun getSaveCallback ()Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;
 	public final fun getStateSnapshotId-kwWZ-Q0 ()Ljava/lang/String;
-	public fun getWidgetSystem ()Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;
+	public fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 	protected fun onAttachedToWindow ()V
 	protected fun onDetachedFromWindow ()V
 	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
@@ -171,7 +171,7 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseView : app/c
 	public abstract fun getReadyForContentChangeListener ()Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;
 	public abstract fun getSaveCallback ()Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;
 	public abstract fun getStateSnapshotId-kwWZ-Q0 ()Ljava/lang/String;
-	public abstract fun getWidgetSystem ()Lapp/cash/redwood/treehouse/TreehouseView$WidgetSystem;
+	public abstract fun getWidgetSystem ()Lapp/cash/redwood/widget/WidgetSystem;
 	public abstract fun setReadyForContentChangeListener (Lapp/cash/redwood/treehouse/TreehouseView$ReadyForContentChangeListener;)V
 	public abstract fun setSaveCallback (Lapp/cash/redwood/treehouse/TreehouseView$SaveCallback;)V
 }
@@ -182,9 +182,5 @@ public abstract interface class app/cash/redwood/treehouse/TreehouseView$ReadyFo
 
 public abstract interface class app/cash/redwood/treehouse/TreehouseView$SaveCallback {
 	public abstract fun performSave (Ljava/lang/String;)V
-}
-
-public abstract interface class app/cash/redwood/treehouse/TreehouseView$WidgetSystem {
-	public abstract fun widgetFactory (Lkotlinx/serialization/json/Json;Lapp/cash/redwood/protocol/host/ProtocolMismatchHandler;)Lapp/cash/redwood/protocol/host/ProtocolFactory;
 }
 
