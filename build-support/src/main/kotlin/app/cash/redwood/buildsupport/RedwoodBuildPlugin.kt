@@ -164,8 +164,8 @@ class RedwoodBuildPlugin : Plugin<Project> {
       android.apply {
         compileSdkVersion(35)
         compileOptions {
-          it.sourceCompatibility = JavaVersion.VERSION_1_8
-          it.targetCompatibility = JavaVersion.VERSION_1_8
+          it.sourceCompatibility = JavaVersion.VERSION_11
+          it.targetCompatibility = JavaVersion.VERSION_11
         }
         defaultConfig {
           it.minSdk = 21
@@ -221,7 +221,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
       )
     }
 
-    val javaVersion = JavaVersion.VERSION_1_8
+    val javaVersion = JavaVersion.VERSION_11
     tasks.withType(KotlinJvmCompile::class.java).configureEach {
       it.compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))

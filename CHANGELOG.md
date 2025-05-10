@@ -9,6 +9,7 @@ New:
 Changed:
 - Schema dependencies can now be a graph (i.e., dependencies can have their own dependencies), but the entire transitive set needs to be redeclared on the root schema (for the protocol to work properly).
 - Compose UI widget type has been changed from `@Composable () -> Unit` to `@Composable (Modifier) -> Unit` to support unscoped modifiers.
+- JVM and Android artifacts now target Java 11 bytecode, as the upstream Compose dependencies now all target Java 11.
 - The host protocol type has been renamed from `ProtocolFactory` to `HostProtocol`. An instance of `HostProtocol` is now required when constructing a `TreehouseAppFactory`.
 
 Fixed:
