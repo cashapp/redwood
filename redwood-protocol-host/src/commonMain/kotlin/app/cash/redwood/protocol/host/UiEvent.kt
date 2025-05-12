@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.protocol.host
 
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.protocol.EventTag
@@ -26,20 +27,33 @@ import kotlinx.serialization.json.Json
  * A version of [Event] whose arguments have not yet been serialized to JSON and is thus
  * cheap to create on the UI thread.
  */
-public class UiEvent(
-  public val id: Id,
-  public val tag: EventTag,
-  public val args: Array<Any?>?,
-  public val serializationStrategies: Array<out SerializationStrategy<Any?>>?,
-) {
-  /** Serialize [args] into a JSON model using [serializationStrategies] into an [Event]. */
-  public fun toProtocol(json: Json): Event {
+public interface UiEvent {
+  /** Serialize this UI event into its protocol representation. */
+  public fun toProtocol(): Event
+}
+
+/** A version of [EventSink] which consumes [UiEvent]s. */
+public fun interface UiEventSink {
+  public fun sendEvent(uiEvent: UiEvent)
+}
+
+/** @suppress For generated code use only. */
+@RedwoodCodegenApi
+public class GeneratedUiEvent(
+  private val id: Id,
+  private val tag: EventTag,
+  private val json: Json?,
+  private val args: Array<Any?>?,
+  private val serializationStrategies: Array<out SerializationStrategy<Any?>>?,
+) : UiEvent {
+  override fun toProtocol(): Event {
     return Event(
       id = id,
       tag = tag,
       args = if (args == null) {
         emptyList()
       } else {
+        val json = json!!
         val serializationStrategies = serializationStrategies!!
         List(args.size) { i ->
           json.encodeToJsonElement(serializationStrategies[i], args[i])
@@ -47,9 +61,4 @@ public class UiEvent(
       },
     )
   }
-}
-
-/** A version of [EventSink] which consumes [UiEvent]s. */
-public fun interface UiEventSink {
-  public fun sendEvent(uiEvent: UiEvent)
 }

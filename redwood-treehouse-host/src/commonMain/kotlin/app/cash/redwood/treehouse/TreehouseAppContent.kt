@@ -18,7 +18,6 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.Change
 import app.cash.redwood.protocol.EventSink
-import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.UiEvent
 import app.cash.redwood.protocol.host.UiEventSink
@@ -38,7 +37,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.serialization.json.Json
 
 private class InternalState<A : AppService>(
   val viewState: ViewState,
@@ -92,7 +90,6 @@ internal class TreehouseAppContent<A : AppService>(
   private val dispatchers: TreehouseDispatchers,
   private val source: TreehouseContentSource<A>,
   private val leakDetector: LeakDetector,
-  private val hostProtocolFactory: HostProtocol.Factory,
 ) : Content,
   CodeHost.Listener<A>,
   CodeSession.Listener<A> {
@@ -301,7 +298,6 @@ internal class TreehouseAppContent<A : AppService>(
     return ViewContentCodeBinding(
       codeHost = codeHost,
       dispatchers = dispatchers,
-      eventPublisher = codeSession.eventPublisher,
       contentSource = source,
       internalStateFlow = internalStateFlow,
       externalStateFlow = externalStateFlow,
@@ -309,7 +305,6 @@ internal class TreehouseAppContent<A : AppService>(
       onBackPressedDispatcher = onBackPressedDispatcher,
       firstUiConfiguration = firstUiConfiguration,
       leakDetector = leakDetector,
-      hostProtocolFactory = hostProtocolFactory,
     ).apply {
       start()
     }
@@ -331,12 +326,10 @@ internal class TreehouseAppContent<A : AppService>(
 private class ViewContentCodeBinding<A : AppService>(
   codeHost: CodeHost<A>,
   val dispatchers: TreehouseDispatchers,
-  val eventPublisher: EventPublisher,
   contentSource: TreehouseContentSource<A>,
   val internalStateFlow: MutableStateFlow<InternalState<A>>,
   val externalStateFlow: MutableStateFlow<State>,
   val codeSession: CodeSession<A>,
-  val hostProtocolFactory: HostProtocol.Factory,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
   firstUiConfiguration: StateFlow<UiConfiguration>,
   private val leakDetector: LeakDetector,
@@ -374,7 +367,7 @@ private class ViewContentCodeBinding<A : AppService>(
   private var treehouseUiOrNull: ZiplineTreehouseUi? = null
 
   /** Note that this is necessary to break the retain cycle between host and guest. */
-  private val eventBridge = EventBridge(codeSession.json, dispatchers.zipline, bindingScope)
+  private val eventBridge = EventBridge(dispatchers.zipline, bindingScope)
 
   /** Only accessed on [TreehouseDispatchers.ui]. Empty after [initView]. */
   private val changesAwaitingInitView = ArrayDeque<List<Change>>()
@@ -458,14 +451,10 @@ private class ViewContentCodeBinding<A : AppService>(
   }
 
   private fun <W : Any> createHostProtocolAdapter(view: TreehouseView<W>): HostProtocolAdapter<W> {
-    val hostProtocol = hostProtocolFactory.create(
-      json = codeSession.json,
-      mismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
-    )
     return HostProtocolAdapter(
       guestVersion = codeSession.guestProtocolVersion,
       container = view.children,
-      protocol = hostProtocol,
+      protocol = codeSession.hostProtocol,
       widgetSystem = view.widgetSystem,
       eventSink = eventBridge,
       leakDetector = leakDetector,
@@ -607,7 +596,6 @@ private fun <W : Any> TreehouseView<W>.showCrashed(
  * problems when mixing garbage-collected Kotlin objects with reference-counted Swift objects.
  */
 private class EventBridge(
-  private val json: Json,
   // Both properties are only accessed on the UI dispatcher and null after cancel().
   var ziplineDispatcher: CoroutineDispatcher?,
   var bindingScope: CoroutineScope?,
@@ -622,7 +610,7 @@ private class EventBridge(
     val bindingScope = this.bindingScope ?: return
     bindingScope.launch(dispatcher) {
       // Perform initial serialization of event arguments into JSON model after the thread hop.
-      val event = uiEvent.toProtocol(json)
+      val event = uiEvent.toProtocol()
 
       delegate?.sendEvent(event)
     }

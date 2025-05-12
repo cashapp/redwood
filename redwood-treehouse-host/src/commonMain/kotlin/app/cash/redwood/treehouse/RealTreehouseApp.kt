@@ -85,7 +85,6 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       dispatchers = dispatchers,
       source = source,
       leakDetector = leakDetector,
-      hostProtocolFactory = hostProtocolFactory,
     )
   }
 
@@ -156,6 +155,11 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     val eventListener = zipline.eventListener as RealEventPublisher.ZiplineEventListener
     val eventPublisher = eventListener.eventPublisher
 
+    val hostProtocol = hostProtocolFactory.create(
+      json = zipline.json,
+      mismatchHandler = eventPublisher.widgetProtocolMismatchHandler,
+    )
+
     return ZiplineCodeSession(
       dispatchers = dispatchers,
       eventPublisher = eventPublisher,
@@ -164,6 +168,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
       zipline = zipline,
       appScope = appScope,
       leakDetector = leakDetector,
+      hostProtocol = hostProtocol,
     )
   }
 

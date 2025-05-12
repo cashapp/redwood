@@ -291,7 +291,7 @@ class HostProtocolTest {
 
     (textInput.widget.value as TextInputValue).onChangeCustomType!!.invoke(10.seconds)
 
-    assertThat(eventSink.events.single().toProtocol(json))
+    assertThat(eventSink.events.single().toProtocol())
       .isEqualTo(Event(Id(1), EventTag(4), listOf(JsonPrimitive("PT10S"))))
   }
 }

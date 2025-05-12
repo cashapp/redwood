@@ -41,7 +41,6 @@ import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
-import kotlinx.serialization.json.Json
 
 /**
  * Like [TestSchemaTester], but this also hooks up Redwood's protocol mechanism. That's necessary
@@ -63,7 +62,7 @@ class ViewRecyclingTester(
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     ),
     eventSink = { event ->
-      guestAdapter.sendEvent(event.toProtocol(Json.Default))
+      guestAdapter.sendEvent(event.toProtocol())
     },
     leakDetector = LeakDetector.none(),
   )

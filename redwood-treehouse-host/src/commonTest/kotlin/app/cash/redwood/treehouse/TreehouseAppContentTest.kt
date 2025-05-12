@@ -22,7 +22,6 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
-import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.testing.ButtonValue
 import com.example.redwood.testapp.widget.Button
 import kotlin.coroutines.EmptyCoroutineContext
@@ -540,7 +539,6 @@ class TreehouseAppContentTest {
       dispatchers = dispatchers,
       source = { app -> app.newUi() },
       leakDetector = LeakDetector.none(),
-      hostProtocolFactory = TestSchemaHostProtocol,
     )
   }
 

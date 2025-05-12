@@ -593,9 +593,10 @@ private class OnClick(
 ) : (Int, String) -> Unit {
   override fun invoke(arg0: Int, arg1: String) {
     eventSink.sendEvent(
-      UiEvent(
+      GeneratedUiEvent(
         id,
         EventTag(3),
+        protocol.json,
         arrayOf(
           arg0,
           arg1,
@@ -651,15 +652,15 @@ private fun generateEventHandler(
 
   if (serializers.isEmpty()) {
     invoke.addCode(
-      "eventSink.sendEvent(%T(id, %T(%L), null, null))",
-      ProtocolHost.UiEvent,
+      "eventSink.sendEvent(%T(id, %T(%L), null, null, null))",
+      ProtocolHost.GeneratedUiEvent,
       Protocol.EventTag,
       trait.tag,
     )
   } else {
     invoke.addCode(
-      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\narrayOf(⇥\n%L,\n⇤),\narrayOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
-      ProtocolHost.UiEvent,
+      "eventSink.sendEvent(⇥\n%T(⇥\nid,\n%T(%L),\nprotocol.json,\narrayOf(⇥\n%L,\n⇤),\narrayOf(⇥\n%L,\n⇤),\n⇤),\n⇤)",
+      ProtocolHost.GeneratedUiEvent,
       Protocol.EventTag,
       trait.tag,
       arguments.joinToCode(separator = ",\n"),

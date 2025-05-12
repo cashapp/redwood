@@ -17,13 +17,13 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.RedwoodVersion
+import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineApiMismatchException
 import app.cash.zipline.ZiplineScope
 import app.cash.zipline.withScope
 import kotlin.concurrent.Volatile
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.serialization.json.Json
 
 internal class ZiplineCodeSession<A : AppService>(
   dispatchers: TreehouseDispatchers,
@@ -33,6 +33,7 @@ internal class ZiplineCodeSession<A : AppService>(
   private val frameClockFactory: FrameClock.Factory,
   val zipline: Zipline,
   private val leakDetector: LeakDetector,
+  override val hostProtocol: HostProtocol,
 ) : CodeSession<A>(
   dispatchers = dispatchers,
   eventPublisher = eventPublisher,
@@ -40,9 +41,6 @@ internal class ZiplineCodeSession<A : AppService>(
   appService = appService,
 ) {
   private val ziplineScope = ZiplineScope()
-
-  override val json: Json
-    get() = zipline.json
 
   @Volatile
   private var _guestProtocolVersion: RedwoodVersion? = null

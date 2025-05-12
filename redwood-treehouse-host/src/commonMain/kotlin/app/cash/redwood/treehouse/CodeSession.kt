@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.RedwoodVersion
+import app.cash.redwood.protocol.host.HostProtocol
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +26,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 /** The host state for a single code load. We get a new session each time we get new code. */
 internal abstract class CodeSession<A : AppService>(
@@ -54,7 +54,7 @@ internal abstract class CodeSession<A : AppService>(
     )
   }
 
-  abstract val json: Json
+  abstract val hostProtocol: HostProtocol
 
   abstract val guestProtocolVersion: RedwoodVersion
 
