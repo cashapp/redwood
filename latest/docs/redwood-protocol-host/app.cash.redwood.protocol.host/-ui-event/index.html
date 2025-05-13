@@ -94,107 +94,24 @@
   <div class="breadcrumbs"><a href="../../index.html">redwood-protocol-host</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.protocol.host</a><span class="delimiter">/</span><span class="current">UiEvent</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Ui</span><wbr><span><span>Event</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">UiEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/index.html">Id</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>args<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>serializationStrategies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="kotlinx.serialization/SerializationStrategy///PointingToDeclaration/">SerializationStrategy</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><p class="paragraph">A version of <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a> whose arguments have not yet been serialized to JSON and is thus cheap to create on the UI thread.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">UiEvent</a></div><p class="paragraph">A version of <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a> whose arguments have not yet been serialized to JSON and is thus cheap to create on the UI thread.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="CONSTRUCTOR">
-        <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-155778967%2FConstructors%2F883586679" anchor-label="UiEvent" id="-155778967%2FConstructors%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-protocol-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-ui-event.html"><span>Ui</span><wbr><span><span>Event</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-155778967%2FConstructors%2F883586679"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/index.html">Id</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a><span class="token punctuation">, </span></span><span class="parameter ">args<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">serializationStrategies<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="kotlinx.serialization/SerializationStrategy///PointingToDeclaration/">SerializationStrategy</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-1141969368%2FProperties%2F883586679" anchor-label="args" id="-1141969368%2FProperties%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="args.html"><span><span>args</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1141969368%2FProperties%2F883586679"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="args.html">args</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="-1073193558%2FProperties%2F883586679" anchor-label="id" id="-1073193558%2FProperties%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="id.html"><span><span>id</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1073193558%2FProperties%2F883586679"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="id.html">id</a><span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/index.html">Id</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="127883732%2FProperties%2F883586679" anchor-label="serializationStrategies" id="127883732%2FProperties%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="serialization-strategies.html"><span>serialization</span><wbr><span><span>Strategies</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="127883732%2FProperties%2F883586679"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="serialization-strategies.html">serializationStrategies</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="kotlinx.serialization/SerializationStrategy///PointingToDeclaration/">SerializationStrategy</span><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-<a data-name="892778427%2FProperties%2F883586679" anchor-label="tag" id="892778427%2FProperties%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="tag.html"><span><span>tag</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="892778427%2FProperties%2F883586679"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="tag.html">tag</a><span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a></div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="FUNCTION">
         <h2 class="">Functions</h2>
-        <div class="table"><a data-name="-471253033%2FFunctions%2F883586679" anchor-label="toProtocol" id="-471253033%2FFunctions%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
+        <div class="table"><a data-name="1470814098%2FFunctions%2F883586679" anchor-label="toProtocol" id="1470814098%2FFunctions%2F883586679" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain"></a>
           <div class="table-row" data-filterable-current=":redwood-protocol-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol-host:dokkaHtmlPartial/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-protocol.html"><span>to</span><wbr><span><span>Protocol</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-471253033%2FFunctions%2F883586679"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1470814098%2FFunctions%2F883586679"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="to-protocol.html"><span class="token function">toProtocol</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">json<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/Json///PointingToDeclaration/">Json</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a></div><div class="brief "><p class="paragraph">Serialize <a href="args.html">args</a> into a JSON model using <a href="serialization-strategies.html">serializationStrategies</a> into an <a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="to-protocol.html"><span class="token function">toProtocol</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event/index.html">Event</a></div><div class="brief "><p class="paragraph">Serialize this UI event into its protocol representation.</p></div></div></div>
                 </div>
               </div>
             </div>
