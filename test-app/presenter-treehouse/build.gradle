@@ -16,7 +16,7 @@ kotlin {
 
   js {
     // The name of the JS module which needs to be unique within the repo.
-    moduleName = 'test-app-presenter-treehouse'
+    outputModuleName = 'test-app-presenter-treehouse'
     browser()
     binaries.executable()
   }
