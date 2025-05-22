@@ -45,9 +45,9 @@ public class RedwoodSchemaPlugin : Plugin<Project> {
   }
 
   private fun applyToProject(project: Project, extension: RedwoodSchemaExtension) {
-    val toolingConfiguration = project.configurations.create("redwoodToolingSchema").apply {
-      isCanBeConsumed = false
-      isVisible = false
+    val toolingConfiguration = project.configurations.register("redwoodToolingSchema") {
+      it.isCanBeConsumed = false
+      it.isVisible = false
     }
     project.dependencies.add(toolingConfiguration.name, project.redwoodDependency("redwood-tooling-schema"))
 

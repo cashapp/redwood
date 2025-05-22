@@ -588,7 +588,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
         it.archiveClassifier.set("zipline")
       }
 
-      val ziplineConfiguration = project.configurations.create("zipline") {
+      val ziplineConfiguration = project.configurations.register("zipline") {
         it.isVisible = false
         it.isCanBeResolved = false
         it.isCanBeConsumed = true
@@ -611,7 +611,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       hasApplication = true
 
       // Note: This will crash if you call it twice. We don't need this today, so it's not supported.
-      val ziplineConfiguration = project.configurations.create("zipline") {
+      val ziplineConfiguration = project.configurations.register("zipline") {
         it.isVisible = false
         it.isCanBeResolved = true
         it.isCanBeConsumed = false

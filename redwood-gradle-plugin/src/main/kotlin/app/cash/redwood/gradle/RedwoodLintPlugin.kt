@@ -19,6 +19,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import java.io.File
 import java.util.Locale.ROOT
+import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -41,6 +42,8 @@ private const val BASE_TASK_NAME = "redwoodLint"
 @Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodLintPlugin : Plugin<Project> {
   override fun apply(project: Project) {
+    val configuration = project.configurations.register("redwoodToolingLint")
+
     project.afterEvaluate {
       val androidPlugin = if (project.plugins.hasPlugin("com.android.application")) {
         AndroidPlugin.Application
@@ -56,14 +59,14 @@ public class RedwoodLintPlugin : Plugin<Project> {
           it.description = taskDescription("all Kotlin targets")
         }
         if (androidPlugin != null) {
-          configureKotlinMultiplatformTargets(project, rootTask, skipAndroid = true)
-          configureKotlinAndroidVariants(project, rootTask, androidPlugin, prefix = true)
+          configureKotlinMultiplatformTargets(project, configuration, rootTask, skipAndroid = true)
+          configureKotlinAndroidVariants(project, configuration, rootTask, androidPlugin, prefix = true)
         } else {
-          configureKotlinMultiplatformTargets(project, rootTask)
+          configureKotlinMultiplatformTargets(project, configuration, rootTask)
         }
         rootTask
       } else if (project.plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
-        configureKotlinJvmProject(project)
+        configureKotlinJvmProject(project, configuration)
       } else if (project.plugins.hasPlugin("org.jetbrains.kotlin.android")) {
         checkNotNull(androidPlugin) {
           "Kotlin Android plugin requires either Android application or library plugin"
@@ -72,7 +75,13 @@ public class RedwoodLintPlugin : Plugin<Project> {
           it.group = VERIFICATION_GROUP
           it.description = taskDescription("all Kotlin targets")
         }
-        configureKotlinAndroidVariants(project, rootTask, androidPlugin, prefix = false)
+        configureKotlinAndroidVariants(
+          project,
+          configuration,
+          rootTask,
+          androidPlugin,
+          prefix = false,
+        )
         rootTask
       } else {
         val name = if (project.path == ":") {
@@ -99,6 +108,7 @@ private enum class AndroidPlugin {
 
 private fun configureKotlinAndroidVariants(
   project: Project,
+  configuration: NamedDomainObjectProvider<Configuration>,
   rootTask: TaskProvider<Task>,
   android: AndroidPlugin,
   prefix: Boolean,
@@ -117,6 +127,7 @@ private fun configureKotlinAndroidVariants(
       append(variant.name.replaceFirstChar { it.titlecase(ROOT) })
     }
     val task = project.createRedwoodLintTask(
+      configuration,
       taskName,
       "Kotlin Android ${variant.name} variant",
       sourceDirs = { variant.sourceSets.flatMap { it.kotlinDirectories } },
@@ -130,6 +141,7 @@ private fun configureKotlinAndroidVariants(
 
 private fun configureKotlinMultiplatformTargets(
   project: Project,
+  configuration: NamedDomainObjectProvider<Configuration>,
   rootTask: TaskProvider<Task>,
   skipAndroid: Boolean = false,
 ) {
@@ -145,6 +157,7 @@ private fun configureKotlinMultiplatformTargets(
 
     val task = createKotlinTargetRedwoodLintTask(
       project,
+      configuration,
       target,
       taskName = BASE_TASK_NAME + target.name.replaceFirstChar { it.titlecase(ROOT) },
     )
@@ -156,18 +169,26 @@ private fun configureKotlinMultiplatformTargets(
 
 private fun configureKotlinJvmProject(
   project: Project,
+  configuration: NamedDomainObjectProvider<Configuration>,
 ): TaskProvider<out Task> {
   val kotlin = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
-  return createKotlinTargetRedwoodLintTask(project, kotlin.target, BASE_TASK_NAME)
+  return createKotlinTargetRedwoodLintTask(
+    project,
+    configuration,
+    kotlin.target,
+    BASE_TASK_NAME,
+  )
 }
 
 private fun createKotlinTargetRedwoodLintTask(
   project: Project,
+  configuration: NamedDomainObjectProvider<Configuration>,
   target: KotlinTarget,
   taskName: String,
 ): TaskProvider<out Task> {
   val compilation = target.compilations.getByName(MAIN_COMPILATION_NAME)
   return project.createRedwoodLintTask(
+    configuration,
     taskName,
     "Kotlin ${target.name} target",
     sourceDirs = {
@@ -180,19 +201,19 @@ private fun createKotlinTargetRedwoodLintTask(
 }
 
 private fun Project.createRedwoodLintTask(
+  configuration: NamedDomainObjectProvider<Configuration>,
   name: String,
   descriptionTarget: String? = null,
   sourceDirs: () -> Collection<File>,
   classpath: () -> Configuration,
 ): TaskProvider<out Task> {
-  val configuration = configurations.maybeCreate("redwoodToolingLint")
   dependencies.add(configuration.name, project.redwoodDependency("redwood-tooling-lint"))
 
   return tasks.register(name, RedwoodLintTask::class.java) { task ->
     task.group = VERIFICATION_GROUP
     task.description = taskDescription(descriptionTarget)
 
-    task.toolClasspath.setFrom(configuration.incoming.artifacts.artifactFiles)
+    task.toolClasspath.setFrom(configuration.get().incoming.artifacts.artifactFiles)
     task.projectDirectoryPath.set(project.projectDir.absolutePath)
     task.sourceDirectories.set(sourceDirs())
     task.classpath.setFrom(
