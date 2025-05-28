@@ -62,9 +62,8 @@ public class HostProtocolAdapter<W : Any>(
     is GeneratedHostProtocol -> protocol
   }
 
-  // TODO Use MutableIntObjectMap once https://issuetracker.google.com/issues/378077858 is fixed.
   private val nodes =
-    mutableMapOf<Int, ProtocolNode<W>>(Id.Root.value to RootProtocolNode(container))
+    mutableIntObjectMapOf<ProtocolNode<W>>(Id.Root.value, RootProtocolNode(container))
 
   private val removeNodeById = IdVisitor { nodes.remove(it.value) }
 
@@ -180,7 +179,7 @@ public class HostProtocolAdapter<W : Any>(
   public fun close() {
     closed = true
 
-    nodes.values.forEach { node ->
+    nodes.forEachValue { node ->
       node.detach()
     }
     nodes.clear()
@@ -367,7 +366,7 @@ public class HostProtocolAdapter<W : Any>(
      * descendants into the nodes map.
      */
     fun assignPooledNodeRecursive(
-      nodes: MutableMap<Int, ProtocolNode<W>>,
+      nodes: MutableIntObjectMap<ProtocolNode<W>>,
       changesAndNulls: Array<Change?>,
       pooled: ProtocolNode<W>,
     ) {
