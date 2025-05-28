@@ -11,6 +11,7 @@ Changed:
 - Compose UI widget type has been changed from `@Composable () -> Unit` to `@Composable (Modifier) -> Unit` to support unscoped modifiers.
 - JVM and Android artifacts now target Java 11 bytecode, as the upstream Compose dependencies now all target Java 11.
 - The host protocol type has been renamed from `ProtocolFactory` to `HostProtocol`. An instance of `HostProtocol` is now required when constructing a `TreehouseAppFactory`.
+- Enforce that event properties declared in your schema always return `Unit`.
 
 Fixed:
 - Don't double insets on insets-aware `UIViews`. Previously we offered the same insets via two mechanisms, which could result in double insets.

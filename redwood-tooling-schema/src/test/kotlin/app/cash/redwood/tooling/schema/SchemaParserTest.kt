@@ -588,6 +588,25 @@ class SchemaParserTest {
 
   @Schema(
     [
+      InvalidEventLambdaReturnTypeWidget::class,
+    ],
+  )
+  interface InvalidEventLambdaReturnTypeSchema
+
+  @Widget(1)
+  data class InvalidEventLambdaReturnTypeWidget(
+    @Property(1) val event: () -> String,
+  )
+
+  @Test fun eventTypesBad() {
+    assertFailure {
+      parseTestSchema(InvalidEventLambdaReturnTypeSchema::class)
+    }.isInstanceOf<IllegalArgumentException>()
+      .hasMessage("@Property app.cash.redwood.tooling.schema.SchemaParserTest.InvalidEventLambdaReturnTypeWidget#event lambda must return 'Unit'")
+  }
+
+  @Schema(
+    [
       EventArgumentsWidget::class,
     ],
   )
