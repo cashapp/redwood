@@ -37,7 +37,7 @@ class ProtocolTest {
     // This is otherwise a change-detector test, but since these values are included in
     // the serialized form they must never change.
     assertThat(Id.Root.value).isEqualTo(0)
-    assertThat(ChildrenTag.Root.value).isEqualTo(1)
+    assertThat(ChildrenTag.Root.value).isEqualTo(99_999)
   }
 
   @Test fun eventNonEmptyArgs() {

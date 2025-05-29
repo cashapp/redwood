@@ -12,6 +12,7 @@ Changed:
 - JVM and Android artifacts now target Java 11 bytecode, as the upstream Compose dependencies now all target Java 11.
 - The host protocol type has been renamed from `ProtocolFactory` to `HostProtocol`. An instance of `HostProtocol` is now required when constructing a `TreehouseAppFactory`.
 - Enforce that event properties declared in your schema always return `Unit`.
+- The root node's children are now identified using the tag 99,999 instead of 1. This attempts to prevent accidentally using the value for non-root nodes. The old value is still supported by the actual root node for compatibility with older guest code.
 
 Fixed:
 - Don't double insets on insets-aware `UIViews`. Previously we offered the same insets via two mechanisms, which could result in double insets.
