@@ -352,24 +352,25 @@ class HostProtocolAdapterTest {
     // Add a button.
     hostAdapter.sendChanges(
       listOf(
-        Create(
+        UiCreate(
           id = Id(1),
           // Button
           tag = WidgetTag(4),
         ),
         // Set Button's required color property.
-        PropertyChange(
+        UiPropertyChange(
           id = Id(1),
-          widgetTag = WidgetTag(4),
-          propertyTag = PropertyTag(3),
-          value = JsonPrimitive(0),
+          tag = PropertyTag(3),
+          value = 0U,
         ),
-        Add(
-          id = Id.Root,
-          // This is the old value for the root's children:
-          tag = ChildrenTag(1),
-          childId = Id(1),
-          index = 0,
+        UiChildrenChange(
+          change = Add(
+            id = Id.Root,
+            // This is the old value for the root's children:
+            tag = ChildrenTag(1),
+            childId = Id(1),
+            index = 0,
+          ),
         ),
       ),
     )
