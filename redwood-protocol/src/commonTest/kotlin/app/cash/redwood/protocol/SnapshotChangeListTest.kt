@@ -44,7 +44,7 @@ class SnapshotChangeListTest {
       |{"type":"create","id":1,"tag":1},
       |{"type":"modifier","id":1},
       |{"type":"property","id":1,"widget":1,"tag":1,"value":"Hello"},
-      |{"type":"add","id":0,"tag":1,"childId":1,"index":0}
+      |{"type":"add","id":0,"tag":99999,"childId":1,"index":0}
       |]
       """.trimMargin().replace("\n", ""),
     )
@@ -70,8 +70,8 @@ class SnapshotChangeListTest {
       |Snapshot change list cannot contain move or remove operations
       |
       |Found:
-      | - Move(_id=0, _tag=1, fromIndex=1, toIndex=2, count=3)
-      | - Remove(_id=0, _tag=1, index=1, count=1, detach=false)
+      | - Move(_id=0, _tag=99999, fromIndex=1, toIndex=2, count=3)
+      | - Remove(_id=0, _tag=99999, index=1, count=1, detach=false)
       """.trimMargin(),
     )
   }

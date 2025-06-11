@@ -420,7 +420,12 @@ private fun FirContext.parseWidget(
 
       if (propertyAnnotation != null) {
         if (type.isBasicFunctionType(firSession)) {
-          val arguments = type.typeArguments.dropLast(1) // Drop Unit return type.
+          val typeArguments = type.typeArguments
+          val lastArgument = typeArguments.lastOrNull()?.type?.classId?.asSingleFqName()
+          require(lastArgument == FqNames.Unit) {
+            "@Property $memberType#$name lambda must return 'Unit'"
+          }
+          val arguments = typeArguments.dropLast(1) // Drop Unit return type.
           ParsedProtocolEvent(
             tag = propertyAnnotation.tag,
             name = name,

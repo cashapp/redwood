@@ -34,6 +34,7 @@ import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.ProtocolRedwoodComposition
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
+import app.cash.redwood.protocol.host.UiChange
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -146,15 +147,19 @@ class ViewTreesTest {
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
     val widgetContainer = MutableListChildren<WidgetValue>()
+    val protocol = TestSchemaHostProtocol.create()
     val hostAdapter = HostProtocolAdapter(
       guestVersion = guestRedwoodVersion,
       container = widgetContainer,
-      protocol = TestSchemaHostProtocol.create(),
+      protocol = protocol,
       widgetSystem = widgetSystem,
       eventSink = { throw AssertionError() },
       leakDetector = LeakDetector.none(),
     )
-    hostAdapter.sendChanges(expected)
+    val uiChanges = expected.mapNotNull { change ->
+      UiChange.fromProtocol(protocol, change)
+    }
+    hostAdapter.sendChanges(uiChanges)
 
     assertThat(widgetContainer.map { it.value }).isEqualTo(snapshot)
   }

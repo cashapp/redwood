@@ -2,12 +2,14 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 // The name of the final JS file to be referenced from HTML.
-archivesBaseName = 'test-app'
+base {
+  archivesName = 'test-app'
+}
 
 kotlin {
   js {
     // The name of the JS module which needs to be unique within the repo.
-    moduleName = 'test-app'
+    outputModuleName = 'test-app'
     browser()
     binaries.executable()
 

@@ -19,6 +19,7 @@ import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.protocol.SnapshotChangeList
 import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.redwood.protocol.host.HostProtocolAdapter
+import app.cash.redwood.protocol.host.UiChange
 import app.cash.redwood.protocol.host.UiEventSink
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 
@@ -50,6 +51,9 @@ public class ChangeListRenderer<W : Any>(
       eventSink = refuseAllEvents,
       leakDetector = LeakDetector.none(),
     )
-    hostAdapter.sendChanges(changeList.changes)
+    val uiChanges = changeList.changes.mapNotNull { change ->
+      UiChange.fromProtocol(protocol, change)
+    }
+    hostAdapter.sendChanges(uiChanges)
   }
 }

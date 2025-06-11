@@ -20,18 +20,23 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.ModifierElement
+import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.widget.WidgetSystem
 import kotlin.native.ObjCName
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
 
 /**
- * A marker interface for the host-side of the protocol.
+ * The host-side of the protocol.
  *
  * @see HostProtocolAdapter
  */
 @ObjCName("HostProtocol", exact = true)
 public sealed interface HostProtocol {
+  public val json: Json
+  public val mismatchHandler: ProtocolMismatchHandler
+
   @ObjCName("HostProtocolFactory", exact = true)
   public interface Factory {
     public fun create(
@@ -75,6 +80,15 @@ public interface GeneratedHostProtocol : HostProtocol {
 public interface WidgetHostProtocol {
   /** Create an instance of this widget wrapped as a [ProtocolNode] with the given [id]. */
   public fun <W : Any> createNode(id: Id, widgetSystem: WidgetSystem<W>): ProtocolNode<W>
+
+  /**
+   * Look up a deserializer for the given property [tag].
+   *
+   * Invalid [tag] values can either produce an exception or result in `null` being returned.
+   * If `null` is returned, the caller should make every effort to ignore this property and
+   * continue executing.
+   */
+  public fun propertyDeserializer(tag: PropertyTag): DeserializationStrategy<Any?>?
 
   /**
    * Look up known children tags for this widget. These are stored as a bare [IntArray]

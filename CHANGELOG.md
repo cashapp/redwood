@@ -5,12 +5,15 @@
 
 New:
 - Schema `@Widget`s can now set `internalComposable = true` to have their `@Composable` functions generated as internal. This will require that you define a public version in the main sources of the module which generates the functions. This can be used to hide old widgets that should no longer be used, create more complex widget protocols away from callers, and to conditionally split implementation between two bindings, for example.
+- UI changes which come from Treehouse are now converted to their final value on a background thread. Previously JSON deserialization happened on the background thread to an intermediate model, but mapping that model to the final value still occurred on the main thread.
 
 Changed:
 - Schema dependencies can now be a graph (i.e., dependencies can have their own dependencies), but the entire transitive set needs to be redeclared on the root schema (for the protocol to work properly).
 - Compose UI widget type has been changed from `@Composable () -> Unit` to `@Composable (Modifier) -> Unit` to support unscoped modifiers.
 - JVM and Android artifacts now target Java 11 bytecode, as the upstream Compose dependencies now all target Java 11.
 - The host protocol type has been renamed from `ProtocolFactory` to `HostProtocol`. An instance of `HostProtocol` is now required when constructing a `TreehouseAppFactory`.
+- Enforce that event properties declared in your schema always return `Unit`.
+- The root node's children are now identified using the tag 99,999 instead of 1. This attempts to prevent accidentally using the value for non-root nodes. The old value is still supported by the actual root node for compatibility with older guest code.
 - In-development snapshots are now published to the Central Portal Snapshots repository at https://central.sonatype.com/repository/maven-snapshots/.
 
 Fixed:

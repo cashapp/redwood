@@ -1,7 +1,9 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'app.cash.redwood.generator.protocol.host'
 
-archivesBaseName = 'schema-protocol-host'
+base {
+  archivesName = 'schema-protocol-host'
+}
 
 kotlin {
   iosArm64()

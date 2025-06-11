@@ -26,6 +26,7 @@ import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
 import app.cash.redwood.protocol.guest.GuestProtocolAdapter
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.protocol.host.HostProtocolAdapter
+import app.cash.redwood.protocol.host.UiChange
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
@@ -51,10 +52,11 @@ class ViewRecyclingTester(
 ) {
   private val widgetContainer = MutableListChildren<WidgetValue>()
 
+  private val protocol = TestSchemaHostProtocol.create()
   val hostAdapter: HostProtocolAdapter<WidgetValue> = HostProtocolAdapter(
     guestVersion = guestRedwoodVersion,
     container = widgetContainer,
-    protocol = TestSchemaHostProtocol.create(),
+    protocol = protocol,
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
@@ -71,7 +73,12 @@ class ViewRecyclingTester(
     hostVersion = hostRedwoodVersion,
     widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
   ).apply {
-    initChangesSink(hostAdapter)
+    initChangesSink { changes ->
+      val uiChanges = changes.mapNotNull { change ->
+        UiChange.fromProtocol(protocol, change)
+      }
+      hostAdapter.sendChanges(uiChanges)
+    }
   }
 
   internal val composition = TestRedwoodComposition(

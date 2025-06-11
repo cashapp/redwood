@@ -93,15 +93,15 @@ public abstract class RedwoodGeneratorPlugin(
       RedwoodGeneratorExtension::class.java,
     )
 
-    val toolingConfiguration = project.configurations.create("redwoodToolingCodegen").apply {
-      isCanBeConsumed = false
-      isVisible = false
+    val toolingConfiguration = project.configurations.register("redwoodToolingCodegen") {
+      it.isCanBeConsumed = false
+      it.isVisible = false
     }
     project.dependencies.add(toolingConfiguration.name, project.redwoodDependency("redwood-tooling-codegen"))
 
-    val schemaConfiguration = project.configurations.create("redwoodSchema").apply {
-      isCanBeConsumed = false
-      isVisible = false
+    val schemaConfiguration = project.configurations.register("redwoodSchema") {
+      it.isCanBeConsumed = false
+      it.isVisible = false
     }
     val generate = project.tasks.register("redwoodKotlinGenerate", RedwoodGeneratorTask::class.java) {
       it.group = BUILD_GROUP

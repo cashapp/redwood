@@ -44,3 +44,8 @@ spotless {
     )
   }
 }
+
+// Tests are consumed by Swift/XCode.
+tasks.withType(AbstractTestTask).configureEach {
+  failOnNoDiscoveredTests = false
+}

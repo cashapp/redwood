@@ -228,7 +228,10 @@ class HostProtocolTest {
     val textInput = protocol.widget(WidgetTag(5))!!.createNode(Id(1), widgetSystem)
 
     val throwingEventSink = UiEventSink { error(it) }
-    textInput.apply(PropertyChange(Id(1), WidgetTag(5), PropertyTag(2), JsonPrimitive("PT10S")), throwingEventSink)
+
+    val change = PropertyChange(Id(1), WidgetTag(5), PropertyTag(2), JsonPrimitive("PT10S"))
+    val uiChange = UiChange.fromProtocol(protocol, change) as UiPropertyChange
+    textInput.apply(uiChange, throwingEventSink)
 
     assertThat((textInput.widget.value as TextInputValue).customType).isEqualTo(10.seconds)
   }
@@ -243,7 +246,7 @@ class HostProtocolTest {
     )
     val button = protocol.widget(WidgetTag(4))!!.createNode(Id(1), widgetSystem)
 
-    val change = PropertyChange(Id(1), WidgetTag(4), PropertyTag(345432))
+    val change = UiPropertyChange(Id(1), PropertyTag(345432), "sup")
     val eventSink = UiEventSink { throw UnsupportedOperationException() }
     val t = assertFailsWith<IllegalArgumentException> {
       button.apply(change, eventSink)
@@ -264,7 +267,9 @@ class HostProtocolTest {
     )
     val button = protocol.widget(WidgetTag(4))!!.createNode(Id(1), widgetSystem)
 
-    button.apply(PropertyChange(Id(1), WidgetTag(4), PropertyTag(345432))) { throw UnsupportedOperationException() }
+    val change = UiPropertyChange(Id(1), PropertyTag(345432), "sup")
+
+    button.apply(change) { throw UnsupportedOperationException() }
 
     assertThat(handler.events.single()).isEqualTo("Unknown property 345432 for 4")
   }
@@ -287,7 +292,9 @@ class HostProtocolTest {
     val textInput = protocol.widget(WidgetTag(5))!!.createNode(Id(1), widgetSystem)
 
     val eventSink = RecordingUiEventSink()
-    textInput.apply(PropertyChange(Id(1), WidgetTag(5), PropertyTag(4), JsonPrimitive(true)), eventSink)
+    val change = PropertyChange(Id(1), WidgetTag(5), PropertyTag(4), JsonPrimitive(true))
+    val uiChange = UiChange.fromProtocol(protocol, change) as UiPropertyChange
+    textInput.apply(uiChange, eventSink)
 
     (textInput.widget.value as TextInputValue).onChangeCustomType!!.invoke(10.seconds)
 
