@@ -21,3 +21,6 @@ xcuserdata
 # Paparazzi
 redwood-layout-composeui/out/failures
 redwood-layout-view/out/failures
+
+# DOM testing
+redwood-dom-testing/snapshots

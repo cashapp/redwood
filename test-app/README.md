@@ -59,7 +59,7 @@ Running Test App on Web
 
 To build and modify the app locally, run this:
 ```
-./gradlew test-app:browser:jsBrowserRun
+./gradlew test-app:browser:jsBrowserDevelopmentRun
 ```
 
 If successful, the command will load the app at http://localhost:8080/ in your default web browser.

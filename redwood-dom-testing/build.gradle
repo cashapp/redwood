@@ -1,0 +1,24 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitHtml
+
+redwoodBuild {
+  targets(ToolkitHtml)
+  publishing()
+}
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation libs.kotlinx.coroutines.core
+        implementation libs.okio
+      }
+    }
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
+        implementation libs.kotlinx.coroutines.test
+      }
+    }
+  }
+}
