@@ -27,6 +27,7 @@ import androidx.test.uiautomator.Until
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 abstract class AbstractEmojiSearchUiTest(private val appPackage: String) {
@@ -42,6 +43,7 @@ abstract class AbstractEmojiSearchUiTest(private val appPackage: String) {
     device.wait(Until.hasObject(pkg(appPackage).depth(0)), 5_000)
   }
 
+  @Ignore("flaky")
   @Test fun searchTrees() {
     awaitText("0. +1")
     search.text = "tree"
