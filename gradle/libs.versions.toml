@@ -97,7 +97,7 @@ paparazzi = { module = "app.cash.paparazzi:paparazzi", version.ref = "paparazzi"
 jimfs = "com.google.jimfs:jimfs:1.3.0"
 turbine = "app.cash.turbine:turbine:1.2.1"
 ktlint = "com.pinterest.ktlint:ktlint-cli:1.3.1"
-ktlintComposeRules = "io.nlopez.compose.rules:ktlint:0.4.22"
+ktlintComposeRules = "io.nlopez.compose.rules:ktlint:0.4.26"
 googleJavaFormat = "com.google.googlejavaformat:google-java-format:1.27.0"
 poko-gradlePlugin = "dev.drewhamilton.poko:poko-gradle-plugin:0.18.7"
 
