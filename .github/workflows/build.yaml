@@ -196,9 +196,9 @@ jobs:
       - name: Build TestApp iOS (UIKit)
         run: xcodebuild -project test-app/ios-uikit/TestApp.xcodeproj -scheme TestApp -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest'
 
-  publish:
-    runs-on: macos-latest
-    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
+  final-status:
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
     needs:
       - build
       - dokka
@@ -209,6 +209,20 @@ jobs:
       - sample-emoji
       - sample-emoji-emulator
       - test-app
+    steps:
+      - name: Check
+        run: |
+          results=$(tr -d '\n' <<< '${{ toJSON(needs.*.result) }}')
+          if ! grep -q -v -E '(failure|cancelled)' <<< "$results"; then
+            echo "One or more required jobs failed"
+            exit 1
+          fi
+
+  publish:
+    runs-on: macos-latest
+    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
+    needs:
+      - final-status
     steps:
       - uses: actions/checkout@v4
 
