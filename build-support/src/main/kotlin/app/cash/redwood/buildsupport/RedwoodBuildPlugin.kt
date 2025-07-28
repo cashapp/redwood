@@ -31,7 +31,6 @@ import com.android.build.api.variant.AndroidComponentsExtension
 import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
-import com.vanniktech.maven.publish.SonatypeHost
 import java.io.File
 import kotlinx.validation.ApiValidationExtension
 import kotlinx.validation.ExperimentalBCVApi
@@ -451,7 +450,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
     val mavenPublishing = project.extensions.getByName("mavenPublishing") as MavenPublishBaseExtension
     mavenPublishing.apply {
-      publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+      publishToMavenCentral(automaticRelease = true)
       if (project.providers.systemProperty("RELEASE_SIGNING_ENABLED").getOrElse("true").toBoolean()) {
         signAllPublications()
       }
