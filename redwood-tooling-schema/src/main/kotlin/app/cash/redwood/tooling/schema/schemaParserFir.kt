@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(SymbolInternals::class)
+
 package app.cash.redwood.tooling.schema
 
 import app.cash.redwood.tooling.schema.Deprecation.Level
@@ -53,10 +55,11 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.JVMConfigurationKeys.JDK_HOME
 import org.jetbrains.kotlin.descriptors.ClassKind.OBJECT
 import org.jetbrains.kotlin.diagnostics.DiagnosticReporterFactory
+import org.jetbrains.kotlin.fir.FirElement
 import org.jetbrains.kotlin.fir.FirSession
-import org.jetbrains.kotlin.fir.declarations.FirDeclaration
-import org.jetbrains.kotlin.fir.declarations.FirProperty
+import org.jetbrains.kotlin.fir.declarations.FirFile
 import org.jetbrains.kotlin.fir.declarations.FirRegularClass
+import org.jetbrains.kotlin.fir.declarations.declaredProperties
 import org.jetbrains.kotlin.fir.declarations.primaryConstructorIfAny
 import org.jetbrains.kotlin.fir.declarations.utils.classId
 import org.jetbrains.kotlin.fir.declarations.utils.isData
@@ -73,6 +76,7 @@ import org.jetbrains.kotlin.fir.expressions.impl.FirResolvedArgumentList
 import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
 import org.jetbrains.kotlin.fir.resolve.toSymbol
+import org.jetbrains.kotlin.fir.symbols.SymbolInternals
 import org.jetbrains.kotlin.fir.symbols.impl.FirValueParameterSymbol
 import org.jetbrains.kotlin.fir.types.ConeClassLikeType
 import org.jetbrains.kotlin.fir.types.ConeKotlinTypeProjection
@@ -87,6 +91,7 @@ import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.type
 import org.jetbrains.kotlin.fir.types.variance
+import org.jetbrains.kotlin.fir.visitors.FirDefaultVisitor
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
 import org.jetbrains.kotlin.modules.TargetId
 import org.jetbrains.kotlin.name.ClassId
@@ -190,7 +195,7 @@ public fun parseProtocolSchema(
   val firSession = platformOutput.session
 
   val types = firFiles
-    .flatMap { it.declarations.findRegularClassesRecursive() }
+    .flatMap { it.regularClasses() }
     .associateBy { it.classId.toFqType() }
 
   val firContext = FirContext(types, firSession)
@@ -222,9 +227,29 @@ public fun parseProtocolSchema(
   return schemaSet
 }
 
-private fun List<FirDeclaration>.findRegularClassesRecursive(): List<FirRegularClass> {
-  val classes = filterIsInstance<FirRegularClass>()
-  return classes + classes.flatMap { it.declarations.findRegularClassesRecursive() }
+/** Collect all regular class declarations in this. */
+private fun FirFile.regularClasses(): List<FirRegularClass> {
+  val result = mutableListOf<FirRegularClass>()
+  accept(
+    visitor = object : FirDefaultVisitor<Unit, MutableList<FirRegularClass>>() {
+      override fun visitRegularClass(
+        regularClass: FirRegularClass,
+        data: MutableList<FirRegularClass>,
+      ) {
+        super.visitRegularClass(regularClass, data)
+        data.add(regularClass)
+      }
+
+      override fun visitElement(
+        element: FirElement,
+        data: MutableList<FirRegularClass>,
+      ) {
+        element.acceptChildren(this, data)
+      }
+    },
+    data = result,
+  )
+  return result
 }
 
 private class FirContext(
@@ -409,7 +434,7 @@ private fun FirContext.parseWidget(
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
       val type = parameter.resolvedReturnType
-      val property = firClass.declarations.filterIsInstance<FirProperty>().single { it.name == parameter.name }
+      val property = firClass.symbol.declaredProperties(firSession).single { it.name == parameter.name }
 
       val propertyAnnotation = findPropertyAnnotation(property.annotations)
       val childrenAnnotation = findChildrenAnnotation(property.annotations)
@@ -586,7 +611,7 @@ private fun FirContext.parseModifier(
     firClass.primaryConstructorIfAny(firSession)!!.valueParameterSymbols.map { parameter ->
       val name = parameter.name.identifier
       val parameterType = parameter.resolvedReturnType.toFqType()
-      val property = firClass.declarations.filterIsInstance<FirProperty>().single { it.name == parameter.name }
+      val property = firClass.symbol.declaredProperties(firSession).single { it.name == parameter.name }
 
       val defaultExpression = findDefaultExpression(parameter)
       val deprecation = findDeprecationAnnotation(property.annotations)

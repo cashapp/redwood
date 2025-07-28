@@ -58,7 +58,7 @@ public final class app/cash/redwood/ui/Density {
 	public final synthetic fun unbox-impl ()D
 }
 
-public synthetic class app/cash/redwood/ui/Density$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/Density$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Density$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -88,7 +88,7 @@ public final class app/cash/redwood/ui/Dp {
 	public final synthetic fun unbox-impl ()D
 }
 
-public synthetic class app/cash/redwood/ui/Dp$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/Dp$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Dp$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -134,7 +134,7 @@ public final class app/cash/redwood/ui/Margin {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/ui/Margin$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/Margin$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Margin$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -190,7 +190,7 @@ public final class app/cash/redwood/ui/Px {
 	public final synthetic fun unbox-impl ()D
 }
 
-public synthetic class app/cash/redwood/ui/Px$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/Px$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Px$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -216,7 +216,7 @@ public final class app/cash/redwood/ui/Size {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/ui/Size$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/Size$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/Size$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -251,7 +251,7 @@ public final class app/cash/redwood/ui/UiConfiguration {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/ui/UiConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/UiConfiguration$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/ui/UiConfiguration$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;

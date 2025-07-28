@@ -18,10 +18,6 @@ public final class app/cash/redwood/treehouse/AppLifecycle$Companion$Adapter : a
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
-public final class app/cash/redwood/treehouse/AppLifecycle$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/AppLifecycle;)V
-}
-
 public abstract interface class app/cash/redwood/treehouse/AppLifecycle$Host : app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/AppLifecycle$Host$Companion;
 	public abstract fun getHostProtocolVersion-7jYel6c ()Ljava/lang/String;
@@ -44,10 +40,6 @@ public final class app/cash/redwood/treehouse/AppLifecycle$Host$Companion$Adapte
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
-public final class app/cash/redwood/treehouse/AppLifecycle$Host$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/AppLifecycle$Host;)V
-}
-
 public abstract interface class app/cash/redwood/treehouse/AppService : app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/AppService$Companion;
 	public abstract fun getAppLifecycle ()Lapp/cash/redwood/treehouse/AppLifecycle;
@@ -64,10 +56,6 @@ public final class app/cash/redwood/treehouse/AppService$Companion$Adapter : app
 	public fun outboundService (Lapp/cash/zipline/internal/bridge/OutboundCallHandler;)Lapp/cash/redwood/treehouse/AppService;
 	public synthetic fun outboundService (Lapp/cash/zipline/internal/bridge/OutboundCallHandler;)Lapp/cash/zipline/ZiplineService;
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
-}
-
-public final class app/cash/redwood/treehouse/AppService$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/AppService;)V
 }
 
 public abstract interface class app/cash/redwood/treehouse/CancellableService : app/cash/redwood/ui/Cancellable, app/cash/zipline/ZiplineService {
@@ -87,10 +75,6 @@ public final class app/cash/redwood/treehouse/CancellableService$Companion$Adapt
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
-public final class app/cash/redwood/treehouse/CancellableService$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/CancellableService;)V
-}
-
 public abstract interface class app/cash/redwood/treehouse/ChangesSinkService : app/cash/redwood/protocol/ChangesSink, app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/ChangesSinkService$Companion;
 }
@@ -106,10 +90,6 @@ public final class app/cash/redwood/treehouse/ChangesSinkService$Companion$Adapt
 	public fun outboundService (Lapp/cash/zipline/internal/bridge/OutboundCallHandler;)Lapp/cash/redwood/treehouse/ChangesSinkService;
 	public synthetic fun outboundService (Lapp/cash/zipline/internal/bridge/OutboundCallHandler;)Lapp/cash/zipline/ZiplineService;
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
-}
-
-public final class app/cash/redwood/treehouse/ChangesSinkService$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/ChangesSinkService;)V
 }
 
 public abstract interface class app/cash/redwood/treehouse/OnBackPressedCallbackService : app/cash/zipline/ZiplineService {
@@ -131,10 +111,6 @@ public final class app/cash/redwood/treehouse/OnBackPressedCallbackService$Compa
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
-public final class app/cash/redwood/treehouse/OnBackPressedCallbackService$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/OnBackPressedCallbackService;)V
-}
-
 public abstract interface class app/cash/redwood/treehouse/OnBackPressedDispatcherService : app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/OnBackPressedDispatcherService$Companion;
 	public abstract fun addCallback (Lapp/cash/redwood/treehouse/OnBackPressedCallbackService;)Lapp/cash/redwood/treehouse/CancellableService;
@@ -153,17 +129,13 @@ public final class app/cash/redwood/treehouse/OnBackPressedDispatcherService$Com
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
-public final class app/cash/redwood/treehouse/OnBackPressedDispatcherService$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/OnBackPressedDispatcherService;)V
-}
-
 public final class app/cash/redwood/treehouse/StateSnapshot {
 	public static final field Companion Lapp/cash/redwood/treehouse/StateSnapshot$Companion;
 	public fun <init> (Ljava/util/Map;)V
 	public final fun getContent ()Ljava/util/Map;
 }
 
-public synthetic class app/cash/redwood/treehouse/StateSnapshot$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/treehouse/StateSnapshot$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/treehouse/StateSnapshot$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/treehouse/StateSnapshot;
@@ -192,7 +164,7 @@ public final class app/cash/redwood/treehouse/StateSnapshot$Id {
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/treehouse/StateSnapshot$Id$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/treehouse/StateSnapshot$Id$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/treehouse/StateSnapshot$Id$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -229,10 +201,6 @@ public final class app/cash/redwood/treehouse/ZiplineTreehouseUi$Companion$Adapt
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
-public final class app/cash/redwood/treehouse/ZiplineTreehouseUi$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/ZiplineTreehouseUi;)V
-}
-
 public abstract interface class app/cash/redwood/treehouse/ZiplineTreehouseUi$Host : app/cash/redwood/treehouse/ChangesSinkService, app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/ZiplineTreehouseUi$Host$Companion;
 	public abstract fun addOnBackPressedCallback (Lapp/cash/redwood/treehouse/OnBackPressedCallbackService;)Lapp/cash/redwood/treehouse/CancellableService;
@@ -251,9 +219,5 @@ public final class app/cash/redwood/treehouse/ZiplineTreehouseUi$Host$Companion$
 	public fun outboundService (Lapp/cash/zipline/internal/bridge/OutboundCallHandler;)Lapp/cash/redwood/treehouse/ZiplineTreehouseUi$Host;
 	public synthetic fun outboundService (Lapp/cash/zipline/internal/bridge/OutboundCallHandler;)Lapp/cash/zipline/ZiplineService;
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
-}
-
-public final class app/cash/redwood/treehouse/ZiplineTreehouseUi$Host$DefaultImpls {
-	public static fun close (Lapp/cash/redwood/treehouse/ZiplineTreehouseUi$Host;)V
 }
 
