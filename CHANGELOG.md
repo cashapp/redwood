@@ -22,6 +22,11 @@ Fixed:
 - Honor the inbound max width for `Row` and `Column` layouts using `Constraint.Wrap` on iOS. This is necessary for child components that can wrap, like text.
 - Using "stretch" cross-axis alignment on a lazy list now works correctly in Compose UI.
 
+Upgraded:
+- Kotlin 2.2.0
+- Zipline 1.22.0
+- kotlinx.serialization 1.9.0
+
 
 ## [0.17.0] - 2025-01-30
 [0.17.0]: https://github.com/cashapp/redwood/releases/tag/0.17.0
