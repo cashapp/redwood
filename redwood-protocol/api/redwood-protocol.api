@@ -28,7 +28,7 @@ public final class app/cash/redwood/protocol/ChildrenChange$Add : app/cash/redwo
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/ChildrenChange$Add$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/ChildrenChange$Add$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/ChildrenChange$Add$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/ChildrenChange$Add;
@@ -60,7 +60,7 @@ public final class app/cash/redwood/protocol/ChildrenChange$Move : app/cash/redw
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/ChildrenChange$Move$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/ChildrenChange$Move$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/ChildrenChange$Move$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/ChildrenChange$Move;
@@ -88,7 +88,7 @@ public final class app/cash/redwood/protocol/ChildrenChange$Remove : app/cash/re
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/ChildrenChange$Remove$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/ChildrenChange$Remove$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/ChildrenChange$Remove;
@@ -118,7 +118,7 @@ public final class app/cash/redwood/protocol/ChildrenTag {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/protocol/ChildrenTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/ChildrenTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/ChildrenTag$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -143,7 +143,7 @@ public final class app/cash/redwood/protocol/Create : app/cash/redwood/protocol/
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/Create$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/Create$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/Create$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/Create;
@@ -169,7 +169,7 @@ public final class app/cash/redwood/protocol/Event {
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/Event$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/Event$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/Event$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/Event;
@@ -204,7 +204,7 @@ public final class app/cash/redwood/protocol/EventTag {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/protocol/EventTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/EventTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/EventTag$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -233,7 +233,7 @@ public final class app/cash/redwood/protocol/Id {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/protocol/Id$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/Id$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/Id$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -258,7 +258,7 @@ public final class app/cash/redwood/protocol/ModifierChange : app/cash/redwood/p
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/ModifierChange$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/ModifierChange$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/ModifierChange$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/ModifierChange;
@@ -299,7 +299,7 @@ public final class app/cash/redwood/protocol/ModifierTag {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/protocol/ModifierTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/ModifierTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/ModifierTag$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -325,7 +325,7 @@ public final class app/cash/redwood/protocol/PropertyChange : app/cash/redwood/p
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/PropertyChange$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/PropertyChange$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/PropertyChange$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/protocol/PropertyChange;
@@ -356,7 +356,7 @@ public final class app/cash/redwood/protocol/PropertyTag {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/protocol/PropertyTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/PropertyTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/PropertyTag$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -388,7 +388,7 @@ public final class app/cash/redwood/protocol/RedwoodVersion : java/lang/Comparab
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public synthetic class app/cash/redwood/protocol/RedwoodVersion$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/RedwoodVersion$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/RedwoodVersion$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -418,7 +418,7 @@ public final class app/cash/redwood/protocol/SnapshotChangeList {
 	public final synthetic fun unbox-impl ()Ljava/util/List;
 }
 
-public synthetic class app/cash/redwood/protocol/SnapshotChangeList$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/SnapshotChangeList$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/SnapshotChangeList$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -450,7 +450,7 @@ public final class app/cash/redwood/protocol/WidgetTag {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/protocol/WidgetTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/protocol/WidgetTag$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/protocol/WidgetTag$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
