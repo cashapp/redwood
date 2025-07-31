@@ -68,8 +68,10 @@ jobs:
           ./gradlew
           -PredwoodNoApps
           kotlinUpgradeYarnLock
+          test
           jvmTest
-          testDebugUnitTest
+          -x testReleaseUnitTest
+          -x dokkaHtml
 
   native-tests:
     runs-on: macos-latest
