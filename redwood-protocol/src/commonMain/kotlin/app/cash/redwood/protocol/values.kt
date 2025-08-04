@@ -47,7 +47,6 @@ public value class PropertyTag(public val value: Int)
 @Serializable
 public value class ChildrenTag(public val value: Int) {
   public companion object {
-    /** The tag for children on the [Id.Root] node. */
-    public val Root: ChildrenTag = ChildrenTag(99_999)
+    public val Root: ChildrenTag = ChildrenTag(1)
   }
 }

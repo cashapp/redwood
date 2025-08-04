@@ -34,7 +34,6 @@ import app.cash.redwood.widget.MutableListChildren
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.hasMessage
-import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.message
@@ -332,50 +331,5 @@ class HostProtocolAdapterTest {
         ),
       ),
     )
-  }
-
-  @Test fun oldRootChildrenTag() {
-    val hostAdapter = HostProtocolAdapter(
-      guestVersion = guestRedwoodVersion,
-      container = MutableListChildren(),
-      protocol = TestSchemaHostProtocol.create(),
-      widgetSystem = TestSchemaWidgetSystem(
-        TestSchema = TestSchemaTestingWidgetFactory(),
-        RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
-        RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
-        RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
-      ),
-      eventSink = ::error,
-      leakDetector = LeakDetector.none(),
-    )
-
-    // Add a button.
-    hostAdapter.sendChanges(
-      listOf(
-        UiCreate(
-          id = Id(1),
-          // Button
-          tag = WidgetTag(4),
-        ),
-        // Set Button's required color property.
-        UiPropertyChange(
-          id = Id(1),
-          tag = PropertyTag(3),
-          value = 0U,
-        ),
-        UiChildrenChange(
-          change = Add(
-            id = Id.Root,
-            // This is the old value for the root's children:
-            tag = ChildrenTag(1),
-            childId = Id(1),
-            index = 0,
-          ),
-        ),
-      ),
-    )
-
-    val children = hostAdapter.node(Id.Root).children(ChildrenTag.Root)!!.nodes
-    assertThat(children).hasSize(1)
   }
 }

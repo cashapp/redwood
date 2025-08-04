@@ -403,11 +403,6 @@ private class RootProtocolNode<W : Any>(
 
   override fun children(tag: ChildrenTag) = when (tag) {
     ChildrenTag.Root -> children
-
-    // This is the old value of ChildrenTag.Root
-    // TODO Remove support for this once 0.18.0 (or newer) is the oldest Redwood supported.
-    ChildrenTag(1) -> children
-
     else -> throw AssertionError("unexpected: $tag")
   }
 
