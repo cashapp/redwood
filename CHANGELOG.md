@@ -1,7 +1,20 @@
 # Change Log
 
 ## [Unreleased]
-[Unreleased]: https://github.com/cashapp/redwood/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/cashapp/redwood/compare/0.18.0...HEAD
+
+New:
+- Nothing yet!
+
+Changed:
+- Nothing yet!
+
+Fixed:
+- Nothing yet!
+
+
+## [0.18.0] - 2025-08-01
+[0.18.0]: https://github.com/cashapp/redwood/releases/tag/0.18.0
 
 New:
 - Schema `@Widget`s can now set `internalComposable = true` to have their `@Composable` functions generated as internal. This will require that you define a public version in the main sources of the module which generates the functions. This can be used to hide old widgets that should no longer be used, create more complex widget protocols away from callers, and to conditionally split implementation between two bindings, for example.
@@ -13,7 +26,6 @@ Changed:
 - JVM and Android artifacts now target Java 11 bytecode, as the upstream Compose dependencies now all target Java 11.
 - The host protocol type has been renamed from `ProtocolFactory` to `HostProtocol`. An instance of `HostProtocol` is now required when constructing a `TreehouseAppFactory`.
 - Enforce that event properties declared in your schema always return `Unit`.
-- The root node's children are now identified using the tag 99,999 instead of 1. This attempts to prevent accidentally using the value for non-root nodes. The old value is still supported by the actual root node for compatibility with older guest code.
 - In-development snapshots are now published to the Central Portal Snapshots repository at https://central.sonatype.com/repository/maven-snapshots/.
 
 Fixed:
@@ -21,6 +33,10 @@ Fixed:
 - Don't conflate `CrossAxisAlignment.Stretch` with `Contraint.Fill`. We had a bug where `CrossAxisAlignment.Stretch` would cause children to fill their parent container.
 - Honor the inbound max width for `Row` and `Column` layouts using `Constraint.Wrap` on iOS. This is necessary for child components that can wrap, like text.
 - Using "stretch" cross-axis alignment on a lazy list now works correctly in Compose UI.
+
+Upgraded:
+- Kotlin 2.2.0
+- Zipline 1.21.0
 
 
 ## [0.17.0] - 2025-01-30

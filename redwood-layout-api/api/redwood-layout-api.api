@@ -11,7 +11,7 @@ public final class app/cash/redwood/layout/api/Constraint {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/layout/api/Constraint$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/layout/api/Constraint$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/Constraint$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -41,7 +41,7 @@ public final class app/cash/redwood/layout/api/CrossAxisAlignment {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/layout/api/CrossAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/layout/api/CrossAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/CrossAxisAlignment$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -73,7 +73,7 @@ public final class app/cash/redwood/layout/api/MainAxisAlignment {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/layout/api/MainAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/layout/api/MainAxisAlignment$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/MainAxisAlignment$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
@@ -107,7 +107,7 @@ public final class app/cash/redwood/layout/api/Overflow {
 	public final synthetic fun unbox-impl ()I
 }
 
-public synthetic class app/cash/redwood/layout/api/Overflow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/layout/api/Overflow$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field $stable I
 	public static final field INSTANCE Lapp/cash/redwood/layout/api/Overflow$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;

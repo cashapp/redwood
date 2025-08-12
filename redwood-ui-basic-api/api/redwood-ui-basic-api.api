@@ -21,7 +21,7 @@ public final class app/cash/redwood/ui/basic/api/TextFieldState {
 	public static synthetic fun userEdit$default (Lapp/cash/redwood/ui/basic/api/TextFieldState;Ljava/lang/String;IIILjava/lang/Object;)Lapp/cash/redwood/ui/basic/api/TextFieldState;
 }
 
-public synthetic class app/cash/redwood/ui/basic/api/TextFieldState$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class app/cash/redwood/ui/basic/api/TextFieldState$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lapp/cash/redwood/ui/basic/api/TextFieldState$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lapp/cash/redwood/ui/basic/api/TextFieldState;

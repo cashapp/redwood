@@ -22,3 +22,9 @@ dependencies {
   testImplementation libs.assertk
   testImplementation libs.jimfs
 }
+
+tasks.named('test', Test) {
+  // We create a lot of instances of the Kotlin frontend. Throw memory + forks at it to avoid OOM.
+  maxHeapSize = '3g'
+  forkEvery = 1
+}
