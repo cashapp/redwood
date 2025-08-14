@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.UIViewChildren
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UILayoutConstraintAxisVertical
@@ -60,6 +61,7 @@ class LayoutTester(
   verticalConstraint: Constraint,
 ) {
   private val referenceView = RectangleUIView(60.0, 20.0)
+  private val referenceViewWidget = viewWidget(referenceView)
 
   val top: UIView = RectangleUIView(60.0, 20.0)
 
@@ -69,7 +71,7 @@ class LayoutTester(
 
       Subject.TreehouseView -> TreehouseUIView(emptyWidgetSystem)
         .apply {
-          (this.children as UIViewChildren).insert(0, viewWidget(referenceView))
+          (this.children as UIViewChildren).insert(0, referenceViewWidget)
         }
         .value
     }
@@ -103,11 +105,13 @@ class LayoutTester(
   fun shrinkSubject() {
     referenceView.width = 30.0
     referenceView.height = 10.0
+    (referenceViewWidget as ResizableWidget<*>).sizeListener?.invalidateSize()
   }
 
   fun growSubject() {
     referenceView.width = 90.0
     referenceView.height = 30.0
+    (referenceViewWidget as ResizableWidget<*>).sizeListener?.invalidateSize()
   }
 
   enum class Constraint(

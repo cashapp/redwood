@@ -56,9 +56,13 @@ public open class RedwoodUIView : RedwoodView<UIView> {
 
   private val sizeListener = object : ResizableWidget.SizeListener {
     override fun invalidateSize() {
-      val resized = valueRootView.superview ?: valueRootView
-      resized.setNeedsLayout() // For autolayout.
-      resized.invalidateIntrinsicContentSize() // For SwiftUI.
+      // This view's size may have changed.
+      valueRootView.setNeedsLayout() // For autolayout.
+      valueRootView.invalidateIntrinsicContentSize() // For SwiftUI.
+
+      // And the superview should redo its layout also, if it exists.
+      valueRootView.superview?.setNeedsLayout() // For autolayout.
+      valueRootView.superview?.invalidateIntrinsicContentSize() // For SwiftUI.
     }
   }
 

@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
 import kotlinx.cinterop.CValue
@@ -26,9 +27,10 @@ import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIView
 
-fun viewWidget(view: UIView): Widget<UIView> = object : Widget<UIView> {
+fun viewWidget(view: UIView): Widget<UIView> = object : Widget<UIView>, ResizableWidget<UIView> {
   override val value: UIView get() = view
   override var modifier: Modifier = Modifier
+  override var sizeListener: ResizableWidget.SizeListener? = null
 }
 
 val emptyWidgetSystem = object : WidgetSystem<UIView> {
