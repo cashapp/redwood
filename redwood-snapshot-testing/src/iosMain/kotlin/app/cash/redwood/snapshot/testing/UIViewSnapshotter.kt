@@ -32,11 +32,11 @@ import platform.UIKit.UIViewNoIntrinsicMetric
  * This either snapshots the view sized to be full-screen, or it uses [heightConstraint] to size the
  * view to whatever height it requires. Scrolling snapshots are always sized to the screen height.
  */
-class UIViewSnapshotter private constructor(
+class UIViewSnapshotter(
   private val callback: UIViewSnapshotCallback,
   private val subject: UIView,
-  private val widthConstraint: Constraint,
-  private val heightConstraint: Constraint,
+  private val widthConstraint: Constraint = Constraint.Fill,
+  private val heightConstraint: Constraint = Constraint.Fill,
 ) : Snapshotter {
 
   override fun snapshot(name: String?, scrolling: Boolean) {
