@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		108501E82CA4B0C3008AAC12 /* UIViewRedwoodViewTestHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 108501E72CA4B0C3008AAC12 /* UIViewRedwoodViewTestHost.swift */; };
+		10AB713A2E4D9E5C002C8CD5 /* UIViewRedwoodViewFillWrapTestHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10AB71392E4D9E5C002C8CD5 /* UIViewRedwoodViewFillWrapTestHost.swift */; };
 		CB408CED2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */; };
 		CB408CF72AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */; };
 		CB8A21EF2AC6647F00C104C2 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = CB8A21EE2AC6647F00C104C2 /* SnapshotTesting */; };
@@ -16,6 +17,7 @@
 
 /* Begin PBXFileReference section */
 		108501E72CA4B0C3008AAC12 /* UIViewRedwoodViewTestHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewRedwoodViewTestHost.swift; sourceTree = "<group>"; };
+		10AB71392E4D9E5C002C8CD5 /* UIViewRedwoodViewFillWrapTestHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewRedwoodViewFillWrapTestHost.swift; sourceTree = "<group>"; };
 		63E90CF521FEBBB700449E04 /* RedwoodWidgetUIViewTestKt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RedwoodWidgetUIViewTestKt.framework; path = "build/xcode-frameworks/RedwoodWidgetUIViewTestKt.framework"; sourceTree = "<group>"; };
 		CB408CE52AC64CEF00E1BA00 /* RedwoodWidgetUIViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedwoodWidgetUIViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotlinHostingXCTestCase.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 		CB408CE62AC64CEF00E1BA00 /* RedwoodWidgetUIViewTests */ = {
 			isa = PBXGroup;
 			children = (
+				10AB71392E4D9E5C002C8CD5 /* UIViewRedwoodViewFillWrapTestHost.swift */,
 				CB9729D22AD82D0C00804E94 /* SnapshotTestingCallback.swift */,
 				CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */,
 				CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */,
@@ -173,6 +176,7 @@
 			files = (
 				CB408CED2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift in Sources */,
 				CB408CF72AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m in Sources */,
+				10AB713A2E4D9E5C002C8CD5 /* UIViewRedwoodViewFillWrapTestHost.swift in Sources */,
 				CB9729D32AD82D0C00804E94 /* SnapshotTestingCallback.swift in Sources */,
 				108501E82CA4B0C3008AAC12 /* UIViewRedwoodViewTestHost.swift in Sources */,
 			);

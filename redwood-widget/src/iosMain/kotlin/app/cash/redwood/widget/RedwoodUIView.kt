@@ -26,24 +26,26 @@ import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
+import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIApplication
 import platform.UIKit.UIEdgeInsets
 import platform.UIKit.UIEdgeInsetsZero
-import platform.UIKit.UILayoutConstraintAxisVertical
-import platform.UIKit.UIStackView
-import platform.UIKit.UIStackViewAlignmentFill
-import platform.UIKit.UIStackViewDistributionFillEqually
+import platform.UIKit.UILayoutPriority
 import platform.UIKit.UITraitCollection
 import platform.UIKit.UIUserInterfaceLayoutDirection
 import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionLeftToRight
 import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionRightToLeft
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
+import platform.darwin.NSInteger
 
 @ObjCName("RedwoodUIView", exact = true)
 public open class RedwoodUIView : RedwoodView<UIView> {
@@ -52,7 +54,25 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val value: UIView
     get() = valueRootView
 
-  private val _children = UIViewChildren(valueRootView)
+  private val sizeListener = object : ResizableWidget.SizeListener {
+    override fun invalidateSize() {
+      val resized = valueRootView.superview ?: valueRootView
+      resized.setNeedsLayout() // For autolayout.
+      resized.invalidateIntrinsicContentSize() // For SwiftUI.
+    }
+  }
+
+  private val _children = UIViewChildren(
+    container = valueRootView,
+    insert = { index, widget ->
+      if (widget is ResizableWidget<*>) {
+        widget.sizeListener = sizeListener
+      }
+      valueRootView.insertSubview(widget.value, index.convert<NSInteger>())
+    },
+    invalidateSize = sizeListener::invalidateSize,
+  )
+
   override val children: Widget.Children<UIView>
     get() = _children
 
@@ -100,19 +120,15 @@ public open class RedwoodUIView : RedwoodView<UIView> {
    * In practice we expect this to contain either zero child subviews (especially when
    * newly-initialized) or one child subview, which will usually be a layout container.
    *
-   * This could just as easily be a horizontal stack. A box would be even better, but there's no
-   * such built-in component and implementing it manually is difficult if we want to react to
-   * content resizes.
+   * This is a custom layout to best support callers using either SwiftUI (which calls through
+   * [sizeThatFits]) or autolayout (which calls through [intrinsicContentSize]).
    */
-  private inner class RootUIStackView : UIStackView(cValue { CGRectZero }) {
+  private inner class RootUIStackView : UIView(cValue { CGRectZero }) {
     /** Safe area insets specified by the superview. */
     val incomingSafeAreaInsets: CValue<UIEdgeInsets>
       get() = super.safeAreaInsets
 
     init {
-      this.axis = UILayoutConstraintAxisVertical
-      this.alignment = UIStackViewAlignmentFill // Fill horizontal.
-      this.distribution = UIStackViewDistributionFillEqually // Fill vertical.
       this.setInsetsLayoutMarginsFromSafeArea(false) // Consume insets internally.
     }
 
@@ -127,7 +143,57 @@ public open class RedwoodUIView : RedwoodView<UIView> {
       updateUiConfiguration()
     }
 
+    override fun sizeThatFits(size: CValue<CGSize>): CValue<CGSize> {
+      return maxSizeOfSubviews { it.sizeThatFits(size) }
+    }
+
+    override fun systemLayoutSizeFittingSize(targetSize: CValue<CGSize>): CValue<CGSize> {
+      return maxSizeOfSubviews { it.systemLayoutSizeFittingSize(targetSize) }
+    }
+
+    override fun systemLayoutSizeFittingSize(
+      targetSize: CValue<CGSize>,
+      withHorizontalFittingPriority: UILayoutPriority,
+      verticalFittingPriority: UILayoutPriority,
+    ): CValue<CGSize> {
+      return maxSizeOfSubviews {
+        it.systemLayoutSizeFittingSize(
+          targetSize,
+          withHorizontalFittingPriority,
+          verticalFittingPriority,
+        )
+      }
+    }
+
+    override fun intrinsicContentSize(): CValue<CGSize> {
+      return maxSizeOfSubviews { it.intrinsicContentSize() }
+    }
+
+    private fun maxSizeOfSubviews(
+      measure: (UIView) -> CValue<CGSize>,
+    ): CValue<CGSize> {
+      var maxWidth = 0.0
+      var maxHeight = 0.0
+
+      for (subview in subviews) {
+        val subviewSize = measure(subview as UIView)
+        subviewSize.useContents {
+          maxWidth = maxOf(width, maxWidth)
+          maxHeight = maxOf(height, maxHeight)
+        }
+      }
+
+      return CGSizeMake(maxWidth, maxHeight)
+    }
+
     override fun layoutSubviews() {
+      val width = frame.useContents { size.width }
+      val height = frame.useContents { size.height }
+
+      for (subview in subviews) {
+        (subview as UIView).setFrame(CGRectMake(0.0, 0.0, width, height))
+      }
+
       super.layoutSubviews()
 
       // Bounds likely changed. Report new size.

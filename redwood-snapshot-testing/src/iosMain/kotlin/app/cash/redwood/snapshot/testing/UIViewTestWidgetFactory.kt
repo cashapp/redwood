@@ -21,8 +21,10 @@ import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.ResizableWidget.SizeListener
+import kotlin.math.max
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
@@ -116,7 +118,20 @@ class UIViewColor :
 class UIViewSimpleColumn : SimpleColumn<UIView> {
   override var modifier: Modifier = Modifier
 
-  override val value = UIStackView(CGRectZero.readValue()).apply {
+  override val value = object : UIStackView(CGRectZero.readValue()) {
+    override fun intrinsicContentSize(): CValue<CGSize> {
+      var totalHeight = 0.0
+      var maxWidth = 0.0
+      for (subview in subviews) {
+        val subviewSize = (subview as UIView).intrinsicContentSize()
+        subviewSize.useContents {
+          totalHeight += height
+          maxWidth = max(maxWidth, width)
+        }
+      }
+      return CGSizeMake(maxWidth, totalHeight)
+    }
+  }.apply {
     this.axis = UILayoutConstraintAxisVertical
     this.alignment = UIStackViewAlignmentFill
     this.distribution = UIStackViewDistributionEqualSpacing
