@@ -12,6 +12,7 @@ Changed:
 Fixed:
 - Don't measure the height of `RedwoodUIView` as zero when measured with `sizeThatFits()` or `intrinsicContentSize()`. We had been using `UIStackView` which doesn't support these functions.
 - Correctly signal `RedwoodUIView` size changes of to callers who measure it with `intrinsicContentSize()`.
+- The Redwood Gradle plugin is now compatible with Gradle 9.1.
 
 
 ## [0.18.0] - 2025-08-01

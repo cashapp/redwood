@@ -19,6 +19,7 @@ import java.io.File
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Classpath
@@ -40,7 +41,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
   abstract val projectDirectoryPath: Property<String>
 
   @get:Input
-  abstract val sourceDirectories: Property<Collection<File>>
+  abstract val sourceDirectories: ListProperty<File>
 
   @get:Classpath
   abstract val classpath: ConfigurableFileCollection
@@ -60,7 +61,7 @@ internal abstract class RedwoodLintTask @Inject constructor(
 private interface RedwoodLintParameters : WorkParameters {
   val toolClasspath: ConfigurableFileCollection
   val projectDirectoryPath: Property<String>
-  val sourceDirectories: Property<Collection<File>>
+  val sourceDirectories: ListProperty<File>
   val classpath: ConfigurableFileCollection
 }
 
