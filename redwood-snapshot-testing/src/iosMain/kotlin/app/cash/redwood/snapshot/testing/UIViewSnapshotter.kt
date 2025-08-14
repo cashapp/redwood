@@ -82,7 +82,7 @@ class UIViewSnapshotter private constructor(
   }
 
   /** Do layout without taking a snapshot. */
-  private fun layoutSubject(scrolling: Boolean) {
+  fun layoutSubject(scrolling: Boolean = false) {
     require(widthConstraint == Constraint.Fill) {
       "width wrap not yet implemented"
     }
