@@ -391,6 +391,34 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
+  fun testLayoutUpdatesWithoutSizeChanges() {
+    val container = widgetFactory.column()
+    val snapshotter = snapshotter(container.value)
+
+    val box = box()
+      .apply {
+        width(Constraint.Fill)
+        height(Constraint.Fill)
+      }
+    container.add(box.value)
+
+    widgetFactory.color().apply {
+      width(100.dp)
+      height(100.dp)
+      color(Blue)
+      modifier = Modifier
+        .then(VerticalAlignmentImpl(CrossAxisAlignment.Start))
+        .then(HorizontalAlignmentImpl(CrossAxisAlignment.Start))
+    }.also { box.children.insert(0, it) }
+
+    box.margin(Margin(start = 10.dp, end = 20.dp))
+    snapshotter.snapshot("v1")
+
+    box.margin(Margin(start = 20.dp, end = 10.dp))
+    snapshotter.snapshot("v2")
+  }
+
+  @Test
   fun testChildExplicitHeight() {
     val container = box()
       .apply {

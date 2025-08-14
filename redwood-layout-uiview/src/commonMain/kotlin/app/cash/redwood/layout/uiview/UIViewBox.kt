@@ -110,12 +110,8 @@ internal class UIViewBox :
     )
 
     fun invalidateSize() {
-      val sizeListener = sizeListener
-      if (sizeListener != null) {
-        sizeListener.invalidateSize()
-      } else {
-        setNeedsLayout() // Update layout of subviews.
-      }
+      setNeedsLayout() // Update layout of subviews.
+      sizeListener?.invalidateSize()
     }
 
     override fun intrinsicContentSize() =
