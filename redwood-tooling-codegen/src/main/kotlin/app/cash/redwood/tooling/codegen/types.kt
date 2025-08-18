@@ -122,7 +122,6 @@ internal object Stdlib {
   val AssertionError = ClassName("kotlin", "AssertionError")
   val ExperimentalObjCName = ClassName("kotlin.experimental", "ExperimentalObjCName")
   val List = ClassName("kotlin.collections", "List")
-  val ObjCName = ClassName("kotlin.native", "ObjCName")
   val Pair = ClassName("kotlin", "Pair")
   val listOf = MemberName("kotlin.collections", "listOf")
 }

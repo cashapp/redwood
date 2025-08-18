@@ -91,12 +91,7 @@ internal fun generateHostProtocol(
       TypeSpec.classBuilder(type)
         .addSuperinterface(ProtocolHost.GeneratedHostProtocol)
         .optIn(Stdlib.ExperimentalObjCName, Redwood.RedwoodCodegenApi)
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.ObjCName)
-            .addMember("%S", type.simpleName)
-            .addMember("exact = true")
-            .build(),
-        )
+        .objcName(type.simpleName, exact = true)
         .primaryConstructor(
           FunSpec.constructorBuilder()
             .addModifiers(PRIVATE)
@@ -190,12 +185,7 @@ internal fun generateHostProtocol(
         .addType(
           TypeSpec.companionObjectBuilder("Factory")
             .addSuperinterface(ProtocolHost.HostProtocolFactory)
-            .addAnnotation(
-              AnnotationSpec.builder(Stdlib.ObjCName)
-                .addMember("%S", type.simpleName + "Factory")
-                .addMember("exact = true")
-                .build(),
-            )
+            .objcName(type.simpleName + "Factory", exact = true)
             .addFunction(
               FunSpec.builder("create")
                 .addModifiers(OVERRIDE)

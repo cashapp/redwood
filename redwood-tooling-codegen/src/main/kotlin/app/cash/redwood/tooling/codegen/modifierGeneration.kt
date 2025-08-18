@@ -17,7 +17,6 @@ package app.cash.redwood.tooling.codegen
 
 import app.cash.redwood.tooling.schema.Modifier
 import app.cash.redwood.tooling.schema.Schema
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -36,12 +35,7 @@ internal fun generateModifierInterface(schema: Schema, modifier: Modifier): File
           },
         )
         .optIn(Stdlib.ExperimentalObjCName)
-        .addAnnotation(
-          AnnotationSpec.builder(Stdlib.ObjCName)
-            .addMember("%S", type.simpleName)
-            .addMember("exact = true")
-            .build(),
-        )
+        .objcName(type.simpleName, exact = true)
         .maybeAddDeprecation(modifier.deprecation)
         .apply {
           for (property in modifier.properties) {

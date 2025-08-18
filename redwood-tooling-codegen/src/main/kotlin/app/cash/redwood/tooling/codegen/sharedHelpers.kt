@@ -211,3 +211,16 @@ internal fun <T : Annotatable.Builder<T>> T.optIn(vararg names: ClassName): T = 
       .build(),
   )
 }
+
+internal fun <T : Annotatable.Builder<T>> T.objcName(name: String, exact: Boolean = false): T = apply {
+  addAnnotation(
+    AnnotationSpec.builder(ClassName("kotlin.native", "ObjCName"))
+      .addMember("%S", name)
+      .apply {
+        if (exact) {
+          addMember("exact = true")
+        }
+      }
+      .build(),
+  )
+}
