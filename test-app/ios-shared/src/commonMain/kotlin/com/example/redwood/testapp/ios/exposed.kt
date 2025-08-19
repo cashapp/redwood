@@ -45,7 +45,6 @@ fun exposedTypes(
   uiViewRedwoodUiBasicWidgetFactory: UIViewRedwoodUiBasicWidgetFactory,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
-  widgetFactory: TestSchemaWidgetFactory<*>,
   widgetSystem: TestSchemaWidgetSystem<*>,
 ) {
   throw AssertionError()
