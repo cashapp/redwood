@@ -26,7 +26,6 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.basic.uiview.UIViewRedwoodUiBasicWidgetFactory
-import app.cash.redwood.widget.WidgetSystem
 import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.treehouse.TestAppPresenter
 import com.example.redwood.testapp.widget.TestSchemaWidgetFactory
@@ -46,7 +45,7 @@ fun exposedTypes(
   uiViewRedwoodUiBasicWidgetFactory: UIViewRedwoodUiBasicWidgetFactory,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
-  treehouseWidgetSystem: WidgetSystem<*>,
+  widgetFactory: TestSchemaWidgetFactory<*>,
   widgetSystem: TestSchemaWidgetSystem<*>,
 ) {
   throw AssertionError()
