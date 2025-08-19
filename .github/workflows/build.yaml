@@ -269,6 +269,10 @@ jobs:
 
       - run: ./gradlew -p test-app build
 
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.4'
+
       - name: Build TestApp iOS (UIKit)
         run: xcodebuild -project test-app/ios-uikit/TestApp.xcodeproj -scheme TestApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
 
