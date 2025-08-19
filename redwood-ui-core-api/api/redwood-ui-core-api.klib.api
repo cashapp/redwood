@@ -1,0 +1,16 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-ui-core-api>
+abstract interface app.cash.redwood.ui.core.api/FocusDirector { // app.cash.redwood.ui.core.api/FocusDirector|null[0]
+    abstract fun hideSoftwareKeyboard() // app.cash.redwood.ui.core.api/FocusDirector.hideSoftwareKeyboard|hideSoftwareKeyboard(){}[0]
+    abstract fun newFocusRequester(): app.cash.redwood.ui.core.api/FocusRequester // app.cash.redwood.ui.core.api/FocusDirector.newFocusRequester|newFocusRequester(){}[0]
+}
+
+abstract interface app.cash.redwood.ui.core.api/FocusRequester { // app.cash.redwood.ui.core.api/FocusRequester|null[0]
+    abstract fun requestFocus() // app.cash.redwood.ui.core.api/FocusRequester.requestFocus|requestFocus(){}[0]
+}

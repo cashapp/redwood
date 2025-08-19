@@ -549,6 +549,14 @@ private class ViewContentCodeBinding<A : AppService>(
     }
   }
 
+  override fun hideSoftwareKeyboard() {
+    // TODO(jwilson): complete this.
+  }
+
+  override fun requestFocus(id: FocusRequesterId) {
+    // TODO(jwilson): complete this.
+  }
+
   @OptIn(DelicateCoroutinesApi::class)
   fun cancel(exception: Throwable?) {
     dispatchers.checkUi()

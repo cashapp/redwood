@@ -10,6 +10,8 @@
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/RedwoodView { // app.cash.redwood.widget/RedwoodView|null[0]
     abstract val children // app.cash.redwood.widget/RedwoodView.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.widget/RedwoodView.children.<get-children>|<get-children>(){}[0]
+    abstract val focusDirector // app.cash.redwood.widget/RedwoodView.focusDirector|{}focusDirector[0]
+        abstract fun <get-focusDirector>(): app.cash.redwood.ui.core.api/FocusDirector // app.cash.redwood.widget/RedwoodView.focusDirector.<get-focusDirector>|<get-focusDirector>(){}[0]
     abstract val onBackPressedDispatcher // app.cash.redwood.widget/RedwoodView.onBackPressedDispatcher|{}onBackPressedDispatcher[0]
         abstract fun <get-onBackPressedDispatcher>(): app.cash.redwood.ui/OnBackPressedDispatcher // app.cash.redwood.widget/RedwoodView.onBackPressedDispatcher.<get-onBackPressedDispatcher>|<get-onBackPressedDispatcher>(){}[0]
     abstract val savedStateRegistry // app.cash.redwood.widget/RedwoodView.savedStateRegistry|{}savedStateRegistry[0]
@@ -129,6 +131,8 @@ open class app.cash.redwood.widget/RedwoodUIView : app.cash.redwood.widget/Redwo
 
     open val children // app.cash.redwood.widget/RedwoodUIView.children|{}children[0]
         open fun <get-children>(): app.cash.redwood.widget/Widget.Children<platform.UIKit/UIView> // app.cash.redwood.widget/RedwoodUIView.children.<get-children>|<get-children>(){}[0]
+    open val focusDirector // app.cash.redwood.widget/RedwoodUIView.focusDirector|{}focusDirector[0]
+        open fun <get-focusDirector>(): app.cash.redwood.ui.core.api/FocusDirector // app.cash.redwood.widget/RedwoodUIView.focusDirector.<get-focusDirector>|<get-focusDirector>(){}[0]
     open val onBackPressedDispatcher // app.cash.redwood.widget/RedwoodUIView.onBackPressedDispatcher|{}onBackPressedDispatcher[0]
         open fun <get-onBackPressedDispatcher>(): app.cash.redwood.ui/OnBackPressedDispatcher // app.cash.redwood.widget/RedwoodUIView.onBackPressedDispatcher.<get-onBackPressedDispatcher>|<get-onBackPressedDispatcher>(){}[0]
     open val savedStateRegistry // app.cash.redwood.widget/RedwoodUIView.savedStateRegistry|{}savedStateRegistry[0]

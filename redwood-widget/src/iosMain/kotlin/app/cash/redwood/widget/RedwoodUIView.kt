@@ -24,6 +24,7 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.api.FocusDirector
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.convert
@@ -100,6 +101,8 @@ public open class RedwoodUIView : RedwoodView<UIView> {
       }
     }
   }
+
+  override val focusDirector: FocusDirector = UIViewFocusDirector()
 
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration

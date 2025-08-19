@@ -1,0 +1,24 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-ui-core-widget>
+abstract interface <#A: kotlin/Any> app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory { // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory|null[0]
+    abstract fun FocusRequester(#A, app.cash.redwood.ui.core.modifier/FocusRequester) // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory.FocusRequester|FocusRequester(1:0;app.cash.redwood.ui.core.modifier.FocusRequester){}[0]
+}
+
+final class <#A: kotlin/Any> app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem : app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactoryOwner<#A>, app.cash.redwood.widget/WidgetSystem<#A> { // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem|null[0]
+    constructor <init>(app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory<#A>) // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem.<init>|<init>(app.cash.redwood.ui.core.widget.RedwoodUiCoreWidgetFactory<1:0>){}[0]
+
+    final val RedwoodUiCore // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem.RedwoodUiCore|{}RedwoodUiCore[0]
+        final fun <get-RedwoodUiCore>(): app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory<#A> // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem.RedwoodUiCore.<get-RedwoodUiCore>|<get-RedwoodUiCore>(){}[0]
+
+    final fun apply(#A, app.cash.redwood/Modifier.UnscopedElement) // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem.apply|apply(1:0;app.cash.redwood.Modifier.UnscopedElement){}[0]
+
+    final object Companion { // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem.Companion|null[0]
+        final fun <#A2: kotlin/Any> allChildren(app.cash.redwood.widget/Widget<#A2>): kotlin.collections/List<app.cash.redwood.widget/Widget<#A2>> // app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetSystem.Companion.allChildren|allChildren(app.cash.redwood.widget.Widget<0:0>){0§<kotlin.Any>}[0]
+    }
+}

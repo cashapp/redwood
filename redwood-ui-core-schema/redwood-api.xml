@@ -1,0 +1,5 @@
+<schema version="1" type="app.cash.redwood.ui.core.RedwoodUiCore">
+  <modifier tag="1" type="app.cash.redwood.ui.core.FocusRequester">
+    <property name="value" type="app.cash.redwood.ui.core.api.FocusRequester" />
+  </modifier>
+</schema>

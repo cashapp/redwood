@@ -4,9 +4,18 @@ public final class app/cash/redwood/testing/NoOpOnBackPressedDispatcher : app/ca
 	public fun addCallback (Lapp/cash/redwood/ui/OnBackPressedCallback;)Lapp/cash/redwood/ui/Cancellable;
 }
 
+public final class app/cash/redwood/testing/TestFocusDirector : app/cash/redwood/ui/core/api/FocusDirector {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun getFocused (Ljava/util/List;)Lapp/cash/redwood/testing/WidgetValue;
+	public fun hideSoftwareKeyboard ()V
+	public fun newFocusRequester ()Lapp/cash/redwood/ui/core/api/FocusRequester;
+}
+
 public abstract interface class app/cash/redwood/testing/TestRedwoodComposition : app/cash/redwood/compose/RedwoodComposition {
 	public abstract fun awaitSnapshot-VtjQ1oo (JLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun awaitSnapshot-VtjQ1oo$default (Lapp/cash/redwood/testing/TestRedwoodComposition;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getFocusDirector ()Lapp/cash/redwood/testing/TestFocusDirector;
 	public abstract fun getUiConfigurations ()Lkotlinx/coroutines/flow/MutableStateFlow;
 	public abstract fun saveState ()Lapp/cash/redwood/testing/TestSavedState;
 	public abstract fun setContentAndSnapshot (Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;

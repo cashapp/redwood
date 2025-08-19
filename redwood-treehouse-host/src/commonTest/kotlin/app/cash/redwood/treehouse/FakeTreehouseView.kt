@@ -68,5 +68,7 @@ internal class FakeTreehouseView(
 
   override val savedStateRegistry: SavedStateRegistry? = null
 
+  override val focusDirector = FakeFocusDirector()
+
   override fun toString() = name
 }

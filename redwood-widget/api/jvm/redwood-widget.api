@@ -50,6 +50,7 @@ public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwoo
 
 public abstract interface class app/cash/redwood/widget/RedwoodView {
 	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun getFocusDirector ()Lapp/cash/redwood/ui/core/api/FocusDirector;
 	public abstract fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
 	public abstract fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public abstract fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;

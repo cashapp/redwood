@@ -69,6 +69,8 @@ abstract interface app.cash.redwood.treehouse/ZiplineTreehouseUi : app.cash.redw
             abstract fun <get-uiConfigurations>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.uiConfigurations.<get-uiConfigurations>|<get-uiConfigurations>(){}[0]
 
         abstract fun addOnBackPressedCallback(app.cash.redwood.treehouse/OnBackPressedCallbackService): app.cash.redwood.treehouse/CancellableService // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.addOnBackPressedCallback|addOnBackPressedCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService){}[0]
+        abstract fun hideSoftwareKeyboard() // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.hideSoftwareKeyboard|hideSoftwareKeyboard(){}[0]
+        abstract fun requestFocus(app.cash.redwood.treehouse/FocusRequesterId) // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.requestFocus|requestFocus(app.cash.redwood.treehouse.FocusRequesterId){}[0]
 
         final object Companion // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.Companion|null[0]
     }
@@ -119,6 +121,30 @@ final class app.cash.redwood.treehouse/StateSnapshot { // app.cash.redwood.treeh
         final val $childSerializers // app.cash.redwood.treehouse/StateSnapshot.Companion.$childSerializers|{}$childSerializers[0]
 
         final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.treehouse/StateSnapshot> // app.cash.redwood.treehouse/StateSnapshot.Companion.serializer|serializer(){}[0]
+    }
+}
+
+final value class app.cash.redwood.treehouse/FocusRequesterId { // app.cash.redwood.treehouse/FocusRequesterId|null[0]
+    constructor <init>(kotlin/Int) // app.cash.redwood.treehouse/FocusRequesterId.<init>|<init>(kotlin.Int){}[0]
+
+    final val value // app.cash.redwood.treehouse/FocusRequesterId.value|{}value[0]
+        final fun <get-value>(): kotlin/Int // app.cash.redwood.treehouse/FocusRequesterId.value.<get-value>|<get-value>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.treehouse/FocusRequesterId.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.treehouse/FocusRequesterId.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.treehouse/FocusRequesterId.toString|toString(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<app.cash.redwood.treehouse/FocusRequesterId> { // app.cash.redwood.treehouse/FocusRequesterId.$serializer|null[0]
+        final val descriptor // app.cash.redwood.treehouse/FocusRequesterId.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // app.cash.redwood.treehouse/FocusRequesterId.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // app.cash.redwood.treehouse/FocusRequesterId.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): app.cash.redwood.treehouse/FocusRequesterId // app.cash.redwood.treehouse/FocusRequesterId.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, app.cash.redwood.treehouse/FocusRequesterId) // app.cash.redwood.treehouse/FocusRequesterId.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;app.cash.redwood.treehouse.FocusRequesterId){}[0]
+    }
+
+    final object Companion { // app.cash.redwood.treehouse/FocusRequesterId.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.treehouse/FocusRequesterId> // app.cash.redwood.treehouse/FocusRequesterId.Companion.serializer|serializer(){}[0]
     }
 }
 

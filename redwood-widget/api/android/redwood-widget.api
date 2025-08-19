@@ -51,6 +51,7 @@ public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwoo
 public class app/cash/redwood/widget/RedwoodLayout : android/view/ViewGroup, app/cash/redwood/widget/RedwoodView {
 	public fun <init> (Landroid/content/Context;Landroidx/activity/OnBackPressedDispatcher;)V
 	public final fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public fun getFocusDirector ()Lapp/cash/redwood/ui/core/api/FocusDirector;
 	public fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
 	public fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;
@@ -63,6 +64,7 @@ public class app/cash/redwood/widget/RedwoodLayout : android/view/ViewGroup, app
 
 public abstract interface class app/cash/redwood/widget/RedwoodView {
 	public abstract fun getChildren ()Lapp/cash/redwood/widget/Widget$Children;
+	public abstract fun getFocusDirector ()Lapp/cash/redwood/ui/core/api/FocusDirector;
 	public abstract fun getOnBackPressedDispatcher ()Lapp/cash/redwood/ui/OnBackPressedDispatcher;
 	public abstract fun getSavedStateRegistry ()Lapp/cash/redwood/widget/SavedStateRegistry;
 	public abstract fun getUiConfiguration ()Lkotlinx/coroutines/flow/StateFlow;

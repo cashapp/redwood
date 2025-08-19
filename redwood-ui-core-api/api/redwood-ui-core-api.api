@@ -1,0 +1,9 @@
+public abstract interface class app/cash/redwood/ui/core/api/FocusDirector {
+	public abstract fun hideSoftwareKeyboard ()V
+	public abstract fun newFocusRequester ()Lapp/cash/redwood/ui/core/api/FocusRequester;
+}
+
+public abstract interface class app/cash/redwood/ui/core/api/FocusRequester {
+	public abstract fun requestFocus ()V
+}
+

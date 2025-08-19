@@ -6,5 +6,8 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-composeui>
+final val app.cash.redwood.composeui/app_cash_redwood_composeui_RedwoodContentFocusDirector$stableprop // app.cash.redwood.composeui/app_cash_redwood_composeui_RedwoodContentFocusDirector$stableprop|#static{}app_cash_redwood_composeui_RedwoodContentFocusDirector$stableprop[0]
+
 final fun app.cash.redwood.composeui/RedwoodContent(app.cash.redwood.widget/WidgetSystem<kotlin/Function3<androidx.compose.ui/Modifier, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>>, androidx.compose.ui/Modifier?, kotlin/Function2<androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int) // app.cash.redwood.composeui/RedwoodContent|RedwoodContent(app.cash.redwood.widget.WidgetSystem<kotlin.Function3<androidx.compose.ui.Modifier,androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>>;androidx.compose.ui.Modifier?;kotlin.Function2<androidx.compose.runtime.Composer,kotlin.Int,kotlin.Unit>;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun app.cash.redwood.composeui/app_cash_redwood_composeui_RedwoodContentFocusDirector$stableprop_getter(): kotlin/Int // app.cash.redwood.composeui/app_cash_redwood_composeui_RedwoodContentFocusDirector$stableprop_getter|app_cash_redwood_composeui_RedwoodContentFocusDirector$stableprop_getter(){}[0]
 final fun app.cash.redwood.composeui/safeAreaInsets(androidx.compose.runtime/Composer?, kotlin/Int): app.cash.redwood.ui/Margin // app.cash.redwood.composeui/safeAreaInsets|safeAreaInsets(androidx.compose.runtime.Composer?;kotlin.Int){}[0]

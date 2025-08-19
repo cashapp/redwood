@@ -81,6 +81,8 @@ public interface TestRedwoodComposition<S> : RedwoodComposition {
    */
   public val uiConfigurations: MutableStateFlow<UiConfiguration>
 
+  public val focusDirector: TestFocusDirector
+
   public fun saveState(): TestSavedState
 }
 
@@ -119,12 +121,15 @@ private class RealTestRedwoodComposition<W : Any, S>(
     canBeSaved = { true },
   )
 
+  override val focusDirector = TestFocusDirector()
+
   override fun saveState() = MapBasedTestSavedState(savedStateRegistry.performSave())
 
   private val composition = RedwoodComposition(
     scope = scope + clock,
     container = container,
     onBackPressedDispatcher = onBackPressedDispatcher,
+    focusDirector = focusDirector,
     saveableStateRegistry = savedStateRegistry,
     uiConfigurations = uiConfigurations,
     widgetSystem = widgetSystem,

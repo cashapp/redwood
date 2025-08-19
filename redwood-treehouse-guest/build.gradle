@@ -20,6 +20,7 @@ kotlin {
         api projects.redwoodProtocolGuest
         api projects.redwoodTreehouse
         api projects.redwoodTreehouseGuestCompose
+        api projects.redwoodUiCoreApi
       }
     }
     commonTest {

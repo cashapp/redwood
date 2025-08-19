@@ -1,0 +1,14 @@
+public final class app/cash/redwood/ui/core/FocusRequester {
+	public fun <init> (Lapp/cash/redwood/ui/core/api/FocusRequester;)V
+	public final fun component1 ()Lapp/cash/redwood/ui/core/api/FocusRequester;
+	public final fun copy (Lapp/cash/redwood/ui/core/api/FocusRequester;)Lapp/cash/redwood/ui/core/FocusRequester;
+	public static synthetic fun copy$default (Lapp/cash/redwood/ui/core/FocusRequester;Lapp/cash/redwood/ui/core/api/FocusRequester;ILjava/lang/Object;)Lapp/cash/redwood/ui/core/FocusRequester;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Lapp/cash/redwood/ui/core/api/FocusRequester;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class app/cash/redwood/ui/core/RedwoodUiCore {
+}
+

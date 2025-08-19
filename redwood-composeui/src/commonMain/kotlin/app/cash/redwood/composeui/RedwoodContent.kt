@@ -37,6 +37,8 @@ import app.cash.redwood.ui.LayoutDirection as RedwoodLayoutDirection
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.api.FocusDirector
+import app.cash.redwood.ui.core.api.FocusRequester
 import app.cash.redwood.ui.dp as redwoodDp
 import app.cash.redwood.widget.WidgetSystem
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
@@ -70,6 +72,7 @@ public fun RedwoodContent(
 
   val scope = rememberCoroutineScope()
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
+  val focusDirector = RedwoodContentFocusDirector()
   val saveableStateRegistry = LocalSaveableStateRegistry.current
 
   // For simplicity, a new provider or content lambda gets an entirely new composition and children.
@@ -80,6 +83,7 @@ public fun RedwoodContent(
       widgetSystem = widgetSystem,
       container = children,
       onBackPressedDispatcher = onBackPressedDispatcher,
+      focusDirector = focusDirector,
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = uiConfigurations,
     )
@@ -103,3 +107,16 @@ public fun RedwoodContent(
 
 @Composable
 internal expect fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher
+
+// TODO(jwilson): complete this.
+internal class RedwoodContentFocusDirector : FocusDirector {
+  override fun hideSoftwareKeyboard() {
+  }
+
+  override fun newFocusRequester(): FocusRequester {
+    return object : FocusRequester {
+      override fun requestFocus() {
+      }
+    }
+  }
+}

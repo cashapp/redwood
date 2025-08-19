@@ -14,6 +14,8 @@ kotlin {
         api libs.jetbrains.compose.runtime
         api libs.kotlinx.coroutines.core
         api projects.redwoodProtocolGuest
+        api projects.redwoodUiCoreApi
+        api projects.redwoodUiCoreModifiers
       }
     }
     commonTest {
@@ -23,6 +25,8 @@ kotlin {
         implementation libs.kotlinx.coroutines.test
         implementation projects.redwoodUiBasicCompose
         implementation projects.redwoodUiBasicTesting
+        implementation projects.redwoodUiCoreApi
+        implementation projects.redwoodUiCoreCompose
         implementation projects.testApp.schema.compose
         implementation projects.testApp.schema.protocolGuest
         implementation projects.testApp.schema.protocolHost

@@ -42,5 +42,7 @@ public interface ZiplineTreehouseUi :
     public val stateSnapshot: StateSnapshot?
 
     public fun addOnBackPressedCallback(onBackPressedCallbackService: OnBackPressedCallbackService): CancellableService
+    public fun hideSoftwareKeyboard()
+    public fun requestFocus(id: FocusRequesterId)
   }
 }

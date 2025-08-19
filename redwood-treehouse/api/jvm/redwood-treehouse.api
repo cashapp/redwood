@@ -92,6 +92,35 @@ public final class app/cash/redwood/treehouse/ChangesSinkService$Companion$Adapt
 	public fun ziplineFunctions (Lkotlinx/serialization/modules/SerializersModule;)Ljava/util/List;
 }
 
+public final class app/cash/redwood/treehouse/FocusRequesterId {
+	public static final field Companion Lapp/cash/redwood/treehouse/FocusRequesterId$Companion;
+	public static final synthetic fun box-impl (I)Lapp/cash/redwood/treehouse/FocusRequesterId;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final synthetic class app/cash/redwood/treehouse/FocusRequesterId$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lapp/cash/redwood/treehouse/FocusRequesterId$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-sGu-mwk (Lkotlinx/serialization/encoding/Decoder;)I
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-HaDWgzw (Lkotlinx/serialization/encoding/Encoder;I)V
+}
+
+public final class app/cash/redwood/treehouse/FocusRequesterId$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract interface class app/cash/redwood/treehouse/OnBackPressedCallbackService : app/cash/zipline/ZiplineService {
 	public static final field Companion Lapp/cash/redwood/treehouse/OnBackPressedCallbackService$Companion;
 	public abstract fun handleOnBackPressed ()V
@@ -206,6 +235,8 @@ public abstract interface class app/cash/redwood/treehouse/ZiplineTreehouseUi$Ho
 	public abstract fun addOnBackPressedCallback (Lapp/cash/redwood/treehouse/OnBackPressedCallbackService;)Lapp/cash/redwood/treehouse/CancellableService;
 	public abstract fun getStateSnapshot ()Lapp/cash/redwood/treehouse/StateSnapshot;
 	public abstract fun getUiConfigurations ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun hideSoftwareKeyboard ()V
+	public abstract fun requestFocus-KAyxx_A (I)V
 }
 
 public final class app/cash/redwood/treehouse/ZiplineTreehouseUi$Host$Companion {

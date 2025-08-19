@@ -1,0 +1,11 @@
+public final class app/cash/redwood/ui/core/testing/RedwoodUiCoreTesterKt {
+	public static final fun RedwoodUiCoreTester (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun RedwoodUiCoreTester$default (Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/testing/TestSavedState;Lapp/cash/redwood/ui/UiConfiguration;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class app/cash/redwood/ui/core/testing/RedwoodUiCoreTestingWidgetFactory : app/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetFactory {
+	public fun <init> ()V
+	public fun FocusRequester (Lapp/cash/redwood/testing/WidgetValue;Lapp/cash/redwood/ui/core/modifier/FocusRequester;)V
+	public synthetic fun FocusRequester (Ljava/lang/Object;Lapp/cash/redwood/ui/core/modifier/FocusRequester;)V
+}
+

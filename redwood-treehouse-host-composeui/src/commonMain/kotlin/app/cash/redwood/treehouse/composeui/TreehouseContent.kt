@@ -44,6 +44,8 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.api.FocusDirector
+import app.cash.redwood.ui.core.api.FocusRequester
 import app.cash.redwood.ui.dp as redwoodDp
 import app.cash.redwood.widget.SavedStateRegistry
 import app.cash.redwood.widget.WidgetSystem
@@ -60,6 +62,7 @@ public fun <A : AppService> TreehouseContent(
     EmptyDynamicContentWidgetFactory,
 ) {
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
+  val focusDirector = TreehouseContentFocusDirector()
 
   var viewportSize: Size? by remember { mutableStateOf(null) }
   val density = LocalDensity.current
@@ -84,6 +87,7 @@ public fun <A : AppService> TreehouseContent(
 
       override val dynamicContentWidgetFactory = dynamicContentWidgetFactory
       override val onBackPressedDispatcher = onBackPressedDispatcher
+      override val focusDirector = focusDirector
       override val uiConfiguration = MutableStateFlow(uiConfiguration)
 
       // TODO TreehouseView is a weird type and shouldn't extend from RedwoodView. The concept
@@ -119,3 +123,16 @@ public fun <A : AppService> TreehouseContent(
 
 @Composable
 internal expect fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher
+
+// TODO(jwilson): complete this.
+internal class TreehouseContentFocusDirector : FocusDirector {
+  override fun hideSoftwareKeyboard() {
+  }
+
+  override fun newFocusRequester(): FocusRequester {
+    return object : FocusRequester {
+      override fun requestFocus() {
+      }
+    }
+  }
+}
