@@ -276,6 +276,12 @@ jobs:
       - name: Build TestApp iOS (UIKit)
         run: xcodebuild -project test-app/ios-uikit/TestApp.xcodeproj -scheme TestApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
 
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: xcode-frameworks
+          path: test-app/ios-shared/build/xcode-frameworks
+
   final-status:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
