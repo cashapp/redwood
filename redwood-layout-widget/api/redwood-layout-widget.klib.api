@@ -9,6 +9,8 @@
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Box : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Box|null[0]
     abstract val children // app.cash.redwood.layout.widget/Box.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Box.children.<get-children>|<get-children>(){}[0]
+    open val allChildren // app.cash.redwood.layout.widget/Box.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.layout.widget/Box.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
 
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Box.height|height(app.cash.redwood.layout.api.Constraint){}[0]
     abstract fun horizontalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/Box.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
@@ -20,6 +22,8 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Box : app.cas
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Column : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Column|null[0]
     abstract val children // app.cash.redwood.layout.widget/Column.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Column.children.<get-children>|<get-children>(){}[0]
+    open val allChildren // app.cash.redwood.layout.widget/Column.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.layout.widget/Column.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
 
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Column.height|height(app.cash.redwood.layout.api.Constraint){}[0]
     abstract fun horizontalAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.layout.widget/Column.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
@@ -40,6 +44,8 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/RedwoodLayout
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Row|null[0]
     abstract val children // app.cash.redwood.layout.widget/Row.children|{}children[0]
         abstract fun <get-children>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.layout.widget/Row.children.<get-children>|<get-children>(){}[0]
+    open val allChildren // app.cash.redwood.layout.widget/Row.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.layout.widget/Row.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
 
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.layout.widget/Row.height|height(app.cash.redwood.layout.api.Constraint){}[0]
     abstract fun horizontalAlignment(app.cash.redwood.layout.api/MainAxisAlignment) // app.cash.redwood.layout.widget/Row.horizontalAlignment|horizontalAlignment(app.cash.redwood.layout.api.MainAxisAlignment){}[0]
@@ -51,6 +57,9 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Row : app.cas
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.layout.widget/Spacer : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.layout.widget/Spacer|null[0]
+    open val allChildren // app.cash.redwood.layout.widget/Spacer.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.layout.widget/Spacer.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
+
     abstract fun height(app.cash.redwood.ui/Dp) // app.cash.redwood.layout.widget/Spacer.height|height(app.cash.redwood.ui.Dp){}[0]
     abstract fun width(app.cash.redwood.ui/Dp) // app.cash.redwood.layout.widget/Spacer.width|width(app.cash.redwood.ui.Dp){}[0]
 }

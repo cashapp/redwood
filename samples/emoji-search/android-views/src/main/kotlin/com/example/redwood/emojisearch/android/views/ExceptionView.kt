@@ -29,6 +29,7 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.treehouse.Crashed
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.dp
+import app.cash.redwood.widget.Widget
 
 /**
  * Renders an emoji, plus the first line of the exception message, centered and wrapped. The view
@@ -48,6 +49,7 @@ internal class ExceptionView(
   Crashed<View> {
   override val value: View = this
   override var modifier: Modifier = Modifier
+  override val allChildren: List<Widget.Children<View>> get() = listOf()
 
   private val skunk = AppCompatTextView(context)
     .apply {

@@ -30,6 +30,7 @@ import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.ResizableWidget.SizeListener
 import app.cash.redwood.widget.UIViewChildren
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
 import kotlinx.cinterop.convert
@@ -90,6 +91,8 @@ internal class UIViewFlexContainer(
 
   override val value: UIView get() = yogaView
   override var modifier: Modifier = Modifier
+  override val allChildren: List<Widget.Children<UIView>>
+    get() = listOf(children)
 
   override val children: UIViewChildren = UIViewChildren(
     container = value,

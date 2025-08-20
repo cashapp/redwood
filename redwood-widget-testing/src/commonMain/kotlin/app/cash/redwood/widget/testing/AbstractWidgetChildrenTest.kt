@@ -191,6 +191,8 @@ public abstract class AbstractWidgetChildrenTest<W : Any> {
       widget = object : Widget<W> {
         override val value: W = widget(name)
         override var modifier: Modifier = Modifier
+        override val allChildren: List<Widget.Children<W>>
+          get() = listOf()
       },
     )
   }

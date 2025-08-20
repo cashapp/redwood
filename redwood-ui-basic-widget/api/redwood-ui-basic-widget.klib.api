@@ -7,12 +7,18 @@
 
 // Library unique name: <app.cash.redwood:redwood-ui-basic-widget>
 abstract interface <#A: kotlin/Any> app.cash.redwood.ui.basic.widget/Button : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.ui.basic.widget/Button|null[0]
+    open val allChildren // app.cash.redwood.ui.basic.widget/Button.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.ui.basic.widget/Button.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
+
     abstract fun enabled(kotlin/Boolean) // app.cash.redwood.ui.basic.widget/Button.enabled|enabled(kotlin.Boolean){}[0]
     abstract fun onClick(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.ui.basic.widget/Button.onClick|onClick(kotlin.Function0<kotlin.Unit>?){}[0]
     abstract fun text(kotlin/String?) // app.cash.redwood.ui.basic.widget/Button.text|text(kotlin.String?){}[0]
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.ui.basic.widget/Image : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.ui.basic.widget/Image|null[0]
+    open val allChildren // app.cash.redwood.ui.basic.widget/Image.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.ui.basic.widget/Image.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
+
     abstract fun onClick(kotlin/Function0<kotlin/Unit>?) // app.cash.redwood.ui.basic.widget/Image.onClick|onClick(kotlin.Function0<kotlin.Unit>?){}[0]
     abstract fun url(kotlin/String) // app.cash.redwood.ui.basic.widget/Image.url|url(kotlin.String){}[0]
 }
@@ -26,10 +32,16 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.ui.basic.widget/RedwoodUiBa
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.ui.basic.widget/Text : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.ui.basic.widget/Text|null[0]
+    open val allChildren // app.cash.redwood.ui.basic.widget/Text.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.ui.basic.widget/Text.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
+
     abstract fun text(kotlin/String) // app.cash.redwood.ui.basic.widget/Text.text|text(kotlin.String){}[0]
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.ui.basic.widget/TextInput : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.ui.basic.widget/TextInput|null[0]
+    open val allChildren // app.cash.redwood.ui.basic.widget/TextInput.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.ui.basic.widget/TextInput.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
+
     abstract fun hint(kotlin/String) // app.cash.redwood.ui.basic.widget/TextInput.hint|hint(kotlin.String){}[0]
     abstract fun onChange(kotlin/Function1<app.cash.redwood.ui.basic.api/TextFieldState, kotlin/Unit>?) // app.cash.redwood.ui.basic.widget/TextInput.onChange|onChange(kotlin.Function1<app.cash.redwood.ui.basic.api.TextFieldState,kotlin.Unit>?){}[0]
     abstract fun state(app.cash.redwood.ui.basic.api/TextFieldState) // app.cash.redwood.ui.basic.widget/TextInput.state|state(app.cash.redwood.ui.basic.api.TextFieldState){}[0]

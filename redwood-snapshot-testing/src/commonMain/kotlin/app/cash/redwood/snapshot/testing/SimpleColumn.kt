@@ -21,5 +21,7 @@ import app.cash.redwood.widget.Widget
  * Delegates to the host platform's column-like layout without any other capabilities.
  */
 interface SimpleColumn<W : Any> : Widget<W> {
+  override val allChildren: List<Widget.Children<W>>
+    get() = listOf()
   fun add(child: W)
 }

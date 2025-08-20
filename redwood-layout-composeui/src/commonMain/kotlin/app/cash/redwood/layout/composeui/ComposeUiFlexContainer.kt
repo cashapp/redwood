@@ -51,6 +51,7 @@ import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.Px
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import app.cash.redwood.yoga.Direction
 import app.cash.redwood.yoga.FlexDirection
@@ -98,6 +99,8 @@ internal class ComposeUiFlexContainer(
   }
   override val children = ComposeWidgetChildren()
   override var modifier: RedwoodModifier = RedwoodModifier
+  override val allChildren: List<Widget.Children<@Composable ((Modifier) -> Unit)>>
+    get() = listOf(children)
 
   private var recomposeTick by mutableIntStateOf(0)
   private var width by mutableStateOf(Constraint.Wrap)

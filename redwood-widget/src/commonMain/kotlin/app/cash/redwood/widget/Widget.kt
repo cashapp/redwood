@@ -39,6 +39,13 @@ public interface Widget<W : Any> {
   public var modifier: Modifier
 
   /**
+   * Returns all of the [Children] lists owned by this widget. The returned list will be empty if
+   * this widget does not support children. Otherwise each element in the list is a distinct slot
+   * for child widgets. The returned [Children] instances are live instances.
+   */
+  public val allChildren: List<Children<W>>
+
+  /**
    * An interface for manipulating a widget's list of children.
    *
    * Arguments to these methods can be assumed to be validated against the current state of the

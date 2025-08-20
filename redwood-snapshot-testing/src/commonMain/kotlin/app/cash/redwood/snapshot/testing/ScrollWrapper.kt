@@ -21,5 +21,7 @@ import app.cash.redwood.widget.Widget
  * Wraps a widget in a container that scrolls vertically.
  */
 interface ScrollWrapper<W : Any> : Widget<W> {
+  override val allChildren: List<Widget.Children<W>>
+    get() = listOf()
   var content: W?
 }

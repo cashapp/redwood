@@ -138,6 +138,7 @@ class TreehouseLayoutTest {
     override val value: View,
   ) : Widget<View> {
     override var modifier: Modifier = Modifier
+    override val allChildren: List<Widget.Children<View>> get() = listOf()
   }
 
   private val emptyWidgetSystem = object : WidgetSystem<View> {

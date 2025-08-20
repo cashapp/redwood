@@ -86,6 +86,8 @@ class RedwoodUIViewTest {
     override val value: UIView,
   ) : Widget<UIView> {
     override var modifier: Modifier = Modifier
+    override val allChildren: List<Widget.Children<UIView>>
+      get() = listOf()
   }
 
   /** Override [safeAreaInsets] to propagate a test value to subviews on the next layout. */

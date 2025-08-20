@@ -283,6 +283,26 @@ internal fun generateWidget(schema: Schema, widget: Widget): FileSpec {
             addKdoc("{tag=${widget.tag}}")
           }
 
+          addProperty(
+            PropertySpec.builder(
+              "allChildren",
+              Stdlib.List.parameterizedBy(RedwoodWidget.WidgetChildrenOfW),
+            )
+              .addModifiers(OVERRIDE)
+              .getter(
+                FunSpec.getterBuilder()
+                  .addCode("return %M(⇥\n", Stdlib.listOf)
+                  .apply {
+                    for (trait in widget.traits.filterIsInstance<Children>()) {
+                      addCode("%N,\n", trait.name)
+                    }
+                  }
+                  .addCode("⇤)")
+                  .build(),
+              )
+              .build(),
+          )
+
           for (trait in widget.traits) {
             when (trait) {
               is Property -> {

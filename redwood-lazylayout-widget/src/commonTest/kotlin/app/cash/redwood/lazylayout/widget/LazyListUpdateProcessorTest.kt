@@ -654,6 +654,8 @@ class LazyListUpdateProcessorTest {
     val widget = object : Widget<StringContent> {
       override val value = content
       override var modifier: Modifier = Modifier
+      override val allChildren: List<Widget.Children<StringContent>>
+        get() = listOf()
     }
     insert(index, widget)
   }

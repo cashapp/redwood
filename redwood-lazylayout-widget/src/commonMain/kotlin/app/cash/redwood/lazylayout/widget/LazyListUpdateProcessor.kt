@@ -17,6 +17,7 @@ package app.cash.redwood.lazylayout.widget
 
 import app.cash.redwood.Modifier
 import app.cash.redwood.widget.Widget
+import app.cash.redwood.widget.Widget.Children
 
 /**
  * Our lazy layouts can display arbitrarily large datasets. Instead of loading them all eagerly
@@ -541,5 +542,8 @@ public abstract class LazyListUpdateProcessor<V : Any, W : Any> {
   private class SizeOnlyPlaceholderWidget<W : Any>(
     override val value: W,
     override var modifier: Modifier,
-  ) : Widget<W>
+  ) : Widget<W> {
+    override val allChildren: List<Children<W>>
+      get() = listOf()
+  }
 }

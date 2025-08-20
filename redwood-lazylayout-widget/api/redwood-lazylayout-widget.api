@@ -1,5 +1,6 @@
 public abstract interface class app/cash/redwood/lazylayout/widget/LazyList : app/cash/redwood/widget/Widget {
 	public abstract fun crossAxisAlignment-njEs0f8 (I)V
+	public fun getAllChildren ()Ljava/util/List;
 	public abstract fun getItems ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun getPlaceholder ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun height-DyLkt4w (I)V
@@ -69,6 +70,7 @@ public final class app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetSys
 
 public abstract interface class app/cash/redwood/lazylayout/widget/RefreshableLazyList : app/cash/redwood/widget/Widget {
 	public abstract fun crossAxisAlignment-njEs0f8 (I)V
+	public fun getAllChildren ()Ljava/util/List;
 	public abstract fun getItems ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun getPlaceholder ()Lapp/cash/redwood/widget/Widget$Children;
 	public abstract fun height-DyLkt4w (I)V
