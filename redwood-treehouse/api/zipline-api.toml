@@ -114,6 +114,12 @@ functions = [
   # fun close(): kotlin.Unit
   "moYx+T3e",
 
+  # fun hideSoftwareKeyboard(): kotlin.Unit
+  "1VWLpnFD",
+
+  # fun requestFocus(app.cash.redwood.treehouse.FocusRequesterId): kotlin.Unit
+  "3vGIGjpd",
+
   # fun sendChanges(kotlin.collections.List): kotlin.Unit
   "W8qOuU0t",
 
