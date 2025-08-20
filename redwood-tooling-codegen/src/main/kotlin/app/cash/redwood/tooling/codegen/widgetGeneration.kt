@@ -220,7 +220,7 @@ internal fun generateWidgetFactory(schema: Schema): FileSpec {
       TypeSpec.interfaceBuilder(widgetFactoryType)
         .addTypeVariable(typeVariableW)
         .optIn(Stdlib.ExperimentalObjCName)
-        .objcName(widgetFactoryType.simpleName)
+        .objcName(widgetFactoryType.simpleName, exact = true)
         .maybeAddKDoc(schema.documentation)
         .apply {
           for (widget in schema.widgets) {
