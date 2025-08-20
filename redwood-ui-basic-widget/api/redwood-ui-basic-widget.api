@@ -1,10 +1,12 @@
 public abstract interface class app/cash/redwood/ui/basic/widget/Button : app/cash/redwood/widget/Widget {
 	public abstract fun enabled (Z)V
+	public fun getAllChildren ()Ljava/util/List;
 	public abstract fun onClick (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun text (Ljava/lang/String;)V
 }
 
 public abstract interface class app/cash/redwood/ui/basic/widget/Image : app/cash/redwood/widget/Widget {
+	public fun getAllChildren ()Ljava/util/List;
 	public abstract fun onClick (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun url (Ljava/lang/String;)V
 }
@@ -31,10 +33,12 @@ public final class app/cash/redwood/ui/basic/widget/RedwoodUiBasicWidgetSystem$C
 }
 
 public abstract interface class app/cash/redwood/ui/basic/widget/Text : app/cash/redwood/widget/Widget {
+	public fun getAllChildren ()Ljava/util/List;
 	public abstract fun text (Ljava/lang/String;)V
 }
 
 public abstract interface class app/cash/redwood/ui/basic/widget/TextInput : app/cash/redwood/widget/Widget {
+	public fun getAllChildren ()Ljava/util/List;
 	public abstract fun hint (Ljava/lang/String;)V
 	public abstract fun onChange (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun state (Lapp/cash/redwood/ui/basic/api/TextFieldState;)V

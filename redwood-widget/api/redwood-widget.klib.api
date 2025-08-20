@@ -21,6 +21,8 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.widget/RedwoodView { // app
 }
 
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/Widget { // app.cash.redwood.widget/Widget|null[0]
+    abstract val allChildren // app.cash.redwood.widget/Widget.allChildren|{}allChildren[0]
+        abstract fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.widget/Widget.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
     abstract val value // app.cash.redwood.widget/Widget.value|{}value[0]
         abstract fun <get-value>(): #A // app.cash.redwood.widget/Widget.value.<get-value>|<get-value>(){}[0]
 

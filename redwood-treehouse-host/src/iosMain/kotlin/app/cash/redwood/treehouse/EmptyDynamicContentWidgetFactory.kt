@@ -16,6 +16,7 @@
 package app.cash.redwood.treehouse
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.cValue
 import platform.CoreGraphics.CGRectZero
 import platform.UIKit.UIView
@@ -28,11 +29,15 @@ internal class EmptyDynamicContentWidgetFactory : DynamicContentWidgetFactory<UI
   class EmptyLoading : Loading<UIView> {
     override val value: UIView = UIView(cValue { CGRectZero })
     override var modifier: Modifier = Modifier
+    override val allChildren: List<Widget.Children<UIView>>
+      get() = listOf()
   }
 
   class EmptyCrashed : Crashed<UIView> {
     override val value: UIView = UIView(cValue { CGRectZero })
     override var modifier: Modifier = Modifier
+    override val allChildren: List<Widget.Children<UIView>>
+      get() = listOf()
     override fun uncaughtException(uncaughtException: Throwable) {
     }
 

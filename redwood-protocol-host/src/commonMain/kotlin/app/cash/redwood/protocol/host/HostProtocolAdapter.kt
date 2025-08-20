@@ -420,6 +420,9 @@ private class RootProtocolNode<W : Any>(
       throw AssertionError()
     }
 
+  override val allChildren: List<Widget.Children<W>>
+    get() = listOf(children.children)
+
   override fun detach() {
     // Do nothing because 'children' is owned by the host's RedwoodView.
   }

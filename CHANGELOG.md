@@ -4,7 +4,7 @@
 [Unreleased]: https://github.com/cashapp/redwood/compare/0.18.0...HEAD
 
 New:
-- Nothing yet!
+- Widget has a new `allChildren` property that returns all child widgets for general tree-traversal.
 
 Changed:
 - Nothing yet!

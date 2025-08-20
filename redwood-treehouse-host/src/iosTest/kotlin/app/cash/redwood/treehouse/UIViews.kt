@@ -30,6 +30,8 @@ import platform.UIKit.UIView
 fun viewWidget(view: UIView): Widget<UIView> = object : Widget<UIView>, ResizableWidget<UIView> {
   override val value: UIView get() = view
   override var modifier: Modifier = Modifier
+  override val allChildren: List<Widget.Children<UIView>>
+    get() = listOf()
   override var sizeListener: ResizableWidget.SizeListener? = null
 }
 

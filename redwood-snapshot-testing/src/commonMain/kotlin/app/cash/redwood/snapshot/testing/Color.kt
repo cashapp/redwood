@@ -19,6 +19,8 @@ import app.cash.redwood.ui.Dp
 import app.cash.redwood.widget.Widget
 
 interface Color<W : Any> : Widget<W> {
+  override val allChildren: List<Widget.Children<W>>
+    get() = listOf()
   fun width(width: Dp)
   fun height(height: Dp)
   fun color(color: Int)

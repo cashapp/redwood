@@ -31,6 +31,7 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Margin
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.AlignItems
 import app.cash.redwood.yoga.AlignSelf
 import app.cash.redwood.yoga.JustifyContent
@@ -41,6 +42,8 @@ internal interface YogaFlexContainer<W : Any> :
   Row<W> {
   val rootNode: Node
   val density: Density
+
+  abstract override val allChildren: List<Widget.Children<W>>
 
   override fun margin(margin: Margin) {
     with(rootNode) {

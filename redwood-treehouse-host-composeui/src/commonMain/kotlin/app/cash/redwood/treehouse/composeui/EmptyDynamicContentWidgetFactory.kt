@@ -21,6 +21,7 @@ import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.treehouse.Crashed
 import app.cash.redwood.treehouse.DynamicContentWidgetFactory
 import app.cash.redwood.treehouse.Loading
+import app.cash.redwood.widget.Widget
 
 /** Don't show anything for loading or error screens. */
 internal object EmptyDynamicContentWidgetFactory :
@@ -31,12 +32,16 @@ internal object EmptyDynamicContentWidgetFactory :
 
   internal class EmptyLoading : Loading<@Composable (Modifier) -> Unit> {
     override var modifier: RedwoodModifier = RedwoodModifier
+    override val allChildren: List<Widget.Children<@Composable ((Modifier) -> Unit)>>
+      get() = listOf()
     override val value: @Composable (Modifier) -> Unit = {
     }
   }
 
   internal class EmptyCrashed : Crashed<@Composable (Modifier) -> Unit> {
     override var modifier: RedwoodModifier = RedwoodModifier
+    override val allChildren: List<Widget.Children<@Composable ((Modifier) -> Unit)>>
+      get() = listOf()
     override val value: @Composable (Modifier) -> Unit = {
     }
 

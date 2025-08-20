@@ -143,4 +143,6 @@ private class WidgetNode(override val widget: StringWidget) : ProtocolNode<Strin
 
 private class StringWidget(override val value: String) : Widget<String> {
   override var modifier: Modifier = Modifier
+  override val allChildren: List<Widget.Children<String>>
+    get() = listOf()
 }

@@ -18,6 +18,7 @@ package app.cash.redwood.treehouse
 import android.content.Context
 import android.view.View
 import app.cash.redwood.Modifier
+import app.cash.redwood.widget.Widget
 
 internal class EmptyDynamicContentWidgetFactory(
   private val context: Context,
@@ -29,11 +30,15 @@ internal class EmptyDynamicContentWidgetFactory(
   class EmptyLoading(context: Context) : Loading<View> {
     override val value = View(context)
     override var modifier: Modifier = Modifier
+    override val allChildren: List<Widget.Children<View>>
+      get() = listOf()
   }
 
   class EmptyCrashed(context: Context) : Crashed<View> {
     override val value = View(context)
     override var modifier: Modifier = Modifier
+    override val allChildren: List<Widget.Children<View>>
+      get() = listOf()
 
     override fun uncaughtException(uncaughtException: Throwable) {
     }

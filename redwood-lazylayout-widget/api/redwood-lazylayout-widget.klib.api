@@ -11,6 +11,8 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/LazyList 
         abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.items.<get-items>|<get-items>(){}[0]
     abstract val placeholder // app.cash.redwood.lazylayout.widget/LazyList.placeholder|{}placeholder[0]
         abstract fun <get-placeholder>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
+    open val allChildren // app.cash.redwood.lazylayout.widget/LazyList.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.lazylayout.widget/LazyList.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
 
     abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.lazylayout.widget/LazyList.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/LazyList.height|height(app.cash.redwood.layout.api.Constraint){}[0]
@@ -33,6 +35,8 @@ abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/Refreshab
         abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.items.<get-items>|<get-items>(){}[0]
     abstract val placeholder // app.cash.redwood.lazylayout.widget/RefreshableLazyList.placeholder|{}placeholder[0]
         abstract fun <get-placeholder>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.placeholder.<get-placeholder>|<get-placeholder>(){}[0]
+    open val allChildren // app.cash.redwood.lazylayout.widget/RefreshableLazyList.allChildren|{}allChildren[0]
+        open fun <get-allChildren>(): kotlin.collections/List<app.cash.redwood.widget/Widget.Children<#A>> // app.cash.redwood.lazylayout.widget/RefreshableLazyList.allChildren.<get-allChildren>|<get-allChildren>(){}[0]
 
     abstract fun crossAxisAlignment(app.cash.redwood.layout.api/CrossAxisAlignment) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.crossAxisAlignment|crossAxisAlignment(app.cash.redwood.layout.api.CrossAxisAlignment){}[0]
     abstract fun height(app.cash.redwood.layout.api/Constraint) // app.cash.redwood.lazylayout.widget/RefreshableLazyList.height|height(app.cash.redwood.layout.api.Constraint){}[0]

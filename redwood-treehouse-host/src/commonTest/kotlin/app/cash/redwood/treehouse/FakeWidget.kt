@@ -21,8 +21,8 @@ import app.cash.redwood.widget.Widget
 class FakeWidget : Widget<FakeWidget> {
   override val value: FakeWidget
     get() = this
-
   override var modifier: Modifier = Modifier
+  override val allChildren: List<Widget.Children<FakeWidget>> get() = listOf()
 
   var label: String? = null
   var onClick: (() -> Unit)? = null

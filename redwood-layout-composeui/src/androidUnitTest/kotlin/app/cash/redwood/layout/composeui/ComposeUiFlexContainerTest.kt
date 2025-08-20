@@ -32,6 +32,7 @@ import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ComposeSnapshotter
 import app.cash.redwood.snapshot.testing.ComposeUiTestWidgetFactory
 import app.cash.redwood.ui.Px
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.yoga.FlexDirection
 import com.android.resources.LayoutDirection
 import kotlinx.coroutines.runBlocking
@@ -92,6 +93,8 @@ class ComposeUiFlexContainerTest(
 
     override val value get() = delegate.value
     override var modifier by delegate::modifier
+    override val allChildren: List<Widget.Children<@Composable ((Modifier) -> Unit)>>
+      get() = listOf(children)
 
     override val children get() = delegate.children
 

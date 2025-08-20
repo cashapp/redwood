@@ -123,6 +123,7 @@ class ChildrenNodeIndexTest {
 
 private class StringWidget(override val value: String) : Widget<String> {
   override var modifier: Modifier = Modifier
+  override val allChildren: List<Widget.Children<String>> get() = listOf()
 }
 
 @OptIn(RedwoodCodegenApi::class)
