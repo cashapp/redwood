@@ -24,6 +24,9 @@ class LoadingUIView : Loading {
     var value: Any { root }
 
     var modifier: Modifier = ExposedKt.modifier()
+    var allChildren: [any WidgetChildren] {
+        get { return [] }
+    }
 
     required init() {
     }

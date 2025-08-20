@@ -26,6 +26,9 @@ class ButtonBinding: Button {
     }()
 
     var modifier: Modifier = ExposedKt.modifier()
+    var allChildren: [any WidgetChildren] {
+        get { return [] }
+    }
     var value: Any { root }
     var onClick: (() -> Void)? = nil
 
