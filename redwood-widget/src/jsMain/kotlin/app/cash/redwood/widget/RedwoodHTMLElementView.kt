@@ -22,7 +22,6 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.ui.core.api.FocusDirector
 import app.cash.redwood.ui.dp
 import kotlinx.browser.window
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,8 +59,6 @@ private class RedwoodHTMLElementView(
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
-  override val focusDirector: FocusDirector = HTMLFocusDirector(value)
-
   init {
     val colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)")
 
@@ -87,6 +84,9 @@ private class RedwoodHTMLElementView(
 
     // TODO Watch size change
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
+  }
+
+  override fun requestFocus(widget: Widget<HTMLElement>) {
   }
 
   private fun observePixelRatioChange() {

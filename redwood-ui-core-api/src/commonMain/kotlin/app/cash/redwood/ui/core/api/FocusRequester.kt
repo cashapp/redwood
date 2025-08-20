@@ -15,6 +15,10 @@
  */
 package app.cash.redwood.ui.core.api
 
+import kotlinx.serialization.Serializable
+
+@Serializable(with = FocusRequesterSerializer::class)
 public interface FocusRequester {
+  public val id: Int
   public fun requestFocus()
 }

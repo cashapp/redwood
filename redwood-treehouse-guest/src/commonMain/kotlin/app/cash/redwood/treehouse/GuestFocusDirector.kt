@@ -18,25 +18,22 @@ package app.cash.redwood.treehouse
 import app.cash.redwood.ui.core.api.FocusDirector
 import app.cash.redwood.ui.core.api.FocusRequester
 
-/** This generates a unique ID for each [FocusRequester] that must be looked up on the host. */
-internal class GuestFocusDirector(
+/** This forwards focus requests to the host. */
+public class GuestFocusDirector(
   private val host: ZiplineTreehouseUi.Host,
 ) : FocusDirector {
-  private var nextFocusRequesterId = 300
+  private var nextFocusRequesterId = 3000
 
   override fun hideSoftwareKeyboard() {
     host.hideSoftwareKeyboard()
   }
 
-  override fun newFocusRequester(): FocusRequester =
-    GuestFocusRequester(host, FocusRequesterId(nextFocusRequesterId++))
+  override fun newFocusRequester(): FocusRequester = GuestFocusRequester()
 
-  class GuestFocusRequester(
-    private val host: ZiplineTreehouseUi.Host,
-    private val id: FocusRequesterId,
-  ) : FocusRequester {
+  private inner class GuestFocusRequester : FocusRequester {
+    override val id = nextFocusRequesterId++
     override fun requestFocus() {
-      host.requestFocus(id)
+      host.requestFocus(this)
     }
   }
 }

@@ -23,6 +23,9 @@ import app.cash.redwood.ui.core.modifier.FocusRequester as FocusRequesterElement
  * A [FocusDirector] for use with [TestRedwoodComposition].
  */
 public class TestFocusDirector : FocusDirector {
+  private var nextFocusRequesterId = 3000
+
+  /** The currently focused _requester_ which we can use to find the focused widget. */
   private var focused: TestFocusRequester? = null
 
   override fun hideSoftwareKeyboard() {
@@ -48,6 +51,7 @@ public class TestFocusDirector : FocusDirector {
     }
 
   private inner class TestFocusRequester : FocusRequester {
+    override val id = nextFocusRequesterId++
     override fun requestFocus() {
       focused = this
     }

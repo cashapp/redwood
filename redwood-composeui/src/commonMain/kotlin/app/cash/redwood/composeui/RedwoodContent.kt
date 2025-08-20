@@ -72,7 +72,6 @@ public fun RedwoodContent(
 
   val scope = rememberCoroutineScope()
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
-  val focusDirector = RedwoodContentFocusDirector()
   val saveableStateRegistry = LocalSaveableStateRegistry.current
 
   // For simplicity, a new provider or content lambda gets an entirely new composition and children.
@@ -83,7 +82,7 @@ public fun RedwoodContent(
       widgetSystem = widgetSystem,
       container = children,
       onBackPressedDispatcher = onBackPressedDispatcher,
-      focusDirector = focusDirector,
+      focusDirector = RedwoodContentFocusDirector(),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = uiConfigurations,
     )
@@ -110,11 +109,14 @@ internal expect fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher
 
 // TODO(jwilson): complete this.
 internal class RedwoodContentFocusDirector : FocusDirector {
+  private var nextFocusRequesterId = 3000
+
   override fun hideSoftwareKeyboard() {
   }
 
   override fun newFocusRequester(): FocusRequester {
     return object : FocusRequester {
+      override val id = nextFocusRequesterId++
       override fun requestFocus() {
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Square, Inc.
+ * Copyright (C) 2025 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,20 @@ package app.cash.redwood.widget.view
 
 import android.view.View
 import androidx.activity.OnBackPressedDispatcher
-import app.cash.burst.Burst
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
-import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
-import app.cash.redwood.widget.AbstractRedwoodViewTest
+import app.cash.redwood.widget.AbstractRedwoodViewFocusTest
 import app.cash.redwood.widget.RedwoodLayout
+import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
-import com.android.resources.LayoutDirection
 import org.junit.Rule
 
-@Burst
-class ViewRedwoodViewTest(
-  layoutDirection: LayoutDirection = LayoutDirection.LTR,
-) : AbstractRedwoodViewTest<View, RedwoodLayout>() {
-  /** We don't use Paparazzi for snapshots, but it's an easy way to get an Android Context. */
+class ViewRedwoodViewFocusTest : AbstractRedwoodViewFocusTest<View, RedwoodLayout>() {
   @get:Rule
   val paparazzi = Paparazzi(
-    deviceConfig = DeviceConfig.PIXEL_6.copy(layoutDirection = layoutDirection),
+    deviceConfig = DeviceConfig.PIXEL_6,
     theme = "android:Theme.Material.Light.NoActionBar",
     supportsRtl = true,
   )
@@ -46,7 +40,7 @@ class ViewRedwoodViewTest(
 
   override fun redwoodView() = RedwoodLayout(paparazzi.context, OnBackPressedDispatcher())
 
-  override fun snapshotter(redwoodView: RedwoodLayout) = ViewSnapshotter(paparazzi, redwoodView)
-
-  override fun snapshotter(widget: Widget<View>) = ViewSnapshotter(paparazzi, widget.value)
+  override fun getFocused(redwoodView: RedwoodView<View>): Widget<View>? {
+    return redwoodView.children.widgets.firstOrNull { it.value.isFocused }
+  }
 }

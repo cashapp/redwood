@@ -17,14 +17,12 @@ package app.cash.redwood.widget
 
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.ui.core.api.FocusDirector
 import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
 
 @ObjCName("RedwoodView", exact = true)
 public interface RedwoodView<W : Any> {
   public val onBackPressedDispatcher: OnBackPressedDispatcher
-  public val focusDirector: FocusDirector
   public val uiConfiguration: StateFlow<UiConfiguration>
   public val savedStateRegistry: SavedStateRegistry?
 
@@ -35,4 +33,6 @@ public interface RedwoodView<W : Any> {
    * a snapshot of the most-recent content, but the content will ignore user actions.
    */
   public val children: Widget.Children<W>
+
+  public fun requestFocus(widget: Widget<W>)
 }

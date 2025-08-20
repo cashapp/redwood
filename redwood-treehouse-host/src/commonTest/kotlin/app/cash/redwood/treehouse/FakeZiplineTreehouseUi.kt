@@ -15,16 +15,23 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.protocol.ChildrenChange
+import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.protocol.ChildrenTag
-import app.cash.redwood.protocol.Create
 import app.cash.redwood.protocol.Event
 import app.cash.redwood.protocol.Id
-import app.cash.redwood.protocol.PropertyChange
-import app.cash.redwood.protocol.PropertyTag
-import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.protocol.guest.DefaultGuestProtocolAdapter
+import app.cash.redwood.protocol.guest.GuestProtocolAdapter
+import app.cash.redwood.protocol.guest.ProtocolMismatchHandler
+import app.cash.redwood.protocol.guest.ProtocolWidget
+import app.cash.redwood.protocol.guest.guestRedwoodVersion
+import app.cash.redwood.ui.core.api.FocusDirector
+import app.cash.redwood.ui.core.api.FocusRequester
+import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
+import com.example.redwood.testapp.widget.Button
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 /**
  * This class pretends to be guest UI. We publish UI changes here with [addWidget], and the
@@ -32,30 +39,48 @@ import kotlinx.serialization.json.JsonPrimitive
  */
 class FakeZiplineTreehouseUi(
   private val name: String,
+  private val json: Json,
   private val eventLog: EventLog,
-) : ZiplineTreehouseUi {
-  private var nextWidgetId = 1
+) : ZiplineTreehouseUi,
+  FocusDirector {
   private var messageToThrowOnNextEvent: String? = null
 
   private lateinit var host: ZiplineTreehouseUi.Host
   private val extraServicesToClose = mutableListOf<CancellableService>()
 
+  private val guestProtocolAdapter: GuestProtocolAdapter = DefaultGuestProtocolAdapter(
+    hostVersion = guestRedwoodVersion,
+    json = json,
+    widgetSystemFactory = TestSchemaProtocolWidgetSystemFactory,
+  )
+
+  private val widgetSystem = TestSchemaProtocolWidgetSystemFactory.create(
+    guestAdapter = guestProtocolAdapter,
+    mismatchHandler = ProtocolMismatchHandler.Throwing,
+  )
+
+  private var nextFocusRequesterId = 3000
+
   override fun start(host: ZiplineTreehouseUi.Host) {
     eventLog += "$name.start()"
     this.host = host
+    this.guestProtocolAdapter.initChangesSink(host)
   }
 
-  fun addWidget(label: String) {
-    val widgetId = Id(nextWidgetId++)
-    host.sendChanges(
-      listOf(
-        Create(widgetId, WidgetTag(4)), // Button.
-        PropertyChange(widgetId, WidgetTag(4), PropertyTag(1), JsonPrimitive(label)), // text.
-        PropertyChange(widgetId, WidgetTag(4), PropertyTag(2), JsonPrimitive(true)), // onClick.
-        PropertyChange(widgetId, WidgetTag(4), PropertyTag(3), JsonPrimitive(0u)), // color.
-        ChildrenChange.Add(Id.Root, ChildrenTag.Root, widgetId, 0),
-      ),
-    )
+  @OptIn(RedwoodCodegenApi::class)
+  fun addWidget(label: String): Button<Unit> {
+    val button = widgetSystem.TestSchema.Button()
+    val protocolButton = button as ProtocolWidget
+    button.text(label)
+    button.onClick {}
+    button.color(0u)
+    guestProtocolAdapter.appendAdd(Id.Root, ChildrenTag.Root, 0, protocolButton)
+    guestProtocolAdapter.emitChanges()
+    return button
+  }
+
+  fun emitChanges() {
+    guestProtocolAdapter.emitChanges()
   }
 
   fun throwOnNextEvent(message: String) {
@@ -88,10 +113,30 @@ class FakeZiplineTreehouseUi(
     return result
   }
 
+  override fun hideSoftwareKeyboard() {
+  }
+
+  override fun newFocusRequester(): FocusRequester = FakeFocusRequester()
+
   override fun close() {
     for (cancellableService in extraServicesToClose) {
       cancellableService.close()
     }
     eventLog += "$name.close()"
+  }
+
+  private inner class FakeFocusRequester : FocusRequester {
+    override val id = nextFocusRequesterId++
+
+    /** Simulate the real host call, that serializes and deserializes this FocusRequester. */
+    private val reserialized: FocusRequester
+      get() {
+        val serialized = Json.encodeToJsonElement<FocusRequester>(this)
+        return Json.decodeFromJsonElement<FocusRequester>(serialized)
+      }
+
+    override fun requestFocus() {
+      host.requestFocus(reserialized)
+    }
   }
 }

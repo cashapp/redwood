@@ -32,6 +32,7 @@ import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.testing.WidgetValue
 import app.cash.redwood.ui.basic.compose.Text
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
+import app.cash.redwood.ui.core.testing.RedwoodUiCoreTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -124,6 +125,7 @@ class ChangeListenerTest(
         override fun Button() = button
       },
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -147,6 +149,7 @@ class ChangeListenerTest(
         override fun Button() = button
       },
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -171,6 +174,7 @@ class ChangeListenerTest(
         override fun Button() = button
       },
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -196,6 +200,7 @@ class ChangeListenerTest(
         override fun Button() = button
       },
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -223,6 +228,7 @@ class ChangeListenerTest(
         override fun TestRow() = row
       },
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -252,6 +258,7 @@ class ChangeListenerTest(
         override fun TestRow() = row
       },
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )

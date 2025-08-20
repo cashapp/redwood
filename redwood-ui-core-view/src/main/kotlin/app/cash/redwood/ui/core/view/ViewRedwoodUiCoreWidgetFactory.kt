@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.treehouse
+package app.cash.redwood.ui.core.view
 
-import app.cash.redwood.ui.core.api.FocusDirector
-import app.cash.redwood.ui.core.api.FocusRequester
+import android.content.Context
+import android.view.View
+import app.cash.redwood.ui.core.modifier.FocusRequester
+import app.cash.redwood.ui.core.widget.RedwoodUiCoreWidgetFactory
 
-class FakeFocusDirector : FocusDirector {
-  override fun hideSoftwareKeyboard() {
-  }
-
-  override fun newFocusRequester(): FocusRequester {
-    return object : FocusRequester {
-      override fun requestFocus() {
-      }
-    }
+public class ViewRedwoodUiCoreWidgetFactory(
+  context: Context,
+) : RedwoodUiCoreWidgetFactory<View> {
+  override fun FocusRequester(
+    value: View,
+    modifier: FocusRequester,
+  ) {
   }
 }

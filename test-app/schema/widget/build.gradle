@@ -11,6 +11,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodUiBasicWidget
+        api projects.redwoodUiCoreWidget
         api projects.redwoodLayoutWidget
         api projects.redwoodLazylayoutWidget
         api projects.testApp.schema.modifiers

@@ -32,7 +32,6 @@ import app.cash.redwood.ui.OnBackPressedCallback as RedwoodOnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher as RedwoodOnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
-import app.cash.redwood.ui.core.api.FocusDirector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -84,8 +83,6 @@ public open class RedwoodLayout(
 
   override val uiConfiguration: StateFlow<UiConfiguration>
     get() = mutableUiConfiguration
-
-  override val focusDirector: FocusDirector = AndroidFocusDirector(this)
 
   init {
     setOnWindowInsetsChangeListener { insets ->
@@ -141,6 +138,10 @@ public open class RedwoodLayout(
         else -> throw IllegalArgumentException("layoutDirection must be LTR or RTL")
       },
     )
+  }
+
+  override fun requestFocus(widget: Widget<View>) {
+    widget.value.requestFocus()
   }
 }
 

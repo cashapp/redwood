@@ -29,6 +29,7 @@ import app.cash.redwood.protocol.host.HostProtocolAdapter
 import app.cash.redwood.protocol.host.UiChange
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
+import app.cash.redwood.ui.core.testing.RedwoodUiCoreTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.Widget
 import assertk.assertThat
@@ -60,6 +61,7 @@ class ViewRecyclingTester(
     widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     ),
