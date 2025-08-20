@@ -38,6 +38,7 @@ import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.ValueChange
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.testing.TestFocusDirector
 import app.cash.redwood.testing.TestRedwoodComposition
 import app.cash.redwood.ui.Cancellable
 import app.cash.redwood.ui.OnBackPressedCallback
@@ -80,6 +81,7 @@ class ProtocolTest {
           }
         }
       },
+      focusDirector = TestFocusDirector(),
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
     )
