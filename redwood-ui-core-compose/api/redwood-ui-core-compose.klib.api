@@ -1,0 +1,12 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-ui-core-compose>
+final val app.cash.redwood.ui.core.compose/app_cash_redwood_ui_core_compose_FocusRequesterImpl$stableprop // app.cash.redwood.ui.core.compose/app_cash_redwood_ui_core_compose_FocusRequesterImpl$stableprop|#static{}app_cash_redwood_ui_core_compose_FocusRequesterImpl$stableprop[0]
+
+final fun (app.cash.redwood/Modifier).app.cash.redwood.ui.core.compose/focusRequester(app.cash.redwood.ui.core.api/FocusRequester): app.cash.redwood/Modifier // app.cash.redwood.ui.core.compose/focusRequester|focusRequester@app.cash.redwood.Modifier(app.cash.redwood.ui.core.api.FocusRequester){}[0]
+final fun app.cash.redwood.ui.core.compose/app_cash_redwood_ui_core_compose_FocusRequesterImpl$stableprop_getter(): kotlin/Int // app.cash.redwood.ui.core.compose/app_cash_redwood_ui_core_compose_FocusRequesterImpl$stableprop_getter|app_cash_redwood_ui_core_compose_FocusRequesterImpl$stableprop_getter(){}[0]

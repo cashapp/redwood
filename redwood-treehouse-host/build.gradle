@@ -20,6 +20,7 @@ kotlin {
         api projects.redwoodProtocol
         api projects.redwoodProtocolHost
         api projects.redwoodTreehouse
+        api projects.redwoodUiCoreApi
       }
     }
 
@@ -40,6 +41,8 @@ kotlin {
         implementation libs.jetbrains.compose.collection
         implementation projects.redwoodLayoutTesting
         implementation projects.redwoodLazylayoutTesting
+        implementation projects.redwoodUiCoreTesting
+        implementation projects.redwoodUiCoreCompose
         implementation projects.redwoodWidget
         implementation projects.testApp.schema.protocolHost
         implementation projects.testApp.schema.testing

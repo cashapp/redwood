@@ -1,0 +1,8 @@
+import static app.cash.redwood.buildsupport.TargetGroup.Common
+
+redwoodBuild {
+  targets(Common)
+  publishing()
+}
+
+apply plugin: 'org.jetbrains.kotlin.multiplatform'

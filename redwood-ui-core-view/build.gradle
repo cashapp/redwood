@@ -1,0 +1,14 @@
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAndroid
+
+redwoodBuild {
+  targets(ToolkitAndroid)
+  publishing()
+}
+
+dependencies {
+  api projects.redwoodUiCoreWidget
+}
+
+android {
+  namespace 'app.cash.redwood.ui.core.view'
+}

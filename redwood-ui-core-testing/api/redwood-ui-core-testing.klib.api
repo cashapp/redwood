@@ -1,0 +1,15 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-ui-core-testing>
+final class app.cash.redwood.ui.core.testing/RedwoodUiCoreTestingWidgetFactory : app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory<app.cash.redwood.testing/WidgetValue> { // app.cash.redwood.ui.core.testing/RedwoodUiCoreTestingWidgetFactory|null[0]
+    constructor <init>() // app.cash.redwood.ui.core.testing/RedwoodUiCoreTestingWidgetFactory.<init>|<init>(){}[0]
+
+    final fun FocusRequester(app.cash.redwood.testing/WidgetValue, app.cash.redwood.ui.core.modifier/FocusRequester) // app.cash.redwood.ui.core.testing/RedwoodUiCoreTestingWidgetFactory.FocusRequester|FocusRequester(app.cash.redwood.testing.WidgetValue;app.cash.redwood.ui.core.modifier.FocusRequester){}[0]
+}
+
+final suspend fun <#A: kotlin/Any?> app.cash.redwood.ui.core.testing/RedwoodUiCoreTester(app.cash.redwood.ui/OnBackPressedDispatcher = ..., app.cash.redwood.testing/TestSavedState? = ..., app.cash.redwood.ui/UiConfiguration = ..., kotlin.coroutines/SuspendFunction1<app.cash.redwood.testing/TestRedwoodComposition<kotlin.collections/List<app.cash.redwood.testing/WidgetValue>>, #A>): #A // app.cash.redwood.ui.core.testing/RedwoodUiCoreTester|RedwoodUiCoreTester(app.cash.redwood.ui.OnBackPressedDispatcher;app.cash.redwood.testing.TestSavedState?;app.cash.redwood.ui.UiConfiguration;kotlin.coroutines.SuspendFunction1<app.cash.redwood.testing.TestRedwoodComposition<kotlin.collections.List<app.cash.redwood.testing.WidgetValue>>,0:0>){0§<kotlin.Any?>}[0]

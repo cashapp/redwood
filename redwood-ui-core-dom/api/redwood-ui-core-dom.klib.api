@@ -1,0 +1,13 @@
+// Klib ABI Dump
+// Targets: [js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-ui-core-dom>
+final class app.cash.redwood.ui.core.dom/HTMLElementRedwoodUiCoreWidgetFactory : app.cash.redwood.ui.core.widget/RedwoodUiCoreWidgetFactory<org.w3c.dom/HTMLElement> { // app.cash.redwood.ui.core.dom/HTMLElementRedwoodUiCoreWidgetFactory|null[0]
+    constructor <init>(org.w3c.dom/Document) // app.cash.redwood.ui.core.dom/HTMLElementRedwoodUiCoreWidgetFactory.<init>|<init>(org.w3c.dom.Document){}[0]
+
+    final fun FocusRequester(org.w3c.dom/HTMLElement, app.cash.redwood.ui.core.modifier/FocusRequester) // app.cash.redwood.ui.core.dom/HTMLElementRedwoodUiCoreWidgetFactory.FocusRequester|FocusRequester(org.w3c.dom.HTMLElement;app.cash.redwood.ui.core.modifier.FocusRequester){}[0]
+}

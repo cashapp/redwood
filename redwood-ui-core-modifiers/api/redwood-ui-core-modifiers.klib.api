@@ -1,0 +1,12 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <app.cash.redwood:redwood-ui-core-modifiers>
+abstract interface app.cash.redwood.ui.core.modifier/FocusRequester : app.cash.redwood/Modifier.UnscopedElement { // app.cash.redwood.ui.core.modifier/FocusRequester|null[0]
+    abstract val value // app.cash.redwood.ui.core.modifier/FocusRequester.value|{}value[0]
+        abstract fun <get-value>(): app.cash.redwood.ui.core.api/FocusRequester // app.cash.redwood.ui.core.modifier/FocusRequester.value.<get-value>|<get-value>(){}[0]
+}

@@ -29,6 +29,7 @@ import app.cash.redwood.lazylayout.testing.RedwoodLazyLayoutTestingWidgetFactory
 import app.cash.redwood.ui.basic.compose.Text
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.ui.basic.testing.TextValue
+import app.cash.redwood.ui.core.testing.RedwoodUiCoreTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -83,6 +84,7 @@ class TestRedwoodCompositionTest {
       widgetSystem = TestSchemaWidgetSystem(
         TestSchema = TestSchemaTestingWidgetFactory(),
         RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+        RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
         RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
         RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
       ),

@@ -22,6 +22,7 @@ import app.cash.redwood.treehouse.TreehouseView.ReadyForContentChangeListener
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
+import app.cash.redwood.ui.core.testing.RedwoodUiCoreTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
@@ -48,6 +49,7 @@ internal class FakeTreehouseView(
   override val widgetSystem = TestSchemaWidgetSystem(
     TestSchema = TestSchemaTestingWidgetFactory(),
     RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+    RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
     RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
     RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
   )

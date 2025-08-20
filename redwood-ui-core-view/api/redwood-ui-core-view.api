@@ -1,0 +1,6 @@
+public final class app/cash/redwood/ui/core/view/ViewRedwoodUiCoreWidgetFactory : app/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetFactory {
+	public fun <init> (Landroid/content/Context;)V
+	public fun FocusRequester (Landroid/view/View;Lapp/cash/redwood/ui/core/modifier/FocusRequester;)V
+	public synthetic fun FocusRequester (Ljava/lang/Object;Lapp/cash/redwood/ui/core/modifier/FocusRequester;)V
+}
+

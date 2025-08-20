@@ -28,6 +28,7 @@ import app.cash.redwood.treehouse.TreehouseContentSource
 import app.cash.redwood.treehouse.TreehouseLayout
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.basic.view.ViewRedwoodUiBasicWidgetFactory
+import app.cash.redwood.ui.core.view.ViewRedwoodUiCoreWidgetFactory
 import app.cash.zipline.Zipline
 import app.cash.zipline.ZiplineManifest
 import app.cash.zipline.loader.ManifestVerifier
@@ -74,6 +75,7 @@ class TestAppActivity : ComponentActivity() {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = AndroidTestSchemaWidgetFactory(context),
       RedwoodUiBasic = ViewRedwoodUiBasicWidgetFactory(context, imageLoader),
+      RedwoodUiCore = ViewRedwoodUiCoreWidgetFactory(context),
       RedwoodLayout = ViewRedwoodLayoutWidgetFactory(context),
       RedwoodLazyLayout = ViewRedwoodLazyLayoutWidgetFactory(context),
     )

@@ -13,6 +13,7 @@ kotlin {
       dependencies {
         implementation libs.jetbrains.compose.foundation
         api projects.redwoodCompose
+        api projects.redwoodUiCoreApi
         implementation projects.redwoodWidgetComposeui
       }
     }

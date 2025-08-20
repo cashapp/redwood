@@ -1,0 +1,4 @@
+public abstract interface class app/cash/redwood/ui/core/modifier/FocusRequester : app/cash/redwood/Modifier$UnscopedElement {
+	public abstract fun getValue ()Lapp/cash/redwood/ui/core/api/FocusRequester;
+}
+

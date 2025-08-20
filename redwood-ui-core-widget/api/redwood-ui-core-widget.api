@@ -1,0 +1,15 @@
+public abstract interface class app/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetFactory {
+	public abstract fun FocusRequester (Ljava/lang/Object;Lapp/cash/redwood/ui/core/modifier/FocusRequester;)V
+}
+
+public final class app/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetSystem : app/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetFactoryOwner, app/cash/redwood/widget/WidgetSystem {
+	public static final field Companion Lapp/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetSystem$Companion;
+	public fun <init> (Lapp/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetFactory;)V
+	public fun apply (Ljava/lang/Object;Lapp/cash/redwood/Modifier$UnscopedElement;)V
+	public fun getRedwoodUiCore ()Lapp/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetFactory;
+}
+
+public final class app/cash/redwood/ui/core/widget/RedwoodUiCoreWidgetSystem$Companion {
+	public final fun allChildren (Lapp/cash/redwood/widget/Widget;)Ljava/util/List;
+}
+

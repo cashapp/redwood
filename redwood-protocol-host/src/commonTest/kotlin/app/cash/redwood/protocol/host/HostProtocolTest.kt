@@ -29,6 +29,7 @@ import app.cash.redwood.protocol.PropertyChange
 import app.cash.redwood.protocol.PropertyTag
 import app.cash.redwood.protocol.WidgetTag
 import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
+import app.cash.redwood.ui.core.testing.RedwoodUiCoreTestingWidgetFactory
 import assertk.assertThat
 import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
@@ -181,6 +182,7 @@ class HostProtocolTest {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -200,6 +202,7 @@ class HostProtocolTest {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -222,6 +225,7 @@ class HostProtocolTest {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -241,6 +245,7 @@ class HostProtocolTest {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -262,6 +267,7 @@ class HostProtocolTest {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
@@ -286,6 +292,7 @@ class HostProtocolTest {
     val widgetSystem = TestSchemaWidgetSystem(
       TestSchema = TestSchemaTestingWidgetFactory(),
       RedwoodUiBasic = RedwoodUiBasicTestingWidgetFactory(),
+      RedwoodUiCore = RedwoodUiCoreTestingWidgetFactory(),
       RedwoodLayout = RedwoodLayoutTestingWidgetFactory(),
       RedwoodLazyLayout = RedwoodLazyLayoutTestingWidgetFactory(),
     )
