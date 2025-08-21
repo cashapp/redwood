@@ -21,6 +21,7 @@ import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ProtocolGuest
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.ProtocolHost
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Testing
 import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.Widget
+import app.cash.redwood.gradle.RedwoodGeneratorPlugin.Strategy.WidgetComposeUi
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logging
@@ -56,6 +57,9 @@ public class RedwoodTestingGeneratorPlugin : RedwoodGeneratorPlugin(Testing)
 public class RedwoodWidgetGeneratorPlugin : RedwoodGeneratorPlugin(Widget)
 
 @Suppress("unused") // Invoked reflectively by Gradle.
+public class RedwoodWidgetComposeUiGeneratorPlugin : RedwoodGeneratorPlugin(WidgetComposeUi)
+
+@Suppress("unused") // Invoked reflectively by Gradle.
 public class RedwoodWidgetProtocolGeneratorPlugin : RedwoodGeneratorPlugin(ProtocolHost) {
   override fun apply(project: Project) {
     Logging.getLogger(RedwoodComposeProtocolGeneratorPlugin::class.java)
@@ -78,6 +82,7 @@ public abstract class RedwoodGeneratorPlugin(
     ProtocolHost("--protocol-host", "redwood-protocol-host", androidxCollectionCoordinates),
     Testing("--testing", "redwood-testing"),
     Widget("--widget", "redwood-widget"),
+    WidgetComposeUi("--widget-compose-ui", "redwood-widget-composeui"),
   }
 
   override fun apply(project: Project) {

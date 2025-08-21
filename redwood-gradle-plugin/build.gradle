@@ -100,6 +100,12 @@ gradlePlugin {
       description = "Redwood schema widget code generation Gradle plugin"
       implementationClass = "app.cash.redwood.gradle.RedwoodWidgetGeneratorPlugin"
     }
+    redwoodWidgetComposeUiGenerator {
+      id = "app.cash.redwood.generator.widget.composeui"
+      displayName = "Redwood generator (Compose UI)"
+      description = "Redwood schema widget Compose UI code generation Gradle plugin"
+      implementationClass = "app.cash.redwood.gradle.RedwoodWidgetComposeUiGeneratorPlugin"
+    }
     redwoodWidgetProtocolGenerator {
       id = "app.cash.redwood.generator.widget.protocol"
       displayName = "Redwood generator (widget protocol)"

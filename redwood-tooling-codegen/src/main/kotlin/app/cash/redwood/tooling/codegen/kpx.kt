@@ -18,6 +18,7 @@ package app.cash.redwood.tooling.codegen
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.TypeSpec
 
 internal fun buildFileSpec(className: ClassName, builder: FileSpec.Builder.() -> Unit): FileSpec {
   return FileSpec.builder(className)
@@ -33,6 +34,12 @@ internal fun buildFileSpec(memberName: MemberName, builder: FileSpec.Builder.() 
 
 internal fun buildFileSpec(packageName: String, fileName: String, builder: FileSpec.Builder.() -> Unit): FileSpec {
   return FileSpec.builder(packageName, fileName)
+    .apply(builder)
+    .build()
+}
+
+internal fun buildClassSpec(className: ClassName, builder: TypeSpec.Builder.() -> Unit): TypeSpec {
+  return TypeSpec.classBuilder(className)
     .apply(builder)
     .build()
 }

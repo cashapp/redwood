@@ -27,6 +27,7 @@ public final class app/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy : jav
 	public static final field ProtocolHost Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static final field Testing Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static final field Widget Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
+	public static final field WidgetComposeUi Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
 	public static fun values ()[Lapp/cash/redwood/gradle/RedwoodGeneratorPlugin$Strategy;
@@ -63,6 +64,10 @@ public final class app/cash/redwood/gradle/RedwoodSchemaPlugin : org/gradle/api/
 }
 
 public final class app/cash/redwood/gradle/RedwoodTestingGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
+	public fun <init> ()V
+}
+
+public final class app/cash/redwood/gradle/RedwoodWidgetComposeUiGeneratorPlugin : app/cash/redwood/gradle/RedwoodGeneratorPlugin {
 	public fun <init> ()V
 }
 
