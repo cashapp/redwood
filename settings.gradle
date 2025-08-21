@@ -112,6 +112,7 @@ include ':redwood-ui-core-dom'
 include ':redwood-ui-core-modifiers'
 include ':redwood-ui-core-schema'
 include ':redwood-ui-core-testing'
+include ':redwood-ui-core-uiview'
 include ':redwood-ui-core-view'
 include ':redwood-ui-core-widget'
 

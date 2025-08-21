@@ -26,6 +26,7 @@ import app.cash.redwood.treehouse.TreehouseUIView
 import app.cash.redwood.treehouse.TreehouseView
 import app.cash.redwood.treehouse.bindWhenReady
 import app.cash.redwood.ui.basic.uiview.UIViewRedwoodUiBasicWidgetFactory
+import app.cash.redwood.ui.core.uiview.UIViewRedwoodUiCoreWidgetFactory
 import app.cash.redwood.widget.WidgetSystem
 import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import com.example.redwood.testapp.treehouse.TestAppPresenter
@@ -44,6 +45,7 @@ fun exposedTypes(
   hostProtocolFactory: TestSchemaHostProtocol.Factory,
   treehouseUIView: TreehouseUIView,
   uiViewRedwoodUiBasicWidgetFactory: UIViewRedwoodUiBasicWidgetFactory,
+  uiViewRedwoodUiCoreWidgetFactory: UIViewRedwoodUiCoreWidgetFactory,
   uiViewRedwoodLayoutWidgetFactory: UIViewRedwoodLayoutWidgetFactory,
   uiViewRedwoodLazyLayoutWidgetFactory: UIViewRedwoodLazyLayoutWidgetFactory,
   treehouseWidgetSystem: WidgetSystem<*>,

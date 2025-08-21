@@ -18,6 +18,7 @@ kotlin {
         implementation projects.testApp.presenterTreehouse
         implementation projects.testApp.schema.protocolHost
         implementation projects.redwoodUiBasicUiview
+        implementation projects.redwoodUiCoreUiview
         implementation projects.redwoodLayoutUiview
         implementation projects.redwoodLazylayoutUiview
       }

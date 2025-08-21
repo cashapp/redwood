@@ -41,7 +41,8 @@ class TestAppViewController : UIViewController {
           TestSchema: IosTestSchemaWidgetFactory(),
           RedwoodUiBasic: UIViewRedwoodUiBasicWidgetFactory(),
           RedwoodLayout: UIViewRedwoodLayoutWidgetFactory(),
-          RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory()
+          RedwoodLazyLayout: UIViewRedwoodLazyLayoutWidgetFactory(),
+          RedwoodUiCore: UIViewRedwoodUiCoreWidgetFactory()
         )
         let treehouseView = TreehouseUIView(widgetSystem: widgetSystem)
         let content = treehouseApp.createContent(
