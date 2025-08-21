@@ -48,6 +48,7 @@ class ViewText(context: Context) : Text<View> {
     textSize = 18f
     textDirection = View.TEXT_DIRECTION_LOCALE
     gravity = Gravity.CENTER_VERTICAL
+    isFocusable = true // For AbstractRedwoodViewFocusTest.
     setTextColor(android.graphics.Color.BLACK)
   }
   override var modifier: Modifier = Modifier

@@ -1,0 +1,14 @@
+public final class app/cash/redwood/ui/basic/view/ViewRedwoodBasicWidgetFactoryKt {
+	public static final fun ViewRedwoodUiBasicWidgetSystem (Landroid/content/Context;Lcoil3/ImageLoader;)Lapp/cash/redwood/ui/basic/widget/RedwoodUiBasicWidgetSystem;
+}
+
+public final class app/cash/redwood/ui/basic/view/ViewRedwoodUiBasicWidgetFactory : app/cash/redwood/ui/basic/widget/RedwoodUiBasicWidgetFactory {
+	public fun <init> (Landroid/content/Context;Lcoil3/ImageLoader;)V
+	public fun Button ()Lapp/cash/redwood/ui/basic/widget/Button;
+	public fun Image ()Lapp/cash/redwood/ui/basic/widget/Image;
+	public fun Reuse (Landroid/view/View;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
+	public synthetic fun Reuse (Ljava/lang/Object;Lapp/cash/redwood/ui/basic/modifier/Reuse;)V
+	public fun Text ()Lapp/cash/redwood/ui/basic/widget/Text;
+	public fun TextInput ()Lapp/cash/redwood/ui/basic/widget/TextInput;
+}
+

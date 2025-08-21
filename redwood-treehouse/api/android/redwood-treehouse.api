@@ -206,6 +206,8 @@ public abstract interface class app/cash/redwood/treehouse/ZiplineTreehouseUi$Ho
 	public abstract fun addOnBackPressedCallback (Lapp/cash/redwood/treehouse/OnBackPressedCallbackService;)Lapp/cash/redwood/treehouse/CancellableService;
 	public abstract fun getStateSnapshot ()Lapp/cash/redwood/treehouse/StateSnapshot;
 	public abstract fun getUiConfigurations ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun hideSoftwareKeyboard ()V
+	public abstract fun requestFocus (Lapp/cash/redwood/ui/core/api/FocusRequester;)V
 }
 
 public final class app/cash/redwood/treehouse/ZiplineTreehouseUi$Host$Companion {

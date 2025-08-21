@@ -17,9 +17,11 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.host.hostRedwoodVersion
+import kotlinx.serialization.json.Json
 
 internal class FakeAppService private constructor(
   private val name: String,
+  private val json: Json,
   private val eventLog: EventLog,
   private val listeners: List<Listener>,
   private val mutableUis: MutableList<FakeZiplineTreehouseUi>,
@@ -43,8 +45,9 @@ internal class FakeAppService private constructor(
 
   constructor(
     name: String,
+    json: Json,
     eventLog: EventLog,
-  ) : this(name, eventLog, listOf(), mutableListOf())
+  ) : this(name, json, eventLog, listOf(), mutableListOf())
 
   /**
    * Return a FakeAppService that shares all state with this, but that notifies [listeners] of
@@ -56,10 +59,10 @@ internal class FakeAppService private constructor(
    * wrapper.
    */
   fun withListener(listener: Listener) =
-    FakeAppService(name, eventLog, listeners + listener, mutableUis)
+    FakeAppService(name, json, eventLog, listeners + listener, mutableUis)
 
   fun newUi(): ZiplineTreehouseUi {
-    val result = FakeZiplineTreehouseUi("$name.uis[${mutableUis.size}]", eventLog)
+    val result = FakeZiplineTreehouseUi("$name.uis[${mutableUis.size}]", json, eventLog)
     for (listener in listeners) {
       listener.onNewUi(result)
     }

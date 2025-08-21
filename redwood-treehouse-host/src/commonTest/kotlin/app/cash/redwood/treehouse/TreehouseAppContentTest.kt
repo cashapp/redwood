@@ -15,13 +15,16 @@
  */
 package app.cash.redwood.treehouse
 
+import app.cash.redwood.Modifier
 import app.cash.redwood.leaks.LeakDetector
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.compose.focusRequester
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotEmpty
+import assertk.assertions.isNull
 import com.example.redwood.testapp.testing.ButtonValue
 import com.example.redwood.testapp.widget.Button
 import kotlin.coroutines.EmptyCoroutineContext
@@ -35,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 
 /**
  * This test focuses on how [TreehouseAppContent] behaves in response to lifecycle events from the
@@ -42,6 +46,7 @@ import kotlinx.coroutines.test.runTest
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TreehouseAppContentTest {
+  private val json = Json
   private val eventLog = EventLog()
   private val appScope = CoroutineScope(EmptyCoroutineContext)
 
@@ -50,6 +55,7 @@ class TreehouseAppContentTest {
   private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
   private val onBackPressedDispatcher = FakeOnBackPressedDispatcher(eventLog)
   private val codeHost = FakeCodeHost(
+    json = json,
     eventLog = eventLog,
     eventPublisher = eventPublisher,
     dispatchers = dispatchers,
@@ -531,6 +537,46 @@ class TreehouseAppContentTest {
     assertThat(view1.children.single()).isInstanceOf<Loading<*>>()
 
     content.unbind()
+  }
+
+  /** Request focus in guest code, and confirm it's effect on the host widget system. */
+  @Test
+  fun requestFocus() = runTest {
+    val content = treehouseAppContent()
+
+    val codeSession = codeHost.startCodeSession("codeSession")
+    val view = treehouseView("view")
+    content.bind(view)
+    val sessionContent = codeSession.appService.uis.single()
+
+    val nameFocusRequester = sessionContent.newFocusRequester()
+    val colorFocusRequester = sessionContent.newFocusRequester()
+
+    with(sessionContent) {
+      val nameWidgetId = addWidget("name")
+      nameWidgetId.modifier = Modifier.focusRequester(nameFocusRequester)
+
+      val colorWidgetId = addWidget("color")
+      colorWidgetId.modifier = Modifier.focusRequester(colorFocusRequester)
+
+      emitChanges()
+    }
+    content.awaitCodeLoaded()
+
+    val nameWidget = view.children.widgets.single { (it.value as? ButtonValue)?.text == "name" }
+    val colorWidget = view.children.widgets.single { (it.value as? ButtonValue)?.text == "color" }
+
+    assertThat(view.focused).isNull()
+
+    nameFocusRequester.requestFocus()
+    assertThat(view.focused).isEqualTo(nameWidget)
+
+    colorFocusRequester.requestFocus()
+    assertThat(view.focused).isEqualTo(colorWidget)
+
+    content.unbind()
+    content.awaitCodeDetached()
+    eventLog.clear()
   }
 
   private fun treehouseAppContent(): TreehouseAppContent<FakeAppService> {

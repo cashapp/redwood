@@ -69,6 +69,8 @@ abstract interface app.cash.redwood.treehouse/ZiplineTreehouseUi : app.cash.redw
             abstract fun <get-uiConfigurations>(): kotlinx.coroutines.flow/StateFlow<app.cash.redwood.ui/UiConfiguration> // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.uiConfigurations.<get-uiConfigurations>|<get-uiConfigurations>(){}[0]
 
         abstract fun addOnBackPressedCallback(app.cash.redwood.treehouse/OnBackPressedCallbackService): app.cash.redwood.treehouse/CancellableService // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.addOnBackPressedCallback|addOnBackPressedCallback(app.cash.redwood.treehouse.OnBackPressedCallbackService){}[0]
+        abstract fun hideSoftwareKeyboard() // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.hideSoftwareKeyboard|hideSoftwareKeyboard(){}[0]
+        abstract fun requestFocus(app.cash.redwood.ui.core.api/FocusRequester) // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.requestFocus|requestFocus(app.cash.redwood.ui.core.api.FocusRequester){}[0]
 
         final object Companion // app.cash.redwood.treehouse/ZiplineTreehouseUi.Host.Companion|null[0]
     }

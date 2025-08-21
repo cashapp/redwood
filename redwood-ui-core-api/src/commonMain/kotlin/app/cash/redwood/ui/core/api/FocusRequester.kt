@@ -13,7 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(RedwoodCodegenApi::class)
+
 package app.cash.redwood.ui.core.api
 
-// TODO(jwilson): implement the mechanics of this.
-public object FocusRequester
+import app.cash.redwood.RedwoodCodegenApi
+import kotlinx.serialization.Serializable
+
+/**
+ * Use this to request focus for a target widget.
+ *
+ * To use this, first create an instance in your composition:
+ *
+ * ```
+ *   val nameFieldFocusRequester = rememberFocusRequester()
+ * ```
+ *
+ * Next, attach the focus requester to a single widget using its modifier:
+ *
+ * ```
+ * TextInput(
+ *   modifier = Modifier.focusRequester(nameFieldFocusRequester),
+ *   state = nameState,
+ *   hint = "full name",
+ * )
+ * ```
+ *
+ * Finally, activate the focus requester in response to an appropriate event:
+ *
+ * ```
+ * Button(
+ *   text = "Submit",
+ *   onClick = {
+ *     if (nameState.text.isEmpty()) {
+ *       nameFieldFocusRequester.requestFocus()
+ *     }
+ *     ...
+ *   }
+ * )
+ * ```
+ */
+@Serializable(with = FocusRequesterSerializer::class)
+public interface FocusRequester {
+  public fun requestFocus()
+}

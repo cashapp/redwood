@@ -44,6 +44,7 @@ kotlin {
         implementation projects.redwoodUiCoreTesting
         implementation projects.redwoodUiCoreCompose
         implementation projects.redwoodWidget
+        implementation projects.testApp.schema.protocolGuest
         implementation projects.testApp.schema.protocolHost
         implementation projects.testApp.schema.testing
       }
@@ -72,6 +73,8 @@ dependencies {
   androidTestImplementation libs.assertk
   androidTestImplementation projects.redwoodLayoutTesting
   androidTestImplementation projects.redwoodLazylayoutTesting
+  androidTestImplementation projects.redwoodUiCoreCompose
+  androidTestImplementation projects.testApp.schema.protocolGuest
   androidTestImplementation projects.testApp.schema.protocolHost
   androidTestImplementation projects.testApp.schema.testing
 

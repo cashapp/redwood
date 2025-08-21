@@ -19,8 +19,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.serialization.json.Json
 
 internal class FakeCodeHost(
+  private val json: Json,
   private val eventLog: EventLog,
   private val eventPublisher: EventPublisher,
   private val dispatchers: TreehouseDispatchers,
@@ -52,7 +54,7 @@ internal class FakeCodeHost(
   }
 
   suspend fun startCodeSession(name: String): CodeSession<FakeAppService> {
-    val result = FakeCodeSession(dispatchers, eventPublisher, appScope, eventLog, name)
+    val result = FakeCodeSession(dispatchers, eventPublisher, appScope, json, eventLog, name)
     codeSessions!!.send(result)
     return result
   }

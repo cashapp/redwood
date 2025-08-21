@@ -95,6 +95,7 @@ private class RedwoodZiplineTreehouseUi(
       guestAdapter = guestAdapter,
       widgetVersion = appLifecycle.widgetVersion,
       onBackPressedDispatcher = host.asOnBackPressedDispatcher(),
+      focusDirector = GuestFocusDirector(host),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = host.uiConfigurations,
     )

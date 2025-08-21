@@ -39,6 +39,8 @@ import androidx.compose.runtime.structuralEqualityPolicy
 import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.api.FocusDirector
+import app.cash.redwood.widget.HostFocusDirector
 import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetFactoryOwner
@@ -100,6 +102,7 @@ public fun <W : Any> RedwoodComposition(
     scope,
     view.children,
     view.onBackPressedDispatcher,
+    HostFocusDirector(view),
     saveableStateRegistry,
     view.uiConfiguration,
     widgetSystem,
@@ -118,6 +121,7 @@ public fun <W : Any> RedwoodComposition(
   scope: CoroutineScope,
   container: Widget.Children<W>,
   onBackPressedDispatcher: OnBackPressedDispatcher,
+  focusDirector: FocusDirector,
   saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
   widgetSystem: WidgetSystem<W>,
@@ -126,6 +130,7 @@ public fun <W : Any> RedwoodComposition(
   return WidgetRedwoodComposition(
     scope,
     onBackPressedDispatcher,
+    focusDirector,
     saveableStateRegistry,
     uiConfigurations,
     NodeApplier(widgetSystem, container, onChanges),
@@ -135,6 +140,7 @@ public fun <W : Any> RedwoodComposition(
 private class WidgetRedwoodComposition<W : Any>(
   private val scope: CoroutineScope,
   private val onBackPressedDispatcher: OnBackPressedDispatcher,
+  private val focusDirector: FocusDirector,
   private val savedStateRegistry: SaveableStateRegistry?,
   private val uiConfigurations: StateFlow<UiConfiguration>,
   applier: NodeApplier<W>,
@@ -164,6 +170,7 @@ private class WidgetRedwoodComposition<W : Any>(
       val uiConfiguration by uiConfigurations.collectAsState()
       CompositionLocalProvider(
         LocalOnBackPressedDispatcher provides onBackPressedDispatcher,
+        LocalFocusDirector provides focusDirector,
         LocalSaveableStateRegistry provides savedStateRegistry,
         LocalUiConfiguration provides uiConfiguration,
         content = content,

@@ -6,3 +6,15 @@ redwoodBuild {
 }
 
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+
+kotlin {
+  sourceSets {
+    commonMain {
+      dependencies {
+        implementation libs.kotlinx.serialization.core
+        implementation projects.redwoodRuntime
+      }
+    }
+  }
+}

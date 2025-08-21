@@ -25,6 +25,7 @@ import app.cash.redwood.ui.basic.testing.RedwoodUiBasicTestingWidgetFactory
 import app.cash.redwood.ui.core.testing.RedwoodUiCoreTestingWidgetFactory
 import app.cash.redwood.widget.MutableListChildren
 import app.cash.redwood.widget.SavedStateRegistry
+import app.cash.redwood.widget.Widget
 import com.example.redwood.testapp.testing.TestSchemaTestingWidgetFactory
 import com.example.redwood.testapp.widget.TestSchemaWidgetSystem
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,6 +70,13 @@ internal class FakeTreehouseView(
   override val stateSnapshotId: StateSnapshot.Id = StateSnapshot.Id(null)
 
   override val savedStateRegistry: SavedStateRegistry? = null
+
+  var focused: Widget<WidgetValue>? = null
+    private set
+
+  override fun requestFocus(widget: Widget<WidgetValue>) {
+    this.focused = widget
+  }
 
   override fun toString() = name
 }

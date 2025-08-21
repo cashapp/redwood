@@ -5,6 +5,7 @@
 
 New:
 - Widget has a new `allChildren` property that returns all child widgets for general tree-traversal.
+- Focus API. Redwood has a new `FocusRequester` to focus a widget.
 
 Changed:
 - Nothing yet!

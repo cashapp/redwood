@@ -129,6 +129,10 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   protected open fun superviewChanged() {
   }
 
+  override fun requestFocus(widget: Widget<UIView>) {
+    widget.value.becomeFirstResponder()
+  }
+
   /**
    * In practice we expect this to contain either zero child subviews (especially when
    * newly-initialized) or one child subview, which will usually be a layout container.

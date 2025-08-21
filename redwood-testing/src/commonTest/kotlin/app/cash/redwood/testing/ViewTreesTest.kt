@@ -132,6 +132,7 @@ class ViewTreesTest {
           }
         }
       },
+      focusDirector = TestFocusDirector(),
       saveableStateRegistry = null,
       uiConfigurations = MutableStateFlow(UiConfiguration()),
     )

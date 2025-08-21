@@ -139,6 +139,10 @@ public open class RedwoodLayout(
       },
     )
   }
+
+  override fun requestFocus(widget: Widget<View>) {
+    widget.value.requestFocus()
+  }
 }
 
 private fun RedwoodOnBackPressedCallback.toAndroid(): AndroidOnBackPressedCallback =

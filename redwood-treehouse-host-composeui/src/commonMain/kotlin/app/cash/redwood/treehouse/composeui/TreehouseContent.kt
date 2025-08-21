@@ -46,6 +46,7 @@ import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.dp as redwoodDp
 import app.cash.redwood.widget.SavedStateRegistry
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,6 +95,10 @@ public fun <A : AppService> TreehouseContent(
       override var readyForContentChangeListener: ReadyForContentChangeListener<@Composable (Modifier) -> Unit>? = null
       override var saveCallback: TreehouseView.SaveCallback? = null
       override val stateSnapshotId = StateSnapshot.Id(null)
+
+      override fun requestFocus(widget: Widget<@Composable ((Modifier) -> Unit)>) {
+        // TODO: complete this.
+      }
     }
   }
   LaunchedEffect(treehouseView, uiConfiguration) {

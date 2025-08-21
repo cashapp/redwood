@@ -41,7 +41,7 @@ public final class app/cash/redwood/protocol/guest/ProtocolMismatchHandler$Compa
 }
 
 public final class app/cash/redwood/protocol/guest/ProtocolRedwoodCompositionKt {
-	public static final fun ProtocolRedwoodComposition-9-Eitbk (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;ILapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static final fun ProtocolRedwoodComposition-C-DY9sE (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/protocol/guest/GuestProtocolAdapter;ILapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/ui/core/api/FocusDirector;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;)Lapp/cash/redwood/compose/RedwoodComposition;
 }
 
 public abstract interface class app/cash/redwood/protocol/guest/ProtocolWidgetSystemFactory {

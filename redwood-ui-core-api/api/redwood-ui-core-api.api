@@ -1,4 +1,14 @@
-public final class app/cash/redwood/ui/core/api/FocusRequester {
-	public static final field INSTANCE Lapp/cash/redwood/ui/core/api/FocusRequester;
+public abstract interface class app/cash/redwood/ui/core/api/FocusDirector {
+	public abstract fun hideSoftwareKeyboard ()V
+	public abstract fun newFocusRequester ()Lapp/cash/redwood/ui/core/api/FocusRequester;
+}
+
+public abstract interface class app/cash/redwood/ui/core/api/FocusRequester {
+	public static final field Companion Lapp/cash/redwood/ui/core/api/FocusRequester$Companion;
+	public abstract fun requestFocus ()V
+}
+
+public final class app/cash/redwood/ui/core/api/FocusRequester$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

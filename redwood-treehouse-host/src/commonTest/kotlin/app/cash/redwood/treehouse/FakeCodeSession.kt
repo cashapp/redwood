@@ -20,20 +20,22 @@ import app.cash.redwood.protocol.host.HostProtocol
 import app.cash.redwood.protocol.host.hostRedwoodVersion
 import com.example.redwood.testapp.protocol.host.TestSchemaHostProtocol
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 
 internal class FakeCodeSession(
   dispatchers: TreehouseDispatchers,
   eventPublisher: EventPublisher,
   appScope: CoroutineScope,
+  json: Json,
   private val eventLog: EventLog,
   private val name: String,
 ) : CodeSession<FakeAppService>(
   dispatchers = dispatchers,
   eventPublisher = eventPublisher,
   appScope = appScope,
-  appService = FakeAppService("$name.app", eventLog),
+  appService = FakeAppService("$name.app", json, eventLog),
 ) {
-  override val hostProtocol: HostProtocol = TestSchemaHostProtocol.create()
+  override val hostProtocol: HostProtocol = TestSchemaHostProtocol.create(json)
 
   override val guestProtocolVersion: RedwoodVersion
     // Use latest host version as the guest version to avoid any compatibility behavior.

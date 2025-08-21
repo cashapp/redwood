@@ -64,6 +64,7 @@ class UIViewText :
       measureCount++
       return super.sizeThatFits(size)
     }
+    override fun canBecomeFirstResponder() = true // For AbstractRedwoodViewFocusTest.
   }.apply {
     numberOfLines = 0
     textColor = UIColor.blackColor

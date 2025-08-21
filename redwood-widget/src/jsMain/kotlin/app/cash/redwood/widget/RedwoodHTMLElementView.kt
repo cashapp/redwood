@@ -86,6 +86,10 @@ private class RedwoodHTMLElementView(
     //   https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver
   }
 
+  override fun requestFocus(widget: Widget<HTMLElement>) {
+    // TODO: complete this.
+  }
+
   private fun observePixelRatioChange() {
     // From https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#javascript_2.
 

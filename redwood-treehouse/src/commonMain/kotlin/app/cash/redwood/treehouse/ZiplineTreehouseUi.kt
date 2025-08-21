@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.protocol.EventSink
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.api.FocusRequester
 import app.cash.zipline.ZiplineService
 import kotlin.native.ObjCName
 import kotlinx.coroutines.flow.StateFlow
@@ -42,5 +43,7 @@ public interface ZiplineTreehouseUi :
     public val stateSnapshot: StateSnapshot?
 
     public fun addOnBackPressedCallback(onBackPressedCallbackService: OnBackPressedCallbackService): CancellableService
+    public fun hideSoftwareKeyboard()
+    public fun requestFocus(focusRequester: FocusRequester)
   }
 }

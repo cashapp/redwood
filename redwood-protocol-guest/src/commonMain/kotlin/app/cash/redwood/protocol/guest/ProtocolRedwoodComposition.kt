@@ -23,6 +23,7 @@ import app.cash.redwood.compose.LocalWidgetVersion
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
+import app.cash.redwood.ui.core.api.FocusDirector
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
@@ -36,6 +37,7 @@ public fun ProtocolRedwoodComposition(
   guestAdapter: GuestProtocolAdapter,
   widgetVersion: UInt,
   onBackPressedDispatcher: OnBackPressedDispatcher,
+  focusDirector: FocusDirector,
   saveableStateRegistry: SaveableStateRegistry?,
   uiConfigurations: StateFlow<UiConfiguration>,
 ): RedwoodComposition {
@@ -43,6 +45,7 @@ public fun ProtocolRedwoodComposition(
     scope = scope,
     container = guestAdapter.root,
     onBackPressedDispatcher = onBackPressedDispatcher,
+    focusDirector = focusDirector,
     saveableStateRegistry = saveableStateRegistry,
     uiConfigurations = uiConfigurations,
     widgetSystem = guestAdapter.widgetSystem,

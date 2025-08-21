@@ -24,10 +24,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 
 /** This test focuses on how [CodeHost] and its state machine. */
 @OptIn(ExperimentalCoroutinesApi::class)
 class CodeHostTest {
+  private val json = Json
   private val eventLog = EventLog()
   private val appScope = CoroutineScope(EmptyCoroutineContext)
 
@@ -35,6 +37,7 @@ class CodeHostTest {
   private val eventPublisher = FakeEventPublisher()
   private val dispatchers = FakeDispatchers(dispatcher, dispatcher)
   private val codeHost = FakeCodeHost(
+    json = json,
     eventLog = eventLog,
     eventPublisher = eventPublisher,
     dispatchers = dispatchers,

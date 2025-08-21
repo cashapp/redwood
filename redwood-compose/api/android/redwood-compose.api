@@ -26,6 +26,11 @@ public final class app/cash/redwood/compose/BackHandlerKt {
 	public static final fun getLocalOnBackPressedDispatcher ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 }
 
+public final class app/cash/redwood/compose/FocusKt {
+	public static final fun getLocalFocusDirector ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public static final fun rememberFocusRequester (Landroidx/compose/runtime/Composer;I)Lapp/cash/redwood/ui/core/api/FocusRequester;
+}
+
 public abstract interface class app/cash/redwood/compose/RedwoodComposition {
 	public abstract fun cancel ()V
 	public abstract fun setContent (Lkotlin/jvm/functions/Function2;)V
@@ -33,9 +38,9 @@ public abstract interface class app/cash/redwood/compose/RedwoodComposition {
 
 public final class app/cash/redwood/compose/RedwoodCompositionKt {
 	public static final fun RedwoodComposition (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/RedwoodView;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/compose/RedwoodComposition;
-	public static final fun RedwoodComposition (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static final fun RedwoodComposition (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/ui/core/api/FocusDirector;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;)Lapp/cash/redwood/compose/RedwoodComposition;
 	public static synthetic fun RedwoodComposition$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/RedwoodView;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/compose/RedwoodComposition;
-	public static synthetic fun RedwoodComposition$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/compose/RedwoodComposition;
+	public static synthetic fun RedwoodComposition$default (Lkotlinx/coroutines/CoroutineScope;Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/OnBackPressedDispatcher;Lapp/cash/redwood/ui/core/api/FocusDirector;Landroidx/compose/runtime/saveable/SaveableStateRegistry;Lkotlinx/coroutines/flow/StateFlow;Lapp/cash/redwood/widget/WidgetSystem;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lapp/cash/redwood/compose/RedwoodComposition;
 }
 
 public final class app/cash/redwood/compose/UiConfigurationKt {

@@ -33,4 +33,6 @@ public interface RedwoodView<W : Any> {
    * a snapshot of the most-recent content, but the content will ignore user actions.
    */
   public val children: Widget.Children<W>
+
+  public fun requestFocus(widget: Widget<W>)
 }

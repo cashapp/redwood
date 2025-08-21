@@ -6,4 +6,16 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-ui-core-api>
-final object app.cash.redwood.ui.core.api/FocusRequester // app.cash.redwood.ui.core.api/FocusRequester|null[0]
+abstract interface app.cash.redwood.ui.core.api/FocusDirector { // app.cash.redwood.ui.core.api/FocusDirector|null[0]
+    abstract fun hideSoftwareKeyboard() // app.cash.redwood.ui.core.api/FocusDirector.hideSoftwareKeyboard|hideSoftwareKeyboard(){}[0]
+    abstract fun newFocusRequester(): app.cash.redwood.ui.core.api/FocusRequester // app.cash.redwood.ui.core.api/FocusDirector.newFocusRequester|newFocusRequester(){}[0]
+}
+
+abstract interface app.cash.redwood.ui.core.api/FocusRequester { // app.cash.redwood.ui.core.api/FocusRequester|null[0]
+    abstract fun requestFocus() // app.cash.redwood.ui.core.api/FocusRequester.requestFocus|requestFocus(){}[0]
+
+    final object Companion : kotlinx.serialization.internal/SerializerFactory { // app.cash.redwood.ui.core.api/FocusRequester.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<app.cash.redwood.ui.core.api/FocusRequester> // app.cash.redwood.ui.core.api/FocusRequester.Companion.serializer|serializer(){}[0]
+        final fun serializer(kotlin/Array<out kotlinx.serialization/KSerializer<*>>...): kotlinx.serialization/KSerializer<*> // app.cash.redwood.ui.core.api/FocusRequester.Companion.serializer|serializer(kotlin.Array<out|kotlinx.serialization.KSerializer<*>>...){}[0]
+    }
+}
