@@ -26,7 +26,6 @@ import app.cash.redwood.protocol.guest.ProtocolWidget
 import app.cash.redwood.protocol.guest.guestRedwoodVersion
 import app.cash.redwood.ui.core.api.FocusDirector
 import app.cash.redwood.ui.core.api.FocusRequester
-import app.cash.redwood.ui.core.api.SerializableFocusRequester
 import com.example.redwood.testapp.protocol.guest.TestSchemaProtocolWidgetSystemFactory
 import com.example.redwood.testapp.widget.Button
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -127,8 +126,8 @@ class FakeZiplineTreehouseUi(
     eventLog += "$name.close()"
   }
 
-  @OptIn(RedwoodCodegenApi::class)
-  private inner class FakeFocusRequester : SerializableFocusRequester {
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // For SerializableFocusRequester.
+  private inner class FakeFocusRequester : app.cash.redwood.ui.core.api.SerializableFocusRequester {
     override val id = nextFocusRequesterId++
 
     override fun requestFocus() {

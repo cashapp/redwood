@@ -15,10 +15,8 @@
  */
 package app.cash.redwood.treehouse
 
-import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.ui.core.api.FocusDirector
 import app.cash.redwood.ui.core.api.FocusRequester
-import app.cash.redwood.ui.core.api.SerializableFocusRequester
 
 /** This forwards focus requests to the host. */
 internal class GuestFocusDirector(
@@ -32,8 +30,8 @@ internal class GuestFocusDirector(
 
   override fun newFocusRequester(): FocusRequester = GuestFocusRequester()
 
-  @OptIn(RedwoodCodegenApi::class)
-  private inner class GuestFocusRequester : SerializableFocusRequester {
+  @Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // For SerializableFocusRequester.
+  private inner class GuestFocusRequester : app.cash.redwood.ui.core.api.SerializableFocusRequester {
     override val id = nextFocusRequesterId++
     override fun requestFocus() {
       host.requestFocus(this)

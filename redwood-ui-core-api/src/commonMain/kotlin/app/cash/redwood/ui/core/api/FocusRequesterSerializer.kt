@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.ui.core.api
 
-import app.cash.redwood.RedwoodCodegenApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -31,7 +30,6 @@ import kotlinx.serialization.encoding.Encoder
  * As a modifier this serves the first role only, and can be safely serialized as data. And when
  * instances of [FocusRequester] are serialized, they lose the other capability.
  */
-@RedwoodCodegenApi
 internal object FocusRequesterSerializer : KSerializer<FocusRequester> {
   private val delegate = FocusRequesterId.serializer()
 
@@ -54,9 +52,8 @@ internal object FocusRequesterSerializer : KSerializer<FocusRequester> {
  * A [FocusRequester] that is eligible to be serialized. Regardless of the source object's class,
  * the deserialized object will always be an instance of [FocusRequesterId].
  */
-@RedwoodCodegenApi
-public interface SerializableFocusRequester : FocusRequester {
-  public val id: Int
+internal interface SerializableFocusRequester : FocusRequester {
+  val id: Int
 }
 
 /**
@@ -64,7 +61,6 @@ public interface SerializableFocusRequester : FocusRequester {
  * class to support [equals] and [hashCode], and two instances with the same ID are equal.
  */
 @Serializable
-@RedwoodCodegenApi
 private data class FocusRequesterId(
   override val id: Int,
 ) : SerializableFocusRequester {
