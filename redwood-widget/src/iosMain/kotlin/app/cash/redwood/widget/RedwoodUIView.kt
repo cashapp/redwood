@@ -45,8 +45,14 @@ import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirect
 import platform.UIKit.UIUserInterfaceLayoutDirection.UIUserInterfaceLayoutDirectionRightToLeft
 import platform.UIKit.UIUserInterfaceStyle
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 import platform.darwin.NSInteger
 
+/**
+ * This view must be explicitly configured to know whether its dimensions are derived by measuring
+ * its contents, or whether they are provided by the superview. Use [fillWidth] and [fillHeight] to
+ * accept the parent's provided width and height respectively.
+ */
 @ObjCName("RedwoodUIView", exact = true)
 public open class RedwoodUIView : RedwoodView<UIView> {
   private val valueRootView: RootUIStackView = RootUIStackView()
@@ -107,6 +113,9 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val savedStateRegistry: SavedStateRegistry?
     get() = null
 
+  public var fillWidth: Boolean = false
+  public var fillHeight: Boolean = false
+
   private fun updateUiConfiguration() {
     mutableUiConfiguration.value = computeUiConfiguration(
       density = density,
@@ -131,6 +140,17 @@ public open class RedwoodUIView : RedwoodView<UIView> {
     /** Safe area insets specified by the superview. */
     val incomingSafeAreaInsets: CValue<UIEdgeInsets>
       get() = super.safeAreaInsets
+
+    private var widthForIntrinsicSize = UIViewNoIntrinsicMetric
+      set(value) {
+        field = value
+        invalidateIntrinsicContentSize()
+      }
+    private var heightForIntrinsicSize = UIViewNoIntrinsicMetric
+      set(value) {
+        field = value
+        invalidateIntrinsicContentSize()
+      }
 
     init {
       this.setInsetsLayoutMarginsFromSafeArea(false) // Consume insets internally.
@@ -169,8 +189,60 @@ public open class RedwoodUIView : RedwoodView<UIView> {
       }
     }
 
+    override fun setBounds(bounds: CValue<CGRect>) {
+      updateFrameForIntrinsicSize(bounds)
+      super.setBounds(bounds)
+    }
+
+    override fun setFrame(frame: CValue<CGRect>) {
+      updateFrameForIntrinsicSize(frame)
+      super.setFrame(frame)
+    }
+
+    /**
+     * The intrinsic size is broken by design if any subview's height depends on its width (or
+     * vice-versa). For example, if a subview is UILabel that wraps, we need to know how wide the
+     * label is before we can compute that label's height.
+     *
+     * We work around this by:
+     *
+     *  1. Making [intrinsicContentSize] depend on the mostly-recently applied frame
+     *  2. Invalidating it each time the frame changes
+     *
+     * This will result in an additional layout pass when the superview uses [intrinsicContentSize].
+     */
+    private fun updateFrameForIntrinsicSize(frame: CValue<CGRect>) {
+      val newWidth = frame.useContents { size.width }
+      val newHeight = frame.useContents { size.height }
+
+      if (
+        (fillWidth && newWidth != widthForIntrinsicSize) ||
+        (fillHeight && newHeight != heightForIntrinsicSize)
+      ) {
+        invalidateIntrinsicContentSize()
+      }
+
+      this.widthForIntrinsicSize = when {
+        fillWidth -> newWidth
+        else -> UIViewNoIntrinsicMetric
+      }
+      this.heightForIntrinsicSize = when {
+        fillHeight -> newHeight
+        else -> UIViewNoIntrinsicMetric
+      }
+    }
+
     override fun intrinsicContentSize(): CValue<CGSize> {
-      return maxSizeOfSubviews { it.intrinsicContentSize() }
+      return when {
+        widthForIntrinsicSize == UIViewNoIntrinsicMetric &&
+          heightForIntrinsicSize == UIViewNoIntrinsicMetric -> {
+          maxSizeOfSubviews { it.intrinsicContentSize() }
+        }
+
+        else -> {
+          sizeThatFits(CGSizeMake(widthForIntrinsicSize, heightForIntrinsicSize))
+        }
+      }
     }
 
     private fun maxSizeOfSubviews(
