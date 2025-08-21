@@ -29,13 +29,13 @@ import com.squareup.kotlinpoet.FLOAT
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
+import com.squareup.kotlinpoet.KModifier.ABSTRACT
 import com.squareup.kotlinpoet.KModifier.INTERNAL
 import com.squareup.kotlinpoet.KModifier.OVERRIDE
 import com.squareup.kotlinpoet.KModifier.PRIVATE
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
@@ -52,63 +52,54 @@ private val composeUiWidgetType = LambdaTypeName.get(
   ),
 )
 
-private val Widget.composeUiLambdaType: TypeName get() {
-  val parameters = traits.mapNotNull { trait ->
-    when (trait) {
-      is Event -> ParameterSpec.builder(trait.name, trait.lambdaType).build()
-      is Property -> ParameterSpec.builder(trait.name, trait.type.asTypeName()).build()
-      is Children -> null
-      is ProtocolTrait -> throw AssertionError()
-    }
-  }
-  val modifierParameter = ParameterSpec.builder("modifier", ComposeUi.Modifier).build()
-  return LambdaTypeName.get(
-    receiver = null,
-    parameters = parameters + modifierParameter,
-    returnType = UNIT,
-  ).copy(
-    annotations = listOf(
-      AnnotationSpec.builder(ComposeRuntime.Composable).build(),
-    ),
-  )
+private fun Schema.composeUiWidgetFactoryType(): ClassName {
+  return ClassName(composeUiPackage(), "AbstractComposeUi" + getWidgetFactoryType().simpleName)
 }
 
 private fun Schema.composeUiWidgetType(widget: Widget): ClassName {
   return ClassName(composeUiPackage(), "ComposeUi" + widget.type.flatName)
 }
 
+private fun Widget.factoryFunction() = type.flatName + "Binding"
+
 internal fun generateComposeUiWidgetFactory(schema: Schema): FileSpec {
   val widgetFactoryType = schema.getWidgetFactoryType()
-  val thisType = ClassName(schema.composeUiPackage(), "ComposeUi" + widgetFactoryType.simpleName)
+  val thisType = schema.composeUiWidgetFactoryType()
   return buildFileSpec(thisType) {
     addAnnotation(suppressDeprecations)
     addType(
       buildClassSpec(thisType) {
+        addModifiers(ABSTRACT)
         addSuperinterface(widgetFactoryType.parameterizedBy(composeUiWidgetType))
 
-        val constructor = FunSpec.constructorBuilder()
-
         for (widget in schema.widgets) {
-          val flatName = widget.type.flatName
-
-          constructor.addParameter(flatName, widget.composeUiLambdaType)
-          addProperty(
-            PropertySpec.builder(flatName, widget.composeUiLambdaType)
-              .addModifiers(PRIVATE)
-              .initializer(flatName)
+          addFunction(
+            FunSpec.builder(widget.type.flatName)
+              .returns(schema.widgetType(widget).parameterizedBy(composeUiWidgetType))
+              .addModifiers(OVERRIDE)
+              .addStatement("return %T(this)", schema.composeUiWidgetType(widget))
               .build(),
           )
 
           addFunction(
-            FunSpec.builder(flatName)
-              .returns(schema.widgetType(widget).parameterizedBy(composeUiWidgetType))
-              .addModifiers(OVERRIDE)
-              .addStatement("return %T(%N)", schema.composeUiWidgetType(widget), flatName)
+            FunSpec.builder(widget.factoryFunction())
+              .addModifiers(ABSTRACT)
+              .addAnnotation(ComposeRuntime.Composable)
+              .apply {
+                for (trait in widget.traits) {
+                  val type = when (trait) {
+                    is Property -> trait.type.asTypeName()
+                    is Event -> trait.lambdaType
+                    is Children -> UNIT
+                    is ProtocolTrait -> throw AssertionError()
+                  }
+                  addParameter(trait.name, type)
+                }
+              }
+              .addParameter("modifier", ComposeUi.Modifier)
               .build(),
           )
         }
-
-        primaryConstructor(constructor.build())
 
         for (modifier in schema.unscopedModifiers) {
           addFunction(
@@ -126,6 +117,7 @@ internal fun generateComposeUiWidgetFactory(schema: Schema): FileSpec {
 
 internal fun generateComposeUiBinding(schema: Schema, widget: Widget): FileSpec {
   val widgetType = schema.widgetType(widget)
+  val widgetFactoryType = schema.composeUiWidgetFactoryType()
   val thisType = schema.composeUiWidgetType(widget)
   return buildFileSpec(thisType) {
     addAnnotation(suppressDeprecations)
@@ -136,13 +128,13 @@ internal fun generateComposeUiBinding(schema: Schema, widget: Widget): FileSpec 
 
         primaryConstructor(
           FunSpec.constructorBuilder()
-            .addParameter("delegate", widget.composeUiLambdaType)
+            .addParameter("factory", widgetFactoryType)
             .build(),
         )
         addProperty(
-          PropertySpec.builder("delegate", widget.composeUiLambdaType)
+          PropertySpec.builder("factory", widgetFactoryType)
             .addModifiers(PRIVATE)
-            .initializer("delegate")
+            .initializer("factory")
             .build(),
         )
 
@@ -229,7 +221,7 @@ internal fun generateComposeUiBinding(schema: Schema, widget: Widget): FileSpec 
               CodeBlock.builder()
                 .add("{ modifier ->\n")
                 .indent()
-                .add("this.delegate.invoke(\n")
+                .add("this.factory.%N(\n", widget.factoryFunction())
                 .indent()
                 .add(delegateArguments.joinToCode(",\n"))
                 .add(",\nmodifier,\n")

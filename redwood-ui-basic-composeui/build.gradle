@@ -6,6 +6,7 @@ redwoodBuild {
 }
 
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'app.cash.redwood.generator.widget.composeui'
 
 kotlin {
   sourceSets {
@@ -21,6 +22,11 @@ kotlin {
       }
     }
   }
+}
+
+redwoodSchema {
+  source = projects.redwoodUiBasicSchema
+  type = 'app.cash.redwood.ui.basic.RedwoodUiBasic'
 }
 
 android {

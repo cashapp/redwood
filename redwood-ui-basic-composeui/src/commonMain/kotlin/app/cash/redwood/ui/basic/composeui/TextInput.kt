@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Square, Inc.
+ * Copyright (C) 2025 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import app.cash.redwood.Modifier as RedwoodModifier
 import app.cash.redwood.ui.basic.api.TextFieldState
-import app.cash.redwood.ui.basic.widget.TextInput
+
+@Composable
+internal fun TextInput(
+  state: TextFieldState,
+  hint: String,
+  onChange: ((TextFieldState) -> Unit)?,
+  modifier: Modifier = Modifier.Companion,
+) {
+  // Preserve 'composition' and other state properties that we don't modify.
+  var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
+
+  TextField(
+    modifier = modifier,
+    value = textFieldValue.copy(
+      text = state.text,
+      selection = TextRange(state.selectionStart, state.selectionEnd),
+    ),
+    label = {
+      if (hint.isNotEmpty()) {
+        Text(hint)
+      }
+    },
+    maxLines = 2,
+    onValueChange = { newValue ->
+      textFieldValue = newValue
+      // TODO stateChanged(newValue)
+    },
+  )
+}
+
+/*
 
 internal class ComposeUiTextInput : TextInput<@Composable (Modifier) -> Unit> {
   private var state by mutableStateOf(TextFieldState())
@@ -105,3 +134,5 @@ internal class ComposeUiTextInput : TextInput<@Composable (Modifier) -> Unit> {
     }
   }
 }
+
+*/
