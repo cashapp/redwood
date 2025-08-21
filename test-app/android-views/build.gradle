@@ -14,6 +14,7 @@ dependencies {
   implementation projects.testApp.presenterTreehouse
   implementation projects.testApp.schema.protocolHost
   implementation projects.redwoodUiBasicView
+  implementation projects.redwoodUiCoreView
   implementation projects.redwoodLayoutView
   implementation projects.redwoodLazylayoutView
   implementation libs.androidx.appCompat
