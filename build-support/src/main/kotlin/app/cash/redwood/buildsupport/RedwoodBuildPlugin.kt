@@ -155,6 +155,12 @@ class RedwoodBuildPlugin : Plugin<Project> {
         it.exceptionFormat = FULL
       }
     }
+    // Paparazzi's ByteBuddy only knows up to JDK 22 and otherwise pessimistically fails on newer.
+    pluginManager.withPlugin("app.cash.paparazzi") {
+      tasks.withType(Test::class.java).configureEach { task ->
+        task.systemProperty("net.bytebuddy.experimental", "true")
+      }
+    }
   }
 
   private fun Project.configureCommonAndroid() {
