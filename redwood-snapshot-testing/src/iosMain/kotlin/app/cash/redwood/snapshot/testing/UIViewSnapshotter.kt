@@ -24,6 +24,7 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
+import platform.UIKit.UIViewNoIntrinsicMetric
 
 /**
  * Snapshot the subject on a white background.
@@ -89,15 +90,10 @@ class UIViewSnapshotter(
     if (heightConstraint == Constraint.Wrap && !scrolling) {
       val widget = subject.subviews[0] as UIView
 
-      widget.setFrame(
-        CGRectMake(
-          x = 0.0,
-          y = 0.0,
-          width = screenSize.useContents { width },
-          height = 0.0,
-        )
+      widget.setFrame(CGRectMake(0.0, 0.0, 0.0, 0.0))
+      val wrapSize = widget.sizeThatFits(
+        screenSize.useContents { CGSizeMake(width, UIViewNoIntrinsicMetric) },
       )
-      val wrapSize = widget.intrinsicContentSize()
 
       val frame = wrapSize.useContents { CGRectMake(0.0, 0.0, width, height) }
       subject.setFrame(frame)
