@@ -19,6 +19,7 @@ import app.cash.redwood.tooling.codegen.CodegenType.Compose
 import app.cash.redwood.tooling.codegen.CodegenType.Modifiers
 import app.cash.redwood.tooling.codegen.CodegenType.Testing
 import app.cash.redwood.tooling.codegen.CodegenType.Widget
+import app.cash.redwood.tooling.codegen.CodegenType.WidgetComposeUi
 import app.cash.redwood.tooling.schema.SchemaSet
 import com.squareup.kotlinpoet.FileSpec
 import java.nio.file.Path
@@ -28,6 +29,7 @@ public enum class CodegenType {
   Modifiers,
   Testing,
   Widget,
+  WidgetComposeUi,
 }
 
 public fun SchemaSet.generate(type: CodegenType, destination: Path) {
@@ -70,6 +72,13 @@ internal fun SchemaSet.generateFileSpecs(type: CodegenType): List<FileSpec> {
         add(generateWidgetFactory(schema))
         for (widget in schema.widgets) {
           add(generateWidget(schema, widget))
+        }
+      }
+
+      WidgetComposeUi -> {
+        add(generateComposeUiWidgetFactory(schema))
+        for (widget in schema.widgets) {
+          add(generateComposeUiBinding(schema, widget))
         }
       }
     }

@@ -96,8 +96,20 @@ internal object RedwoodCompose {
 }
 
 internal object ComposeRuntime {
+  val mutableStateOf = MemberName("androidx.compose.runtime", "mutableStateOf")
+  val mutableIntStateOf = MemberName("androidx.compose.runtime", "mutableIntStateOf")
+  val mutableLongStateOf = MemberName("androidx.compose.runtime", "mutableLongStateOf")
+  val mutableDoubleStateOf = MemberName("androidx.compose.runtime", "mutableDoubleStateOf")
+  val mutableFloatStateOf = MemberName("androidx.compose.runtime", "mutableFloatStateOf")
+  val getValue = MemberName("androidx.compose.runtime", "getValue")
+  val setValue = MemberName("androidx.compose.runtime", "setValue")
   val Composable = ClassName("androidx.compose.runtime", "Composable")
+  val MutableState = ClassName("androidx.compose.runtime", "MutableState")
   val Stable = ClassName("androidx.compose.runtime", "Stable")
+}
+
+internal object ComposeUi {
+  val Modifier = ClassName("androidx.compose.ui", "Modifier")
 }
 
 internal object AndroidxCollection {
