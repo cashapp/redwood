@@ -2,16 +2,6 @@ public abstract interface class app/cash/redwood/widget/ChangeListener {
 	public abstract fun onEndChanges ()V
 }
 
-public final class app/cash/redwood/widget/HostFocusDirector : app/cash/redwood/ui/core/api/FocusDirector {
-	public fun <init> (Lapp/cash/redwood/widget/RedwoodView;)V
-	public fun hideSoftwareKeyboard ()V
-	public fun newFocusRequester ()Lapp/cash/redwood/ui/core/api/FocusRequester;
-}
-
-public final class app/cash/redwood/widget/HostFocusDirectorKt {
-	public static final fun findFocusRequesterRecursive (Lapp/cash/redwood/widget/Widget$Children;Lapp/cash/redwood/ui/core/api/FocusRequester;)Lapp/cash/redwood/widget/Widget;
-}
-
 public final class app/cash/redwood/widget/MutableListChildren : app/cash/redwood/widget/Widget$Children, java/util/List, kotlin/jvm/internal/markers/KMutableList {
 	public fun <init> ()V
 	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function0;)V

@@ -14,8 +14,6 @@ kotlin {
       dependencies {
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
-        api projects.redwoodUiCoreApi
-        api projects.redwoodUiCoreModifiers
       }
     }
     commonTest {

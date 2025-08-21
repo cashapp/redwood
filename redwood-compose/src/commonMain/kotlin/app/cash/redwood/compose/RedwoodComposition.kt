@@ -40,7 +40,6 @@ import app.cash.redwood.RedwoodCodegenApi
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.UiConfiguration
 import app.cash.redwood.ui.core.api.FocusDirector
-import app.cash.redwood.widget.HostFocusDirector
 import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetFactoryOwner

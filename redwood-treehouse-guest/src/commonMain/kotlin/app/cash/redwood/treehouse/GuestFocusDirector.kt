@@ -21,7 +21,7 @@ import app.cash.redwood.ui.core.api.FocusRequester
 import app.cash.redwood.ui.core.api.SerializableFocusRequester
 
 /** This forwards focus requests to the host. */
-public class GuestFocusDirector(
+internal class GuestFocusDirector(
   private val host: ZiplineTreehouseUi.Host,
 ) : FocusDirector {
   private var nextFocusRequesterId = 3000

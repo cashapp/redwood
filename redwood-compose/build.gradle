@@ -27,6 +27,7 @@ kotlin {
         api libs.kotlinx.coroutines.core
         api projects.redwoodRuntime
         api projects.redwoodUiCoreApi
+        api projects.redwoodUiCoreModifiers
         api projects.redwoodWidget
         api libs.jetbrains.compose.runtime
         api libs.jetbrains.compose.runtime.saveable

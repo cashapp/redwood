@@ -6,13 +6,6 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-treehouse-guest>
-final class app.cash.redwood.treehouse/GuestFocusDirector : app.cash.redwood.ui.core.api/FocusDirector { // app.cash.redwood.treehouse/GuestFocusDirector|null[0]
-    constructor <init>(app.cash.redwood.treehouse/ZiplineTreehouseUi.Host) // app.cash.redwood.treehouse/GuestFocusDirector.<init>|<init>(app.cash.redwood.treehouse.ZiplineTreehouseUi.Host){}[0]
-
-    final fun hideSoftwareKeyboard() // app.cash.redwood.treehouse/GuestFocusDirector.hideSoftwareKeyboard|hideSoftwareKeyboard(){}[0]
-    final fun newFocusRequester(): app.cash.redwood.ui.core.api/FocusRequester // app.cash.redwood.treehouse/GuestFocusDirector.newFocusRequester|newFocusRequester(){}[0]
-}
-
 final class app.cash.redwood.treehouse/StandardAppLifecycle : app.cash.redwood.treehouse/AppLifecycle { // app.cash.redwood.treehouse/StandardAppLifecycle|null[0]
     constructor <init>(app.cash.redwood.protocol.guest/ProtocolWidgetSystemFactory, kotlinx.serialization.json/Json, kotlin/UInt) // app.cash.redwood.treehouse/StandardAppLifecycle.<init>|<init>(app.cash.redwood.protocol.guest.ProtocolWidgetSystemFactory;kotlinx.serialization.json.Json;kotlin.UInt){}[0]
 

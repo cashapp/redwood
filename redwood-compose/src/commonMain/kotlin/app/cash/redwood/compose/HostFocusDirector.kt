@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.widget
+package app.cash.redwood.compose
 
 import app.cash.redwood.ui.core.api.FocusDirector
 import app.cash.redwood.ui.core.api.FocusRequester
 import app.cash.redwood.ui.core.modifier.FocusRequester as FocusRequesterElement
+import app.cash.redwood.widget.RedwoodView
+import app.cash.redwood.widget.Widget
 
 /**
  * When an [FocusRequester] is activated, this finds the corresponding element and then gets
  * [RedwoodView] to do the work.
  */
-public class HostFocusDirector<W : Any>(
+internal class HostFocusDirector<W : Any>(
   private val redwoodView: RedwoodView<W>,
 ) : FocusDirector {
   override fun hideSoftwareKeyboard() {
@@ -40,7 +42,7 @@ public class HostFocusDirector<W : Any>(
 }
 
 /** Returns the widget with [focusRequester] as one of its modifiers. */
-public fun <W : Any> Widget.Children<W>.findFocusRequesterRecursive(
+internal fun <W : Any> Widget.Children<W>.findFocusRequesterRecursive(
   focusRequester: FocusRequester,
 ): Widget<W>? {
   return widgets.depthFirst().firstNotNullOfOrNull { widget ->

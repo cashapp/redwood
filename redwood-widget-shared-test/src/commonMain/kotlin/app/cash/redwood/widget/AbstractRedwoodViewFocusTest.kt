@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE") // for HostFocusDirector.
+
 package app.cash.redwood.widget
 
 import app.cash.redwood.Modifier
+import app.cash.redwood.compose.HostFocusDirector
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.core.api.FocusRequester

@@ -59,13 +59,6 @@ abstract interface app.cash.redwood.widget/SavedStateRegistry { // app.cash.redw
     abstract fun unregisterSavedStateProvider() // app.cash.redwood.widget/SavedStateRegistry.unregisterSavedStateProvider|unregisterSavedStateProvider(){}[0]
 }
 
-final class <#A: kotlin/Any> app.cash.redwood.widget/HostFocusDirector : app.cash.redwood.ui.core.api/FocusDirector { // app.cash.redwood.widget/HostFocusDirector|null[0]
-    constructor <init>(app.cash.redwood.widget/RedwoodView<#A>) // app.cash.redwood.widget/HostFocusDirector.<init>|<init>(app.cash.redwood.widget.RedwoodView<1:0>){}[0]
-
-    final fun hideSoftwareKeyboard() // app.cash.redwood.widget/HostFocusDirector.hideSoftwareKeyboard|hideSoftwareKeyboard(){}[0]
-    final fun newFocusRequester(): app.cash.redwood.ui.core.api/FocusRequester // app.cash.redwood.widget/HostFocusDirector.newFocusRequester|newFocusRequester(){}[0]
-}
-
 final class <#A: kotlin/Any> app.cash.redwood.widget/MutableListChildren : app.cash.redwood.widget/Widget.Children<#A>, kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> { // app.cash.redwood.widget/MutableListChildren|null[0]
     constructor <init>(kotlin.collections/MutableList<app.cash.redwood.widget/Widget<#A>> = ..., kotlin/Function0<kotlin/Unit> = ...) // app.cash.redwood.widget/MutableListChildren.<init>|<init>(kotlin.collections.MutableList<app.cash.redwood.widget.Widget<1:0>>;kotlin.Function0<kotlin.Unit>){}[0]
 
@@ -106,8 +99,6 @@ final class <#A: kotlin/Any> app.cash.redwood.widget/MutableListChildren : app.c
     // Targets: [js]
     final fun asJsReadonlyArrayView(): kotlin.js.collections/JsReadonlyArray<app.cash.redwood.widget/Widget<#A>> // app.cash.redwood.widget/MutableListChildren.asJsReadonlyArrayView|asJsReadonlyArrayView(){}[0]
 }
-
-final fun <#A: kotlin/Any> (app.cash.redwood.widget/Widget.Children<#A>).app.cash.redwood.widget/findFocusRequesterRecursive(app.cash.redwood.ui.core.api/FocusRequester): app.cash.redwood.widget/Widget<#A>? // app.cash.redwood.widget/findFocusRequesterRecursive|findFocusRequesterRecursive@app.cash.redwood.widget.Widget.Children<0:0>(app.cash.redwood.ui.core.api.FocusRequester){0§<kotlin.Any>}[0]
 
 // Targets: [ios]
 abstract interface <#A: kotlin/Any> app.cash.redwood.widget/ResizableWidget : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.widget/ResizableWidget|null[0]
