@@ -46,9 +46,9 @@ import kotlin.time.Duration
   ],
   dependencies = [
     Dependency(1, RedwoodUiBasic::class),
-    Dependency(2, RedwoodUiCore::class),
-    Dependency(3, RedwoodLayout::class),
-    Dependency(4, RedwoodLazyLayout::class),
+    Dependency(2, RedwoodLayout::class),
+    Dependency(3, RedwoodLazyLayout::class),
+    Dependency(4, RedwoodUiCore::class),
   ],
 )
 interface TestSchema
