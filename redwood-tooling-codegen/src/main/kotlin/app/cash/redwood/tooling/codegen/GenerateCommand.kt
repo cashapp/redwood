@@ -40,6 +40,7 @@ internal class GenerateCommand : CliktCommand(name = "generate") {
       "--protocol-host" to ProtocolCodegenType.Host,
       "--testing" to CodegenType.Testing,
       "--widget" to CodegenType.Widget,
+      "--widget-compose-ui" to CodegenType.WidgetComposeUi,
     )
     .help("Type of code to generate")
     .required()

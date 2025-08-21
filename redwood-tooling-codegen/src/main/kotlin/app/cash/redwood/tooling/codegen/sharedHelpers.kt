@@ -67,6 +67,7 @@ internal val Event.lambdaType: TypeName
 
 internal val Schema.unscopedModifiers get() = modifiers.filter { it.scopes.isEmpty() }
 
+internal fun Schema.composeUiPackage() = type.names[0] + ".composeui"
 internal fun Schema.composePackage() = type.names[0] + ".compose"
 internal fun Schema.modifierPackage() = type.names[0] + ".modifier"
 internal fun Schema.testingPackage() = type.names[0] + ".testing"
