@@ -11,6 +11,7 @@ kotlin {
       dependencies {
         implementation libs.kotlinx.coroutines.core
         implementation libs.okio
+        implementation npm("html-to-image", "1.11.13")
       }
     }
     commonTest {

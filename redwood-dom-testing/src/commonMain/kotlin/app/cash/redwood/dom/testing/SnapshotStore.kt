@@ -21,14 +21,23 @@ import kotlinx.coroutines.await
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.w3c.fetch.RequestInit
+import org.w3c.files.Blob
 
 internal class SnapshotStore {
   suspend fun put(fileName: String, data: ByteString) {
+    putInternal(fileName, data.toByteArray())
+  }
+
+  suspend fun put(fileName: String, data: Blob) {
+    putInternal(fileName, data)
+  }
+
+  private suspend fun putInternal(fileName: String, data: dynamic) {
     val response = window.fetch(
       input = "/snapshots/$fileName",
       init = RequestInit(
         method = "POST",
-        body = data.toByteArray(),
+        body = data,
       ),
     ).await()
 
