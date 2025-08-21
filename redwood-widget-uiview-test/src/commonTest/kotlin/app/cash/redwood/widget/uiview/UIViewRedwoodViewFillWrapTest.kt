@@ -36,7 +36,10 @@ class UIViewRedwoodViewFillWrapTest(
 ) : AbstractRedwoodViewTest<UIView, RedwoodUIView>() {
   override val widgetFactory = UIViewTestWidgetFactory
 
-  override fun redwoodView() = RedwoodUIView()
+  override fun redwoodView() = RedwoodUIView().apply {
+    this.fillWidth = true
+    this.fillHeight = false
+  }
 
   override fun snapshotter(redwoodView: RedwoodUIView) =
     UIViewSnapshotter.framed(

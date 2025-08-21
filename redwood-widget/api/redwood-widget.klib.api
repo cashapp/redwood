@@ -136,6 +136,13 @@ open class app.cash.redwood.widget/RedwoodUIView : app.cash.redwood.widget/Redwo
     open val value // app.cash.redwood.widget/RedwoodUIView.value|{}value[0]
         open fun <get-value>(): platform.UIKit/UIView // app.cash.redwood.widget/RedwoodUIView.value.<get-value>|<get-value>(){}[0]
 
+    final var fillHeight // app.cash.redwood.widget/RedwoodUIView.fillHeight|{}fillHeight[0]
+        final fun <get-fillHeight>(): kotlin/Boolean // app.cash.redwood.widget/RedwoodUIView.fillHeight.<get-fillHeight>|<get-fillHeight>(){}[0]
+        final fun <set-fillHeight>(kotlin/Boolean) // app.cash.redwood.widget/RedwoodUIView.fillHeight.<set-fillHeight>|<set-fillHeight>(kotlin.Boolean){}[0]
+    final var fillWidth // app.cash.redwood.widget/RedwoodUIView.fillWidth|{}fillWidth[0]
+        final fun <get-fillWidth>(): kotlin/Boolean // app.cash.redwood.widget/RedwoodUIView.fillWidth.<get-fillWidth>|<get-fillWidth>(){}[0]
+        final fun <set-fillWidth>(kotlin/Boolean) // app.cash.redwood.widget/RedwoodUIView.fillWidth.<set-fillWidth>|<set-fillWidth>(kotlin.Boolean){}[0]
+
     open fun superviewChanged() // app.cash.redwood.widget/RedwoodUIView.superviewChanged|superviewChanged(){}[0]
 }
 
