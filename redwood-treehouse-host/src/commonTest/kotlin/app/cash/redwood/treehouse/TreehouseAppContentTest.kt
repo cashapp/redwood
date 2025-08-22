@@ -539,7 +539,7 @@ class TreehouseAppContentTest {
     content.unbind()
   }
 
-  /** Request focus in guest code, and confirm it's effect on the host widget system. */
+  /** Request focus in guest code, and confirm its effect on the host widget system. */
   @Test
   fun requestFocus() = runTest {
     val content = treehouseAppContent()
