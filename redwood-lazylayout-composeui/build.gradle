@@ -8,6 +8,7 @@ redwoodBuild {
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'app.cash.burst'
 apply plugin: 'app.cash.paparazzi'
+apply plugin: 'app.cash.redwood.generator.widget.composeui'
 
 kotlin {
   sourceSets {
@@ -28,6 +29,11 @@ kotlin {
       }
     }
   }
+}
+
+redwoodSchema {
+  source = projects.redwoodLazylayoutSchema
+  type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
 }
 
 android {
