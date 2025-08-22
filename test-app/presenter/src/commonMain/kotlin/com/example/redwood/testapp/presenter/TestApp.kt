@@ -40,6 +40,7 @@ private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
   put("Broken Row/Column") { BrokenRowColumn() }
   put("Broken Size Update") { BrokenSizeUpdate() }
   put("Movable Content") { MovableContent() }
+  put("Focus") { Focus() }
 }
 
 @Stable

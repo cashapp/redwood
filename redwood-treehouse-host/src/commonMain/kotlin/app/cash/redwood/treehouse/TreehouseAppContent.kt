@@ -558,7 +558,9 @@ private class ViewContentCodeBinding<A : AppService>(
   }
 
   override fun requestFocus(focusRequester: FocusRequester) {
-    viewOrNull?.requestFocus(focusRequester)
+    bindingScope.launch(dispatchers.ui) {
+      viewOrNull?.requestFocus(focusRequester)
+    }
   }
 
   /** This function is necessary to infer the type parameter [W]. */
