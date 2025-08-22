@@ -17,6 +17,7 @@ package app.cash.redwood.treehouse
 
 import app.cash.redwood.ui.core.api.FocusDirector
 import app.cash.redwood.ui.core.api.FocusRequester
+import app.cash.zipline.ZiplineApiMismatchException
 
 /** This forwards focus requests to the host. */
 internal class GuestFocusDirector(
@@ -25,7 +26,11 @@ internal class GuestFocusDirector(
   private var nextFocusRequesterId = 3000
 
   override fun hideSoftwareKeyboard() {
-    host.hideSoftwareKeyboard()
+    try {
+      host.hideSoftwareKeyboard()
+    } catch (_: ZiplineApiMismatchException) {
+      // Silently drop hideSoftwareKeyboard() calls if the host doesn't have that API.
+    }
   }
 
   override fun newFocusRequester(): FocusRequester = GuestFocusRequester()
@@ -34,7 +39,11 @@ internal class GuestFocusDirector(
   private inner class GuestFocusRequester : app.cash.redwood.ui.core.api.SerializableFocusRequester {
     override val id = nextFocusRequesterId++
     override fun requestFocus() {
-      host.requestFocus(this)
+      try {
+        host.requestFocus(this)
+      } catch (_: ZiplineApiMismatchException) {
+        // Silently drop requestFocus() calls if the host doesn't have that API.
+      }
     }
   }
 }
