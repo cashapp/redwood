@@ -21,6 +21,8 @@ import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UILayoutPriority
+import platform.UIKit.UILayoutPriorityRequired
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
 import platform.UIKit.UIScrollViewDelegateProtocol
@@ -103,6 +105,27 @@ internal class YogaUIView : UIScrollView(cValue { CGRectZero }), UIScrollViewDel
       calculateLayout(
         width = width.toYogaWithWidthConstraint(),
         height = height.toYogaWithHeightConstraint(),
+      )
+    }
+  }
+
+  override fun systemLayoutSizeFittingSize(
+    targetSize: CValue<CGSize>,
+    withHorizontalFittingPriority: UILayoutPriority,
+    verticalFittingPriority: UILayoutPriority,
+  ): CValue<CGSize> {
+    return targetSize.useContents<CGSize, CValue<CGSize>> {
+      calculateLayout(
+        width = when {
+          withHorizontalFittingPriority == UILayoutPriorityRequired -> width.toYoga()
+          widthConstraint == Constraint.Fill -> width.toYoga()
+          else -> Size.UNDEFINED
+        },
+        height = when {
+          verticalFittingPriority == UILayoutPriorityRequired -> height.toYoga()
+          heightConstraint == Constraint.Fill -> height.toYoga()
+          else -> Size.UNDEFINED
+        },
       )
     }
   }

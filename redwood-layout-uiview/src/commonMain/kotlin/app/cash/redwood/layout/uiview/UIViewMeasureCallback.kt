@@ -23,6 +23,8 @@ import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
+import platform.UIKit.UILayoutPriorityDefaultLow
+import platform.UIKit.UILayoutPriorityRequired
 import platform.UIKit.UIView
 import platform.UIKit.UIViewNoIntrinsicMetric
 
@@ -44,15 +46,18 @@ internal object UIViewMeasureCallback : MeasureCallback {
       else -> height.toDouble()
     }
 
-    // The default implementation of sizeThatFits: returns the existing size of
-    // the view. That means that if we want to layout an empty UIView, which
-    // already has a frame set, its measured size should be CGSizeZero, but
-    // UIKit returns the existing size. See https://github.com/facebook/yoga/issues/606
-    // for more information.
+    // The default implementation of sizeThatFits: returns the existing size of the view. That means
+    // that if we want to layout an empty UIView, which already has a frame set, its measured size
+    // should be CGSizeZero, but UIKit returns the existing size. For more information, see
+    // https://github.com/facebook/yoga/issues/606
     val sizeThatFits = if (view.isMemberOfClass(UIView.`class`()) && view.typedSubviews.isEmpty()) {
       Size(0f, 0f)
     } else {
-      view.sizeThatFits(CGSizeMake(constrainedWidth, constrainedHeight)).toSize()
+      view.systemLayoutSizeFittingSize(
+        targetSize = CGSizeMake(constrainedWidth, constrainedHeight),
+        withHorizontalFittingPriority = widthMode.toFittingPriority(),
+        verticalFittingPriority = heightMode.toFittingPriority(),
+      ).toSize()
     }
 
     return Size(
@@ -64,4 +69,9 @@ internal object UIViewMeasureCallback : MeasureCallback {
 
 private fun CValue<CGSize>.toSize() = useContents {
   Size(width.toFloat(), height.toFloat())
+}
+
+private fun MeasureMode.toFittingPriority() = when (this) {
+  MeasureMode.Exactly -> UILayoutPriorityRequired
+  else -> UILayoutPriorityDefaultLow
 }
