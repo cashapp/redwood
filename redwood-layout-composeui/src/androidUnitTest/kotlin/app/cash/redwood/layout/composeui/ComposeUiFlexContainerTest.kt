@@ -72,9 +72,9 @@ class ComposeUiFlexContainerTest(
       applyDefaults()
     }
 
-  override fun spacer(backgroundColor: Int): Spacer<@Composable (Modifier) -> Unit> {
+  override fun spacer(): Spacer<@Composable (Modifier) -> Unit> {
     return ComposeUiSpacer().apply {
-      testOnlyModifier = Modifier.background(Color(backgroundColor))
+      testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
     }
   }
 
