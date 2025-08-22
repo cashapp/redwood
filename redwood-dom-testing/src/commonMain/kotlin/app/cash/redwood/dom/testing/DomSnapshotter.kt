@@ -19,7 +19,7 @@ import kotlinx.coroutines.await
 import org.w3c.dom.Element
 
 public class DomSnapshotter @PublishedApi internal constructor(
-  private val path: String
+  private val path: String,
 ) {
   private val snapshotStore = SnapshotStore()
 
