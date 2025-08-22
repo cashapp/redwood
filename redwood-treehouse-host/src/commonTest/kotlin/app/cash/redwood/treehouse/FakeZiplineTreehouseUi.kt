@@ -136,8 +136,8 @@ class FakeZiplineTreehouseUi(
 
     /** Simulate the real host call, that serializes and deserializes this FocusRequester. */
     private fun reserialized(): FocusRequester {
-      val serialized = Json.encodeToJsonElement<FocusRequester>(this)
-      return Json.decodeFromJsonElement<FocusRequester>(serialized)
+      val serialized = json.encodeToJsonElement<FocusRequester>(this)
+      return json.decodeFromJsonElement<FocusRequester>(serialized)
     }
   }
 }

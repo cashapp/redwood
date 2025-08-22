@@ -88,4 +88,52 @@ class FocusTest {
       }
     }
   }
+
+  @Test
+  fun focusOnDetachedWidgetDoesNothing() = runTest {
+    TestSchemaTester {
+      var step by mutableIntStateOf(0)
+
+      setContent {
+        val nameFocusRequester = rememberFocusRequester()
+
+        LaunchedEffect(step) {
+          when (step) {
+            1 -> nameFocusRequester.requestFocus()
+            2 -> nameFocusRequester.requestFocus()
+          }
+        }
+
+        var nameState by remember { mutableStateOf(TextFieldState()) }
+
+        Column {
+          if (step != 1) {
+            TextInput(
+              modifier = Modifier.focusRequester(nameFocusRequester),
+              state = nameState,
+              hint = "name",
+            )
+          }
+        }
+      }
+
+      with(awaitSnapshot()) {
+        assertThat(focusDirector.getFocused(this)).isNull()
+      }
+
+      // Activate step 1 to request focus on the name TextInput. This will fail as that component
+      // is no longer in the composition.
+      step = 1
+      with(awaitSnapshot()) {
+        assertThat(focusDirector.getFocused(this)).isNull()
+      }
+
+      // Activate step 2 to request focus on the name TextInput.
+      step = 2
+      with(awaitSnapshot()) {
+        val nameInput = flatten().first { (it as? TextInputValue)?.hint == "name" }
+        assertThat(focusDirector.getFocused(this)).isEqualTo(nameInput)
+      }
+    }
+  }
 }
