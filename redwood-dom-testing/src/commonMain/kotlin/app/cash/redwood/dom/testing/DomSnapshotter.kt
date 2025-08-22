@@ -25,7 +25,7 @@ public class DomSnapshotter @PublishedApi internal constructor(
 
   public suspend fun snapshot(
     element: Element,
-    name: String? = "snapshot",
+    name: String = "snapshot",
     scrolling: Boolean = false,
   ) {
     val image = HtmlToImage.toBlob(
