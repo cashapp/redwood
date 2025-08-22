@@ -69,10 +69,10 @@ class ViewLazyListAsFlexContainerTest(
     return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Column()
   }
 
-  override fun spacer(backgroundColor: Int): Spacer<View> {
+  override fun spacer(): Spacer<View> {
     return ViewRedwoodLayoutWidgetFactory(paparazzi.context).Spacer()
       .apply {
-        value.setBackgroundColor(backgroundColor)
+        value.setBackgroundColor(defaultBackgroundColor)
       }
   }
 

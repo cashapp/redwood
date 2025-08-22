@@ -69,11 +69,12 @@ class ComposeUiLazyListTest(
     return ComposeUiRedwoodLayoutWidgetFactory().Column()
   }
 
-  override fun spacer(backgroundColor: Int): Spacer<@Composable (Modifier) -> Unit> {
-    return ComposeUiRedwoodLayoutWidgetFactory().Spacer().apply {
-      @Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
-      (this as ComposeUiSpacer).testOnlyModifier =
-        Modifier.background(Color(backgroundColor))
+  override fun spacer(): Spacer<@Composable (Modifier) -> Unit> {
+    val spacer = ComposeUiRedwoodLayoutWidgetFactory().Spacer()
+    return object : Spacer<@Composable (Modifier) -> Unit> by spacer {
+      override val value: @Composable (Modifier) -> Unit = { modifier ->
+        spacer.value(modifier.background(Color(defaultBackgroundColor)))
+      }
     }
   }
 

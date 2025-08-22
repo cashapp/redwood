@@ -71,10 +71,10 @@ class ViewFlexContainerTest(
     applyDefaults()
   }
 
-  override fun spacer(backgroundColor: Int): Spacer<View> {
+  override fun spacer(): Spacer<View> {
     return ViewSpacer(paparazzi.context)
       .apply {
-        value.setBackgroundColor(backgroundColor)
+        value.setBackgroundColor(defaultBackgroundColor)
       }
   }
 

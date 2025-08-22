@@ -51,10 +51,10 @@ class UIViewLazyListAsFlexContainerTest(
 
   override fun column() = UIViewRedwoodLayoutWidgetFactory().Column()
 
-  override fun spacer(backgroundColor: Int): Spacer<UIView> {
+  override fun spacer(): Spacer<UIView> {
     return UIViewRedwoodLayoutWidgetFactory().Spacer()
       .apply {
-        value.backgroundColor = backgroundColor.toUIColor()
+        value.backgroundColor = defaultBackgroundColor.toUIColor()
       }
   }
 
