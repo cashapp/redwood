@@ -1089,6 +1089,43 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     snapshotter(row.value).snapshot()
   }
+
+  /**
+   * We had a bug where putting `flex(1.0)` on a child of a column with `height(Constraint.Wrap)`
+   * would cause that child to get a height of 0.
+   *
+   * https://github.com/cashapp/redwood/issues/2753
+   */
+  @Test
+  fun testFlexOnChildOfWrappingColumn() {
+    val root = row().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+    }
+
+    val fixedSize = row().apply {
+      width(Constraint.Fill)
+      height(Constraint.Fill)
+      modifier = SizeImpl(width = 300.dp, height = 500.dp)
+    }.also {
+      root.children.insert(0, it)
+    }
+
+    val column = column().apply {
+      width(Constraint.Fill)
+    }.also {
+      fixedSize.children.insert(0, it)
+    }
+
+    widgetFactory.text("hello").apply {
+      modifier = FlexImpl(1.0)
+      bgColor(Blue)
+    }.also {
+      column.children.insert(0, it)
+    }
+
+    snapshotter(root.value).snapshot()
+  }
 }
 
 interface TestFlexContainer<T : Any> :
