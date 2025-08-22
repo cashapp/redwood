@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.ui.core.api
 
-import app.cash.redwood.RedwoodCodegenApi
 import kotlinx.serialization.Serializable
 
 /**
