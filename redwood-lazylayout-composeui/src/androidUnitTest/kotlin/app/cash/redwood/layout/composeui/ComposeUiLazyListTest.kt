@@ -82,21 +82,24 @@ class ComposeUiLazyListTest(
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,
+    private val backgroundColor: Int,
   ) : TestFlexContainer<@Composable (Modifier) -> Unit>,
     LazyList<@Composable (Modifier) -> Unit> by delegate {
-
-    override val value get() = delegate.value
-
-    private var onScroll: ((Px) -> Unit)? = null
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
       ComposeUiLazyList().apply {
         isVertical(direction == FlexDirection.Column)
-        testOnlyModifier = Modifier.background(Color(backgroundColor))
       },
+      backgroundColor,
     )
 
-    override val children: ComposeWidgetChildren = delegate.items
+    override val value: @Composable (Modifier) -> Unit = { modifier ->
+      delegate.value(modifier.background(Color(backgroundColor)))
+    }
+
+    override val children: ComposeWidgetChildren get() = delegate.items
+
+    private var onScroll: ((Px) -> Unit)? = null
 
     override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     }

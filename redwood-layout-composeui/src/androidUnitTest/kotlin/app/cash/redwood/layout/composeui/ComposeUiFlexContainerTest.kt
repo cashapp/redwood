@@ -60,17 +60,25 @@ class ComposeUiFlexContainerTest(
       .apply { (this as TestFlexContainer<*>).applyDefaults() }
   }
 
-  override fun row(): Row<@Composable (Modifier) -> Unit> = ComposeUiRow()
-    .apply {
-      container.testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
-      applyDefaults()
+  override fun row(): Row<@Composable (Modifier) -> Unit> {
+    val row = ComposeUiRow()
+    row.applyDefaults()
+    return object : Row<@Composable (Modifier) -> Unit> by row {
+      override val value: @Composable (Modifier) -> Unit = { modifier ->
+        row.value(modifier.background(Color(defaultBackgroundColor)))
+      }
     }
+  }
 
-  override fun column(): Column<@Composable (Modifier) -> Unit> = ComposeUiColumn()
-    .apply {
-      container.testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
-      applyDefaults()
+  override fun column(): Column<@Composable (Modifier) -> Unit> {
+    val column = ComposeUiColumn()
+    column.applyDefaults()
+    return object : Column<@Composable (Modifier) -> Unit> by column {
+      override val value: @Composable (Modifier) -> Unit = { modifier ->
+        column.value(modifier.background(Color(defaultBackgroundColor)))
+      }
     }
+  }
 
   override fun spacer(): Spacer<@Composable (Modifier) -> Unit> {
     val spacer = ComposeUiSpacer()
@@ -85,16 +93,19 @@ class ComposeUiFlexContainerTest(
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiFlexContainer,
+    private val backgroundColor: Int,
   ) : TestFlexContainer<@Composable (Modifier) -> Unit>,
     YogaFlexContainer<@Composable (Modifier) -> Unit> by delegate {
 
     constructor(direction: FlexDirection, backgroundColor: Int) : this(
-      ComposeUiFlexContainer(direction).apply {
-        testOnlyModifier = Modifier.background(Color(backgroundColor))
-      },
+      ComposeUiFlexContainer(direction),
+      backgroundColor,
     )
 
-    override val value get() = delegate.value
+    override val value: @Composable (Modifier) -> Unit = { modifier ->
+      delegate.value(modifier.background(Color(backgroundColor)))
+    }
+
     override var modifier by delegate::modifier
     override val allChildren: List<Widget.Children<@Composable ((Modifier) -> Unit)>>
       get() = listOf(children)

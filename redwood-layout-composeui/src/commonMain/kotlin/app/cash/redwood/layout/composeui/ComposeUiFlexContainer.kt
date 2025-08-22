@@ -110,7 +110,6 @@ internal class ComposeUiFlexContainer(
   private var onScroll: ((Px) -> Unit)? by mutableStateOf(null)
   override var density = Density(1.0)
 
-  internal var testOnlyModifier: Modifier? = null
   internal var scrollState: ScrollState? = null
 
   override fun width(width: Constraint) {
@@ -193,7 +192,6 @@ internal class ComposeUiFlexContainer(
       }
       ObserveScrollState(scrollState)
     }
-    testOnlyModifier?.let { modifier = modifier.then(it) }
     return modifier
   }
 
