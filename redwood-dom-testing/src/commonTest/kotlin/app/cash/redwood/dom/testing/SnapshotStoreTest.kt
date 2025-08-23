@@ -30,7 +30,7 @@ internal class SnapshotStoreTest {
     val store = SnapshotStore()
     val data = "Hello World!".encodeUtf8()
     store.put("greeting.txt", data)
-    assertThat(store.get("greeting.txt")).isEqualTo(data)
+    assertThat(store.getByteString("greeting.txt")).isEqualTo(data)
   }
 
   @Test
@@ -38,13 +38,13 @@ internal class SnapshotStoreTest {
     val store = SnapshotStore()
     val data = "Ahoy, Matey!".encodeUtf8()
     store.put("greetings/pirate/greeting.txt", data)
-    assertThat(store.get("greetings/pirate/greeting.txt")).isEqualTo(data)
+    assertThat(store.getByteString("greetings/pirate/greeting.txt")).isEqualTo(data)
   }
 
   @Test
   fun getDirectoryTraversalReturnsNoData() = runTest {
     val store = SnapshotStore()
-    assertThat(store.get("../README.md")).isNull() // 404 Not Found.
+    assertThat(store.getByteString("../README.md")).isNull() // 404 Not Found.
   }
 
   @Test

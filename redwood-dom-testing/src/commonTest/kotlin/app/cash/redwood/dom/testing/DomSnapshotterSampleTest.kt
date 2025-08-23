@@ -18,10 +18,12 @@
 package app.cash.redwood.dom.testing
 
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlinx.browser.document
 import kotlinx.coroutines.test.runTest
 import kotlinx.dom.appendElement
 import kotlinx.dom.appendText
+import kotlinx.dom.clear
 
 /**
  * This isn't a proper unit test for [DomSnapshotter], it's just a sample.
@@ -37,5 +39,22 @@ internal class DomSnapshotterSampleTest {
       appendText("hello world")
     }
     snapshotter.snapshot(element, "helloIAmTheSnapshotTest")
+  }
+
+  @Test
+  fun mismatchedSnapshot() = runTest {
+    val element = document.documentElement!!
+    element.appendElement("h1") {
+      appendText("hello world")
+    }
+    snapshotter.snapshot(element, "mismatchedSnapshotTest")
+
+    element.clear()
+    element.appendElement("h2") {
+      appendText("hello world")
+    }
+    assertFailsWith<IllegalStateException> {
+      snapshotter.snapshot(element, "mismatchedSnapshotTest")
+    }
   }
 }

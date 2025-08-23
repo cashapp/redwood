@@ -21,6 +21,7 @@ import kotlinx.coroutines.await
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import org.w3c.fetch.RequestInit
+import org.w3c.fetch.Response
 import org.w3c.files.Blob
 
 internal class SnapshotStore {
@@ -51,7 +52,17 @@ internal class SnapshotStore {
     }
   }
 
-  suspend fun get(fileName: String): ByteString? {
+  suspend fun getBlob(fileName: String): Blob? {
+    return getInternal(fileName)?.blob()?.await()
+  }
+
+  suspend fun getByteString(fileName: String): ByteString? {
+    val response = getInternal(fileName) ?: return null
+    val bytes: Promise<ByteArray> = response.asDynamic().bytes()
+    return bytes.await().toByteString()
+  }
+
+  private suspend fun getInternal(fileName: String): Response? {
     val response = window.fetch(
       input = "/snapshots/$fileName",
     ).await()
@@ -68,9 +79,7 @@ internal class SnapshotStore {
         """.trimMargin(),
       )
     }
-
-    val bytes: Promise<ByteArray> = response.asDynamic().bytes()
-    return bytes.await().toByteString()
+    return response
   }
 }
 
