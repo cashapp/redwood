@@ -20,16 +20,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.LocalSaveableStateRegistry
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.unit.LayoutDirection
 import app.cash.redwood.compose.RedwoodComposition
 import app.cash.redwood.ui.Density
@@ -74,6 +78,9 @@ public fun RedwoodContent(
   val onBackPressedDispatcher = platformOnBackPressedDispatcher()
   val saveableStateRegistry = LocalSaveableStateRegistry.current
 
+  val softwareKeyboardController = LocalSoftwareKeyboardController.current
+  val softwareKeyboardControllerState = rememberUpdatedState(softwareKeyboardController)
+
   // For simplicity, a new provider or content lambda gets an entirely new composition and children.
   val children = remember(widgetSystem, content) { ComposeWidgetChildren() }
   DisposableEffect(widgetSystem, content) {
@@ -82,7 +89,7 @@ public fun RedwoodContent(
       widgetSystem = widgetSystem,
       container = children,
       onBackPressedDispatcher = onBackPressedDispatcher,
-      focusDirector = RedwoodContentFocusDirector(),
+      focusDirector = RedwoodContentFocusDirector(softwareKeyboardControllerState),
       saveableStateRegistry = saveableStateRegistry,
       uiConfigurations = uiConfigurations,
     )
@@ -107,9 +114,11 @@ public fun RedwoodContent(
 @Composable
 internal expect fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher
 
-internal class RedwoodContentFocusDirector : FocusDirector {
+internal class RedwoodContentFocusDirector(
+  private val softwareKeyboardController: State<SoftwareKeyboardController?>,
+) : FocusDirector {
   override fun hideSoftwareKeyboard() {
-    // TODO: complete this.
+    softwareKeyboardController.value?.hide()
   }
 
   override fun newFocusRequester(): FocusRequester {
