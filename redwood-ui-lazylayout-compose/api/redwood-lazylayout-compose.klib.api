@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-compose>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-compose>
 open annotation class app.cash.redwood.lazylayout.compose/ExperimentalRedwoodLazyLayoutApi : kotlin/Annotation { // app.cash.redwood.lazylayout.compose/ExperimentalRedwoodLazyLayoutApi|null[0]
     constructor <init>() // app.cash.redwood.lazylayout.compose/ExperimentalRedwoodLazyLayoutApi.<init>|<init>(){}[0]
 }

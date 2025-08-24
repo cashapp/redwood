@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-widget>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-widget>
 abstract interface <#A: kotlin/Any> app.cash.redwood.lazylayout.widget/LazyList : app.cash.redwood.widget/Widget<#A> { // app.cash.redwood.lazylayout.widget/LazyList|null[0]
     abstract val items // app.cash.redwood.lazylayout.widget/LazyList.items|{}items[0]
         abstract fun <get-items>(): app.cash.redwood.widget/Widget.Children<#A> // app.cash.redwood.lazylayout.widget/LazyList.items.<get-items>|<get-items>(){}[0]

@@ -313,7 +313,7 @@ internal class UIViewLazyList :
   }
 
   override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
-    // TODO Support CrossAxisAlignment in `redwood-lazylayout-uiview`
+    // TODO Support CrossAxisAlignment in `redwood-ui-lazylayout-uiview`
   }
 
   override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) {

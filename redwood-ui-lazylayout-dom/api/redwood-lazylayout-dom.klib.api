@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-dom>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-dom>
 final class app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory : app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<org.w3c.dom/HTMLElement> { // app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory|null[0]
     constructor <init>(org.w3c.dom/Document) // app.cash.redwood.lazylayout.dom/HTMLElementRedwoodLazyLayoutWidgetFactory.<init>|<init>(org.w3c.dom.Document){}[0]
 

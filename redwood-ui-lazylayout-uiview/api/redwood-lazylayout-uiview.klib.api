@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-uiview>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-uiview>
 final class app.cash.redwood.lazylayout.uiview/UIViewRedwoodLazyLayoutWidgetFactory : app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<platform.UIKit/UIView> { // app.cash.redwood.lazylayout.uiview/UIViewRedwoodLazyLayoutWidgetFactory|null[0]
     constructor <init>() // app.cash.redwood.lazylayout.uiview/UIViewRedwoodLazyLayoutWidgetFactory.<init>|<init>(){}[0]
 

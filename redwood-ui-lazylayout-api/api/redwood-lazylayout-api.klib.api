@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-api>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-api>
 final class app.cash.redwood.lazylayout.api/ScrollItemIndex { // app.cash.redwood.lazylayout.api/ScrollItemIndex|null[0]
     constructor <init>(kotlin/Int, kotlin/Int, kotlin/Boolean = ...) // app.cash.redwood.lazylayout.api/ScrollItemIndex.<init>|<init>(kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
 

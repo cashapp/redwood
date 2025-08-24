@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-composeui>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-composeui>
 final class app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory : app.cash.redwood.lazylayout.widget/RedwoodLazyLayoutWidgetFactory<kotlin/Function3<androidx.compose.ui/Modifier, androidx.compose.runtime/Composer, kotlin/Int, kotlin/Unit>> { // app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory|null[0]
     constructor <init>() // app.cash.redwood.lazylayout.composeui/ComposeUiRedwoodLazyLayoutWidgetFactory.<init>|<init>(){}[0]
 

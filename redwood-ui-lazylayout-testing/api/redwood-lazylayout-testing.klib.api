@@ -5,7 +5,7 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <app.cash.redwood:redwood-lazylayout-testing>
+// Library unique name: <app.cash.redwood:redwood-ui-lazylayout-testing>
 final class app.cash.redwood.lazylayout.compose/TestLoadingStrategy : app.cash.redwood.lazylayout.compose/LoadingStrategy { // app.cash.redwood.lazylayout.compose/TestLoadingStrategy|null[0]
     constructor <init>() // app.cash.redwood.lazylayout.compose/TestLoadingStrategy.<init>|<init>(){}[0]
 
