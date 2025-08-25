@@ -50,7 +50,7 @@ public class DomSnapshotter @PublishedApi internal constructor(
       },
     ).await()
 
-    val fileName = "$path/${name ?: "snapshot"}.png"
+    val fileName = "$path/$name.png"
 
     snapshotStore.getBlob(fileName)?.let { existing ->
       check(existing.contentEquals(image)) {
