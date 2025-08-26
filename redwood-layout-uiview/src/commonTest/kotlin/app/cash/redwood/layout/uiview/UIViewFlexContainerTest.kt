@@ -70,10 +70,10 @@ class UIViewFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun spacer(backgroundColor: Int): Spacer<UIView> {
+  override fun spacer(): Spacer<UIView> {
     return UIViewRedwoodLayoutWidgetFactory().Spacer()
       .apply {
-        value.backgroundColor = backgroundColor.toUIColor()
+        value.backgroundColor = defaultBackgroundColor.toUIColor()
       }
   }
 

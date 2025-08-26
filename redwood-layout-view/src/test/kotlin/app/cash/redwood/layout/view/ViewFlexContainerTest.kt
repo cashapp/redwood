@@ -61,10 +61,10 @@ class ViewFlexContainerTest(
 
   override fun column() = flexContainer(FlexDirection.Column)
 
-  override fun spacer(backgroundColor: Int): Spacer<View> {
+  override fun spacer(): Spacer<View> {
     return ViewSpacer(paparazzi.context)
       .apply {
-        setBackgroundColor(backgroundColor)
+        value.setBackgroundColor(defaultBackgroundColor)
       }
   }
 

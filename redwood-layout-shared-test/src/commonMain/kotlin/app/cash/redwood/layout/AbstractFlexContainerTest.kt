@@ -119,9 +119,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   /** Returns a non-lazy flex container column, even if the test is for a LazyList. */
   abstract fun column(): Column<T>
 
-  abstract fun spacer(
-    backgroundColor: Int = argb(17, 0, 0, 0),
-  ): Spacer<T>
+  abstract fun spacer(): Spacer<T>
 
   abstract fun snapshotter(widget: T): Snapshotter
 

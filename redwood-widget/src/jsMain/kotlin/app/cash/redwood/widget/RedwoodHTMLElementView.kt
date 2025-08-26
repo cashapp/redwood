@@ -87,7 +87,7 @@ private class RedwoodHTMLElementView(
   }
 
   override fun requestFocus(widget: Widget<HTMLElement>) {
-    // TODO: complete this.
+    widget.value.focus()
   }
 
   private fun observePixelRatioChange() {
