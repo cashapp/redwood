@@ -36,22 +36,10 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
 
-internal class ViewBox(context: Context) : Box<View> {
-  private val delegate = BoxViewGroup(context)
-  override val value: View get() = delegate
-  override var modifier by delegate::modifier
-  override val children get() = delegate.children
-
-  override fun width(width: Constraint) = delegate.width(width)
-  override fun height(height: Constraint) = delegate.height(height)
-  override fun margin(margin: Margin) = delegate.margin(margin)
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) = delegate.horizontalAlignment(horizontalAlignment)
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) = delegate.verticalAlignment(verticalAlignment)
-}
-
-private class BoxViewGroup(
+internal class ViewBox(
   context: Context,
-) : ViewGroup(context) {
+) : ViewGroup(context),
+  Box<View> {
   private val density = Density(context.resources)
   private var horizontalAlignment = CrossAxisAlignment.Start
   private var verticalAlignment = CrossAxisAlignment.Start
@@ -59,33 +47,35 @@ private class BoxViewGroup(
   private var heightConstraint = Constraint.Wrap
   private var margin: Margin = Margin.Zero
 
-  var modifier: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 
-  val children = ViewGroupChildren(this)
+  override val value get() = this
+
+  override val children = ViewGroupChildren(this)
 
   private val measurer = Measurer()
 
-  fun width(width: Constraint) {
+  override fun width(width: Constraint) {
     this.widthConstraint = width
     requestLayout()
   }
 
-  fun height(height: Constraint) {
+  override fun height(height: Constraint) {
     this.heightConstraint = height
     requestLayout()
   }
 
-  fun margin(margin: Margin) {
+  override fun margin(margin: Margin) {
     this.margin = margin
     requestLayout()
   }
 
-  fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
     this.horizontalAlignment = horizontalAlignment
     requestLayout()
   }
 
-  fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
     this.verticalAlignment = verticalAlignment
     requestLayout()
   }
