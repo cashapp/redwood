@@ -74,7 +74,7 @@ class ViewFlexContainerTest(
   override fun spacer(backgroundColor: Int): Spacer<View> {
     return ViewSpacer(paparazzi.context)
       .apply {
-        value.setBackgroundColor(backgroundColor)
+        setBackgroundColor(backgroundColor)
       }
   }
 
