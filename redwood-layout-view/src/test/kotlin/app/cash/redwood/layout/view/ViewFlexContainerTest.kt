@@ -21,10 +21,6 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
-import app.cash.redwood.layout.api.Constraint
-import app.cash.redwood.layout.api.Overflow
-import app.cash.redwood.layout.widget.Column
-import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
@@ -61,15 +57,9 @@ class ViewFlexContainerTest(
       .apply { (this as TestFlexContainer<*>).applyDefaults() }
   }
 
-  override fun row(): Row<View> = ViewRow(paparazzi.context).apply {
-    value.setBackgroundColor(defaultBackgroundColor)
-    applyDefaults()
-  }
+  override fun row() = flexContainer(FlexDirection.Row)
 
-  override fun column(): Column<View> = ViewColumn(paparazzi.context).apply {
-    value.setBackgroundColor(defaultBackgroundColor)
-    applyDefaults()
-  }
+  override fun column() = flexContainer(FlexDirection.Column)
 
   override fun spacer(backgroundColor: Int): Spacer<View> {
     return ViewSpacer(paparazzi.context)
@@ -85,18 +75,16 @@ class ViewFlexContainerTest(
   ) : TestFlexContainer<View>,
     YogaFlexContainer<View> by delegate,
     ChangeListener by delegate {
-    override val value: View get() = delegate.value
-    override var modifier by delegate::modifier
+    private var onScroll: ((Px) -> Unit)? = null
 
     override val children: ViewGroupChildren = delegate.children
 
-    override fun width(width: Constraint) = delegate.width(width)
-    override fun height(height: Constraint) = delegate.height(height)
-    override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
-    override fun onScroll(onScroll: ((Px) -> Unit)?) = delegate.onScroll(onScroll)
+    override fun onScroll(onScroll: ((Px) -> Unit)?) {
+      this.onScroll = onScroll
+    }
 
     override fun scroll(offset: Px) {
-      delegate.onScroll?.invoke(offset)
+      onScroll?.invoke(offset)
     }
   }
 }
