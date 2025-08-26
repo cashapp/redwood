@@ -17,9 +17,9 @@ package app.cash.redwood.layout.view
 
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
+import android.transition.TransitionManager
 import android.util.LayoutDirection
 import android.view.View
-import android.view.View.OnScrollChangeListener
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import androidx.core.view.children
@@ -30,6 +30,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Px
+import app.cash.redwood.widget.BeforeChangesListener
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.ViewGroupChildren
 import app.cash.redwood.widget.Widget
@@ -42,13 +43,17 @@ internal class ViewFlexContainer(
   private val context: Context,
   private val direction: FlexDirection,
 ) : YogaFlexContainer<View>,
-  ChangeListener {
+  ChangeListener, BeforeChangesListener {
   private val yogaLayout: YogaLayout = YogaLayout(context)
   override val rootNode: Node get() = yogaLayout.rootNode
   override val density = Density(context.resources)
 
   private val hostView = HostView()
   override val value: View get() = hostView
+
+  override fun beforeChanges() {
+    TransitionManager.beginDelayedTransition(yogaLayout)
+  }
 
   override val children = ViewGroupChildren(
     yogaLayout,

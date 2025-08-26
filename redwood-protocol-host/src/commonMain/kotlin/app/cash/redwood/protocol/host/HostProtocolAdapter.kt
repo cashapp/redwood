@@ -29,6 +29,7 @@ import app.cash.redwood.protocol.ChildrenTag
 import app.cash.redwood.protocol.Id
 import app.cash.redwood.protocol.RedwoodVersion
 import app.cash.redwood.protocol.WidgetTag
+import app.cash.redwood.widget.BeforeChangesListener
 import app.cash.redwood.widget.ChangeListener
 import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.WidgetSystem
@@ -69,11 +70,26 @@ public class HostProtocolAdapter<W : Any>(
 
   private var closed = false
 
+  private fun callBeforeChangesRecursively(widget: Widget<*>) {
+    if (widget is BeforeChangesListener) {
+      widget.beforeChanges()
+      return // Only one
+    }
+
+    widget.allChildren.forEach { widgetChildren ->
+      widgetChildren.widgets.forEach { child ->
+        callBeforeChangesRecursively(child)
+      }
+    }
+  }
+
   override fun sendChanges(changes: List<UiChange>) {
     check(!closed)
 
     @Suppress("NAME_SHADOWING")
     val changes = applyReuse(changes)
+
+    callBeforeChangesRecursively(nodes[Id.Root.value]!!.widget)
 
     for (i in changes.indices) {
       val change = changes[i]

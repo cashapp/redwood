@@ -41,6 +41,7 @@ private val screens = buildMap<String, @Composable TestContext.() -> Unit> {
   put("Broken Size Update") { BrokenSizeUpdate() }
   put("Movable Content") { MovableContent() }
   put("Focus") { Focus() }
+  put("Animated Transitions") { AnimatedTransitions() }
 }
 
 @Stable

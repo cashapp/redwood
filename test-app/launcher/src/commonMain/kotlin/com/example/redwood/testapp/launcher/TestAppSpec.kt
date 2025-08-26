@@ -30,7 +30,7 @@ class TestAppSpec(
   override val name get() = "test-app"
 
   override val freshnessChecker = object : FreshnessChecker {
-    override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = true
+    override fun isFresh(manifest: ZiplineManifest, freshAtEpochMs: Long) = false
   }
 
   override suspend fun bindServices(

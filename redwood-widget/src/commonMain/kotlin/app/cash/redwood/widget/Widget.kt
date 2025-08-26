@@ -18,6 +18,10 @@ package app.cash.redwood.widget
 import app.cash.redwood.Modifier
 import kotlin.native.ObjCName
 
+public interface BeforeChangesListener {
+  public fun beforeChanges()
+}
+
 /**
  * The target of a composable function's values. Usually binds to an associated native UI toolkit
  * element, but could also forward changes through a serialized protocol or record the latest
