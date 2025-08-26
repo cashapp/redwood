@@ -51,74 +51,50 @@ public class HTMLElementRedwoodLayoutWidgetFactory(
     TODO("Not yet implemented")
 
   override fun Column(): Column<HTMLElement> =
-    HTMLColumn(document.createElement("div") as HTMLDivElement)
+    HTMLFlexContainer(
+      value = document.createElement("div") as HTMLDivElement,
+      direction = "column",
+      overflowSetter = { overflowY = it },
+    )
 
   override fun Row(): Row<HTMLElement> =
-    HTMLRow(document.createElement("div") as HTMLDivElement)
+    HTMLFlexContainer(
+      value = document.createElement("div") as HTMLDivElement,
+      direction = "row",
+      overflowSetter = { overflowX = it },
+    )
 
   override fun Spacer(): Spacer<HTMLElement> =
     HTMLSpacer(document.createElement("div") as HTMLDivElement)
 }
 
-private class HTMLColumn(
-  value: HTMLDivElement,
-) : Column<HTMLElement> {
-  private val container = HTMLFlexContainer(value, "column") { overflowY = it }
-
-  override val value get() = container.value
-  override var modifier by container::modifier
-  override val children get() = container.children
-
-  override fun width(width: Constraint) = container.width(width)
-  override fun height(height: Constraint) = container.height(height)
-  override fun margin(margin: Margin) = container.margin(margin)
-  override fun overflow(overflow: Overflow) = container.overflow(overflow)
-  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(horizontalAlignment)
-  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) = container.mainAxisAlignment(verticalAlignment)
-  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
-}
-
-private class HTMLRow(
-  value: HTMLDivElement,
-) : Row<HTMLElement> {
-  private val container = HTMLFlexContainer(value, "row") { overflowX = it }
-
-  override val value get() = container.value
-  override var modifier by container::modifier
-  override val children get() = container.children
-
-  override fun width(width: Constraint) = container.width(width)
-  override fun height(height: Constraint) = container.height(height)
-  override fun margin(margin: Margin) = container.margin(margin)
-  override fun overflow(overflow: Overflow) = container.overflow(overflow)
-  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) = container.mainAxisAlignment(horizontalAlignment)
-  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) = container.crossAxisAlignment(verticalAlignment)
-  override fun onScroll(onScroll: ((Px) -> Unit)?) = container.onScroll(onScroll)
-}
-
 private class HTMLFlexContainer(
-  val value: HTMLDivElement,
+  override val value: HTMLDivElement,
   direction: String,
   private val overflowSetter: CSSStyleDeclaration.(String) -> Unit,
-) {
+) : Column<HTMLElement>,
+  Row<HTMLElement> {
   init {
     value.style.display = "flex"
     value.style.flexDirection = direction
   }
 
-  val children: Widget.Children<HTMLElement> = HTMLFlexElementChildren(value)
+  override val children: Widget.Children<HTMLElement> = HTMLFlexElementChildren(value)
+
+  override val allChildren: List<Widget.Children<HTMLElement>>
+    get() = listOf(children)
 
   private var scrollEventListener: EventListener? = null
 
-  fun width(width: Constraint) {
+  override fun width(width: Constraint) {
     value.style.width = width.toCss()
   }
 
-  fun height(height: Constraint) {
+  override fun height(height: Constraint) {
     value.style.height = height.toCss()
   }
 
-  fun margin(margin: Margin) {
+  override fun margin(margin: Margin) {
     value.style.apply {
       marginInlineStart = margin.start.toPxString()
       marginInlineEnd = margin.end.toPxString()
@@ -127,11 +103,11 @@ private class HTMLFlexContainer(
     }
   }
 
-  fun overflow(overflow: Overflow) {
+  override fun overflow(overflow: Overflow) {
     value.style.overflowSetter(overflow.toCss())
   }
 
-  fun onScroll(onScroll: ((Px) -> Unit)?) {
+  override fun onScroll(onScroll: ((Px) -> Unit)?) {
     scrollEventListener?.let { eventListener ->
       value.removeEventListener("scroll", eventListener)
       scrollEventListener = null
@@ -152,15 +128,31 @@ private class HTMLFlexContainer(
     }
   }
 
-  fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(horizontalAlignment)
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(horizontalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(verticalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(verticalAlignment)
+  }
+
+  private fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     value.style.alignItems = crossAxisAlignment.toCss()
   }
 
-  fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+  private fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     value.style.justifyContent = mainAxisAlignment.toCss()
   }
 
-  var modifier: Modifier = Modifier
+  override var modifier: Modifier = Modifier
 }
 
 private class HTMLSpacer(
