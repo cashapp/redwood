@@ -20,12 +20,13 @@ import app.cash.redwood.layout.widget.Column
 import app.cash.redwood.layout.widget.RedwoodLayoutWidgetFactory
 import app.cash.redwood.layout.widget.Row
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.yoga.FlexDirection
 import platform.UIKit.UIView
 
 @ObjCName("UIViewRedwoodLayoutWidgetFactory", exact = true)
 public class UIViewRedwoodLayoutWidgetFactory : RedwoodLayoutWidgetFactory<UIView> {
   override fun Box(): Box<UIView> = UIViewBox()
-  override fun Column(): Column<UIView> = UIViewColumn()
-  override fun Row(): Row<UIView> = UIViewRow()
+  override fun Column(): Column<UIView> = UIViewFlexContainer(FlexDirection.Column)
+  override fun Row(): Row<UIView> = UIViewFlexContainer(FlexDirection.Row)
   override fun Spacer(): Spacer<UIView> = UIViewSpacer()
 }
