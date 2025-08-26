@@ -48,8 +48,8 @@ import app.cash.redwood.widget.Widget
 
 private const val VIEW_TYPE_ITEM = 1
 
-internal class ViewLazyList private constructor(
-  val recyclerView: RecyclerView,
+internal open class ViewLazyList private constructor(
+  internal val recyclerView: RecyclerView,
 ) : LazyList<View>,
   ChangeListener {
   private val adapter = LazyContentItemListAdapter()
@@ -282,21 +282,18 @@ internal class ViewLazyList private constructor(
 
 internal class ViewRefreshableLazyList(
   context: Context,
-) : RefreshableLazyList<View>,
-  ChangeListener {
-  private val delegate = ViewLazyList(context)
+) : ViewLazyList(context),
+  RefreshableLazyList<View> {
 
   private val swipeRefreshLayout = SwipeRefreshLayout(context)
 
   override val value: View get() = swipeRefreshLayout
-  override var modifier by delegate::modifier
 
-  override val placeholder get() = delegate.placeholder
-  override val items get() = delegate.items
+  override val allChildren get() = super<ViewLazyList>.allChildren
 
   init {
     swipeRefreshLayout.apply {
-      addView(delegate.recyclerView)
+      addView(recyclerView)
       // TODO Dynamically update width and height of RefreshableViewLazyList when set
       layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
@@ -314,17 +311,6 @@ internal class ViewRefreshableLazyList(
   override fun pullRefreshContentColor(@ColorInt pullRefreshContentColor: UInt) {
     swipeRefreshLayout.setColorSchemeColors(pullRefreshContentColor.toInt())
   }
-
-  override fun isVertical(isVertical: Boolean) = delegate.isVertical(isVertical)
-  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = delegate.onViewportChanged(onViewportChanged)
-  override fun itemsBefore(itemsBefore: Int) = delegate.itemsBefore(itemsBefore)
-  override fun itemsAfter(itemsAfter: Int) = delegate.itemsAfter(itemsAfter)
-  override fun width(width: Constraint) = delegate.width(width)
-  override fun height(height: Constraint) = delegate.height(height)
-  override fun margin(margin: Margin) = delegate.margin(margin)
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
-  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = delegate.scrollItemIndex(scrollItemIndex)
-  override fun onEndChanges() = delegate.onEndChanges()
 }
 
 @SuppressLint("ViewConstructor")

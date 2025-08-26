@@ -48,10 +48,13 @@ import app.cash.redwood.lazylayout.widget.LazyList
 import app.cash.redwood.lazylayout.widget.RefreshableLazyList
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.toPlatformDp
+import app.cash.redwood.widget.Widget
 import app.cash.redwood.widget.compose.ComposeWidgetChildren
 
 @OptIn(ExperimentalMaterialApi::class)
-internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
+internal class ComposeUiLazyList :
+  LazyList<@Composable (Modifier) -> Unit>,
+  RefreshableLazyList<@Composable (Modifier) -> Unit> {
   private var isVertical by mutableStateOf(false)
   private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
   private var itemsBefore by mutableIntStateOf(0)
@@ -73,6 +76,12 @@ internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
 
   override val items = ComposeWidgetChildren()
 
+  override val allChildren: List<Widget.Children<@Composable (Modifier) -> Unit>>
+    get() = listOf(
+      placeholder,
+      items,
+    )
+
   override fun isVertical(isVertical: Boolean) {
     this.isVertical = isVertical
   }
@@ -89,11 +98,11 @@ internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
     this.itemsAfter = itemsAfter
   }
 
-  fun refreshing(refreshing: Boolean) {
+  override fun refreshing(refreshing: Boolean) {
     this.isRefreshing = refreshing
   }
 
-  fun onRefresh(onRefresh: (() -> Unit)?) {
+  override fun onRefresh(onRefresh: (() -> Unit)?) {
     this.onRefresh = onRefresh
   }
 
@@ -117,7 +126,7 @@ internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
     this.scrollItemIndex = scrollItemIndex
   }
 
-  fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
+  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
     this.pullRefreshContentColor = Color(pullRefreshContentColor.toLong())
   }
 
@@ -210,27 +219,4 @@ internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
       }
     }
   }
-}
-
-internal class ComposeUiRefreshableLazyList : RefreshableLazyList<@Composable (Modifier) -> Unit> {
-  private val delegate = ComposeUiLazyList()
-
-  override val value get() = delegate.value
-  override var modifier by delegate::modifier
-
-  override val placeholder get() = delegate.placeholder
-  override val items get() = delegate.items
-
-  override fun isVertical(isVertical: Boolean) = delegate.isVertical(isVertical)
-  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = delegate.onViewportChanged(onViewportChanged)
-  override fun itemsBefore(itemsBefore: Int) = delegate.itemsBefore(itemsBefore)
-  override fun itemsAfter(itemsAfter: Int) = delegate.itemsAfter(itemsAfter)
-  override fun refreshing(refreshing: Boolean) = delegate.refreshing(refreshing)
-  override fun onRefresh(onRefresh: (() -> Unit)?) = delegate.onRefresh(onRefresh)
-  override fun width(width: Constraint) = delegate.width(width)
-  override fun height(height: Constraint) = delegate.height(height)
-  override fun margin(margin: Margin) = delegate.margin(margin)
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
-  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = delegate.scrollItemIndex(scrollItemIndex)
-  override fun pullRefreshContentColor(pullRefreshContentColor: UInt) = delegate.pullRefreshContentColor(pullRefreshContentColor)
 }

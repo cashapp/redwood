@@ -69,7 +69,7 @@ import platform.UIKit.item
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-internal class UIViewLazyList :
+internal open class UIViewLazyList :
   LazyList<UIView>,
   ChangeListener {
   internal var tableView: UITableView? = object : UITableView(
@@ -94,36 +94,6 @@ internal class UIViewLazyList :
 
   override val value: UIView
     get() = tableView ?: error("detached")
-
-  private var onRefresh: (() -> Unit)? = null
-
-  private var refreshControl: UIRefreshControl? = null
-
-  fun requireRefreshControl(): UIRefreshControl {
-    val result = refreshControl
-    if (result != null) return result
-
-    return UIRefreshControl()
-      .apply {
-        setEventHandler(UIControlEventValueChanged) {
-          onRefresh?.invoke()
-        }
-      }
-      .also { this.refreshControl = it }
-  }
-
-  fun onRefresh(onRefresh: (() -> Unit)?) {
-    val tableView = this.tableView ?: error("detached")
-    this.onRefresh = onRefresh
-
-    if (onRefresh != null) {
-      if (tableView.refreshControl != refreshControl) {
-        tableView.refreshControl = refreshControl
-      }
-    } else {
-      refreshControl?.removeFromSuperview()
-    }
-  }
 
   internal inner class UpdateProcessor : LazyListUpdateProcessor<LazyListContainerCell, UIView>() {
     override fun createPlaceholder(original: UIView): UIView = SizeOnlyPlaceholder(original)
@@ -338,12 +308,11 @@ internal class UIViewLazyList :
     scrollProcessor.onEndChanges()
   }
 
-  fun detach() {
+  protected open fun detach() {
     // Break reference cycles.
     tableView = null
     updateProcessor = null
     scrollProcessor = null
-    refreshControl = null
   }
 }
 
@@ -445,29 +414,29 @@ internal class LazyListContainerCell(
 }
 
 internal class UIViewRefreshableLazyList :
-  RefreshableLazyList<UIView>,
-  ChangeListener {
-  private val delegate = UIViewLazyList()
+  UIViewLazyList(),
+  RefreshableLazyList<UIView> {
+  override val allChildren get() = super<UIViewLazyList>.allChildren
 
-  override val value get() = delegate.value
-  override var modifier by delegate::modifier
+  private var onRefresh: (() -> Unit)? = null
 
-  override val placeholder get() = delegate.placeholder
-  override val items get() = delegate.items
+  private var refreshControl: UIRefreshControl? = null
 
-  override fun isVertical(isVertical: Boolean) = delegate.isVertical(isVertical)
-  override fun onViewportChanged(onViewportChanged: (Int, Int) -> Unit) = delegate.onViewportChanged(onViewportChanged)
-  override fun itemsBefore(itemsBefore: Int) = delegate.itemsBefore(itemsBefore)
-  override fun itemsAfter(itemsAfter: Int) = delegate.itemsAfter(itemsAfter)
-  override fun width(width: Constraint) = delegate.width(width)
-  override fun height(height: Constraint) = delegate.height(height)
-  override fun margin(margin: Margin) = delegate.margin(margin)
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
-  override fun scrollItemIndex(scrollItemIndex: ScrollItemIndex) = delegate.scrollItemIndex(scrollItemIndex)
-  override fun onEndChanges() = delegate.onEndChanges()
+  fun requireRefreshControl(): UIRefreshControl {
+    val result = refreshControl
+    if (result != null) return result
+
+    return UIRefreshControl()
+      .apply {
+        setEventHandler(UIControlEventValueChanged) {
+          onRefresh?.invoke()
+        }
+      }
+      .also { this.refreshControl = it }
+  }
 
   override fun refreshing(refreshing: Boolean) {
-    val refreshControl = delegate.requireRefreshControl()
+    val refreshControl = requireRefreshControl()
 
     if (refreshing != refreshControl.refreshing) {
       if (refreshing) {
@@ -479,11 +448,25 @@ internal class UIViewRefreshableLazyList :
   }
 
   override fun onRefresh(onRefresh: (() -> Unit)?) {
-    delegate.onRefresh(onRefresh)
+    val tableView = this.tableView ?: error("detached")
+    this.onRefresh = onRefresh
+
+    if (onRefresh != null) {
+      if (tableView.refreshControl != refreshControl) {
+        tableView.refreshControl = refreshControl
+      }
+    } else {
+      refreshControl?.removeFromSuperview()
+    }
   }
 
   override fun pullRefreshContentColor(pullRefreshContentColor: UInt) {
-    delegate.requireRefreshControl().tintColor = UIColor(pullRefreshContentColor)
+    requireRefreshControl().tintColor = UIColor(pullRefreshContentColor)
+  }
+
+  override fun detach() {
+    super.detach()
+    refreshControl = null // Break a reference cycle.
   }
 }
 
