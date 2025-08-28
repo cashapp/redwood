@@ -143,11 +143,13 @@ public open class RedwoodUIView : RedwoodView<UIView> {
 
     private var widthForIntrinsicSize = UIViewNoIntrinsicMetric
       set(value) {
+        if (value == field) return // Don't invalidateIntrinsicContentSize() if nothing's changed.
         field = value
         invalidateIntrinsicContentSize()
       }
     private var heightForIntrinsicSize = UIViewNoIntrinsicMetric
       set(value) {
+        if (value == field) return // Don't invalidateIntrinsicContentSize() if nothing's changed.
         field = value
         invalidateIntrinsicContentSize()
       }
