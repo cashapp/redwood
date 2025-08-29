@@ -11,7 +11,7 @@ kotlin {
     if (target.platformType != common) {
       target.binaries.framework {
         compilation = target.compilations.test
-        baseName = 'RedwoodLazylayoutUIViewTestKt'
+        baseName = 'RedwoodUiLazylayoutUIViewTestKt'
       }
     }
   }
@@ -19,14 +19,14 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodUiLazylayoutWidget
       }
     }
     commonTest {
       dependencies {
         api projects.redwoodLayoutSharedTest
         api projects.redwoodLayoutUiview
-        api projects.redwoodLazylayoutSharedTest
+        api projects.redwoodUiLazylayoutSharedTest
         api projects.redwoodSnapshotTesting
         api libs.kotlin.test
       }

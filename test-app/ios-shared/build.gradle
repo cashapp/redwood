@@ -20,7 +20,7 @@ kotlin {
         implementation projects.redwoodUiBasicUiview
         implementation projects.redwoodUiCoreUiview
         implementation projects.redwoodLayoutUiview
-        implementation projects.redwoodLazylayoutUiview
+        implementation projects.redwoodUiLazylayoutUiview
       }
     }
   }

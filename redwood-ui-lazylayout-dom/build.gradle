@@ -9,7 +9,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodUiLazylayoutWidget
       }
     }
   }

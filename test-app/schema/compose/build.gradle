@@ -15,7 +15,7 @@ kotlin {
       dependencies {
         api projects.redwoodUiBasicCompose
         api projects.redwoodLayoutCompose
-        api projects.redwoodLazylayoutCompose
+        api projects.redwoodUiLazylayoutCompose
         api projects.testApp.schema.widget
         api projects.testApp.schema.modifiers
       }

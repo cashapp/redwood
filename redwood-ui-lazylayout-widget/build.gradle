@@ -13,7 +13,7 @@ kotlin {
       kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.lazylayout.widget'))
       dependencies {
         api projects.redwoodLayoutModifiers
-        api projects.redwoodLazylayoutApi
+        api projects.redwoodUiLazylayoutApi
       }
     }
     commonTest {
@@ -26,6 +26,6 @@ kotlin {
 }
 
 redwoodSchema {
-  source = projects.redwoodLazylayoutSchema
+  source = projects.redwoodUiLazylayoutSchema
   type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
 }

@@ -13,7 +13,7 @@ kotlin {
         api projects.redwoodUiBasicTesting
         api projects.redwoodUiCoreTesting
         api projects.redwoodLayoutTesting
-        api projects.redwoodLazylayoutTesting
+        api projects.redwoodUiLazylayoutTesting
         api projects.testApp.schema.widget
       }
     }

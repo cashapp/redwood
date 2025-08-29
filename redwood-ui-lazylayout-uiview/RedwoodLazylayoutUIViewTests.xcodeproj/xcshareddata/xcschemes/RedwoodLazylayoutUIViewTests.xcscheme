@@ -19,9 +19,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB408CE42AC64CEF00E1BA00"
-               BuildableName = "RedwoodLazylayoutUIViewTests.xctest"
-               BlueprintName = "RedwoodLazylayoutUIViewTests"
-               ReferencedContainer = "container:RedwoodLazylayoutUIViewTests.xcodeproj">
+               BuildableName = "RedwoodUiLazylayoutUIViewTests.xctest"
+               BlueprintName = "RedwoodUiLazylayoutUIViewTests"
+               ReferencedContainer = "container:RedwoodUiLazylayoutUIViewTests.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

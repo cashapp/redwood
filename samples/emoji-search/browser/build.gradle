@@ -24,7 +24,7 @@ kotlin {
         implementation projects.redwoodUiBasicDom
         implementation projects.samples.emojiSearch.presenter
         implementation projects.redwoodLayoutDom
-        implementation projects.redwoodLazylayoutDom
+        implementation projects.redwoodUiLazylayoutDom
         implementation libs.kotlinx.coroutines.core
       }
     }

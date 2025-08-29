@@ -24,7 +24,7 @@ kotlin {
         implementation projects.samples.counter.presenter
         implementation projects.redwoodUiBasicDom
         implementation projects.redwoodLayoutDom
-        implementation projects.redwoodLazylayoutDom
+        implementation projects.redwoodUiLazylayoutDom
         implementation libs.kotlinx.coroutines.core
       }
     }

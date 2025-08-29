@@ -40,7 +40,7 @@ kotlin {
         implementation libs.turbine
         implementation libs.jetbrains.compose.collection
         implementation projects.redwoodLayoutTesting
-        implementation projects.redwoodLazylayoutTesting
+        implementation projects.redwoodUiLazylayoutTesting
         implementation projects.redwoodUiCoreTesting
         implementation projects.redwoodUiCoreCompose
         implementation projects.redwoodWidget
@@ -72,7 +72,7 @@ dependencies {
   androidTestImplementation libs.kotlinx.coroutines.test
   androidTestImplementation libs.assertk
   androidTestImplementation projects.redwoodLayoutTesting
-  androidTestImplementation projects.redwoodLazylayoutTesting
+  androidTestImplementation projects.redwoodUiLazylayoutTesting
   androidTestImplementation projects.redwoodUiCoreCompose
   androidTestImplementation projects.testApp.schema.protocolGuest
   androidTestImplementation projects.testApp.schema.protocolHost

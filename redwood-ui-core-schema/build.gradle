@@ -10,7 +10,7 @@ apply plugin: 'app.cash.redwood.schema'
 dependencies {
   api projects.redwoodUiCoreApi
   api projects.redwoodLayoutSchema
-  api projects.redwoodLazylayoutSchema
+  api projects.redwoodUiLazylayoutSchema
 }
 
 redwoodSchema {

@@ -14,7 +14,7 @@ kotlin {
       dependencies {
         api(projects.redwoodUiBasicWidget)
         api(projects.redwoodLayoutCompose)
-        api(projects.redwoodLazylayoutCompose)
+        api(projects.redwoodUiLazylayoutCompose)
       }
     }
   }

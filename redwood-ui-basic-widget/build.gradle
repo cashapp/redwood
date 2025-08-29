@@ -15,7 +15,7 @@ kotlin {
         api projects.redwoodUiBasicApi
         api projects.redwoodUiBasicModifiers
         api projects.redwoodLayoutWidget
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodUiLazylayoutWidget
       }
     }
   }

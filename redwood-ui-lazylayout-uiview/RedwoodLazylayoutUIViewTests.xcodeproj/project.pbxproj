@@ -18,10 +18,10 @@
 /* Begin PBXFileReference section */
 		102F1C8B2C7D18C700890D9F /* UIViewLazyListTestHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewLazyListTestHost.swift; sourceTree = "<group>"; };
 		10CEEB9C2C825EAD00E947AF /* UIViewLazyListAsFlexContainerTestHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewLazyListAsFlexContainerTestHost.swift; sourceTree = "<group>"; };
-		63E90CF521FEBBB700449E04 /* RedwoodLazylayoutUIViewTestKt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RedwoodLazylayoutUIViewTestKt.framework; path = "build/xcode-frameworks/RedwoodLazylayoutUIViewTestKt.framework"; sourceTree = "<group>"; };
-		CB408CE52AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedwoodLazylayoutUIViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63E90CF521FEBBB700449E04 /* RedwoodUiLazylayoutUIViewTestKt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RedwoodUiLazylayoutUIViewTestKt.framework; path = "build/xcode-frameworks/RedwoodUiLazylayoutUIViewTestKt.framework"; sourceTree = "<group>"; };
+		CB408CE52AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RedwoodUiLazylayoutUIViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotlinHostingXCTestCase.swift; sourceTree = "<group>"; };
-		CB408CF52AC657EF00E1BA00 /* RedwoodLazylayoutUIViewTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RedwoodLazylayoutUIViewTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		CB408CF52AC657EF00E1BA00 /* RedwoodUiLazylayoutUIViewTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RedwoodUiLazylayoutUIViewTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KotlinHostingXCTestCaseHelper.m; sourceTree = "<group>"; };
 		CB408CF82AC6581100E1BA00 /* KotlinHostingXCTestCaseHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KotlinHostingXCTestCaseHelper.h; sourceTree = "<group>"; };
 		CB9729D22AD82D0C00804E94 /* SnapshotTestingCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotTestingCallback.swift; sourceTree = "<group>"; };
@@ -49,41 +49,41 @@
 		635661C821F12B7D00DD7240 = {
 			isa = PBXGroup;
 			children = (
-				CB408CE62AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests */,
+				CB408CE62AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests */,
 				635661D221F12B7E00DD7240 /* Products */,
 				00D5E68C2AAF3EBD00692213 /* Frameworks */,
-				63E90CF521FEBBB700449E04 /* RedwoodLazylayoutUIViewTestKt.framework */,
+				63E90CF521FEBBB700449E04 /* RedwoodUiLazylayoutUIViewTestKt.framework */,
 			);
 			sourceTree = "<group>";
 		};
 		635661D221F12B7E00DD7240 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CB408CE52AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests.xctest */,
+				CB408CE52AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CB408CE62AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests */ = {
+		CB408CE62AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests */ = {
 			isa = PBXGroup;
 			children = (
 				CB9729D22AD82D0C00804E94 /* SnapshotTestingCallback.swift */,
 				CB408CEC2AC6549F00E1BA00 /* KotlinHostingXCTestCase.swift */,
 				CB408CF62AC657EF00E1BA00 /* KotlinHostingXCTestCaseHelper.m */,
-				CB408CF52AC657EF00E1BA00 /* RedwoodLazylayoutUIViewTests-Bridging-Header.h */,
+				CB408CF52AC657EF00E1BA00 /* RedwoodUiLazylayoutUIViewTests-Bridging-Header.h */,
 				CB408CF82AC6581100E1BA00 /* KotlinHostingXCTestCaseHelper.h */,
 				102F1C8B2C7D18C700890D9F /* UIViewLazyListTestHost.swift */,
 				10CEEB9C2C825EAD00E947AF /* UIViewLazyListAsFlexContainerTestHost.swift */,
 			);
-			path = RedwoodLazylayoutUIViewTests;
+			path = RedwoodUiLazylayoutUIViewTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CB408CE42AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests */ = {
+		CB408CE42AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB408CE92AC64CEF00E1BA00 /* Build configuration list for PBXNativeTarget "RedwoodLazylayoutUIViewTests" */;
+			buildConfigurationList = CB408CE92AC64CEF00E1BA00 /* Build configuration list for PBXNativeTarget "RedwoodUiLazylayoutUIViewTests" */;
 			buildPhases = (
 				00DD12E22AAF46C500CA3FD3 /* ShellScript */,
 				CB408CE12AC64CEF00E1BA00 /* Sources */,
@@ -94,12 +94,12 @@
 			);
 			dependencies = (
 			);
-			name = RedwoodLazylayoutUIViewTests;
+			name = RedwoodUiLazylayoutUIViewTests;
 			packageProductDependencies = (
 				CB8A21EE2AC6647F00C104C2 /* SnapshotTesting */,
 			);
-			productName = RedwoodLazylayoutUIViewTests;
-			productReference = CB408CE52AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests.xctest */;
+			productName = RedwoodUiLazylayoutUIViewTests;
+			productReference = CB408CE52AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -118,7 +118,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 635661CC21F12B7D00DD7240 /* Build configuration list for PBXProject "RedwoodLazylayoutUIViewTests" */;
+			buildConfigurationList = 635661CC21F12B7D00DD7240 /* Build configuration list for PBXProject "RedwoodUiLazylayoutUIViewTests" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -134,7 +134,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CB408CE42AC64CEF00E1BA00 /* RedwoodLazylayoutUIViewTests */,
+				CB408CE42AC64CEF00E1BA00 /* RedwoodUiLazylayoutUIViewTests */,
 			);
 		};
 /* End PBXProject section */
@@ -326,15 +326,15 @@
 					"$(inherited)",
 					"-l\"c++\"",
 					"-framework",
-					"\"RedwoodLazylayoutUIViewTestKt\"",
+					"\"RedwoodUiLazylayoutUIViewTestKt\"",
 					"-ObjC",
 					"-framework",
-					RedwoodLazylayoutUIViewTestKt,
+					RedwoodUiLazylayoutUIViewTestKt,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.cash.redwood.layout.uiview.testing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "RedwoodLazylayoutUIViewTests/RedwoodLazylayoutUIViewTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RedwoodUiLazylayoutUIViewTests/RedwoodUiLazylayoutUIViewTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -364,15 +364,15 @@
 					"$(inherited)",
 					"-l\"c++\"",
 					"-framework",
-					"\"RedwoodLazylayoutUIViewTestKt\"",
+					"\"RedwoodUiLazylayoutUIViewTestKt\"",
 					"-ObjC",
 					"-framework",
-					RedwoodLazylayoutUIViewTestKt,
+					RedwoodUiLazylayoutUIViewTestKt,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.cash.redwood.layout.uiview.testing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "RedwoodLazylayoutUIViewTests/RedwoodLazylayoutUIViewTests-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "RedwoodUiLazylayoutUIViewTests/RedwoodUiLazylayoutUIViewTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -381,7 +381,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		635661CC21F12B7D00DD7240 /* Build configuration list for PBXProject "RedwoodLazylayoutUIViewTests" */ = {
+		635661CC21F12B7D00DD7240 /* Build configuration list for PBXProject "RedwoodUiLazylayoutUIViewTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				635661E121F12B8000DD7240 /* Debug */,
@@ -390,7 +390,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB408CE92AC64CEF00E1BA00 /* Build configuration list for PBXNativeTarget "RedwoodLazylayoutUIViewTests" */ = {
+		CB408CE92AC64CEF00E1BA00 /* Build configuration list for PBXNativeTarget "RedwoodUiLazylayoutUIViewTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB408CEA2AC64CEF00E1BA00 /* Debug */,

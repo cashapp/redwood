@@ -11,7 +11,7 @@ kotlin {
       dependencies {
         api projects.redwoodUiBasicWidget
         implementation projects.redwoodLayoutDom
-        implementation projects.redwoodLazylayoutDom
+        implementation projects.redwoodUiLazylayoutDom
       }
     }
   }

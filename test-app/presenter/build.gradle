@@ -17,7 +17,7 @@ kotlin {
     commonMain {
       dependencies {
         implementation projects.testApp.schema.compose
-        implementation projects.redwoodLazylayoutCompose
+        implementation projects.redwoodUiLazylayoutCompose
         implementation projects.redwoodUiCoreCompose
         implementation libs.paging.compose.common
         implementation libs.kotlinx.coroutines.core

@@ -1,4 +1,4 @@
-import RedwoodLazylayoutUIViewTestKt
+import RedwoodUiLazylayoutUIViewTestKt
 import SnapshotTesting
 import UIKit
 

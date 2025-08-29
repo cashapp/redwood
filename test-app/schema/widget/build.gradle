@@ -13,7 +13,7 @@ kotlin {
         api projects.redwoodUiBasicWidget
         api projects.redwoodUiCoreWidget
         api projects.redwoodLayoutWidget
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodUiLazylayoutWidget
         api projects.testApp.schema.modifiers
       }
     }

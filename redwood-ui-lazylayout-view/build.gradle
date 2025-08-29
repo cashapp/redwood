@@ -10,14 +10,14 @@ apply plugin: 'app.cash.burst'
 apply plugin: 'app.cash.paparazzi'
 
 dependencies {
-  api projects.redwoodLazylayoutWidget
+  api projects.redwoodUiLazylayoutWidget
   implementation libs.androidx.core
   implementation libs.androidx.recyclerview
   implementation libs.androidx.swipeRefreshLayout
   implementation libs.kotlinx.coroutines.android
   testImplementation libs.burst
   testImplementation projects.redwoodLayoutSharedTest
-  testImplementation projects.redwoodLazylayoutSharedTest
+  testImplementation projects.redwoodUiLazylayoutSharedTest
   testImplementation projects.redwoodLayoutView
   testImplementation projects.redwoodSnapshotTesting
 }

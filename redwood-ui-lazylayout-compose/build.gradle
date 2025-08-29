@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodUiLazylayoutWidget
       }
     }
     commonTest {
@@ -27,7 +27,7 @@ kotlin {
 }
 
 redwoodSchema {
-  source = projects.redwoodLazylayoutSchema
+  source = projects.redwoodUiLazylayoutSchema
   type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
 }
 

@@ -11,14 +11,14 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api projects.redwoodLazylayoutCompose
-        api projects.redwoodLazylayoutWidget
+        api projects.redwoodUiLazylayoutCompose
+        api projects.redwoodUiLazylayoutWidget
       }
     }
   }
 }
 
 redwoodSchema {
-  source = projects.redwoodLazylayoutSchema
+  source = projects.redwoodUiLazylayoutSchema
   type = 'app.cash.redwood.lazylayout.RedwoodLazyLayout'
 }
