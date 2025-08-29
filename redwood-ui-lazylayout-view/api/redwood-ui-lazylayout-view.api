@@ -1,0 +1,6 @@
+public final class app/cash/redwood/lazylayout/view/ViewRedwoodLazyLayoutWidgetFactory : app/cash/redwood/lazylayout/widget/RedwoodLazyLayoutWidgetFactory {
+	public fun <init> (Landroid/content/Context;)V
+	public fun LazyList ()Lapp/cash/redwood/lazylayout/widget/LazyList;
+	public fun RefreshableLazyList ()Lapp/cash/redwood/lazylayout/widget/RefreshableLazyList;
+}
+
