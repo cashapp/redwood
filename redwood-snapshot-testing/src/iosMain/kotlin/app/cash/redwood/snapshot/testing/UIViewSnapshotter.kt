@@ -108,8 +108,13 @@ class UIViewSnapshotter private constructor(
     val callback: UIViewSnapshotCallback,
     val widthConstraint: Constraint = Constraint.Fill,
     val heightConstraint: Constraint = Constraint.Fill,
+    val framed: Boolean = true,
   ) : Snapshotter.Factory<UIView> {
     override fun invoke(widget: UIView): UIViewSnapshotter {
+      if (!framed) {
+        return UIViewSnapshotter(callback, widget, widthConstraint, heightConstraint)
+      }
+
       val frame = UIView()
         .apply {
           backgroundColor = UIColor.whiteColor
