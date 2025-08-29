@@ -24,9 +24,9 @@ import platform.UIKit.UIColor
 import platform.UIKit.UIView
 
 class UIViewBoxTest(
-  private val callback: UIViewSnapshotCallback,
+  callback: UIViewSnapshotCallback,
 ) : AbstractBoxTest<UIView>() {
-
+  override val snapshotterFactory = UIViewSnapshotter.Factory(callback)
   override val widgetFactory = UIViewTestWidgetFactory
 
   override fun box(): Box<UIView> {
@@ -35,6 +35,4 @@ class UIViewBoxTest(
       applyDefaults()
     }
   }
-
-  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 }

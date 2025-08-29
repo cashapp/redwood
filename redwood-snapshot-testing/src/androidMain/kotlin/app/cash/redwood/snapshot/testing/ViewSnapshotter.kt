@@ -16,9 +16,10 @@
 package app.cash.redwood.snapshot.testing
 
 import android.view.View
+import app.cash.burst.TestFunction
 import app.cash.paparazzi.Paparazzi
 
-class ViewSnapshotter(
+class ViewSnapshotter private constructor(
   private val paparazzi: Paparazzi,
   private val view: View,
 ) : Snapshotter {
@@ -38,6 +39,16 @@ class ViewSnapshotter(
         paparazzi.snapshot(view = view, name = "${name.orEmpty()}_$scrollCount")
       }
       view.scrollTo(0, 0)
+    }
+  }
+
+  class Factory(
+    private val paparazzi: Paparazzi,
+  ) : Snapshotter.Factory<View> {
+    override fun invoke(widget: View) = ViewSnapshotter(paparazzi, widget)
+
+    override fun intercept(testFunction: TestFunction) {
+      testFunction()
     }
   }
 }

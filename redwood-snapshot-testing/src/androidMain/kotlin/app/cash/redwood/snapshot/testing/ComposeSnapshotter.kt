@@ -17,15 +17,27 @@ package app.cash.redwood.snapshot.testing
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import app.cash.burst.TestFunction
 import app.cash.paparazzi.Paparazzi
 
-class ComposeSnapshotter(
+class ComposeSnapshotter private constructor(
   private val paparazzi: Paparazzi,
   private val widget: @Composable (Modifier) -> Unit,
 ) : Snapshotter {
   override fun snapshot(name: String?, scrolling: Boolean) {
     paparazzi.snapshot(name) {
       widget(Modifier)
+    }
+  }
+
+  class Factory(
+    private val paparazzi: Paparazzi,
+  ) : Snapshotter.Factory<@Composable (Modifier) -> Unit> {
+    override fun invoke(widget: @Composable ((Modifier) -> Unit)) =
+      ComposeSnapshotter(paparazzi, widget)
+
+    override fun intercept(testFunction: TestFunction) {
+      testFunction()
     }
   }
 }

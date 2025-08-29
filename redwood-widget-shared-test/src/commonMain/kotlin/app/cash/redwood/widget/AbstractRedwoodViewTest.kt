@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.widget
 
+import app.cash.burst.InterceptTest
 import app.cash.redwood.snapshot.testing.Blue
 import app.cash.redwood.snapshot.testing.Green
 import app.cash.redwood.snapshot.testing.Red
@@ -27,13 +28,12 @@ import kotlin.test.Test
 
 abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
 
+  @InterceptTest
+  abstract val snapshotterFactory: Snapshotter.Factory<W>
+
   abstract val widgetFactory: TestWidgetFactory<W>
 
   abstract fun redwoodView(): R
-
-  abstract fun snapshotter(redwoodView: R): Snapshotter
-
-  abstract fun snapshotter(widget: Widget<W>): Snapshotter
 
   /**
    * This test uses a string that wraps to confirm the root view's dimensions aren't unbounded.
@@ -43,7 +43,7 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
   fun testSingleChildElement() {
     val redwoodView = redwoodView()
     redwoodView.children.insert(0, widgetFactory.text("Hello ".repeat(50)))
-    snapshotter(redwoodView).snapshot()
+    snapshotterFactory(redwoodView.value).snapshot()
   }
 
   /** RedwoodView is measured by its content. */
@@ -62,7 +62,7 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
     val scrollWrapper = widgetFactory.scrollWrapper()
     scrollWrapper.content = rootColumn.value
 
-    snapshotter(scrollWrapper).snapshot(scrolling = true)
+    snapshotterFactory(scrollWrapper.value).snapshot(scrolling = true)
   }
 
   /** RedwoodView's height can exceed the height of the screen. */
@@ -86,6 +86,6 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
     val scrollWrapper = widgetFactory.scrollWrapper()
     scrollWrapper.content = rootColumn.value
 
-    snapshotter(scrollWrapper).snapshot(scrolling = true)
+    snapshotterFactory(scrollWrapper.value).snapshot(scrolling = true)
   }
 }

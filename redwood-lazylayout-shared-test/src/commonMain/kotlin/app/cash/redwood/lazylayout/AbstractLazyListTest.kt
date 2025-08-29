@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.lazylayout
 
+import app.cash.burst.InterceptTest
 import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
@@ -29,6 +30,9 @@ import app.cash.redwood.widget.ChangeListener
 import kotlin.test.Test
 
 abstract class AbstractLazyListTest<T : Any> {
+  @InterceptTest
+  abstract val snapshotterFactory: Snapshotter.Factory<T>
+
   abstract val widgetFactory: TestWidgetFactory<T>
 
   abstract fun lazyList(
@@ -51,8 +55,6 @@ abstract class AbstractLazyListTest<T : Any> {
     return result
   }
 
-  abstract fun snapshotter(widget: T): Snapshotter
-
   @Test
   fun testHappyPath() {
     val lazyList = defaultLazyList()
@@ -62,13 +64,13 @@ abstract class AbstractLazyListTest<T : Any> {
     }
     (lazyList as? ChangeListener)?.onEndChanges()
 
-    snapshotter(lazyList.value).snapshot()
+    snapshotterFactory(lazyList.value).snapshot()
   }
 
   @Test
   fun testPlaceholderToLoadedAndLoadedToPlaceholder() {
     val lazyList = defaultLazyList()
-    val snapshotter = snapshotter(lazyList.value)
+    val snapshotter = snapshotterFactory(lazyList.value)
 
     (lazyList as? ChangeListener)?.onEndChanges()
     snapshotter.snapshot("0 empty")
@@ -107,7 +109,7 @@ abstract class AbstractLazyListTest<T : Any> {
       lazyList.items.insert(index, widgetFactory.text(value))
     }
     (lazyList as? ChangeListener)?.onEndChanges()
-    snapshotter(lazyList.value).snapshot()
+    snapshotterFactory(lazyList.value).snapshot()
   }
 }
 

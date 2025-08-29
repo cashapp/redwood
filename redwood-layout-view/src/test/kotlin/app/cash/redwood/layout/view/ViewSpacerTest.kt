@@ -41,6 +41,8 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
     renderingMode = SessionParams.RenderingMode.SHRINK,
   )
 
+  override val snapshotterFactory = ViewSnapshotter.Factory(paparazzi)
+
   override fun widget(): Spacer<View> = ViewSpacer(paparazzi.context)
 
   override fun wrap(widget: Widget<View>, horizontal: Boolean): View {
@@ -51,6 +53,4 @@ class ViewSpacerTest : AbstractSpacerTest<View>() {
       addView(TextView(paparazzi.context).apply { text = "Text 2" })
     }
   }
-
-  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 }

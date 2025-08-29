@@ -52,6 +52,8 @@ class ComposeUiFlexContainerTest(
     supportsRtl = true,
   )
 
+  override val snapshotterFactory = ComposeSnapshotter.Factory(paparazzi)
+
   override fun flexContainer(
     direction: FlexDirection,
     backgroundColor: Int,
@@ -77,8 +79,6 @@ class ComposeUiFlexContainerTest(
       testOnlyModifier = Modifier.background(Color(defaultBackgroundColor))
     }
   }
-
-  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiFlexContainer,

@@ -33,8 +33,9 @@ import app.cash.redwood.yoga.FlexDirection
 import platform.UIKit.UIView
 
 class UIViewLazyListAsFlexContainerTest(
-  private val callback: UIViewSnapshotCallback,
+  callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
+  override val snapshotterFactory = UIViewSnapshotter.Factory(callback)
   override val widgetFactory = UIViewTestWidgetFactory
 
   private val lazyLayoutWidgetFactory = UIViewRedwoodLazyLayoutWidgetFactory()
@@ -57,8 +58,6 @@ class UIViewLazyListAsFlexContainerTest(
         value.backgroundColor = defaultBackgroundColor.toUIColor()
       }
   }
-
-  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
 
   class ViewTestFlexContainer private constructor(
     private val delegate: LazyList<UIView>,

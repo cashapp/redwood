@@ -51,6 +51,8 @@ class ComposeUiLazyListTest(
     supportsRtl = true,
   )
 
+  override val snapshotterFactory = ComposeSnapshotter.Factory(paparazzi)
+
   override val widgetFactory = ComposeUiTestWidgetFactory
 
   override fun flexContainer(
@@ -76,8 +78,6 @@ class ComposeUiLazyListTest(
         Modifier.background(Color(defaultBackgroundColor))
     }
   }
-
-  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 
   class ComposeTestFlexContainer private constructor(
     private val delegate: ComposeUiLazyList,

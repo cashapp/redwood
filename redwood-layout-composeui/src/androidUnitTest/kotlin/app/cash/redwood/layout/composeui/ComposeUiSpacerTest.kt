@@ -41,6 +41,8 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable (Modifier) -> Unit>()
     renderingMode = SessionParams.RenderingMode.SHRINK,
   )
 
+  override val snapshotterFactory = ComposeSnapshotter.Factory(paparazzi)
+
   override fun widget(): Spacer<@Composable (Modifier) -> Unit> = ComposeUiSpacer()
 
   override fun wrap(
@@ -61,6 +63,4 @@ class ComposeUiSpacerTest : AbstractSpacerTest<@Composable (Modifier) -> Unit>()
       }
     }
   }
-
-  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

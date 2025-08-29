@@ -1,5 +1,6 @@
 import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
 
+apply plugin: 'app.cash.burst'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 redwoodBuild {
@@ -10,6 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        api libs.burst
         api libs.jetbrains.compose.foundation
         api libs.kotlin.test
         api projects.redwoodWidget

@@ -22,7 +22,6 @@ import app.cash.redwood.snapshot.testing.UIViewSnapshotter.Constraint.Wrap
 import app.cash.redwood.snapshot.testing.UIViewTestWidgetFactory
 import app.cash.redwood.widget.AbstractRedwoodViewTest
 import app.cash.redwood.widget.RedwoodUIView
-import app.cash.redwood.widget.Widget
 import platform.UIKit.UIView
 
 /**
@@ -34,26 +33,16 @@ import platform.UIKit.UIView
 class UIViewRedwoodViewFillWrapTest(
   private val callback: UIViewSnapshotCallback,
 ) : AbstractRedwoodViewTest<UIView, RedwoodUIView>() {
+  override val snapshotterFactory = UIViewSnapshotter.Factory(
+    callback = callback,
+    widthConstraint = Fill,
+    heightConstraint = Wrap,
+  )
+
   override val widgetFactory = UIViewTestWidgetFactory
 
   override fun redwoodView() = RedwoodUIView().apply {
     this.fillWidth = true
     this.fillHeight = false
   }
-
-  override fun snapshotter(redwoodView: RedwoodUIView) =
-    UIViewSnapshotter.framed(
-      callback = callback,
-      widget = redwoodView.value,
-      widthConstraint = Fill,
-      heightConstraint = Wrap,
-    )
-
-  override fun snapshotter(widget: Widget<UIView>) =
-    UIViewSnapshotter.framed(
-      callback = callback,
-      widget = widget.value,
-      widthConstraint = Fill,
-      heightConstraint = Wrap,
-    )
 }

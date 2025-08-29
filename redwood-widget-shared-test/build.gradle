@@ -1,5 +1,7 @@
 import static app.cash.redwood.buildsupport.TargetGroup.ToolkitAllWithoutAndroid
 
+apply plugin: 'app.cash.burst'
+
 redwoodBuild {
   targets(ToolkitAllWithoutAndroid)
   sharedSnapshotTests()

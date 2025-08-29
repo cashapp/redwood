@@ -25,7 +25,6 @@ import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.widget.AbstractRedwoodViewTest
 import app.cash.redwood.widget.RedwoodLayout
-import app.cash.redwood.widget.Widget
 import com.android.resources.LayoutDirection
 import org.junit.Rule
 
@@ -40,12 +39,10 @@ class ViewRedwoodViewTest(
     supportsRtl = true,
   )
 
+  override val snapshotterFactory = ViewSnapshotter.Factory(paparazzi)
+
   override val widgetFactory: TestWidgetFactory<View>
     get() = ViewTestWidgetFactory(paparazzi.context)
 
   override fun redwoodView() = RedwoodLayout(paparazzi.context, OnBackPressedDispatcher())
-
-  override fun snapshotter(redwoodView: RedwoodLayout) = ViewSnapshotter(paparazzi, redwoodView)
-
-  override fun snapshotter(widget: Widget<View>) = ViewSnapshotter(paparazzi, widget.value)
 }

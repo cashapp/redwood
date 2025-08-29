@@ -44,8 +44,9 @@ import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
 
 class UIViewFlexContainerTest(
-  private val callback: UIViewSnapshotCallback,
+  callback: UIViewSnapshotCallback,
 ) : AbstractFlexContainerTest<UIView>() {
+  override val snapshotterFactory = UIViewSnapshotter.Factory(callback)
   override val widgetFactory = UIViewTestWidgetFactory
 
   override fun flexContainer(
@@ -100,8 +101,6 @@ class UIViewFlexContainerTest(
     }
   }
 
-  override fun snapshotter(widget: UIView) = UIViewSnapshotter.framed(callback, widget)
-
   /**
    * Confirm that calling [ResizableWidget.SizeListener] is sufficient to trigger a subsequent call
    * to [UIView.layoutSubviews].
@@ -134,7 +133,7 @@ class UIViewFlexContainerTest(
       add(widget)
     }
 
-    val snapshotter = snapshotter(container.value)
+    val snapshotter = snapshotterFactory(container.value)
 
     snapshotter.layoutSubject()
     assertEquals(1, layoutSubviewsCount)

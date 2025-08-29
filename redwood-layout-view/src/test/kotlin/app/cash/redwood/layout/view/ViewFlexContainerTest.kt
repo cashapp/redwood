@@ -43,6 +43,8 @@ class ViewFlexContainerTest(
     supportsRtl = true,
   )
 
+  override val snapshotterFactory = ViewSnapshotter.Factory(paparazzi)
+
   override val widgetFactory: ViewTestWidgetFactory
     get() = ViewTestWidgetFactory(paparazzi.context)
 
@@ -67,8 +69,6 @@ class ViewFlexContainerTest(
         value.setBackgroundColor(defaultBackgroundColor)
       }
   }
-
-  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 
   class ViewTestFlexContainer internal constructor(
     private val delegate: ViewFlexContainer,

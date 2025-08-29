@@ -38,11 +38,10 @@ class ComposeUiBoxTest(
     theme = "android:Theme.Material.Light.NoActionBar",
     supportsRtl = true,
   )
+  override val snapshotterFactory = ComposeSnapshotter.Factory(paparazzi)
 
   override val widgetFactory = ComposeUiTestWidgetFactory
 
   override fun box(): Box<@Composable (Modifier) -> Unit> = ComposeUiBox(0x88000000.toInt())
     .apply { applyDefaults() }
-
-  override fun snapshotter(widget: @Composable (Modifier) -> Unit) = ComposeSnapshotter(paparazzi, widget)
 }

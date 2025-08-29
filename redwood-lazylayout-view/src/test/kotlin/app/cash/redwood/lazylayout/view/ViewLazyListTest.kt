@@ -20,7 +20,6 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.lazylayout.AbstractLazyListTest
 import app.cash.redwood.lazylayout.widget.LazyList
-import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.ViewSnapshotter
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
@@ -35,6 +34,8 @@ class ViewLazyListTest : AbstractLazyListTest<View>() {
     supportsRtl = true,
   )
 
+  override val snapshotterFactory = ViewSnapshotter.Factory(paparazzi)
+
   override val widgetFactory: TestWidgetFactory<View>
     get() = ViewTestWidgetFactory(paparazzi.context)
 
@@ -43,6 +44,4 @@ class ViewLazyListTest : AbstractLazyListTest<View>() {
       value.setBackgroundColor(backgroundColor)
     }
   }
-
-  override fun snapshotter(widget: View): Snapshotter = ViewSnapshotter(paparazzi, widget)
 }

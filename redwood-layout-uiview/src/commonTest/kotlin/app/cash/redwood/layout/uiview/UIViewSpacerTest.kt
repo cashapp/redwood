@@ -30,8 +30,9 @@ import platform.UIKit.UIStackView
 import platform.UIKit.UIView
 
 class UIViewSpacerTest(
-  private val callback: UIViewSnapshotCallback,
+  callback: UIViewSnapshotCallback,
 ) : AbstractSpacerTest<UIView>() {
+  override val snapshotterFactory = UIViewSnapshotter.Factory(callback)
   private val factory = UIViewRedwoodLayoutWidgetFactory()
 
   override fun widget() = factory.Spacer()
@@ -52,6 +53,4 @@ class UIViewSpacerTest(
       )
     }
   }
-
-  override fun snapshotter(widget: UIView) = UIViewSnapshotter(callback, widget)
 }

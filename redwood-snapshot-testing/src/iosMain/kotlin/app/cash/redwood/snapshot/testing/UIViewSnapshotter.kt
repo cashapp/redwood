@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.snapshot.testing
 
+import app.cash.burst.TestFunction
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlinx.cinterop.useContents
@@ -32,7 +33,7 @@ import platform.UIKit.UIViewNoIntrinsicMetric
  * This either snapshots the view sized to be full-screen, or it uses [heightConstraint] to size the
  * view to whatever height it requires. Scrolling snapshots are always sized to the screen height.
  */
-class UIViewSnapshotter(
+class UIViewSnapshotter private constructor(
   private val callback: UIViewSnapshotCallback,
   private val subject: UIView,
   private val widthConstraint: Constraint = Constraint.Fill,
@@ -103,16 +104,12 @@ class UIViewSnapshotter(
     subject.layoutIfNeeded()
   }
 
-  companion object {
-    private val screenSize = CGSizeMake(390.0, 844.0) // iPhone 14.
-    private val screenRect = screenSize.useContents { CGRectMake(0.0, 0.0, width, height) }
-
-    fun framed(
-      callback: UIViewSnapshotCallback,
-      widget: UIView,
-      widthConstraint: Constraint = Constraint.Fill,
-      heightConstraint: Constraint = Constraint.Fill,
-    ): UIViewSnapshotter {
+  class Factory(
+    val callback: UIViewSnapshotCallback,
+    val widthConstraint: Constraint = Constraint.Fill,
+    val heightConstraint: Constraint = Constraint.Fill,
+  ) : Snapshotter.Factory<UIView> {
+    override fun invoke(widget: UIView): UIViewSnapshotter {
       val frame = UIView()
         .apply {
           backgroundColor = UIColor.whiteColor
@@ -123,6 +120,15 @@ class UIViewSnapshotter(
         }
       return UIViewSnapshotter(callback, frame, widthConstraint, heightConstraint)
     }
+
+    override fun intercept(testFunction: TestFunction) {
+      testFunction()
+    }
+  }
+
+  companion object {
+    private val screenSize = CGSizeMake(390.0, 844.0) // iPhone 14.
+    private val screenRect = screenSize.useContents { CGRectMake(0.0, 0.0, width, height) }
   }
 
   enum class Constraint {

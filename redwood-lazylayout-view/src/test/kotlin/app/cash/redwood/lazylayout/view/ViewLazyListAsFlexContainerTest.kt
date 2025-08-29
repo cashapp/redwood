@@ -50,6 +50,8 @@ class ViewLazyListAsFlexContainerTest(
     supportsRtl = true,
   )
 
+  override val snapshotterFactory = ViewSnapshotter.Factory(paparazzi)
+
   override val widgetFactory: ViewTestWidgetFactory
     get() = ViewTestWidgetFactory(paparazzi.context)
 
@@ -75,8 +77,6 @@ class ViewLazyListAsFlexContainerTest(
         value.setBackgroundColor(defaultBackgroundColor)
       }
   }
-
-  override fun snapshotter(widget: View) = ViewSnapshotter(paparazzi, widget)
 
   class ViewTestFlexContainer private constructor(
     private val delegate: ViewLazyList,
