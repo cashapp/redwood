@@ -1,5 +1,7 @@
 import static app.cash.redwood.buildsupport.TargetGroup.ToolkitHtml
 
+apply plugin: 'app.cash.burst'
+
 redwoodBuild {
   targets(ToolkitHtml)
   publishing()
@@ -9,6 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
+        implementation libs.burst
         implementation libs.kotlinx.coroutines.core
         implementation libs.okio
         implementation npm("html-to-image", "1.11.13")

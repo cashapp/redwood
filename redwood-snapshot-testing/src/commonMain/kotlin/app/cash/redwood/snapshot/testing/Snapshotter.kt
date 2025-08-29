@@ -25,7 +25,7 @@ import app.cash.burst.TestInterceptor
  * changes.
  */
 interface Snapshotter {
-  fun snapshot(
+  suspend fun snapshot(
     name: String? = null,
     scrolling: Boolean = false,
   )

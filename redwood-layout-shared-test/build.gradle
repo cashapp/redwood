@@ -19,6 +19,7 @@ kotlin {
         api projects.redwoodWidget
         api projects.redwoodYoga
         api libs.kotlin.test
+        api libs.kotlinx.coroutines.test
         implementation libs.burst
       }
     }

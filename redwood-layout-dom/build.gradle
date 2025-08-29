@@ -12,5 +12,11 @@ kotlin {
         api projects.redwoodLayoutWidget
       }
     }
+    commonMain {
+      dependencies {
+        api projects.redwoodLayoutSharedTest
+        api projects.redwoodSnapshotTesting
+      }
+    }
   }
 }

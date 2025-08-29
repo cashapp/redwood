@@ -52,6 +52,7 @@ public class DomSnapshotter @PublishedApi internal constructor(
 
     val fileName = "$path/$name.png"
 
+    error("calling snapshotStore $fileName")
     snapshotStore.getBlob(fileName)?.let { existing ->
       check(existing.contentEquals(image)) {
         "Current snapshot does not match the existing file $fileName"
@@ -120,8 +121,10 @@ public class DomSnapshotter @PublishedApi internal constructor(
     }
 
   public companion object Companion {
-    public inline operator fun invoke(): DomSnapshotter {
-      return DomSnapshotter("PlaceholderTestName")
+    public inline operator fun invoke(
+      path: String = "PlaceholderTestName",
+    ): DomSnapshotter {
+      return DomSnapshotter(path)
     }
   }
 }
