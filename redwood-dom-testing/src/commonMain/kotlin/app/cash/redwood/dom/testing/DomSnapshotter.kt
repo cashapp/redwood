@@ -17,6 +17,7 @@ package app.cash.redwood.dom.testing
 
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.math.ceil
 import kotlinx.browser.document
 import kotlinx.coroutines.await
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -37,16 +38,24 @@ public class DomSnapshotter @PublishedApi internal constructor(
     element: Element,
     name: String = "snapshot",
     scrolling: Boolean = false,
+    width: Int? = null,
+    height: Int? = null,
   ) {
+    element.setAttribute(
+      "style",
+      "${width?.let { "width: ${it}px;" } ?: "width:max-content;"}" +
+        "${height?.let { "height: ${it}px;" } ?: "height:max-content;"}",
+    )
+
     val image = HtmlToImage.toBlob(
       element = element,
       options = Options().apply {
         this.backgroundColor = "#ffff66"
-        this.width = 300
-        this.height = 100
-        this.canvasWidth = width
-        this.canvasHeight = height
-        this.pixelRatio = 3.0
+        this.width = ceil(element.getBoundingClientRect().width).toInt()
+        this.height = ceil(element.getBoundingClientRect().height).toInt()
+        this.canvasWidth = this.width
+        this.canvasHeight = this.height
+        this.pixelRatio = 1.0
       },
     ).await()
 
