@@ -43,8 +43,8 @@ public class DomSnapshotter @PublishedApi internal constructor(
   ) {
     element.setAttribute(
       "style",
-      "${width?.let { "width: ${it}px;" } ?: "width:max-content;"}" +
-        "${height?.let { "height: ${it}px;" } ?: "height:max-content;"}",
+      "width: ${width?.let { "${it}px" } ?: "max-content"}; " +
+        "height: ${height?.let { "${it}px" } ?: "max-content"};",
     )
 
     val image = HtmlToImage.toBlob(
