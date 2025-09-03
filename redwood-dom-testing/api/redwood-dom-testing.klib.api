@@ -9,7 +9,7 @@
 final class app.cash.redwood.dom.testing/DomSnapshotter { // app.cash.redwood.dom.testing/DomSnapshotter|null[0]
     constructor <init>(kotlin/String) // app.cash.redwood.dom.testing/DomSnapshotter.<init>|<init>(kotlin.String){}[0]
 
-    final suspend fun snapshot(org.w3c.dom/Element, kotlin/String = ..., kotlin/Boolean = ...) // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;kotlin.String;kotlin.Boolean){}[0]
+    final suspend fun snapshot(org.w3c.dom/Element, kotlin/String = ..., kotlin/Boolean = ..., kotlin/Int? = ..., kotlin/Int? = ...) // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;kotlin.String;kotlin.Boolean;kotlin.Int?;kotlin.Int?){}[0]
 
     final object Companion { // app.cash.redwood.dom.testing/DomSnapshotter.Companion|null[0]
         final inline fun invoke(): app.cash.redwood.dom.testing/DomSnapshotter // app.cash.redwood.dom.testing/DomSnapshotter.Companion.invoke|invoke(){}[0]
