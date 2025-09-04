@@ -43,6 +43,7 @@ import app.cash.redwood.yoga.FlexDirection
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.runTest
 
 @Burst
 abstract class AbstractFlexContainerTest<T : Any> {
@@ -127,7 +128,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testEmptyLayout(
     flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     container.onEndChanges()
@@ -138,7 +139,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
     width: Constraint = burstValues(Constraint.Wrap, Constraint.Fill),
     height: Constraint = burstValues(Constraint.Wrap, Constraint.Fill),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     container.width(width)
     container.height(height)
@@ -156,7 +157,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testShortLayout(
     flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.take(5).forEach { movie ->
@@ -168,7 +169,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testLongLayout(
     flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     container.crossAxisAlignment(CrossAxisAlignment.Start)
     movies.forEach { movie ->
@@ -180,7 +181,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testLayoutWithMarginAndDifferentAlignments(
     flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -206,7 +207,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       CrossAxisAlignment.End,
       CrossAxisAlignment.Stretch,
     ),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -218,7 +219,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testColumnWithUpdatedCrossAxisAlignment() {
+  @Test fun testColumnWithUpdatedCrossAxisAlignment() = runTest {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotterFactory(container.value)
     container.width(Constraint.Fill)
@@ -240,7 +241,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
       MainAxisAlignment.SpaceBetween,
       MainAxisAlignment.SpaceAround,
     ),
-  ) {
+  ) = runTest {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -253,7 +254,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testContainerWithFixedWidthItems() {
+  @Test fun testContainerWithFixedWidthItems() = runTest {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -265,7 +266,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testContainerWithFixedHeightItems() {
+  @Test fun testContainerWithFixedHeightItems() = runTest {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -277,7 +278,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testContainerWithFixedSizeItems() {
+  @Test fun testContainerWithFixedSizeItems() = runTest {
     val container = flexContainer(FlexDirection.Column)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -289,7 +290,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testRowWithFixedWidthHasChildWithFixedHeight() {
+  @Test fun testRowWithFixedWidthHasChildWithFixedHeight() = runTest {
     val container = flexContainer(FlexDirection.Row).apply {
       crossAxisAlignment(CrossAxisAlignment.Start)
       modifier = WidthImpl(200.dp)
@@ -310,7 +311,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testChildWithUpdatedProperty() {
+  @Test fun testChildWithUpdatedProperty() = runTest {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotterFactory(container.value)
     container.width(Constraint.Fill)
@@ -325,7 +326,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("updated")
   }
 
-  @Test fun testColumnThenRow() {
+  @Test fun testColumnThenRow() = runTest {
     val column = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -365,7 +366,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   /** This test demonstrates that margins are lost unless `shrink(1.0)` is added. */
-  @Test fun testRowMargins() {
+  @Test fun testRowMargins() = runTest {
     val column = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -418,7 +419,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(column.value).snapshot()
   }
 
-  @Test fun testDynamicElementUpdates() {
+  @Test fun testDynamicElementUpdates() = runTest {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotterFactory(container.value)
     container.width(Constraint.Fill)
@@ -440,7 +441,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("BCDE")
   }
 
-  @Test fun testDynamicContainerSize() {
+  @Test fun testDynamicContainerSize() = runTest {
     val parent = column().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -502,7 +503,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("single")
   }
 
-  @Test fun testFlexDistributesWeightEqually() {
+  @Test fun testFlexDistributesWeightEqually() = runTest {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -513,7 +514,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testFlexDistributesWeightUnequally() {
+  @Test fun testFlexDistributesWeightUnequally() = runTest {
     val container = flexContainer(FlexDirection.Row)
     container.width(Constraint.Fill)
     container.height(Constraint.Fill)
@@ -524,7 +525,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(container.value).snapshot()
   }
 
-  @Test fun testNestedColumnsWithFlex() {
+  @Test fun testNestedColumnsWithFlex() = runTest {
     val outerContainer = flexContainer(FlexDirection.Column)
     outerContainer.width(Constraint.Fill)
     outerContainer.height(Constraint.Fill)
@@ -553,7 +554,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testContainerWithChildrenModifierChanges(
     flexDirection: FlexDirection = burstValues(FlexDirection.Row, FlexDirection.Column),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     val snapshotter = snapshotterFactory(container.value)
     container.width(Constraint.Fill)
@@ -575,7 +576,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
   @Test fun testContainerMarginChanges(
     flexDirection: FlexDirection = burstValues(FlexDirection.Column, FlexDirection.Row),
-  ) {
+  ) = runTest {
     val container = flexContainer(flexDirection)
     val snapshotter = snapshotterFactory(container.value)
 
@@ -596,7 +597,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   /** The view shouldn't crash if its displayed after being detached. */
-  @Test fun testLayoutAfterDetach() {
+  @Test fun testLayoutAfterDetach() = runTest {
     val container = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -616,7 +617,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("After")
   }
 
-  @Test fun testOnScrollListener() {
+  @Test fun testOnScrollListener() = runTest {
     var scrolled = false
     val container = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
@@ -640,7 +641,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * This creates a 3-element layout where each widgets' dimensions are independent. Then it
    * changes one of the widgets' and confirms that only that widget is measured.
    */
-  @Test fun testLayoutIsIncremental() {
+  @Test fun testLayoutIsIncremental() = runTest {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotterFactory(container.value)
     container.width(Constraint.Fill)
@@ -686,7 +687,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     assertEquals(cMeasureCountV2, cMeasureCountV3)
   }
 
-  @Test fun testRecursiveLayoutIsIncremental() {
+  @Test fun testRecursiveLayoutIsIncremental() = runTest {
     val container = flexContainer(FlexDirection.Column)
     val snapshotter = snapshotterFactory(container.value)
     container.width(Constraint.Fill)
@@ -749,7 +750,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   /** Confirm that child element size changes propagate up the view hierarchy. */
-  @Test fun testRecursiveLayoutHandlesResizes() {
+  @Test fun testRecursiveLayoutHandlesResizes() = runTest {
     val column = flexContainer(FlexDirection.Column)
       .apply {
         width(Constraint.Fill)
@@ -794,7 +795,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotter.snapshot("v2")
   }
 
-  @Test fun testLayoutHandlesChildResizes() {
+  @Test fun testLayoutHandlesChildResizes() = runTest {
     val column = flexContainer(FlexDirection.Column)
       .apply {
         width(Constraint.Fill)
@@ -835,7 +836,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * either let it have its requested size anyway (and overrun the available space) or we confine it
    * to the space available.
    */
-  @Test fun testChildIsConstrainedToParentWidth() {
+  @Test fun testChildIsConstrainedToParentWidth() = runTest {
     // Wrap in a parent column to let us configure an exact width for our subject flex container.
     // Otherwise we're relying on the platform-specific snapshot library's unspecified frame width.
     val fullWidthParent = column().apply {
@@ -870,7 +871,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * We were incorrectly collapsing the dimensions of the widget.
    * https://github.com/cashapp/redwood/issues/2018
    */
-  @Test fun testWidgetWithFlexModifierNestedInRowAndColumn() {
+  @Test fun testWidgetWithFlexModifierNestedInRowAndColumn() = runTest {
     val root = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -908,7 +909,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * CrossAxisAlignment.Start forces child to wrap its size on Android
    * https://github.com/cashapp/redwood/issues/2093
    */
-  @Test fun testCrossAxisAlignmentStart() {
+  @Test fun testCrossAxisAlignmentStart() = runTest {
     val root = flexContainer(FlexDirection.Column).apply {
       width(Constraint.Fill)
       crossAxisAlignment(CrossAxisAlignment.Start)
@@ -930,7 +931,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * Text not wrapping inside a row.
    * https://github.com/cashapp/redwood/issues/2011
    */
-  @Test fun testTextWrapsInsideRow() {
+  @Test fun testTextWrapsInsideRow() = runTest {
     val root = flexContainer(FlexDirection.Row)
 
     root.add(
@@ -942,7 +943,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(root.value).snapshot()
   }
 
-  @Test fun testIntrinsicContentSizeWhenSubviewsWrap() {
+  @Test fun testIntrinsicContentSizeWhenSubviewsWrap() = runTest {
     val fullWidthParent = widgetFactory.column()
 
     flexContainer(FlexDirection.Column)
@@ -983,7 +984,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
     snapshotterFactory(scrollWrapper.value).snapshot(scrolling = true)
   }
 
-  @Test fun testIntrinsicContentSizeWhenSubviewsRequireScrolling() {
+  @Test fun testIntrinsicContentSizeWhenSubviewsRequireScrolling() = runTest {
     val column = flexContainer(FlexDirection.Column)
       .apply {
         width(Constraint.Fill)
@@ -1003,7 +1004,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * We had a bug where content would shrink to its minimum required size with [Overflow.Scroll],
    * even if the enclosing container didn't require that.
    */
-  @Test fun testFillAndOverflowScroll() {
+  @Test fun testFillAndOverflowScroll() = runTest {
     val column = flexContainer(FlexDirection.Column)
       .apply {
         width(Constraint.Fill)
@@ -1034,7 +1035,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test
-  fun testFlexWithWrappingChild() {
+  fun testFlexWithWrappingChild() = runTest {
     val row = row().apply {
       width(Constraint.Fill)
     }
@@ -1060,7 +1061,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
   }
 
   @Test
-  fun testFlexWithChildContainingWrappingChild() {
+  fun testFlexWithChildContainingWrappingChild() = runTest {
     val row = row().apply {
       width(Constraint.Fill)
     }
@@ -1097,7 +1098,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
    * https://github.com/cashapp/redwood/issues/2753
    */
   @Test
-  fun testFlexOnChildOfWrappingColumn() {
+  fun testFlexOnChildOfWrappingColumn() = runTest {
     val root = row().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)

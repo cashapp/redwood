@@ -16,14 +16,14 @@
 package app.cash.redwood.snapshot.testing
 
 import android.view.View
-import app.cash.burst.TestFunction
+import app.cash.burst.coroutines.CoroutineTestFunction
 import app.cash.paparazzi.Paparazzi
 
 class ViewSnapshotter private constructor(
   private val paparazzi: Paparazzi,
   private val view: View,
 ) : Snapshotter {
-  override fun snapshot(name: String?, scrolling: Boolean) {
+  override suspend fun snapshot(name: String?, scrolling: Boolean) {
     paparazzi.snapshot(view = view, name = name)
 
     if (scrolling) {
@@ -47,7 +47,7 @@ class ViewSnapshotter private constructor(
   ) : Snapshotter.Factory<View> {
     override fun invoke(widget: View) = ViewSnapshotter(paparazzi, widget)
 
-    override fun intercept(testFunction: TestFunction) {
+    override suspend fun intercept(testFunction: CoroutineTestFunction) {
       testFunction()
     }
   }

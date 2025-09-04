@@ -21,6 +21,8 @@ kotlin {
         api projects.redwoodYoga
         api libs.kotlin.test
         implementation libs.assertk
+        implementation libs.burst.coroutines
+        implementation libs.kotlinx.coroutines.test
       }
     }
     jvmMain {

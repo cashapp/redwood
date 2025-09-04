@@ -28,6 +28,7 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.ChangeListener
 import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 
 abstract class AbstractLazyListTest<T : Any> {
   @InterceptTest
@@ -56,7 +57,7 @@ abstract class AbstractLazyListTest<T : Any> {
   }
 
   @Test
-  fun testHappyPath() {
+  fun testHappyPath() = runTest {
     val lazyList = defaultLazyList()
 
     for ((index, value) in movies.take(5).withIndex()) {
@@ -68,7 +69,7 @@ abstract class AbstractLazyListTest<T : Any> {
   }
 
   @Test
-  fun testPlaceholderToLoadedAndLoadedToPlaceholder() {
+  fun testPlaceholderToLoadedAndLoadedToPlaceholder() = runTest {
     val lazyList = defaultLazyList()
     val snapshotter = snapshotterFactory(lazyList.value)
 
@@ -101,7 +102,7 @@ abstract class AbstractLazyListTest<T : Any> {
   }
 
   @Test
-  fun testPlaceholdersExhausted() {
+  fun testPlaceholdersExhausted() = runTest {
     val lazyList = defaultLazyList()
 
     lazyList.itemsBefore(11)

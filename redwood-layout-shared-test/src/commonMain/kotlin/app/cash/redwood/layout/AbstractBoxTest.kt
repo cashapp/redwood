@@ -33,6 +33,7 @@ import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
 import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 
 @Burst
 abstract class AbstractBoxTest<T : Any> {
@@ -48,7 +49,7 @@ abstract class AbstractBoxTest<T : Any> {
    * Explicitly apply defaults to our Box instance. This is only necessary in tests; in production
    * the framework explicitly sets every property.
    */
-  protected fun Box<T>.applyDefaults() {
+  protected fun Box<T>.applyDefaults() = runTest {
     width(Constraint.Wrap)
     height(Constraint.Wrap)
     margin(Margin.Zero)
@@ -57,13 +58,13 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testEmpty_Defaults() {
+  fun testEmpty_Defaults() = runTest {
     val widget = box()
     snapshotterFactory(widget.value).snapshot()
   }
 
   @Test
-  fun testEmpty_Wrap() {
+  fun testEmpty_Wrap() = runTest {
     val widget = box().apply {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
@@ -72,7 +73,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testEmpty_Fill() {
+  fun testEmpty_Fill() = runTest {
     val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -98,7 +99,7 @@ abstract class AbstractBoxTest<T : Any> {
       CrossAxisAlignment.End,
       CrossAxisAlignment.Stretch,
     ),
-  ) {
+  ) = runTest {
     val widget = box().apply {
       width(constraint)
       height(constraint)
@@ -130,7 +131,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testMargins() {
+  fun testMargins() = runTest {
     // Different margins allow us to know which direction start and end get applied.
     val asymmetric = Margin(start = 10.dp, top = 20.dp, end = 30.dp, bottom = 40.dp)
 
@@ -156,7 +157,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testBoxMeasurementIncludesMargins() {
+  fun testBoxMeasurementIncludesMargins() = runTest {
     val container = widgetFactory.column()
     container.add(
       box().apply {
@@ -199,7 +200,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testMarginsAndAlignment() {
+  fun testMarginsAndAlignment() = runTest {
     val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -242,7 +243,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testMarginsAndStretch() {
+  fun testMarginsAndStretch() = runTest {
     val widget = box().apply {
       width(Constraint.Fill)
       height(Constraint.Fill)
@@ -285,7 +286,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testChildrenModifierChanges() {
+  fun testChildrenModifierChanges() = runTest {
     val redColor = widgetFactory.text(
       modifier = MarginImpl(30.dp),
       text = longText(),
@@ -319,7 +320,7 @@ abstract class AbstractBoxTest<T : Any> {
 
   /** The view shouldn't crash if its displayed after being detached. */
   @Test
-  fun testLayoutAfterDetach() {
+  fun testLayoutAfterDetach() = runTest {
     val widget = box().apply {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
@@ -361,7 +362,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testDynamicWidgetResizing() {
+  fun testDynamicWidgetResizing() = runTest {
     val container = box()
       .apply {
         width(Constraint.Fill)
@@ -393,7 +394,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testLayoutUpdatesWithoutSizeChanges() {
+  fun testLayoutUpdatesWithoutSizeChanges() = runTest {
     val container = widgetFactory.column()
     val snapshotter = snapshotterFactory(container.value)
 
@@ -421,7 +422,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testChildExplicitHeight() {
+  fun testChildExplicitHeight() = runTest {
     val container = box()
       .apply {
         width(Constraint.Fill)
@@ -453,7 +454,7 @@ abstract class AbstractBoxTest<T : Any> {
   }
 
   @Test
-  fun testChildExplicitWidth() {
+  fun testChildExplicitWidth() = runTest {
     val container = box()
       .apply {
         width(Constraint.Fill)
@@ -486,7 +487,7 @@ abstract class AbstractBoxTest<T : Any> {
 
   /** We had a bug where stretch alignment impacted measurement. It shouldn't. */
   @Test
-  fun testStretchDoesNotImpactMeasurement() {
+  fun testStretchDoesNotImpactMeasurement() = runTest {
     val container = box()
       .apply {
         width(Constraint.Fill)

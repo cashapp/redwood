@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.snapshot.testing
 
-import app.cash.burst.TestFunction
+import app.cash.burst.coroutines.CoroutineTestFunction
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlinx.cinterop.useContents
@@ -40,7 +40,7 @@ class UIViewSnapshotter private constructor(
   private val heightConstraint: Constraint = Constraint.Fill,
 ) : Snapshotter {
 
-  override fun snapshot(name: String?, scrolling: Boolean) {
+  override suspend fun snapshot(name: String?, scrolling: Boolean) {
     layoutSubject(scrolling)
 
     // Unfortunately even with animations forced off, UITableView's animation system breaks
@@ -126,7 +126,7 @@ class UIViewSnapshotter private constructor(
       return UIViewSnapshotter(callback, frame, widthConstraint, heightConstraint)
     }
 
-    override fun intercept(testFunction: TestFunction) {
+    override suspend fun intercept(testFunction: CoroutineTestFunction) {
       testFunction()
     }
   }

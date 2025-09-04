@@ -25,6 +25,7 @@ import app.cash.redwood.snapshot.testing.color
 import app.cash.redwood.snapshot.testing.text
 import app.cash.redwood.ui.dp
 import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 
 abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
 
@@ -40,7 +41,7 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
    * https://github.com/cashapp/redwood/issues/2128
    */
   @Test
-  fun testSingleChildElement() {
+  fun testSingleChildElement() = runTest {
     val redwoodView = redwoodView()
     redwoodView.children.insert(0, widgetFactory.text("Hello ".repeat(50)))
     snapshotterFactory(redwoodView.value).snapshot()
@@ -48,7 +49,7 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
 
   /** RedwoodView is measured by its content. */
   @Test
-  fun testWrapped() {
+  fun testWrapped() = runTest {
     // Green, Blue, Green.
     val rootColumn = widgetFactory.column()
     rootColumn.add(widgetFactory.color(Green, 100.dp, 100.dp).value)
@@ -67,7 +68,7 @@ abstract class AbstractRedwoodViewTest<W : Any, R : RedwoodView<W>> {
 
   /** RedwoodView's height can exceed the height of the screen. */
   @Test
-  fun testExceedsScreenSize() {
+  fun testExceedsScreenSize() = runTest {
     // Green, Blue, Red, Blue, Red, ... Blue, Red, Green.
     val rootColumn = widgetFactory.column()
     rootColumn.add(widgetFactory.color(Green, 100.dp, 100.dp).value)

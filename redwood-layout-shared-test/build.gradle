@@ -20,6 +20,8 @@ kotlin {
         api projects.redwoodYoga
         api libs.kotlin.test
         implementation libs.burst
+        implementation libs.burst.coroutines
+        implementation libs.kotlinx.coroutines.test
       }
     }
     jvmMain {

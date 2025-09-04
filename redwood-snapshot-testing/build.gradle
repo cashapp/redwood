@@ -16,6 +16,7 @@ kotlin {
         api libs.kotlin.test
         api projects.redwoodWidget
         implementation libs.assertk
+        implementation libs.burst.coroutines
       }
     }
     androidMain {

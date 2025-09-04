@@ -16,6 +16,7 @@
 package app.cash.redwood.snapshot.testing
 
 import app.cash.burst.TestInterceptor
+import app.cash.burst.coroutines.CoroutineTestInterceptor
 
 /**
  * Captures snapshots of a subject view.
@@ -25,13 +26,13 @@ import app.cash.burst.TestInterceptor
  * changes.
  */
 interface Snapshotter {
-  fun snapshot(
+  suspend fun snapshot(
     name: String? = null,
     scrolling: Boolean = false,
   )
 
   /** This interface extends [TestInterceptor] for platforms that need it to get test metadata. */
-  interface Factory<T : Any> : TestInterceptor {
+  interface Factory<T : Any> : CoroutineTestInterceptor {
     operator fun invoke(widget: T): Snapshotter
   }
 }
