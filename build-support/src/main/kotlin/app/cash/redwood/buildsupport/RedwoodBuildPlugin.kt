@@ -173,7 +173,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
           it.targetCompatibility = JavaVersion.VERSION_11
         }
         defaultConfig {
-          it.minSdk = 21
+          it.minSdk = 23
           it.targetSdk = 33
         }
         lintOptions {
