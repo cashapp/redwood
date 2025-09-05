@@ -8,7 +8,7 @@ New:
 - Focus API. Redwood has a new `FocusRequester` to focus a widget.
 
 Changed:
-- Nothing yet!
+- Android libaries now have a minimum SDK level of 23.
 
 Fixed:
 - Don't measure the height of `RedwoodUIView` as zero when measured with `sizeThatFits()` or `intrinsicContentSize()`. We had been using `UIStackView` which doesn't support these functions.
