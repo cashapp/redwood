@@ -50,7 +50,7 @@ internal abstract class WriteSnapshotTestingJsTask : DefaultTask() {
         |// generated-redwood-snapshot-testing.js
         |//
         |
-        """.trimMargin()
+        """.trimMargin(),
       )
       FileSystem.RESOURCES.source(sourcePath).use {
         writeAll(it)
