@@ -43,14 +43,14 @@ public class DomSnapshotter @PublishedApi internal constructor(
   ) {
     element.setAttribute(
       "style",
-      "width: ${width?.let { "${it}px" } ?: "max-content"}; " +
+      (element.getAttribute("style") ?: "") +
+        "width: ${width?.let { "${it}px" } ?: "max-content"}; " +
         "height: ${height?.let { "${it}px" } ?: "max-content"};",
     )
 
     val image = HtmlToImage.toBlob(
       element = element,
       options = Options().apply {
-        this.backgroundColor = "#ffff66"
         this.width = ceil(element.getBoundingClientRect().width).toInt()
         this.height = ceil(element.getBoundingClientRect().height).toInt()
         this.canvasWidth = this.width
