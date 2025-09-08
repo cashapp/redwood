@@ -3,6 +3,7 @@ import static app.cash.redwood.buildsupport.TargetGroup.ToolkitHtml
 redwoodBuild {
   targets(ToolkitHtml)
   publishing()
+  domSnapshotTesting()
 }
 
 kotlin {

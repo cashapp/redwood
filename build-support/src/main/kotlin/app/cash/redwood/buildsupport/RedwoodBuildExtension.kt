@@ -49,6 +49,8 @@ interface RedwoodBuildExtension {
 
   /** Confirm all snapshot `@Test` functions also have names starting with `test`. */
   fun sharedSnapshotTests()
+
+  fun domSnapshotTesting()
 }
 
 enum class TargetGroup {

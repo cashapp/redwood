@@ -659,6 +659,16 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     project.plugins.apply("com.google.devtools.ksp")
     project.dependencies.add("kspJvm", project.project(":build-support-ksp-processor"))
   }
+
+  override fun domSnapshotTesting() {
+    val writeSnapshotTestingJsTask = project.tasks.register(
+      "writeKarmaConfigTask",
+      WriteSnapshotTestingJsTask::class.java,
+    )
+    project.tasks.named { it == "jsBrowserTest" }.configureEach {
+      it.dependsOn(writeSnapshotTestingJsTask)
+    }
+  }
 }
 
 private val ziplineAttribute = Attribute.of("zipline", String::class.java)
