@@ -25,6 +25,11 @@ kotlin {
         compileOnly libs.paparazzi
       }
     }
+    jsMain {
+      dependencies {
+        api projects.redwoodDomTesting
+      }
+    }
   }
 }
 
