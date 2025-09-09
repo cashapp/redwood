@@ -31,12 +31,12 @@ internal external object HtmlToImage {
   fun toBlob(
     element: Element,
     options: Options = definedExternally,
-  ): Promise<Blob>
+  ): Promise<Blob?>
 
   fun toPng(
     element: Element,
     options: Options = definedExternally,
-  ): Promise<String>
+  ): Promise<String?>
 }
 
 internal external interface Options {

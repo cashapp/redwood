@@ -37,27 +37,50 @@ public class DomSnapshotter @PublishedApi internal constructor(
   public suspend fun snapshot(
     element: Element,
     name: String = "snapshot",
+    frame: Frame,
     scrolling: Boolean = false,
-    width: Int? = null,
-    height: Int? = null,
   ) {
-    element.setAttribute(
-      "style",
-      (element.getAttribute("style") ?: "") +
-        "width: ${width?.let { "${it}px" } ?: "max-content"}; " +
-        "height: ${height?.let { "${it}px" } ?: "max-content"};",
-    )
+    require(element != document.documentElement && element.parentElement == null)
 
-    val image = HtmlToImage.toBlob(
-      element = element,
-      options = Options().apply {
-        this.width = ceil(element.getBoundingClientRect().width).toInt()
-        this.height = ceil(element.getBoundingClientRect().height).toInt()
-        this.canvasWidth = this.width
-        this.canvasHeight = this.height
-        this.pixelRatio = 1.0
-      },
-    ).await()
+    // Wrap the element in a <div> with a 10px wide border. The div's border ensures the measurement
+    // made by getBoundingClientRect() includes our element's margins.
+    //
+    // Note that later we have to subtract off the border size when we measure.
+    val framingBorderSize = 10
+    val wrapper = document.createElement("div")
+
+    wrapper.setAttribute(
+      "style",
+      """
+      |border: ${framingBorderSize}px solid red;
+      |width: ${frame.width?.let { "${it}px" } ?: "max-content"};
+      |height: ${frame.height?.let { "${it}px" } ?: "max-content"};
+      """.trimMargin(),
+    )
+    wrapper.appendChild(element)
+    document.documentElement!!.appendChild(wrapper)
+
+    val image = try {
+      val boundingClientRect = wrapper.getBoundingClientRect()
+      HtmlToImage.toBlob(
+        element = element,
+        options = Options().apply {
+          this.backgroundColor = backgroundColor
+          this.width = ceil(boundingClientRect.width).toInt() - (2 * framingBorderSize)
+          this.height = ceil(boundingClientRect.height).toInt() - (2 * framingBorderSize)
+          this.canvasWidth = this.width
+          this.canvasHeight = this.height
+          this.pixelRatio = pixelRatio
+        },
+      ).await()
+    } finally {
+      wrapper.removeChild(element)
+      document.documentElement!!.removeChild(wrapper)
+    }
+
+    require(image != null) {
+      "HtmlToImage.toBlob returned null for $element"
+    }
 
     val fileName = "$path/$name.png"
 
@@ -129,8 +152,10 @@ public class DomSnapshotter @PublishedApi internal constructor(
     }
 
   public companion object Companion {
-    public inline operator fun invoke(): DomSnapshotter {
-      return DomSnapshotter("PlaceholderTestName")
+    public inline operator fun invoke(
+      path: String = "PlaceholderTestName",
+    ): DomSnapshotter {
+      return DomSnapshotter(path)
     }
   }
 }
