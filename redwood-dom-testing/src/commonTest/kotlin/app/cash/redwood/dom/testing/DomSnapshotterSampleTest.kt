@@ -17,6 +17,8 @@
 
 package app.cash.redwood.dom.testing
 
+import app.cash.burst.Burst
+import app.cash.burst.burstValues
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.browser.document
@@ -28,6 +30,7 @@ import kotlinx.dom.clear
 /**
  * This isn't a proper unit test for [DomSnapshotter], it's just a sample.
  */
+@Burst
 internal class DomSnapshotterSampleTest {
   val snapshotter = DomSnapshotter("DomSnapshotterSampleTest")
 
@@ -63,12 +66,14 @@ internal class DomSnapshotterSampleTest {
   }
 
   @Test
-  fun exactSizeWithFrame() = runTest {
+  fun exactSizeWithFrame(
+    frame: Frame = burstValues(Frame.None, Frame.Iphone14),
+  ) = runTest {
     val yellowRect = document.createElement("div").apply {
       setAttribute(
         "style",
         """
-        |background: #ffff00;
+        |background-color: #ffff00;
         |width: 200px;
         |height: 100px;
         |position: relative
@@ -79,7 +84,7 @@ internal class DomSnapshotterSampleTest {
           setAttribute(
             "style",
             """
-            |background: #0000ff;
+            |background-color: #0000ff;
             |position: absolute;
             |width: 50px;
             |height: 25px;
@@ -91,7 +96,10 @@ internal class DomSnapshotterSampleTest {
       )
     }
 
-    snapshotter.snapshot(yellowRect, "exactSizeWithFrame_None", Frame.None)
-    snapshotter.snapshot(yellowRect, "exactSizeWithFrame_Iphone14", Frame.Iphone14)
+    snapshotter.snapshot(
+      yellowRect,
+      "exactSizeWithFrame_${frame.width ?: "wrap"}_x_${frame.height ?: "wrap"}",
+      frame,
+    )
   }
 }

@@ -19,13 +19,12 @@ package app.cash.redwood.dom.testing
  * Configure the canvas that we will snapshot our element on.
  */
 public class Frame(
-  public val backgroundColor: String,
   public val width: Int?,
   public val height: Int?,
   public val pixelRatio: Double,
 ) {
   public companion object {
-    public val None: Frame = Frame("#00000000", width = null, height = null, pixelRatio = 1.0)
-    public val Iphone14: Frame = Frame("#ffffffff", width = 390, height = 844, pixelRatio = 3.0)
+    public val None: Frame = Frame(width = null, height = null, pixelRatio = 1.0)
+    public val Iphone14: Frame = Frame(width = 390, height = 844, pixelRatio = 3.0)
   }
 }

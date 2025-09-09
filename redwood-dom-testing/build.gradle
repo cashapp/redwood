@@ -6,6 +6,8 @@ redwoodBuild {
   domSnapshotTesting()
 }
 
+apply plugin: 'app.cash.burst'
+
 kotlin {
   sourceSets {
     commonMain {

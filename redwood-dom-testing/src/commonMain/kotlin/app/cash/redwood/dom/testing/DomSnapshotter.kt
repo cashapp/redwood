@@ -65,17 +65,16 @@ public class DomSnapshotter @PublishedApi internal constructor(
       HtmlToImage.toBlob(
         element = element,
         options = Options().apply {
-          this.backgroundColor = backgroundColor
           this.width = ceil(boundingClientRect.width).toInt() - (2 * framingBorderSize)
           this.height = ceil(boundingClientRect.height).toInt() - (2 * framingBorderSize)
           this.canvasWidth = this.width
           this.canvasHeight = this.height
-          this.pixelRatio = pixelRatio
+          this.pixelRatio = frame.pixelRatio
         },
       ).await()
     } finally {
-      wrapper.removeChild(element)
       document.documentElement!!.removeChild(wrapper)
+      wrapper.removeChild(element)
     }
 
     require(image != null) {
