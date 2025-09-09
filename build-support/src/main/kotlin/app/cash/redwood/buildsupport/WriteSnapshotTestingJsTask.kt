@@ -15,12 +15,12 @@
  */
 package app.cash.redwood.buildsupport
 
-import java.io.File
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import okio.Path.Companion.toPath
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -28,15 +28,14 @@ import org.gradle.api.tasks.TaskAction
  * there's no API to tell Karma to load extensions from a build directory.)
  */
 internal abstract class WriteSnapshotTestingJsTask : DefaultTask() {
-  @get:OutputFile
-  val snapshotTestingTargetFile: File by lazy {
-    project.projectDir.resolve("karma.config.d/generated-redwood-snapshot-testing.js")
-  }
+  @get:OutputDirectory
+  abstract val karmaConfigD: DirectoryProperty
 
   @TaskAction
   fun task() {
     val sourcePath = "/app/cash/redwood/buildsupport/generated-redwood-snapshot-testing.js".toPath()
-    val targetPath = snapshotTestingTargetFile.toOkioPath()
+    val targetPath = karmaConfigD.file("generated-redwood-snapshot-testing.js")
+      .get().asFile.toOkioPath()
 
     FileSystem.SYSTEM.createDirectories(targetPath.parent!!)
     FileSystem.SYSTEM.write(targetPath) {

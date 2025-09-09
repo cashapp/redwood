@@ -664,7 +664,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     val writeSnapshotTestingJsTask = project.tasks.register(
       "writeKarmaConfigTask",
       WriteSnapshotTestingJsTask::class.java,
-    )
+    ) {
+      it.karmaConfigD.set(project.layout.projectDirectory.dir("karma.config.d"))
+    }
     project.tasks.named { it == "jsBrowserTest" }.configureEach {
       it.dependsOn(writeSnapshotTestingJsTask)
     }
