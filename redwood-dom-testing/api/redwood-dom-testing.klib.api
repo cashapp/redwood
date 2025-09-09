@@ -17,10 +17,8 @@ final class app.cash.redwood.dom.testing/DomSnapshotter { // app.cash.redwood.do
 }
 
 final class app.cash.redwood.dom.testing/Frame { // app.cash.redwood.dom.testing/Frame|null[0]
-    constructor <init>(kotlin/String, kotlin/Int?, kotlin/Int?, kotlin/Double) // app.cash.redwood.dom.testing/Frame.<init>|<init>(kotlin.String;kotlin.Int?;kotlin.Int?;kotlin.Double){}[0]
+    constructor <init>(kotlin/Int?, kotlin/Int?, kotlin/Double) // app.cash.redwood.dom.testing/Frame.<init>|<init>(kotlin.Int?;kotlin.Int?;kotlin.Double){}[0]
 
-    final val backgroundColor // app.cash.redwood.dom.testing/Frame.backgroundColor|{}backgroundColor[0]
-        final fun <get-backgroundColor>(): kotlin/String // app.cash.redwood.dom.testing/Frame.backgroundColor.<get-backgroundColor>|<get-backgroundColor>(){}[0]
     final val height // app.cash.redwood.dom.testing/Frame.height|{}height[0]
         final fun <get-height>(): kotlin/Int? // app.cash.redwood.dom.testing/Frame.height.<get-height>|<get-height>(){}[0]
     final val pixelRatio // app.cash.redwood.dom.testing/Frame.pixelRatio|{}pixelRatio[0]
