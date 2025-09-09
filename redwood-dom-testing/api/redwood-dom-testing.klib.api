@@ -9,9 +9,29 @@
 final class app.cash.redwood.dom.testing/DomSnapshotter { // app.cash.redwood.dom.testing/DomSnapshotter|null[0]
     constructor <init>(kotlin/String) // app.cash.redwood.dom.testing/DomSnapshotter.<init>|<init>(kotlin.String){}[0]
 
-    final suspend fun snapshot(org.w3c.dom/Element, kotlin/String = ..., kotlin/Boolean = ..., kotlin/Int? = ..., kotlin/Int? = ...) // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;kotlin.String;kotlin.Boolean;kotlin.Int?;kotlin.Int?){}[0]
+    final suspend fun snapshot(org.w3c.dom/Element, kotlin/String = ..., app.cash.redwood.dom.testing/Frame, kotlin/Boolean = ...) // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;kotlin.String;app.cash.redwood.dom.testing.Frame;kotlin.Boolean){}[0]
 
     final object Companion { // app.cash.redwood.dom.testing/DomSnapshotter.Companion|null[0]
-        final inline fun invoke(): app.cash.redwood.dom.testing/DomSnapshotter // app.cash.redwood.dom.testing/DomSnapshotter.Companion.invoke|invoke(){}[0]
+        final inline fun invoke(kotlin/String = ...): app.cash.redwood.dom.testing/DomSnapshotter // app.cash.redwood.dom.testing/DomSnapshotter.Companion.invoke|invoke(kotlin.String){}[0]
+    }
+}
+
+final class app.cash.redwood.dom.testing/Frame { // app.cash.redwood.dom.testing/Frame|null[0]
+    constructor <init>(kotlin/String, kotlin/Int?, kotlin/Int?, kotlin/Double) // app.cash.redwood.dom.testing/Frame.<init>|<init>(kotlin.String;kotlin.Int?;kotlin.Int?;kotlin.Double){}[0]
+
+    final val backgroundColor // app.cash.redwood.dom.testing/Frame.backgroundColor|{}backgroundColor[0]
+        final fun <get-backgroundColor>(): kotlin/String // app.cash.redwood.dom.testing/Frame.backgroundColor.<get-backgroundColor>|<get-backgroundColor>(){}[0]
+    final val height // app.cash.redwood.dom.testing/Frame.height|{}height[0]
+        final fun <get-height>(): kotlin/Int? // app.cash.redwood.dom.testing/Frame.height.<get-height>|<get-height>(){}[0]
+    final val pixelRatio // app.cash.redwood.dom.testing/Frame.pixelRatio|{}pixelRatio[0]
+        final fun <get-pixelRatio>(): kotlin/Double // app.cash.redwood.dom.testing/Frame.pixelRatio.<get-pixelRatio>|<get-pixelRatio>(){}[0]
+    final val width // app.cash.redwood.dom.testing/Frame.width|{}width[0]
+        final fun <get-width>(): kotlin/Int? // app.cash.redwood.dom.testing/Frame.width.<get-width>|<get-width>(){}[0]
+
+    final object Companion { // app.cash.redwood.dom.testing/Frame.Companion|null[0]
+        final val Iphone14 // app.cash.redwood.dom.testing/Frame.Companion.Iphone14|{}Iphone14[0]
+            final fun <get-Iphone14>(): app.cash.redwood.dom.testing/Frame // app.cash.redwood.dom.testing/Frame.Companion.Iphone14.<get-Iphone14>|<get-Iphone14>(){}[0]
+        final val None // app.cash.redwood.dom.testing/Frame.Companion.None|{}None[0]
+            final fun <get-None>(): app.cash.redwood.dom.testing/Frame // app.cash.redwood.dom.testing/Frame.Companion.None.<get-None>|<get-None>(){}[0]
     }
 }
