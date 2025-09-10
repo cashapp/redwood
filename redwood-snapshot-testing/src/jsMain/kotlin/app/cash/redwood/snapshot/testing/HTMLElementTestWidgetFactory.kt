@@ -15,22 +15,93 @@
  */
 package app.cash.redwood.snapshot.testing
 
+import app.cash.redwood.Modifier
+import app.cash.redwood.ui.Dp
+import kotlinx.browser.document
+import kotlinx.dom.appendText
+import kotlinx.dom.clear
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 
 class HTMLElementTestWidgetFactory : TestWidgetFactory<HTMLElement> {
-  override fun color(): Color<HTMLElement> {
-    TODO("Not yet implemented")
+  override fun color(): Color<HTMLElement> = HTMLElementColor()
+
+  override fun text(): Text<HTMLElement> = HTMLElementText()
+
+  override fun column(): SimpleColumn<HTMLElement> = HTMLElementSimpleColumn()
+
+  override fun scrollWrapper(): ScrollWrapper<HTMLElement> = HTMLScrollWrapper()
+}
+
+private class HTMLElementColor : Color<HTMLElement> {
+  override val value = document.createElement("div") as HTMLDivElement
+
+  override var modifier: Modifier = Modifier
+
+  override fun width(width: Dp) {
+    value.style.width = "${width.value}px"
   }
 
-  override fun text(): Text<HTMLElement> {
-    TODO("Not yet implemented")
+  override fun height(height: Dp) {
+    value.style.height = "${height.value}px"
   }
 
-  override fun column(): SimpleColumn<HTMLElement> {
-    TODO("Not yet implemented")
+  override fun color(color: Int) {
+    value.style.backgroundColor = color.toCssColor()
+  }
+}
+
+private class HTMLElementText : Text<HTMLElement> {
+  override val value = document.createElement("div") as HTMLDivElement
+
+  override var modifier: Modifier = Modifier
+
+  override val measureCount = 0
+
+  override fun text(text: String) {
+    value.clear()
+    value.appendText(text)
   }
 
-  override fun scrollWrapper(): ScrollWrapper<HTMLElement> {
-    TODO("Not yet implemented")
+  override fun bgColor(color: Int) {
+    value.style.backgroundColor = color.toCssColor()
   }
+}
+
+private class HTMLElementSimpleColumn : SimpleColumn<HTMLElement> {
+  override val value = (document.createElement("div") as HTMLDivElement)
+    .apply {
+      style.display = "flex"
+      style.flexDirection = "column"
+    }
+
+  override var modifier: Modifier = Modifier
+
+  override fun add(child: HTMLElement) {
+    value.appendChild(child)
+  }
+}
+
+private class HTMLScrollWrapper : ScrollWrapper<HTMLElement> {
+  override val value = (document.createElement("div") as HTMLDivElement)
+    .apply {
+      style.overflowY = "scroll"
+      style.display = "flex"
+      style.flexDirection = "column"
+    }
+
+  override var modifier: Modifier = Modifier
+
+  override var content: HTMLElement?
+    get() = when (value.children.length) {
+      1 -> value.children[0] as HTMLElement
+      else -> null
+    }
+    set(value) {
+      this.value.clear()
+      if (value != null) {
+        this.value.appendChild(value)
+      }
+    }
 }

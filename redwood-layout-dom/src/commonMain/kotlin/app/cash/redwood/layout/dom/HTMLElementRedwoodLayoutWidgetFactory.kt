@@ -68,7 +68,7 @@ public class HTMLElementRedwoodLayoutWidgetFactory(
     HTMLSpacer(document.createElement("div") as HTMLDivElement)
 }
 
-private class HTMLFlexContainer(
+internal class HTMLFlexContainer(
   override val value: HTMLDivElement,
   direction: String,
   private val overflowSetter: CSSStyleDeclaration.(String) -> Unit,
@@ -144,11 +144,11 @@ private class HTMLFlexContainer(
     crossAxisAlignment(verticalAlignment)
   }
 
-  private fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+  internal fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
     value.style.alignItems = crossAxisAlignment.toCss()
   }
 
-  private fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+  internal fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
     value.style.justifyContent = mainAxisAlignment.toCss()
   }
 

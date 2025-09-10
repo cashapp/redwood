@@ -18,6 +18,8 @@ package app.cash.redwood.snapshot.testing
 import app.cash.burst.coroutines.CoroutineTestFunction
 import app.cash.redwood.dom.testing.DomSnapshotter
 import app.cash.redwood.dom.testing.Frame
+import kotlinx.browser.document
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
 class HTMLElementSnapshotter(
@@ -57,10 +59,20 @@ class HTMLElementSnapshotter(
     override fun invoke(widget: HTMLElement): Snapshotter {
       val testFunction = testFunction
 
+      // Wrap the element to get a white background.
+      // Use flexbox to match the wrapper's size to the content size.
+      val backgroundWrapper = (document.createElement("div") as HTMLDivElement).apply {
+        style.backgroundColor = "white"
+        style.display = "flex"
+        style.flexDirection = "column"
+        style.alignItems = "stretch"
+      }
+      backgroundWrapper.appendChild(widget)
+
       return HTMLElementSnapshotter(
         testFunction = testFunction ?: error("unexpected invoke() without running test"),
         frame = frame,
-        widget = widget,
+        widget = backgroundWrapper,
       )
     }
 

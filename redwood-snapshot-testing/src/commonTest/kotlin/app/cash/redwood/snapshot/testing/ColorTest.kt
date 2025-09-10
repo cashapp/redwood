@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Square, Inc.
+ * Copyright (C) 2025 Square, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ktlint:standard:property-naming")
-
 package app.cash.redwood.snapshot.testing
 
-const val Red: Int = 0xffff0000.toInt()
-const val Green: Int = 0xff00ff00.toInt()
-const val Blue: Int = 0xff0000ff.toInt()
-const val Transparent: Int = 0x00000000
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlin.test.Test
 
-fun argb(
-  alpha: Int,
-  red: Int,
-  green: Int,
-  blue: Int,
-): Int {
-  return (alpha shl 24) or (red shl 16) or (green shl 8) or (blue)
-}
-
-fun Int.toCssColor(): String {
-  val argb = toUInt()
-  val rgba = (argb shl 8) or (argb shr 24)
-  return "#${rgba.toString(radix = 16).padStart(length = 8, padChar = '0')}"
+class ColorTest {
+  @Test
+  fun intToCssColor() {
+    assertThat(Red.toCssColor()).isEqualTo("#ff0000ff")
+    assertThat(Green.toCssColor()).isEqualTo("#00ff00ff")
+    assertThat(Blue.toCssColor()).isEqualTo("#0000ffff")
+  }
 }

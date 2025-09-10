@@ -25,6 +25,7 @@ import org.khronos.webgl.get
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.url.URL
 import org.w3c.files.Blob
@@ -47,16 +48,14 @@ public class DomSnapshotter @PublishedApi internal constructor(
     //
     // Note that later we have to subtract off the border size when we measure.
     val framingBorderSize = 10
-    val wrapper = document.createElement("div")
-
-    wrapper.setAttribute(
-      "style",
-      """
-      |border: ${framingBorderSize}px solid red;
-      |width: ${frame.width?.let { "${it}px" } ?: "max-content"};
-      |height: ${frame.height?.let { "${it}px" } ?: "max-content"};
-      """.trimMargin(),
-    )
+    val wrapper = (document.createElement("div") as HTMLElement).apply {
+      style.border = "${framingBorderSize}px solid red"
+      style.width = frame.width?.let { "${it}px" } ?: "max-content"
+      style.height = frame.height?.let { "${it}px" } ?: "max-content"
+      style.display = "flex"
+      style.flexDirection = "column"
+      style.alignItems = "stretch"
+    }
     wrapper.appendChild(element)
     document.documentElement!!.appendChild(wrapper)
 
