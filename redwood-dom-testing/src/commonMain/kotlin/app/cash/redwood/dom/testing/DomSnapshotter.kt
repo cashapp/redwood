@@ -17,7 +17,10 @@ package app.cash.redwood.dom.testing
 
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.math.abs
 import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
 import kotlinx.browser.document
 import kotlinx.coroutines.await
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -69,6 +72,7 @@ public class DomSnapshotter @PublishedApi internal constructor(
           this.canvasWidth = this.width
           this.canvasHeight = this.height
           this.pixelRatio = frame.pixelRatio
+          this.backgroundColor = "transparent"
         },
       ).await()
     } finally {
@@ -83,56 +87,144 @@ public class DomSnapshotter @PublishedApi internal constructor(
     val fileName = "$path/$name.png"
 
     snapshotStore.getBlob(fileName)?.let { existing ->
-      check(existing.contentEquals(image)) {
-        "Current snapshot does not match the existing file $fileName"
+      val diffResult = compareImages(existing, image)
+      check(!diffResult.isDifferent) {
+        // Save the delta image with a .diff.png extension
+        snapshotStore.put("$path/$name.diff.png", diffResult.deltaImage!!)
+        "Current snapshot does not match the existing file $fileName " +
+          "(${diffResult.percentDifference}% different, ${diffResult.numDifferentPixels} pixels)"
       }
     } ?: snapshotStore.put(fileName, image)
   }
 
-  private suspend fun Blob.contentEquals(other: Blob): Boolean {
-    if (this.size != other.size) return false
-
-    val url1 = URL.createObjectURL(this)
-    val url2 = URL.createObjectURL(other)
+  private suspend fun compareImages(expected: Blob, actual: Blob): DiffResult {
+    val url1 = URL.createObjectURL(expected)
+    val url2 = URL.createObjectURL(actual)
 
     try {
       val img1 = loadImage(url1)
       val img2 = loadImage(url2)
 
-      if (img1.width != img2.width || img1.height != img2.height) {
-        return false
-      }
+      val expectedWidth = img1.width
+      val expectedHeight = img1.height
+      val actualWidth = img2.width
+      val actualHeight = img2.height
 
+      val maxWidth = max(expectedWidth, actualWidth)
+      val maxHeight = max(expectedHeight, actualHeight)
+
+      // Create canvas for composite image (expected + delta + actual)
       val canvas = document.createElement("canvas") as HTMLCanvasElement
       val ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+      canvas.width = maxWidth * 3 // Three sections of maxWidth
+      canvas.height = maxHeight
 
-      canvas.width = img1.width
-      canvas.height = img1.height
-
-      // Get data for first image
+      // Draw expected image on the left
       ctx.drawImage(img1, 0.0, 0.0)
-      val data1 = ctx.getImageData(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
+      val expectedData = ctx.getImageData(0.0, 0.0, maxWidth.toDouble(), maxHeight.toDouble())
 
-      // Get data for second image
-      ctx.clearRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
-      ctx.drawImage(img2, 0.0, 0.0)
-      val data2 = ctx.getImageData(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
+      // Draw actual image on the right
+      ctx.drawImage(img2, maxWidth * 2.0, 0.0)
+      val actualData = ctx.getImageData(maxWidth * 2.0, 0.0, maxWidth.toDouble(), maxHeight.toDouble())
 
-      // Compare pixel by pixel
-      val pixels1 = data1.data
-      val pixels2 = data2.data
-      for (i in 0 until pixels1.length) {
-        if (pixels1[i] != pixels2[i]) {
-          return false
+      // Create delta image data
+      val deltaData = ctx.createImageData(maxWidth.toDouble(), maxHeight.toDouble())
+      val deltaArray = deltaData.data.asDynamic()
+
+      var delta: Long = 0
+      var differentPixels: Long = 0
+
+      // Compare pixels
+      for (y in 0 until maxHeight) {
+        for (x in 0 until maxWidth) {
+          val i = (y * maxWidth + x) * 4
+
+          val expectedR = expectedData.data[i].toInt()
+          val expectedG = expectedData.data[i + 1].toInt()
+          val expectedB = expectedData.data[i + 2].toInt()
+          val expectedA = expectedData.data[i + 3].toInt()
+
+          val actualR = actualData.data[i].toInt()
+          val actualG = actualData.data[i + 1].toInt()
+          val actualB = actualData.data[i + 2].toInt()
+          val actualA = actualData.data[i + 3].toInt()
+
+          // Calculate differences
+          val deltaR = actualR - expectedR
+          val deltaG = actualG - expectedG
+          val deltaB = actualB - expectedB
+
+          // If pixels are identical, make it transparent
+          if (deltaR == 0 && deltaG == 0 && deltaB == 0 && expectedA == actualA) {
+            deltaArray[i] = expectedR
+            deltaArray[i + 1] = expectedG
+            deltaArray[i + 2] = expectedB
+            deltaArray[i + 3] = min(expectedA, 32)
+            continue
+          }
+
+          differentPixels++
+
+          // Visualize differences with red pixel
+          deltaArray[i] = 255
+          deltaArray[i + 1] = 0
+          deltaArray[i + 2] = 0
+          deltaArray[i + 3] = 255
+
+          delta += abs(deltaR).toLong()
+          delta += abs(deltaG).toLong()
+          delta += abs(deltaB).toLong()
         }
       }
 
-      return true
+      if (differentPixels == 0L) {
+        return DiffResult(isDifferent = false)
+      }
+
+      // Draw delta image in the middle
+      ctx.putImageData(deltaData, maxWidth.toDouble(), 0.0)
+
+      // Convert canvas to blob
+      val deltaBlob = suspendCancellableCoroutine<Blob> { continuation ->
+        canvas.toBlob(
+          { blob ->
+            if (blob != null) {
+              continuation.resume(blob)
+            } else {
+              continuation.resumeWithException(Exception("Failed to create delta image blob"))
+            }
+          },
+          "image/png",
+        )
+      }
+
+      // Calculate percentage difference
+      val total = maxHeight.toLong() * maxWidth.toLong() * 3L * 256L
+      var percentDifference = (delta * 100 / total.toDouble()).toFloat()
+
+      // Fallback to pixel difference if color delta is 0 but pixels are different
+      if (differentPixels > 0 && percentDifference == 0f) {
+        percentDifference = (differentPixels * 100 / (maxWidth * maxHeight).toDouble()).toFloat()
+      }
+
+      return DiffResult(
+        isDifferent = percentDifference > 0f,
+        deltaImage = deltaBlob,
+        percentDifference = percentDifference,
+        numDifferentPixels = differentPixels,
+      )
     } finally {
       URL.revokeObjectURL(url1)
       URL.revokeObjectURL(url2)
     }
   }
+
+  private data class DiffResult(
+    val isDifferent: Boolean,
+    val deltaImage: Blob? = null,
+    val percentDifference: Float = 0f,
+    val numDifferentPixels: Long = 0,
+  )
 
   private suspend fun loadImage(url: String): HTMLImageElement =
     suspendCancellableCoroutine { continuation ->

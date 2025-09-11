@@ -43,6 +43,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          lfs: true
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
@@ -153,11 +155,15 @@ jobs:
 
       - run: xcodebuild -project redwood-widget-uiview-test/RedwoodWidgetUIViewTests.xcodeproj -scheme RedwoodWidgetUIViewTests -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.4' test
 
+      - run: ./gradlew redwood-layout-dom:jsBrowserTest
+
       - uses: actions/upload-artifact@v4
         if: ${{ always() }}
         with:
           name: screenshot-test-results
-          path: '/Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/**'
+          path: |
+            /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/**
+            **/snapshots/**/*diff.png
           retention-days: 1
 
   treehouse-host-check:
