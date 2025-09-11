@@ -35,7 +35,6 @@ jobs:
           -x test
           -x allTests
           -x iosSimulatorArm64Test
-          -x iosX64Test
           -x jsBrowserTest
           -x jsNodeTest
           -x jvmTest

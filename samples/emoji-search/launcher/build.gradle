@@ -4,7 +4,6 @@ apply plugin: 'app.cash.zipline'
 
 kotlin {
   iosArm64()
-  iosX64()
   iosSimulatorArm64()
 
   androidTarget()

@@ -9,6 +9,7 @@ New:
 
 Changed:
 - Android libaries now have a minimum SDK level of 23.
+- iOS x64 targets are no longer supported.
 
 Fixed:
 - Don't measure the height of `RedwoodUIView` as zero when measured with `sizeThatFits()` or `intrinsicContentSize()`. We had been using `UIStackView` which doesn't support these functions.
