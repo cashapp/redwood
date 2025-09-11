@@ -38,6 +38,9 @@ import platform.UIKit.UIStackViewDistributionEqualSpacing
 import platform.UIKit.UIView
 
 object UIViewTestWidgetFactory : TestWidgetFactory<UIView> {
+  override val toolkitId: ToolkitId
+    get() = ToolkitId.UIView
+
   override fun color() = UIViewColor()
 
   override fun text() = UIViewText()

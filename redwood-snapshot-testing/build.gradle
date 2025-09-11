@@ -30,6 +30,13 @@ kotlin {
         api projects.redwoodDomTesting
       }
     }
+
+    commonTest {
+      dependencies {
+        implementation libs.kotlin.test
+        implementation libs.assertk
+      }
+    }
   }
 }
 

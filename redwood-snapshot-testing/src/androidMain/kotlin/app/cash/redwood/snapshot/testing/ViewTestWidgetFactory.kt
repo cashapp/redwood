@@ -29,6 +29,9 @@ import app.cash.redwood.ui.Dp
 class ViewTestWidgetFactory(
   private val context: Context,
 ) : TestWidgetFactory<View> {
+  override val toolkitId: ToolkitId
+    get() = ToolkitId.View
+
   override fun color() = ViewColor(context)
 
   override fun text() = ViewText(context)

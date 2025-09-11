@@ -25,6 +25,9 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.get
 
 class HTMLElementTestWidgetFactory : TestWidgetFactory<HTMLElement> {
+  override val toolkitId: ToolkitId
+    get() = ToolkitId.Html
+
   override fun color(): Color<HTMLElement> = HTMLElementColor()
 
   override fun text(): Text<HTMLElement> = HTMLElementText()

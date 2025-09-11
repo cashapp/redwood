@@ -19,10 +19,18 @@ import app.cash.redwood.Modifier
 import app.cash.redwood.ui.Dp
 
 interface TestWidgetFactory<W : Any> {
+  val toolkitId: ToolkitId
   fun color(): Color<W>
   fun text(): Text<W>
   fun column(): SimpleColumn<W>
   fun scrollWrapper(): ScrollWrapper<W>
+}
+
+enum class ToolkitId {
+  ComposeUi,
+  Html,
+  UIView,
+  View,
 }
 
 fun <W : Any> TestWidgetFactory<W>.text(

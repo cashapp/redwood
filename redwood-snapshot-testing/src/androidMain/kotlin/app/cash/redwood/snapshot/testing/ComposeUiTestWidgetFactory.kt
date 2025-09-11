@@ -41,6 +41,9 @@ import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.toPlatformDp
 
 object ComposeUiTestWidgetFactory : TestWidgetFactory<@Composable (Modifier) -> Unit> {
+  override val toolkitId: ToolkitId
+    get() = ToolkitId.ComposeUi
+
   override fun color(): ColorWidget<@Composable (Modifier) -> Unit> = ComposeUiColor()
 
   override fun text(): Text<@Composable (Modifier) -> Unit> = ComposeUiText()
