@@ -66,6 +66,9 @@ class HTMLElementSnapshotter(
         style.display = "flex"
         style.flexDirection = "column"
         style.alignItems = "stretch"
+        style.flex = "1.0"
+        style.fontFamily = "Helvetica"
+        style.fontSize = "17px"
       }
       backgroundWrapper.appendChild(widget)
 

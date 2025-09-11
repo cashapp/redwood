@@ -64,7 +64,7 @@ class ComposeUiText : Text<@Composable (Modifier) -> Unit> {
     ) {
       BasicText(
         text = text,
-        style = TextStyle(fontSize = 18.sp, color = Color.Black),
+        style = TextStyle(fontSize = 17.sp, color = Color.Black),
       )
     }
   }

@@ -29,6 +29,7 @@ import platform.CoreGraphics.CGRectZero
 import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
+import platform.UIKit.UIFont
 import platform.UIKit.UILabel
 import platform.UIKit.UILayoutConstraintAxisVertical
 import platform.UIKit.UIScrollView
@@ -71,6 +72,7 @@ class UIViewText :
   }.apply {
     numberOfLines = 0
     textColor = UIColor.blackColor
+    font = UIFont.fontWithName(fontName = "Helvetica", size = 17.0)!!
   }
   override var modifier: Modifier = Modifier
 
