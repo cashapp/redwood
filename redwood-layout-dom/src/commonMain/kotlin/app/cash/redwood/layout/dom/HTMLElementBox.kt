@@ -31,7 +31,7 @@ internal class HTMLElementBox(
 ) : Box<HTMLElement> {
   override val children: Widget.Children<HTMLElement> = Children(value)
 
-  override var modifier: Modifier = Modifier.Companion
+  override var modifier: Modifier = Modifier
 
   private var horizontalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start
   private var verticalAlignment: CrossAxisAlignment = CrossAxisAlignment.Start
