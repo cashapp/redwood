@@ -125,13 +125,15 @@ public class DomSnapshotter @PublishedApi internal constructor(
 
       // Draw actual image on the right
       ctx.drawImage(img2, maxWidth * 2.0, 0.0)
-      val actualData = ctx.getImageData(maxWidth * 2.0, 0.0, maxWidth.toDouble(), maxHeight.toDouble())
+      val actualData =
+        ctx.getImageData(maxWidth * 2.0, 0.0, maxWidth.toDouble(), maxHeight.toDouble())
 
       // Create delta image data
       val deltaData = ctx.createImageData(maxWidth.toDouble(), maxHeight.toDouble())
       val deltaArray = deltaData.data.asDynamic()
 
-      var delta: Long = 0
+      var deltaRGB: Long = 0
+      var deltaA: Long = 0
       var differentPixels: Long = 0
 
       // Compare pixels
@@ -149,13 +151,8 @@ public class DomSnapshotter @PublishedApi internal constructor(
           val actualB = actualData.data[i + 2].toInt()
           val actualA = actualData.data[i + 3].toInt()
 
-          // Calculate differences
-          val deltaR = actualR - expectedR
-          val deltaG = actualG - expectedG
-          val deltaB = actualB - expectedB
-
           // If pixels are identical, make it transparent
-          if (deltaR == 0 && deltaG == 0 && deltaB == 0 && expectedA == actualA) {
+          if (actualR == expectedR && actualG == expectedG && actualB == expectedB && actualA == expectedA) {
             deltaArray[i] = expectedR
             deltaArray[i + 1] = expectedG
             deltaArray[i + 2] = expectedB
@@ -171,9 +168,10 @@ public class DomSnapshotter @PublishedApi internal constructor(
           deltaArray[i + 2] = 0
           deltaArray[i + 3] = 255
 
-          delta += abs(deltaR).toLong()
-          delta += abs(deltaG).toLong()
-          delta += abs(deltaB).toLong()
+          deltaRGB += abs(actualR - expectedR).toLong()
+          deltaRGB += abs(actualG - expectedG).toLong()
+          deltaRGB += abs(actualB - expectedB).toLong()
+          deltaA += abs(actualA - expectedA).toLong()
         }
       }
 
@@ -199,16 +197,13 @@ public class DomSnapshotter @PublishedApi internal constructor(
       }
 
       // Calculate percentage difference
-      val total = maxHeight.toLong() * maxWidth.toLong() * 3L * 256L
-      var percentDifference = (delta * 100 / total.toDouble()).toFloat()
-
-      // Fallback to pixel difference if color delta is 0 but pixels are different
-      if (differentPixels > 0 && percentDifference == 0f) {
-        percentDifference = (differentPixels * 100 / (maxWidth * maxHeight).toDouble()).toFloat()
-      }
+      val totalPixels = maxHeight.toLong() * maxWidth.toLong()
+      val percentDifference =
+        (deltaRGB * 100 / (totalPixels * 3L * 256L).toDouble()).toFloat().takeIf { it != 0f }
+          ?: (deltaA * 100 / (totalPixels * 256L).toDouble()).toFloat()
 
       return DiffResult(
-        isDifferent = percentDifference > 0f,
+        isDifferent = true,
         deltaImage = deltaBlob,
         percentDifference = percentDifference,
         numDifferentPixels = differentPixels,
