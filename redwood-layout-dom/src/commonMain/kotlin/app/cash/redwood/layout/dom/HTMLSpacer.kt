@@ -24,7 +24,7 @@ import org.w3c.dom.HTMLElement
 internal class HTMLSpacer(
   override val value: HTMLDivElement,
 ) : Spacer<HTMLElement> {
-  override var modifier: Modifier = Modifier.Companion
+  override var modifier: Modifier = Modifier
 
   override fun width(width: Dp) {
     value.style.width = width.toPxString()
