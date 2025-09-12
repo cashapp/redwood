@@ -49,7 +49,7 @@ abstract class AbstractBoxTest<T : Any> {
    * Explicitly apply defaults to our Box instance. This is only necessary in tests; in production
    * the framework explicitly sets every property.
    */
-  protected fun Box<T>.applyDefaults() = runTest {
+  protected fun Box<T>.applyDefaults() {
     width(Constraint.Wrap)
     height(Constraint.Wrap)
     margin(Margin.Zero)

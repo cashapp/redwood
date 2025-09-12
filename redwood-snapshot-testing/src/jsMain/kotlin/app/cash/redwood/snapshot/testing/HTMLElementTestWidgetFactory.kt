@@ -56,7 +56,14 @@ private class HTMLElementColor : Color<HTMLElement> {
 }
 
 private class HTMLElementText : Text<HTMLElement> {
-  override val value = document.createElement("div") as HTMLDivElement
+  override val value = (document.createElement("div") as HTMLDivElement)
+    .apply {
+      // Honor '\n' in the source string.
+      style.whiteSpace = "pre-wrap"
+      // Vertically center the text in the frame.
+      style.display = "flex"
+      style.alignItems = "center"
+    }
 
   override var modifier: Modifier = Modifier
 

@@ -1,0 +1,199 @@
+/*
+ * Copyright (C) 2025 Square, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package app.cash.redwood.layout.dom
+
+import app.cash.redwood.Modifier
+import app.cash.redwood.layout.api.Constraint
+import app.cash.redwood.layout.api.CrossAxisAlignment
+import app.cash.redwood.layout.api.MainAxisAlignment
+import app.cash.redwood.layout.api.Overflow
+import app.cash.redwood.layout.modifier.Flex
+import app.cash.redwood.layout.modifier.Grow
+import app.cash.redwood.layout.modifier.Height
+import app.cash.redwood.layout.modifier.Shrink
+import app.cash.redwood.layout.modifier.Size
+import app.cash.redwood.layout.modifier.Width
+import app.cash.redwood.layout.widget.Column
+import app.cash.redwood.layout.widget.Row
+import app.cash.redwood.ui.Margin
+import app.cash.redwood.ui.Px
+import app.cash.redwood.widget.HTMLElementChildren
+import app.cash.redwood.widget.Widget
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.css.CSSStyleDeclaration
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventListener
+
+internal class HTMLFlexContainer(
+  override val value: HTMLDivElement,
+  direction: String,
+  private val overflowSetter: CSSStyleDeclaration.(String) -> Unit,
+) : Column<HTMLElement>,
+  Row<HTMLElement> {
+  override var modifier: Modifier = Modifier.Companion
+
+  override val children: Widget.Children<HTMLElement> = Children(value)
+
+  override val allChildren: List<Widget.Children<HTMLElement>>
+    get() = listOf(children)
+
+  private var scrollEventListener: EventListener? = null
+
+  init {
+    value.style.display = "flex"
+    value.style.flexDirection = direction
+  }
+
+  override fun width(width: Constraint) {
+    value.style.width = width.toCss()
+  }
+
+  override fun height(height: Constraint) {
+    value.style.height = height.toCss()
+  }
+
+  override fun margin(margin: Margin) {
+    value.style.apply {
+      marginInlineStart = margin.start.toPxString()
+      marginInlineEnd = margin.end.toPxString()
+      marginTop = margin.top.toPxString()
+      marginBottom = margin.bottom.toPxString()
+    }
+  }
+
+  override fun overflow(overflow: Overflow) {
+    value.style.overflowSetter(overflow.toCss())
+  }
+
+  override fun onScroll(onScroll: ((Px) -> Unit)?) {
+    scrollEventListener?.let { eventListener ->
+      value.removeEventListener("scroll", eventListener)
+      scrollEventListener = null
+    }
+
+    if (onScroll != null) {
+      val eventListener = object : EventListener {
+        override fun handleEvent(event: Event) {
+          val offset = when (value.style.flexDirection) {
+            "row" -> value.scrollTop
+            "column" -> value.scrollLeft
+            else -> throw AssertionError()
+          }
+          onScroll(Px(offset))
+        }
+      }.also { scrollEventListener = it }
+      value.addEventListener("scroll", eventListener)
+    }
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(horizontalAlignment)
+  }
+
+  override fun horizontalAlignment(horizontalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(horizontalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: MainAxisAlignment) {
+    mainAxisAlignment(verticalAlignment)
+  }
+
+  override fun verticalAlignment(verticalAlignment: CrossAxisAlignment) {
+    crossAxisAlignment(verticalAlignment)
+  }
+
+  internal fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) {
+    value.style.alignItems = crossAxisAlignment.toCss()
+  }
+
+  internal fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) {
+    value.style.justifyContent = mainAxisAlignment.toCss()
+  }
+
+  private class Children(
+    private val container: HTMLElement,
+    private val delegate: HTMLElementChildren = HTMLElementChildren(container),
+  ) : Widget.Children<HTMLElement> by delegate {
+    override fun onModifierUpdated(index: Int, widget: Widget<HTMLElement>) {
+      widget.applyModifiers(clearStyles = true)
+      delegate.onModifierUpdated(index, widget)
+    }
+
+    override fun insert(index: Int, widget: Widget<HTMLElement>) {
+      widget.applyModifiers(clearStyles = false)
+      delegate.insert(index, widget)
+    }
+
+    private fun Widget<HTMLElement>.applyModifiers(clearStyles: Boolean) {
+      if (clearStyles) {
+        value.style.apply {
+          removeProperty("margin-inline-start")
+          removeProperty("margin-inline-end")
+          removeProperty("margin-top")
+          removeProperty("margin-bottom")
+          removeProperty("flex-grow")
+          removeProperty("flex-shrink")
+          removeProperty("flex")
+          removeProperty("width")
+          removeProperty("height")
+        }
+      }
+
+      modifier.forEachScoped { element ->
+        when (element) {
+          is app.cash.redwood.layout.modifier.Margin -> {
+            value.style.apply {
+              marginInlineStart = element.margin.start.toPxString()
+              marginInlineEnd = element.margin.end.toPxString()
+              marginTop = element.margin.top.toPxString()
+              marginBottom = element.margin.bottom.toPxString()
+            }
+          }
+
+          is Grow -> value.style.apply {
+            flexGrow = element.value.toString()
+          }
+
+          is Shrink -> value.style.apply {
+            flexShrink = element.value.toString()
+          }
+
+          is Flex -> value.style.apply {
+            flex = element.value.toString()
+          }
+
+          is Width -> value.style.apply {
+            width = element.width.toPxString()
+          }
+
+          is Height -> value.style.apply {
+            height = element.height.toPxString()
+          }
+
+          is Size -> value.style.apply {
+            width = element.width.toPxString()
+            height = element.height.toPxString()
+          }
+        }
+      }
+    }
+
+    override fun detach() {
+      delegate.detach()
+    }
+  }
+}
