@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.compose.ui.res.fontResource
 import app.cash.redwood.Modifier
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
