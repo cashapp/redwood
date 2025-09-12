@@ -22,6 +22,7 @@ import app.cash.redwood.widget.Widget
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGRectMake
+import platform.UIKit.UIColor
 import platform.UIKit.UILabel
 import platform.UIKit.UILayoutConstraintAxisHorizontal
 import platform.UIKit.UILayoutConstraintAxisVertical
@@ -39,6 +40,7 @@ class UIViewSpacerTest(
 
   override fun wrap(widget: Widget<UIView>, horizontal: Boolean): UIView {
     return UIStackView().apply {
+      backgroundColor = UIColor.whiteColor
       axis = if (horizontal) UILayoutConstraintAxisHorizontal else UILayoutConstraintAxisVertical
       addArrangedSubview(UILabel().apply { text = "Text 1" })
       addArrangedSubview(widget.value)

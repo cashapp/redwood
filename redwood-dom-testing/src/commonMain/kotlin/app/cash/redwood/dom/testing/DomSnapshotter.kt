@@ -72,7 +72,6 @@ public class DomSnapshotter @PublishedApi internal constructor(
           this.canvasWidth = this.width
           this.canvasHeight = this.height
           this.pixelRatio = frame.pixelRatio
-          this.backgroundColor = "transparent"
         },
       ).await()
     } finally {
