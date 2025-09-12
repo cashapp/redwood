@@ -44,7 +44,7 @@ internal class HTMLFlexContainer(
   private val overflowSetter: CSSStyleDeclaration.(String) -> Unit,
 ) : Column<HTMLElement>,
   Row<HTMLElement> {
-  override var modifier: Modifier = Modifier.Companion
+  override var modifier: Modifier = Modifier
 
   override val children: Widget.Children<HTMLElement> = Children(value)
 
