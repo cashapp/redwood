@@ -21,6 +21,7 @@ import app.cash.redwood.layout.api.MainAxisAlignment
 import app.cash.redwood.layout.api.Overflow
 import app.cash.redwood.ui.Density
 import app.cash.redwood.ui.Dp
+import app.cash.redwood.ui.Margin
 import kotlin.math.roundToInt
 import org.w3c.dom.css.CSSStyleDeclaration
 
@@ -69,3 +70,12 @@ internal var CSSStyleDeclaration.marginInlineEnd: String
   set(value) {
     this.setProperty("margin-inline-end", value)
   }
+
+internal operator fun Margin.plus(other: Margin) = Margin(
+  start = start + other.start,
+  end = end + other.end,
+  top = top + other.top,
+  bottom = bottom + other.bottom,
+)
+
+internal operator fun Dp.plus(other: Dp) = Dp(value + other.value)
