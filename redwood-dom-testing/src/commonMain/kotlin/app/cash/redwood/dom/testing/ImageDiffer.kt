@@ -29,9 +29,9 @@ import org.w3c.dom.HTMLImageElement
 import org.w3c.dom.url.URL
 import org.w3c.files.Blob
 
-public object ImageDiffer {
+internal object ImageDiffer {
 
-  public suspend fun compare(expected: Blob, actual: Blob): DiffResult {
+  suspend fun compare(expected: Blob, actual: Blob): DiffResult {
     val url1 = URL.createObjectURL(expected)
     val url2 = URL.createObjectURL(actual)
 
@@ -117,7 +117,7 @@ public object ImageDiffer {
       ctx.putImageData(deltaData, maxWidth.toDouble(), 0.0)
 
       // Convert canvas to blob
-      val deltaBlob = suspendCancellableCoroutine<Blob> { continuation ->
+      val deltaBlob = suspendCancellableCoroutine { continuation ->
         canvas.toBlob(
           { blob ->
             if (blob != null) {
@@ -148,7 +148,7 @@ public object ImageDiffer {
     }
   }
 
-  public data class DiffResult(
+  data class DiffResult(
     val isDifferent: Boolean,
     val deltaImage: Blob? = null,
     val percentDifference: Float = 0f,
