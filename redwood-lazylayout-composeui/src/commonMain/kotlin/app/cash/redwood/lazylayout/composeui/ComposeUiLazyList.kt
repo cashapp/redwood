@@ -53,7 +53,7 @@ import app.cash.redwood.widget.compose.ComposeWidgetChildren
 @OptIn(ExperimentalMaterialApi::class)
 internal class ComposeUiLazyList : LazyList<@Composable (Modifier) -> Unit> {
   private var isVertical by mutableStateOf(false)
-  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit)? by mutableStateOf(null)
+  private var onViewportChanged: ((firstVisibleItemIndex: Int, lastVisibleItemIndex: Int) -> Unit) by mutableStateOf({ _, _ -> })
   private var itemsBefore by mutableIntStateOf(0)
   private var itemsAfter by mutableIntStateOf(0)
   private var isRefreshing by mutableStateOf(false)
