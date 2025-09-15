@@ -163,7 +163,7 @@ jobs:
           name: screenshot-test-results
           path: |
             /Users/runner/Library/Developer/Xcode/DerivedData/**/Logs/Test/**
-            **/snapshots/**/*diff.png
+            **/build/snapshots/**
           retention-days: 1
 
   treehouse-host-check:

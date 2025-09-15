@@ -20,6 +20,7 @@ import kotlinx.browser.document
 import kotlinx.coroutines.await
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
+import org.w3c.files.Blob
 
 public class DomSnapshotter @PublishedApi internal constructor(
   private val path: String,
@@ -50,9 +51,9 @@ public class DomSnapshotter @PublishedApi internal constructor(
     wrapper.appendChild(element)
     document.documentElement!!.appendChild(wrapper)
 
-    val image = try {
+    try {
       val boundingClientRect = wrapper.getBoundingClientRect()
-      HtmlToImage.toBlob(
+      val image = HtmlToImage.toBlob(
         element = element,
         options = Options().apply {
           this.width = ceil(boundingClientRect.width).toInt() - (2 * framingBorderSize)
@@ -62,26 +63,30 @@ public class DomSnapshotter @PublishedApi internal constructor(
           this.pixelRatio = frame.pixelRatio
         },
       ).await()
+
+      require(image != null) {
+        "HtmlToImage.toBlob returned null for $element"
+      }
+
+      val fileName = "$path/$name.png"
+
+      snapshotStore.getBlob(fileName)?.let { existing ->
+        val diffResult = ImageDiffer.compare(existing, image)
+        check(!diffResult.isDifferent) {
+          // Save the delta image with a .diff.png extension
+          snapshotStore.put("$path/$name.diff.png", diffResult.deltaImage!!, writeToBuildDir = true)
+          // Save the actual html content
+          val html = wrapper.outerHTML
+          snapshotStore.put("$path/$name.actual.html", Blob(arrayOf(html)), writeToBuildDir = true)
+
+          "Current snapshot does not match the existing file $fileName " +
+            "(${diffResult.percentDifference}% different, ${diffResult.numDifferentPixels} pixels)"
+        }
+      } ?: snapshotStore.put(fileName, image)
     } finally {
       document.documentElement!!.removeChild(wrapper)
       wrapper.removeChild(element)
     }
-
-    require(image != null) {
-      "HtmlToImage.toBlob returned null for $element"
-    }
-
-    val fileName = "$path/$name.png"
-
-    snapshotStore.getBlob(fileName)?.let { existing ->
-      val diffResult = ImageDiffer.compare(existing, image)
-      check(!diffResult.isDifferent) {
-        // Save the delta image with a .diff.png extension
-        snapshotStore.put("$path/$name.diff.png", diffResult.deltaImage!!)
-        "Current snapshot does not match the existing file $fileName " +
-          "(${diffResult.percentDifference}% different, ${diffResult.numDifferentPixels} pixels)"
-      }
-    } ?: snapshotStore.put(fileName, image)
   }
 
   public companion object Companion {

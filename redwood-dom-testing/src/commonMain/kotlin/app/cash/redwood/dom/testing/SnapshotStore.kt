@@ -25,17 +25,23 @@ import org.w3c.fetch.Response
 import org.w3c.files.Blob
 
 internal class SnapshotStore {
-  suspend fun put(fileName: String, data: ByteString) {
-    putInternal(fileName, data.toByteArray())
+  suspend fun put(fileName: String, data: ByteString, writeToBuildDir: Boolean = false) {
+    putInternal(fileName, data.toByteArray(), writeToBuildDir)
   }
 
-  suspend fun put(fileName: String, data: Blob) {
-    putInternal(fileName, data)
+  suspend fun put(fileName: String, data: Blob, writeToBuildDir: Boolean = false) {
+    putInternal(fileName, data, writeToBuildDir)
   }
 
-  private suspend fun putInternal(fileName: String, data: dynamic) {
+  private suspend fun putInternal(fileName: String, data: dynamic, writeToBuildDir: Boolean) {
+    val url = if (writeToBuildDir) {
+      "/snapshots/$fileName?dir=build"
+    } else {
+      "/snapshots/$fileName"
+    }
+
     val response = window.fetch(
-      input = "/snapshots/$fileName",
+      input = url,
       init = RequestInit(
         method = "POST",
         body = data,

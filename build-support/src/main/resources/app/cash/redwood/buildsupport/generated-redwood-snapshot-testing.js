@@ -45,13 +45,17 @@ function installSnapshotsStore(config) {
 
   function SnapshotStoreMiddlewareFactory(config) {
     return function (request, response, next) {
-      let urlPath = new URL(request.originalUrl, "https://example.com/").pathname;
+      let url = new URL(request.originalUrl, "https://example.com/");
+      let urlPath = url.pathname;
+      let writeToBuildDir = url.searchParams.get('dir') === 'build';
 
       if (!isSnapshotRequest(request.method, urlPath)) {
         return next();
       }
 
-      let filePath = path.normalize(moduleDirectory + urlPath);
+      let filePath = writeToBuildDir
+        ? path.join(moduleDirectory, 'build', urlPath)
+        : path.join(moduleDirectory, 'src', 'test', urlPath);
 
       if (!filePath.startsWith(`${moduleDirectory}/`)) {
         return next(); // Directory traversal attack? Don't touch the file system.
