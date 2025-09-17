@@ -51,9 +51,7 @@ internal class HTMLElementBox(
   private var hasModifierChanges = false
 
   init {
-    value.style.position = "relative"
-    value.style.width = "100%"
-    value.style.height = "100%"
+    value.style.display = "grid"
   }
 
   override fun width(width: Constraint) {
@@ -127,9 +125,8 @@ internal class HTMLElementBox(
   ) : Widget<HTMLElement> {
     override val value: HTMLElement = (document.createElement("div") as HTMLDivElement).apply {
       // Fill the enclosing box.
-      style.position = "absolute"
-      style.left = "0"
-      style.top = "0"
+      style.setProperty("grid-column", "1")
+      style.setProperty("grid-row", "1")
       style.boxSizing = "border-box"
       style.width = "100%"
       style.height = "100%"
