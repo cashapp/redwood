@@ -11,7 +11,7 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        api libs.jetbrains.compose.runtime
+        api libs.androidx.compose.runtime
         api libs.kotlinx.coroutines.core
         api projects.redwoodProtocolGuest
         api projects.redwoodUiCoreApi

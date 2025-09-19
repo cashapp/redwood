@@ -16,6 +16,12 @@
         'org.jetbrains.kotlin:kotlin{/,}**',
       ],
     },
+    {
+      packagePatterns: [
+        '^org.jetbrains.compose.runtime:runtime:',
+      ],
+      enabled: false,
+    },
   ],
   ignorePresets: [
     // Ensure we get the latest version and are not pinned to old versions.

@@ -38,7 +38,7 @@ kotlin {
         implementation libs.kotlinx.coroutines.test
         implementation libs.okio
         implementation libs.turbine
-        implementation libs.jetbrains.compose.collection
+        implementation libs.androidx.collection
         implementation projects.redwoodLayoutTesting
         implementation projects.redwoodLazylayoutTesting
         implementation projects.redwoodUiCoreTesting

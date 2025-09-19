@@ -8,8 +8,9 @@ New:
 - Focus API. Redwood has a new `FocusRequester` to focus a widget.
 
 Changed:
-- Android libaries now have a minimum SDK level of 23.
+- Android libraries now have a minimum SDK level of 23.
 - iOS x64 targets are no longer supported.
+- Use AndroidX collection and Compose runtime artifacts, which are now fully multiplatform. A dependency constraint to the JetBrains Compose runtime version 1.9.0 has been added, which is the first version that is empty and itself now points to AndroidX.
 
 Fixed:
 - Don't measure the height of `RedwoodUIView` as zero when measured with `sizeThatFits()` or `intrinsicContentSize()`. We had been using `UIStackView` which doesn't support these functions.

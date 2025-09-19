@@ -12,7 +12,7 @@ kotlin {
     commonMain {
       dependencies {
         api projects.redwoodProtocolGuest
-        api libs.jetbrains.compose.runtime
+        api libs.androidx.compose.runtime
       }
     }
   }

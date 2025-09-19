@@ -29,7 +29,7 @@ kotlin {
         api projects.redwoodUiCoreApi
         api projects.redwoodUiCoreModifiers
         api projects.redwoodWidget
-        api libs.jetbrains.compose.runtime
+        api libs.androidx.compose.runtime
         api libs.jetbrains.compose.runtime.saveable
       }
     }
@@ -54,7 +54,7 @@ kotlin {
     nonJsMain {
       kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.compose'))
       dependencies {
-        implementation libs.jetbrains.compose.collection
+        implementation libs.androidx.collection
       }
     }
   }
