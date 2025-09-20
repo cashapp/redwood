@@ -2,7 +2,6 @@ buildscript {
   dependencies {
     classpath libs.kotlin.composePlugin
     classpath libs.kotlin.serializationPlugin
-    classpath libs.atomicFuPlugin
     classpath libs.buildConfigPlugin
     classpath libs.burst.gradle.plugin
     classpath libs.zipline.gradlePlugin
