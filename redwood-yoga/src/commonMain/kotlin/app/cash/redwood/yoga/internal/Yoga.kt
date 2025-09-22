@@ -40,10 +40,13 @@ import app.cash.redwood.yoga.internal.event.NodeLayoutEventData
 import app.cash.redwood.yoga.internal.interfaces.YGBaselineFunc
 import app.cash.redwood.yoga.internal.interfaces.YGMeasureFunc
 import app.cash.redwood.yoga.internal.interfaces.YGNodeCleanupFunc
+import kotlin.concurrent.atomics.AtomicInt
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.math.abs
 import kotlin.reflect.KClass
-import kotlinx.atomicfu.atomic
 
+@OptIn(ExperimentalAtomicApi::class)
 internal object Yoga {
   const val YGUndefined = Float.NaN
   val YGValueAuto = YGValue(YGUndefined, YGUnit.YGUnitAuto)
@@ -78,7 +81,7 @@ internal object Yoga {
   const val WebDefaultFlexShrink = 1.0f
   const val printChanges = false
   const val printSkips = false
-  private val currentGenerationCount = atomic(1)
+  private val currentGenerationCount = AtomicInt(1)
 
   fun isUndefined(value: Float): Boolean {
     return value.isNaN()
@@ -3823,7 +3826,7 @@ internal object Yoga {
     /* Event.LayoutPassStart */
     Event.publish(node, LayoutPassStartEventData(layoutContext))
     val markerData = LayoutData()
-    currentGenerationCount.incrementAndGet()
+    currentGenerationCount.incrementAndFetch()
     node.resolveDimension()
     val width: Float
     val widthMeasureMode: YGMeasureMode
@@ -3885,7 +3888,7 @@ internal object Yoga {
         layoutMarkerData = markerData,
         layoutContext = layoutContext,
         depth = 0,
-        generationCount = currentGenerationCount.value,
+        generationCount = currentGenerationCount.load(),
       )
     ) {
       node.setPosition(node.layout!!.direction(), ownerWidth, ownerHeight, ownerWidth)
@@ -3907,7 +3910,7 @@ internal object Yoga {
       val nodeWithoutLegacyFlag = YGNodeDeepClone(node)
       nodeWithoutLegacyFlag.resolveDimension()
       nodeWithoutLegacyFlag.markDirtyAndPropogateDownwards()
-      currentGenerationCount.incrementAndGet()
+      currentGenerationCount.incrementAndFetch()
       unsetUseLegacyFlagRecursively(nodeWithoutLegacyFlag)
       val layoutMarkerData = LayoutData()
       if (YGLayoutNodeInternal(
@@ -3925,7 +3928,7 @@ internal object Yoga {
           layoutMarkerData = layoutMarkerData,
           layoutContext = layoutContext,
           depth = 0,
-          generationCount = currentGenerationCount.value,
+          generationCount = currentGenerationCount.load(),
         )
       ) {
         nodeWithoutLegacyFlag.setPosition(

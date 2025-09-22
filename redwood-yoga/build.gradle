@@ -5,7 +5,6 @@ redwoodBuild {
   publishing()
 }
 
-apply plugin: 'org.jetbrains.kotlinx.atomicfu'
 apply plugin: 'dev.drewhamilton.poko'
 
 kotlin {
