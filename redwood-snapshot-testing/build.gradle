@@ -41,5 +41,5 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.redwood.snapshot.testing'
+  namespace = 'app.cash.redwood.snapshot.testing'
 }

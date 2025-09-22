@@ -39,7 +39,7 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.redwood.widget'
+  namespace = 'app.cash.redwood.widget'
 
   buildFeatures {
     // Has default ID for RedwoodLayout.

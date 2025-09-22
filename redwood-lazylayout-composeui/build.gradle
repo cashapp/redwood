@@ -31,7 +31,7 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.redwood.lazylayout.composeui'
+  namespace = 'app.cash.redwood.lazylayout.composeui'
 
   buildFeatures {
     // For Paparazzi, which internally uses resources to set itself up.

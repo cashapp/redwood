@@ -19,7 +19,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'app.cash.redwood.lint'
 
 android {
-  namespace 'example.android'
+  namespace = 'example.android'
   compileSdk 33
 }
 

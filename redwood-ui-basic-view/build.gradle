@@ -15,5 +15,5 @@ dependencies {
 }
 
 android {
-  namespace 'app.cash.redwood.ui.basic.view'
+  namespace = 'app.cash.redwood.ui.basic.view'
 }

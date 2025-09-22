@@ -38,7 +38,7 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.redwood.composeui'
+  namespace = 'app.cash.redwood.composeui'
 
   testOptions {
     unitTests.includeAndroidResources = true  // Required by Robolectric.

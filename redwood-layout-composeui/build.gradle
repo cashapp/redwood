@@ -32,7 +32,7 @@ kotlin {
 }
 
 android {
-  namespace 'app.cash.redwood.layout.composeui'
+  namespace = 'app.cash.redwood.layout.composeui'
 
   buildFeatures {
     // For Paparazzi, which internally uses resources to set itself up.

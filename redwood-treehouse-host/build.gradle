@@ -84,7 +84,7 @@ dependencies {
 }
 
 android {
-  namespace 'app.cash.treehouse.host'
+  namespace = 'app.cash.treehouse.host'
 
   sourceSets {
     androidTest {

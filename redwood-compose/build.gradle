@@ -68,7 +68,7 @@ dependencies {
 }
 
 android {
-  namespace 'app.cash.redwood.compose'
+  namespace = 'app.cash.redwood.compose'
 
   defaultConfig {
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

@@ -6,7 +6,7 @@ redwoodBuild {
 }
 
 android {
-  namespace 'com.example.redwood.emojisearch.android.views'
+  namespace = 'com.example.redwood.emojisearch.android.views'
 
   defaultConfig {
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

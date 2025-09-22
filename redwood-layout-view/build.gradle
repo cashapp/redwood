@@ -19,7 +19,7 @@ dependencies {
 }
 
 android {
-  namespace 'app.cash.redwood.layout.view'
+  namespace = 'app.cash.redwood.layout.view'
 
   def composeHelpers = redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.layout.view').get()
   def flexboxHelpers = redwoodBuild.generateFlexboxHelpers(tasks, 'app.cash.redwood.layout.view').get()

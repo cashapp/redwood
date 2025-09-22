@@ -8,5 +8,5 @@ dependencies {
 }
 
 android {
-  namespace 'com.example.redwood.counter.android.tests'
+  namespace = 'com.example.redwood.counter.android.tests'
 }

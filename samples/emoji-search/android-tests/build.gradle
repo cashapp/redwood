@@ -8,5 +8,5 @@ dependencies {
 }
 
 android {
-  namespace 'com.example.redwood.emojisearch.android.tests'
+  namespace = 'com.example.redwood.emojisearch.android.tests'
 }

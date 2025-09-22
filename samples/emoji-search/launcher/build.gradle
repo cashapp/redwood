@@ -22,5 +22,5 @@ kotlin {
 }
 
 android {
-  namespace 'com.example.redwood.emojisearch.launcher'
+  namespace = 'com.example.redwood.emojisearch.launcher'
 }
