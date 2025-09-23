@@ -16,8 +16,8 @@
 package app.cash.redwood.snapshot.testing
 
 import app.cash.burst.coroutines.CoroutineTestFunction
-import app.cash.redwood.dom.testing.DomSnapshotter
 import app.cash.redwood.dom.testing.Frame
+import app.cash.redwood.dom.testing.SnapshotTester
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -28,7 +28,7 @@ class HTMLElementSnapshotter(
   private val widget: HTMLElement,
 ) : Snapshotter {
   override suspend fun snapshot(name: String?, scrolling: Boolean) {
-    val domSnapshotter = DomSnapshotter(
+    val snapshotTester = SnapshotTester(
       path = buildString {
         if (testFunction.packageName != "") {
           append(testFunction.packageName)
@@ -37,7 +37,7 @@ class HTMLElementSnapshotter(
         append(testFunction.className)
       },
     )
-    domSnapshotter.snapshot(
+    snapshotTester.snapshot(
       element = widget,
       name = buildString {
         append(testFunction.functionName)

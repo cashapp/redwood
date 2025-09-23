@@ -28,11 +28,13 @@ import kotlinx.dom.appendText
 import kotlinx.dom.clear
 
 /**
- * This isn't a proper unit test for [DomSnapshotter], it's just a sample.
+ * This isn't a proper unit test for [SnapshotTester], it's just a sample.
  */
 @Burst
-internal class DomSnapshotterSampleTest {
-  val snapshotter = DomSnapshotter("DomSnapshotterSampleTest")
+internal class SnapshotTesterSampleTest {
+  private val snapshotTester = SnapshotTester(
+    path = "app.cash.redwood.dom.testing/SnapshotTesterSampleTest",
+  )
 
   @Test
   fun happyPath() = runTest {
@@ -42,7 +44,7 @@ internal class DomSnapshotterSampleTest {
       }
     }
 
-    snapshotter.snapshot(helloWorld, "happyPath", Frame.None)
+    snapshotTester.snapshot(helloWorld, "happyPath", Frame.None)
   }
 
   @Test
@@ -52,7 +54,7 @@ internal class DomSnapshotterSampleTest {
         appendText("hello world")
       }
     }
-    snapshotter.snapshot(helloWorld, "mismatchedSnapshot", Frame.None)
+    snapshotTester.snapshot(helloWorld, "mismatchedSnapshot", Frame.None)
 
     helloWorld.apply {
       clear()
@@ -60,8 +62,8 @@ internal class DomSnapshotterSampleTest {
         appendText("hello world")
       }
     }
-    assertFailsWith<IllegalStateException> {
-      snapshotter.snapshot(helloWorld, "mismatchedSnapshot", Frame.None)
+    assertFailsWith<SnapshotMismatchException> {
+      snapshotTester.snapshot(helloWorld, "mismatchedSnapshot", Frame.None)
     }
   }
 
@@ -96,7 +98,7 @@ internal class DomSnapshotterSampleTest {
       )
     }
 
-    snapshotter.snapshot(
+    snapshotTester.snapshot(
       yellowRect,
       "exactSizeWithFrame_${frame.width ?: "wrap"}_x_${frame.height ?: "wrap"}",
       frame,

@@ -25,26 +25,24 @@ import kotlinx.coroutines.test.runTest
 import okio.ByteString.Companion.encodeUtf8
 
 internal class SnapshotStoreTest {
+  private val path = "app.cash.redwood.dom.testing/SnapshotStoreTest"
+
   @Test
   fun putAndGetFile() = runTest {
     val store = SnapshotStore()
     val data = "Hello World!".encodeUtf8()
-    store.put("greeting.txt", data)
-    assertThat(store.getByteString("greeting.txt")).isEqualTo(data)
-  }
-
-  @Test
-  fun putAndGetFileWithPathHierarchy() = runTest {
-    val store = SnapshotStore()
-    val data = "Ahoy, Matey!".encodeUtf8()
-    store.put("greetings/pirate/greeting.txt", data)
-    assertThat(store.getByteString("greetings/pirate/greeting.txt")).isEqualTo(data)
+    store.put("$path/putAndGetFile.txt", data)
+    assertThat(store.getByteString("$path/putAndGetFile.txt")).isEqualTo(data)
   }
 
   @Test
   fun getDirectoryTraversalReturnsNoData() = runTest {
     val store = SnapshotStore()
-    assertThat(store.getByteString("../README.md")).isNull() // 404 Not Found.
+    // 404 Not Found.
+    assertThat(store.getByteString("../README.md")).isNull()
+    assertThat(store.getByteString("../../README.md")).isNull()
+    assertThat(store.getByteString("../../../README.md")).isNull()
+    assertThat(store.getByteString("../../../../README.md")).isNull()
   }
 
   @Test

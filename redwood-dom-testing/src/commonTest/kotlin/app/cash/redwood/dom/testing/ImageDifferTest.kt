@@ -17,10 +17,8 @@ package app.cash.redwood.dom.testing
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import kotlin.math.ceil
 import kotlin.test.Test
 import kotlinx.browser.document
-import kotlinx.coroutines.await
 import kotlinx.coroutines.test.runTest
 import org.w3c.dom.Element
 import org.w3c.files.Blob
@@ -39,7 +37,7 @@ internal class ImageDifferTest {
       )
     }.toBlob()
 
-    val diffResult = ImageDiffer.compare(yellowRect, yellowRect)
+    val diffResult = ImageDiffer().compare(yellowRect, yellowRect)
     assertThat(diffResult.isDifferent).isEqualTo(false)
   }
 
@@ -78,7 +76,7 @@ internal class ImageDifferTest {
       )
     }.toBlob()
 
-    val diffResult = ImageDiffer.compare(yellowRect, yellowRect10PercentBlue)
+    val diffResult = ImageDiffer().compare(yellowRect, yellowRect10PercentBlue)
     assertThat(diffResult.isDifferent).isEqualTo(true)
     assertThat(diffResult.percentDifference).isEqualTo(10f)
   }
@@ -107,26 +105,44 @@ internal class ImageDifferTest {
       )
     }.toBlob()
 
-    val diffResult = ImageDiffer.compare(yellowRect, transparentYellowRect)
+    val diffResult = ImageDiffer().compare(yellowRect, transparentYellowRect)
     assertThat(diffResult.isDifferent).isEqualTo(true)
     assertThat(diffResult.percentDifference).isEqualTo(20f)
   }
 
-  private suspend fun Element.toBlob(): Blob {
-    document.documentElement!!.appendChild(this)
-    try {
-      val boundingClientRect = this.getBoundingClientRect()
-      return HtmlToImage.toBlob(
-        element = this,
-        options = Options().apply {
-          this.width = ceil(boundingClientRect.width).toInt()
-          this.height = ceil(boundingClientRect.height).toInt()
-          this.canvasWidth = this.width
-          this.canvasHeight = this.height
-        },
-      ).await()!!
-    } finally {
-      document.documentElement!!.removeChild(this)
-    }
+  /**
+   * Compare a 100x200 transparent image against a 200x100 transparent image. We consider any pixel
+   * that isn't in the bounds of the other image to be different, so these two rectangles differ by
+   * 75%.
+   */
+  @Test
+  fun fullAlphaSizeMismatch() = runTest {
+    val transparent200x100 = document.createElement("div").apply {
+      setAttribute(
+        "style",
+        """
+        |background-color: #00000000;
+        |width: 200px;
+        |height: 100px;
+        """.trimMargin(),
+      )
+    }.toBlob()
+    val transparent100x200 = document.createElement("div").apply {
+      setAttribute(
+        "style",
+        """
+        |background-color: #00000000;
+        |width: 100px;
+        |height: 200px;
+        """.trimMargin(),
+      )
+    }.toBlob()
+
+    val diffResult = ImageDiffer().compare(transparent200x100, transparent100x200)
+    assertThat(diffResult.isDifferent).isEqualTo(true)
+    assertThat(diffResult.percentDifference).isEqualTo(75f)
   }
+
+  internal suspend fun Element.toBlob(): Blob =
+    DomSnapshotter().snapshot(this, Frame.None).image!!
 }

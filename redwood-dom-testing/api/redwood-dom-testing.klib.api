@@ -6,14 +6,48 @@
 // - Show declarations: true
 
 // Library unique name: <app.cash.redwood:redwood-dom-testing>
+final class app.cash.redwood.dom.testing/DiffResult { // app.cash.redwood.dom.testing/DiffResult|null[0]
+    constructor <init>(kotlin/Boolean, org.w3c.files/Blob? = ..., kotlin/Float = ..., kotlin/Long = ...) // app.cash.redwood.dom.testing/DiffResult.<init>|<init>(kotlin.Boolean;org.w3c.files.Blob?;kotlin.Float;kotlin.Long){}[0]
+
+    final val deltaImage // app.cash.redwood.dom.testing/DiffResult.deltaImage|{}deltaImage[0]
+        final fun <get-deltaImage>(): org.w3c.files/Blob? // app.cash.redwood.dom.testing/DiffResult.deltaImage.<get-deltaImage>|<get-deltaImage>(){}[0]
+    final val isDifferent // app.cash.redwood.dom.testing/DiffResult.isDifferent|{}isDifferent[0]
+        final fun <get-isDifferent>(): kotlin/Boolean // app.cash.redwood.dom.testing/DiffResult.isDifferent.<get-isDifferent>|<get-isDifferent>(){}[0]
+    final val numDifferentPixels // app.cash.redwood.dom.testing/DiffResult.numDifferentPixels|{}numDifferentPixels[0]
+        final fun <get-numDifferentPixels>(): kotlin/Long // app.cash.redwood.dom.testing/DiffResult.numDifferentPixels.<get-numDifferentPixels>|<get-numDifferentPixels>(){}[0]
+    final val percentDifference // app.cash.redwood.dom.testing/DiffResult.percentDifference|{}percentDifference[0]
+        final fun <get-percentDifference>(): kotlin/Float // app.cash.redwood.dom.testing/DiffResult.percentDifference.<get-percentDifference>|<get-percentDifference>(){}[0]
+
+    final fun component1(): kotlin/Boolean // app.cash.redwood.dom.testing/DiffResult.component1|component1(){}[0]
+    final fun component2(): org.w3c.files/Blob? // app.cash.redwood.dom.testing/DiffResult.component2|component2(){}[0]
+    final fun component3(): kotlin/Float // app.cash.redwood.dom.testing/DiffResult.component3|component3(){}[0]
+    final fun component4(): kotlin/Long // app.cash.redwood.dom.testing/DiffResult.component4|component4(){}[0]
+    final fun copy(kotlin/Boolean = ..., org.w3c.files/Blob? = ..., kotlin/Float = ..., kotlin/Long = ...): app.cash.redwood.dom.testing/DiffResult // app.cash.redwood.dom.testing/DiffResult.copy|copy(kotlin.Boolean;org.w3c.files.Blob?;kotlin.Float;kotlin.Long){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.dom.testing/DiffResult.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.dom.testing/DiffResult.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.dom.testing/DiffResult.toString|toString(){}[0]
+}
+
+final class app.cash.redwood.dom.testing/DomSnapshot { // app.cash.redwood.dom.testing/DomSnapshot|null[0]
+    constructor <init>(org.w3c.files/Blob?, kotlin/String) // app.cash.redwood.dom.testing/DomSnapshot.<init>|<init>(org.w3c.files.Blob?;kotlin.String){}[0]
+
+    final val framedHtml // app.cash.redwood.dom.testing/DomSnapshot.framedHtml|{}framedHtml[0]
+        final fun <get-framedHtml>(): kotlin/String // app.cash.redwood.dom.testing/DomSnapshot.framedHtml.<get-framedHtml>|<get-framedHtml>(){}[0]
+    final val image // app.cash.redwood.dom.testing/DomSnapshot.image|{}image[0]
+        final fun <get-image>(): org.w3c.files/Blob? // app.cash.redwood.dom.testing/DomSnapshot.image.<get-image>|<get-image>(){}[0]
+
+    final fun component1(): org.w3c.files/Blob? // app.cash.redwood.dom.testing/DomSnapshot.component1|component1(){}[0]
+    final fun component2(): kotlin/String // app.cash.redwood.dom.testing/DomSnapshot.component2|component2(){}[0]
+    final fun copy(org.w3c.files/Blob? = ..., kotlin/String = ...): app.cash.redwood.dom.testing/DomSnapshot // app.cash.redwood.dom.testing/DomSnapshot.copy|copy(org.w3c.files.Blob?;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.dom.testing/DomSnapshot.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // app.cash.redwood.dom.testing/DomSnapshot.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // app.cash.redwood.dom.testing/DomSnapshot.toString|toString(){}[0]
+}
+
 final class app.cash.redwood.dom.testing/DomSnapshotter { // app.cash.redwood.dom.testing/DomSnapshotter|null[0]
-    constructor <init>(kotlin/String) // app.cash.redwood.dom.testing/DomSnapshotter.<init>|<init>(kotlin.String){}[0]
+    constructor <init>() // app.cash.redwood.dom.testing/DomSnapshotter.<init>|<init>(){}[0]
 
-    final suspend fun snapshot(org.w3c.dom/Element, kotlin/String = ..., app.cash.redwood.dom.testing/Frame, kotlin/Boolean = ...) // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;kotlin.String;app.cash.redwood.dom.testing.Frame;kotlin.Boolean){}[0]
-
-    final object Companion { // app.cash.redwood.dom.testing/DomSnapshotter.Companion|null[0]
-        final inline fun invoke(kotlin/String = ...): app.cash.redwood.dom.testing/DomSnapshotter // app.cash.redwood.dom.testing/DomSnapshotter.Companion.invoke|invoke(kotlin.String){}[0]
-    }
+    final suspend fun snapshot(org.w3c.dom/Element, app.cash.redwood.dom.testing/Frame): app.cash.redwood.dom.testing/DomSnapshot // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;app.cash.redwood.dom.testing.Frame){}[0]
 }
 
 final class app.cash.redwood.dom.testing/Frame { // app.cash.redwood.dom.testing/Frame|null[0]
@@ -31,5 +65,19 @@ final class app.cash.redwood.dom.testing/Frame { // app.cash.redwood.dom.testing
             final fun <get-Iphone14>(): app.cash.redwood.dom.testing/Frame // app.cash.redwood.dom.testing/Frame.Companion.Iphone14.<get-Iphone14>|<get-Iphone14>(){}[0]
         final val None // app.cash.redwood.dom.testing/Frame.Companion.None|{}None[0]
             final fun <get-None>(): app.cash.redwood.dom.testing/Frame // app.cash.redwood.dom.testing/Frame.Companion.None.<get-None>|<get-None>(){}[0]
+    }
+}
+
+final class app.cash.redwood.dom.testing/SnapshotMismatchException : kotlin/IllegalArgumentException { // app.cash.redwood.dom.testing/SnapshotMismatchException|null[0]
+    constructor <init>(kotlin/String) // app.cash.redwood.dom.testing/SnapshotMismatchException.<init>|<init>(kotlin.String){}[0]
+}
+
+final class app.cash.redwood.dom.testing/SnapshotTester { // app.cash.redwood.dom.testing/SnapshotTester|null[0]
+    constructor <init>(app.cash.redwood.dom.testing/SnapshotStore = ..., app.cash.redwood.dom.testing/DomSnapshotter = ..., app.cash.redwood.dom.testing/ImageDiffer = ..., kotlin/String) // app.cash.redwood.dom.testing/SnapshotTester.<init>|<init>(app.cash.redwood.dom.testing.SnapshotStore;app.cash.redwood.dom.testing.DomSnapshotter;app.cash.redwood.dom.testing.ImageDiffer;kotlin.String){}[0]
+
+    final suspend fun snapshot(org.w3c.dom/Element, kotlin/String = ..., app.cash.redwood.dom.testing/Frame, kotlin/Boolean = ...) // app.cash.redwood.dom.testing/SnapshotTester.snapshot|snapshot(org.w3c.dom.Element;kotlin.String;app.cash.redwood.dom.testing.Frame;kotlin.Boolean){}[0]
+
+    final object Companion { // app.cash.redwood.dom.testing/SnapshotTester.Companion|null[0]
+        final fun invoke(kotlin/String): app.cash.redwood.dom.testing/SnapshotTester // app.cash.redwood.dom.testing/SnapshotTester.Companion.invoke|invoke(kotlin.String){}[0]
     }
 }
