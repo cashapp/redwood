@@ -43,7 +43,7 @@ public class SnapshotTester @PublishedApi internal constructor(
     val existing = snapshotStore.getBlob(fileName)
     if (existing == null) {
       snapshotStore.put(fileName, image)
-      return
+      throw SnapshotMismatchException("Created new snapshot file $fileName")
     }
 
     val diffResult = imageDiffer.compare(existing, image)
