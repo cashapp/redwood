@@ -97,4 +97,15 @@ function installSnapshotsStore(config) {
   config.middleware.push('snapshot-store');
 }
 
+/**
+ * Karma runs a web server that hosts test code. Mocha is a JavaScript test framework. We configure
+ * timeouts in Karma's config under client.mocha.timeout.
+ */
+function configureMochaTimeout(config, timeout) {
+  config.client = config.client || {};
+  config.client.mocha = config.client.mocha || {};
+  config.client.mocha.timeout = timeout;
+}
+
 installSnapshotsStore(config);
+configureMochaTimeout(config, "10s");
