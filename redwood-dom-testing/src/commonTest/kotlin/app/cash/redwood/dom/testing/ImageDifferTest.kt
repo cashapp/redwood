@@ -144,5 +144,5 @@ internal class ImageDifferTest {
   }
 
   internal suspend fun Element.toBlob(): Blob =
-    DomSnapshotter().snapshot(this, Frame.None).image!!
+    DomSnapshotter().snapshot(this, Frame.None, false).images.first()!!
 }

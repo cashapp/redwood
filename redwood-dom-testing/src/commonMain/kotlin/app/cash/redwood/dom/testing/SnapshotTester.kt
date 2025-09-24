@@ -31,32 +31,41 @@ public class SnapshotTester @PublishedApi internal constructor(
     frame: Frame,
     scrolling: Boolean = false,
   ) {
-    val (image, html) = domSnapshotter.snapshot(element, frame)
+    val (images, html) = domSnapshotter.snapshot(element, frame, scrolling)
 
-    val fileName = "$path/$name.png"
-
-    if (image == null) {
+    if (images.any { it == null }) {
       snapshotStore.put("$path/$name.actual.html", Blob(arrayOf(html)), writeToBuildDir = true)
-      throw SnapshotMismatchException("HtmlToImage.toBlob returned null for $fileName")
+      throw SnapshotMismatchException("html2canvas returned null for $path/$name.png")
     }
 
-    val existing = snapshotStore.getBlob(fileName)
-    if (existing == null) {
-      snapshotStore.put(fileName, image)
-      throw SnapshotMismatchException("Created new snapshot file $fileName")
+    var createdNewSnapshot = false
+
+    images.forEachIndexed { index, image ->
+      val fileName = "$path/${if (index == 0) "$name.png" else "${name}_$index.png"}"
+
+      val existing = snapshotStore.getBlob(fileName)
+      if (existing == null) {
+        snapshotStore.put(fileName, image!!)
+        createdNewSnapshot = true
+        return@forEachIndexed
+      }
+
+      val diffResult = imageDiffer.compare(existing, image!!)
+      if (!diffResult.isDifferent) return@forEachIndexed
+
+      // Save the delta image and wrapped HTML so the developer can see what's different.
+      snapshotStore.put("$path/$name.diff.png", diffResult.deltaImage!!, writeToBuildDir = true)
+      snapshotStore.put("$path/$name.actual.html", Blob(arrayOf(html)), writeToBuildDir = true)
+
+      throw SnapshotMismatchException(
+        "Current snapshot does not match the existing file $fileName " +
+          "(${diffResult.percentDifference}% different, ${diffResult.numDifferentPixels} pixels)",
+      )
     }
 
-    val diffResult = imageDiffer.compare(existing, image)
-    if (!diffResult.isDifferent) return
-
-    // Save the delta image and wrapped HTML so the developer can see what's different.
-    snapshotStore.put("$path/$name.diff.png", diffResult.deltaImage!!, writeToBuildDir = true)
-    snapshotStore.put("$path/$name.actual.html", Blob(arrayOf(html)), writeToBuildDir = true)
-
-    throw SnapshotMismatchException(
-      "Current snapshot does not match the existing file $fileName " +
-        "(${diffResult.percentDifference}% different, ${diffResult.numDifferentPixels} pixels)",
-    )
+    if (createdNewSnapshot) {
+      throw SnapshotMismatchException("Created new snapshot file $path/$name.png")
+    }
   }
 
   public companion object Companion {

@@ -15,18 +15,13 @@
  */
 package app.cash.redwood.dom.testing
 
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlinx.browser.document
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.khronos.webgl.get
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.HTMLImageElement
-import org.w3c.dom.url.URL
 import org.w3c.files.Blob
 
 public data class DiffResult(
@@ -132,41 +127,5 @@ internal class ImageDiffer {
       percentDifference = percentDifference,
       numDifferentPixels = differentPixels,
     )
-  }
-}
-
-internal suspend fun HTMLCanvasElement.encodeImage(): Blob {
-  return suspendCancellableCoroutine { continuation ->
-    toBlob(
-      _callback = { blob ->
-        if (blob != null) {
-          continuation.resume(blob)
-        } else {
-          continuation.resumeWithException(Exception("Failed to create delta image blob"))
-        }
-      },
-      type = "image/png",
-    )
-  }
-}
-
-internal suspend fun Blob.decodeImage(): HTMLImageElement {
-  val url = URL.createObjectURL(this)
-  try {
-    return suspendCancellableCoroutine { continuation ->
-      val img = document.createElement("img") as HTMLImageElement
-
-      img.onload = { _ -> continuation.resume(img) }
-      img.onerror = { _: dynamic, _: String, _: Int, _: Int, _: Any? ->
-        continuation.resumeWithException(Exception("Failed to load image"))
-      }
-      img.src = url
-
-      continuation.invokeOnCancellation {
-        img.src = ""
-      }
-    }
-  } finally {
-    URL.revokeObjectURL(url)
   }
 }
