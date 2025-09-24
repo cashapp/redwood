@@ -51,6 +51,13 @@ kotlin {
         implementation libs.androidx.core
       }
     }
+    jsMain {
+      dependencies {
+        // This forces the version bump to get more efficient scatter-based collections.
+        // Once the Compose runtime depends on 1.6.0 or newer we can remove this.
+        runtimeOnly libs.androidx.collection
+      }
+    }
     nonJsMain {
       kotlin.srcDir(redwoodBuild.generateComposeHelpers(tasks, 'app.cash.redwood.compose'))
       dependencies {
