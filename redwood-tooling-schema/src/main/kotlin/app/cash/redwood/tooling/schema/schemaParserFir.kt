@@ -73,7 +73,6 @@ import org.jetbrains.kotlin.fir.expressions.FirResolvedQualifier
 import org.jetbrains.kotlin.fir.expressions.FirVarargArgumentsExpression
 import org.jetbrains.kotlin.fir.expressions.arguments
 import org.jetbrains.kotlin.fir.expressions.impl.FirResolvedArgumentList
-import org.jetbrains.kotlin.fir.references.FirNamedReference
 import org.jetbrains.kotlin.fir.resolve.fqName
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.symbols.SymbolInternals
@@ -86,10 +85,10 @@ import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.classId
 import org.jetbrains.kotlin.fir.types.isBasicFunctionType
 import org.jetbrains.kotlin.fir.types.isMarkedNullable
-import org.jetbrains.kotlin.fir.types.parameterName
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.type
+import org.jetbrains.kotlin.fir.types.valueParameterName
 import org.jetbrains.kotlin.fir.types.variance
 import org.jetbrains.kotlin.fir.visitors.FirDefaultVisitor
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
@@ -457,7 +456,7 @@ private fun FirContext.parseWidget(
             documentation = documentation,
             parameters = arguments.map {
               ParsedParameter(
-                name = it.type?.parameterName?.identifier,
+                name = it.type?.valueParameterName(firSession)?.identifier,
                 type = it.toFqType(),
               )
             },
@@ -815,7 +814,7 @@ private data class ChildrenAnnotation(
   val tag: Int,
 )
 
-private fun FirContext.findDefaultExpression(
+private fun findDefaultExpression(
   parameter: FirValueParameterSymbol,
 ): String? {
   return parameter.defaultValueSource?.let { defaultValue ->
@@ -866,7 +865,7 @@ private fun FirContext.findDeprecationAnnotation(
 
   val levelExpression = annotation.argumentMapping
     .mapping[Name.identifier("level")] as? FirPropertyAccessExpression
-  val levelReference = levelExpression?.calleeReference as? FirNamedReference
+  val levelReference = levelExpression?.calleeReference
   val level = levelReference?.name?.identifier ?: "WARNING"
 
   val hasReplaceWith = Name.identifier("replaceWith") in annotation.argumentMapping.mapping
