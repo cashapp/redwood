@@ -60,57 +60,43 @@ public class DomSnapshotter {
       val elementWidth = ceil(boundingClientRect.width).toInt() - (2 * framingBorderSize)
       val elementHeight = ceil(boundingClientRect.height).toInt() - (2 * framingBorderSize)
 
-      if (!scrolling) {
-        return DomSnapshot(
-          images = listOf(
-            html2canvas(
-              element = element as HTMLElement,
-              options = Options().apply {
-                this.backgroundColor = null
-                this.width = elementWidth
-                this.height = elementHeight
-                this.windowWidth = this.width
-                this.windowHeight = this.height
-                this.scale = frame.pixelRatio
-              },
-            ).await()?.encodeImage(),
-          ),
-          framedHtml = wrapper.outerHTML,
-        )
-      } else {
-        // Handle scrollable content
-        val scrollableElement = findScrollableElement(element)
-          ?: throw IllegalStateException("No scrollable element found")
+      suspend fun captureImage(): Blob? {
+        return html2canvas(
+          element = element as HTMLElement,
+          options = Options().apply {
+            this.backgroundColor = null
+            this.width = elementWidth
+            this.height = elementHeight
+            this.windowWidth = this.width
+            this.windowHeight = this.height
+            this.scale = frame.pixelRatio
+          },
+        ).await()?.encodeImage()
+      }
 
-        // Calculate total number of pages needed
-        val totalPages =
-          ceil(scrollableElement.scrollHeight.toDouble() / scrollableElement.clientHeight).toInt()
+      val images = buildList {
+        if (!scrolling) {
+          add(captureImage())
+        } else {
+          // Handle scrollable content.
+          val scrollableElement = findScrollableElement(element)
+            ?: throw IllegalStateException("No scrollable element found")
 
-        val images = buildList {
+          // Calculate total number of pages needed.
+          val totalPages =
+            ceil(scrollableElement.scrollHeight.toDouble() / scrollableElement.clientHeight).toInt()
+
           for (page in 0 until totalPages) {
             scrollableElement.scrollTop = page * scrollableElement.clientHeight.toDouble()
-
-            add(
-              html2canvas(
-                element = element,
-                options = Options().apply {
-                  this.backgroundColor = null
-                  this.width = elementWidth
-                  this.height = elementHeight
-                  this.windowWidth = this.width
-                  this.windowHeight = this.height
-                  this.scale = frame.pixelRatio
-                },
-              ).await()?.encodeImage(),
-            )
+            add(captureImage())
           }
         }
-
-        return DomSnapshot(
-          images = images,
-          framedHtml = wrapper.outerHTML,
-        )
       }
+
+      return DomSnapshot(
+        images = images,
+        framedHtml = wrapper.outerHTML,
+      )
     } finally {
       document.documentElement!!.removeChild(wrapper)
       wrapper.removeChild(element)
