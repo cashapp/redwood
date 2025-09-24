@@ -63,8 +63,6 @@ module:redwood-testing
 app.cash.redwood.testing
 module:redwood-tooling-codegen
 app.cash.redwood.tooling.codegen
-module:redwood-tooling-lint
-app.cash.redwood.tooling.lint
 module:redwood-tooling-schema
 app.cash.redwood.tooling.schema
 module:redwood-treehouse
