@@ -17,7 +17,6 @@ package app.cash.redwood.gradle
 
 import assertk.assertThat
 import assertk.assertions.contains
-import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import assertk.assertions.prop
@@ -102,65 +101,6 @@ class FixtureTest {
     }
     fixtureGradleRunner(fixtureDir, "redwoodApiGenerate").build()
     fixtureGradleRunner(fixtureDir, "redwoodApiCheck").build()
-  }
-
-  @Test fun lintNoKotlinFails() {
-    val fixtureDir = File("src/test/fixture/lint-no-kotlin")
-    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
-    assertThat(result.output).contains(
-      "'app.cash.redwood.lint' requires a compatible Kotlin plugin to be applied (root project)",
-    )
-  }
-
-  @Test fun lintAndroidNoKotlinFails() {
-    val fixtureDir = File("src/test/fixture/lint-android-no-kotlin")
-    val result = fixtureGradleRunner(fixtureDir).buildAndFail()
-    assertThat(result.output).contains(
-      "'app.cash.redwood.lint' requires a compatible Kotlin plugin to be applied (root project)",
-    )
-  }
-
-  @Test fun lintAndroid() {
-    val fixtureDir = File("src/test/fixture/lint-android")
-    val result = fixtureGradleRunner(fixtureDir).build()
-    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
-    assertThat(lintTasks).containsExactly(
-      ":redwoodLintDebug",
-      ":redwoodLintRelease",
-      ":redwoodLint",
-    )
-  }
-
-  @Test fun lintJvm() {
-    val fixtureDir = File("src/test/fixture/lint-jvm")
-    val result = fixtureGradleRunner(fixtureDir).build()
-    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
-    assertThat(lintTasks).containsExactly(
-      ":redwoodLint",
-    )
-  }
-
-  @Test fun lintMppAndroid() {
-    val fixtureDir = File("src/test/fixture/lint-mpp-android")
-    val result = fixtureGradleRunner(fixtureDir).build()
-    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
-    assertThat(lintTasks).containsExactly(
-      ":redwoodLintAndroidDebug",
-      ":redwoodLintAndroidRelease",
-      ":redwoodLintJvm",
-      ":redwoodLint",
-    )
-  }
-
-  @Test fun lintMppNoAndroid() {
-    val fixtureDir = File("src/test/fixture/lint-mpp-no-android")
-    val result = fixtureGradleRunner(fixtureDir).build()
-    val lintTasks = result.tasks.map { it.path }.filter { it.startsWith(":redwoodLint") }
-    assertThat(lintTasks).containsExactly(
-      ":redwoodLintJs",
-      ":redwoodLintJvm",
-      ":redwoodLint",
-    )
   }
 
   @Test fun protocolWithoutModifiers() {

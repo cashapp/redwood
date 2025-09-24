@@ -46,12 +46,6 @@ dependencies {
 
 gradlePlugin {
   plugins {
-    redwoodLint {
-      id = "app.cash.redwood.lint"
-      displayName = "Redwood lint"
-      description = "Redwood lint Gradle plugin"
-      implementationClass = "app.cash.redwood.gradle.RedwoodLintPlugin"
-    }
     redwoodSchema {
       id = "app.cash.redwood.schema"
       displayName = "Redwood schema"
@@ -125,7 +119,6 @@ test {
   dependsOn(':redwood-runtime:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-schema:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-tooling-codegen:publishAllPublicationsToLocalMavenRepository')
-  dependsOn(':redwood-tooling-lint:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-tooling-schema:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-ui-core-api:publishAllPublicationsToLocalMavenRepository')
   dependsOn(':redwood-ui-core-modifiers:publishAllPublicationsToLocalMavenRepository')
