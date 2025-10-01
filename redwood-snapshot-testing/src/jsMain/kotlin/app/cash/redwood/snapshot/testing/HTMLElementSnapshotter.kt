@@ -69,6 +69,7 @@ class HTMLElementSnapshotter(
         style.flex = "1.0"
         style.fontFamily = "Helvetica"
         style.fontSize = "17px"
+        style.height = "100%"
       }
       backgroundWrapper.appendChild(widget)
 

@@ -20,13 +20,14 @@ import kotlinx.browser.document
 import kotlinx.coroutines.await
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.get
 import org.w3c.files.Blob
 
 /**
  * A image rendering of an HTML element.
  */
 public data class DomSnapshot(
-  public val image: Blob?,
+  public val images: List<Blob?>,
   public val framedHtml: String,
 )
 
@@ -34,6 +35,7 @@ public class DomSnapshotter {
   public suspend fun snapshot(
     element: Element,
     frame: Frame,
+    scrolling: Boolean,
   ): DomSnapshot {
     require(element != document.documentElement && element.parentElement == null)
 
@@ -55,22 +57,63 @@ public class DomSnapshotter {
 
     try {
       val boundingClientRect = wrapper.getBoundingClientRect()
-      return DomSnapshot(
-        image = HtmlToImage.toBlob(
-          element = element,
+      val elementWidth = ceil(boundingClientRect.width).toInt() - (2 * framingBorderSize)
+      val elementHeight = ceil(boundingClientRect.height).toInt() - (2 * framingBorderSize)
+
+      suspend fun captureImage(): Blob? {
+        return html2canvas(
+          element = element as HTMLElement,
           options = Options().apply {
-            this.width = ceil(boundingClientRect.width).toInt() - (2 * framingBorderSize)
-            this.height = ceil(boundingClientRect.height).toInt() - (2 * framingBorderSize)
-            this.canvasWidth = this.width
-            this.canvasHeight = this.height
-            this.pixelRatio = frame.pixelRatio
+            this.backgroundColor = null
+            this.width = elementWidth
+            this.height = elementHeight
+            this.windowWidth = this.width
+            this.windowHeight = this.height
+            this.scale = frame.pixelRatio
           },
-        ).await(),
+        ).await()?.encodeImage()
+      }
+
+      val images = buildList {
+        if (!scrolling) {
+          add(captureImage())
+        } else {
+          // Handle scrollable content.
+          val scrollableElement = findScrollableElement(element)
+            ?: throw IllegalStateException("No scrollable element found")
+
+          // Calculate total number of pages needed.
+          val totalPages =
+            ceil(scrollableElement.scrollHeight.toDouble() / scrollableElement.clientHeight).toInt()
+
+          for (page in 0 until totalPages) {
+            scrollableElement.scrollTop = page * scrollableElement.clientHeight.toDouble()
+            add(captureImage())
+          }
+        }
+      }
+
+      return DomSnapshot(
+        images = images,
         framedHtml = wrapper.outerHTML,
       )
     } finally {
       document.documentElement!!.removeChild(wrapper)
       wrapper.removeChild(element)
     }
+  }
+
+  private fun findScrollableElement(element: Element): HTMLElement? {
+    val elements = element.getElementsByTagName("div")
+    for (i in 0 until elements.length) {
+      val div = elements.get(i) as? HTMLElement ?: continue
+      val style = kotlinx.browser.window.getComputedStyle(div)
+      if (style.overflowY == "scroll" || style.overflowY == "auto") {
+        if (div.scrollHeight > div.clientHeight) {
+          return div
+        }
+      }
+    }
+    return null
   }
 }

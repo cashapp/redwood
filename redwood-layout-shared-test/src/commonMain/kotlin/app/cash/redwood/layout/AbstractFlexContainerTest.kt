@@ -987,7 +987,7 @@ abstract class AbstractFlexContainerTest<T : Any> {
 
     val scrollWrapper = widgetFactory.scrollWrapper()
     scrollWrapper.content = fullWidthParent.value
-    snapshotterFactory(scrollWrapper.value).snapshot(scrolling = true)
+    snapshotterFactory(scrollWrapper.value).snapshot(scrolling = false)
   }
 
   @Test fun testIntrinsicContentSizeWhenSubviewsRequireScrolling() = runTest {

@@ -29,16 +29,16 @@ final class app.cash.redwood.dom.testing/DiffResult { // app.cash.redwood.dom.te
 }
 
 final class app.cash.redwood.dom.testing/DomSnapshot { // app.cash.redwood.dom.testing/DomSnapshot|null[0]
-    constructor <init>(org.w3c.files/Blob?, kotlin/String) // app.cash.redwood.dom.testing/DomSnapshot.<init>|<init>(org.w3c.files.Blob?;kotlin.String){}[0]
+    constructor <init>(kotlin.collections/List<org.w3c.files/Blob?>, kotlin/String) // app.cash.redwood.dom.testing/DomSnapshot.<init>|<init>(kotlin.collections.List<org.w3c.files.Blob?>;kotlin.String){}[0]
 
     final val framedHtml // app.cash.redwood.dom.testing/DomSnapshot.framedHtml|{}framedHtml[0]
         final fun <get-framedHtml>(): kotlin/String // app.cash.redwood.dom.testing/DomSnapshot.framedHtml.<get-framedHtml>|<get-framedHtml>(){}[0]
-    final val image // app.cash.redwood.dom.testing/DomSnapshot.image|{}image[0]
-        final fun <get-image>(): org.w3c.files/Blob? // app.cash.redwood.dom.testing/DomSnapshot.image.<get-image>|<get-image>(){}[0]
+    final val images // app.cash.redwood.dom.testing/DomSnapshot.images|{}images[0]
+        final fun <get-images>(): kotlin.collections/List<org.w3c.files/Blob?> // app.cash.redwood.dom.testing/DomSnapshot.images.<get-images>|<get-images>(){}[0]
 
-    final fun component1(): org.w3c.files/Blob? // app.cash.redwood.dom.testing/DomSnapshot.component1|component1(){}[0]
+    final fun component1(): kotlin.collections/List<org.w3c.files/Blob?> // app.cash.redwood.dom.testing/DomSnapshot.component1|component1(){}[0]
     final fun component2(): kotlin/String // app.cash.redwood.dom.testing/DomSnapshot.component2|component2(){}[0]
-    final fun copy(org.w3c.files/Blob? = ..., kotlin/String = ...): app.cash.redwood.dom.testing/DomSnapshot // app.cash.redwood.dom.testing/DomSnapshot.copy|copy(org.w3c.files.Blob?;kotlin.String){}[0]
+    final fun copy(kotlin.collections/List<org.w3c.files/Blob?> = ..., kotlin/String = ...): app.cash.redwood.dom.testing/DomSnapshot // app.cash.redwood.dom.testing/DomSnapshot.copy|copy(kotlin.collections.List<org.w3c.files.Blob?>;kotlin.String){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // app.cash.redwood.dom.testing/DomSnapshot.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // app.cash.redwood.dom.testing/DomSnapshot.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // app.cash.redwood.dom.testing/DomSnapshot.toString|toString(){}[0]
@@ -47,7 +47,7 @@ final class app.cash.redwood.dom.testing/DomSnapshot { // app.cash.redwood.dom.t
 final class app.cash.redwood.dom.testing/DomSnapshotter { // app.cash.redwood.dom.testing/DomSnapshotter|null[0]
     constructor <init>() // app.cash.redwood.dom.testing/DomSnapshotter.<init>|<init>(){}[0]
 
-    final suspend fun snapshot(org.w3c.dom/Element, app.cash.redwood.dom.testing/Frame): app.cash.redwood.dom.testing/DomSnapshot // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;app.cash.redwood.dom.testing.Frame){}[0]
+    final suspend fun snapshot(org.w3c.dom/Element, app.cash.redwood.dom.testing/Frame, kotlin/Boolean): app.cash.redwood.dom.testing/DomSnapshot // app.cash.redwood.dom.testing/DomSnapshotter.snapshot|snapshot(org.w3c.dom.Element;app.cash.redwood.dom.testing.Frame;kotlin.Boolean){}[0]
 }
 
 final class app.cash.redwood.dom.testing/Frame { // app.cash.redwood.dom.testing/Frame|null[0]

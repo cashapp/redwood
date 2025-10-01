@@ -17,48 +17,38 @@ package app.cash.redwood.dom.testing
 
 import kotlin.js.Promise
 import org.w3c.dom.Element
-import org.w3c.files.Blob
+import org.w3c.dom.HTMLCanvasElement
 
 /**
- * Kotlin bridge into the html-to-image library. This API is incomplete and includes only the
+ * Kotlin bridge into the html2canvas library. This API is incomplete and includes only the
  * features we need for snapshot testing.
  *
- * https://github.com/bubkoo/html-to-image
+ * https://github.com/niklasvh/html2canvas
  */
-@JsModule("html-to-image")
+@JsModule("html2canvas")
 @JsNonModule
-internal external object HtmlToImage {
-  fun toBlob(
-    element: Element,
-    options: Options = definedExternally,
-  ): Promise<Blob?>
-
-  fun toPng(
-    element: Element,
-    options: Options = definedExternally,
-  ): Promise<String?>
-}
+internal external fun html2canvas(
+  element: Element,
+  options: Options = definedExternally,
+): Promise<HTMLCanvasElement?>
 
 internal external interface Options {
-  /** A string value for the background color, any valid CSS color value. */
-  var backgroundColor: String
+  /** Canvas background color, null for transparent. */
+  var backgroundColor: String?
 
   /** Width and height in pixels to be applied to node before rendering. */
   var width: Int
   var height: Int
 
-  /**
-   * Allows to scale the canva's size including the elements inside to a given width and
-   * height (in pixels). style
-   */
-  var canvasWidth: Int
-  var canvasHeight: Int
+  /** Window width and height in pixels to use when rendering the element. */
+  var windowWidth: Int
+  var windowHeight: Int
 
   /**
    * The pixel ratio of the captured image. Default use the actual pixel ratio of the device.
    * Set 1 to use as initial-scale 1 for the image.
    */
-  var pixelRatio: Double
+  var scale: Double
 }
 
 internal fun Options(): Options = js("{}")

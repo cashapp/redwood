@@ -14,7 +14,7 @@ kotlin {
       dependencies {
         implementation libs.kotlinx.coroutines.core
         implementation libs.okio
-        implementation npm("html-to-image", "1.11.13")
+        implementation npm("html2canvas", "1.4.1")
       }
     }
     commonTest {
