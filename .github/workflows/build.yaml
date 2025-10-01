@@ -22,7 +22,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./scripts/enforce_git_lfs.sh
 
@@ -49,7 +49,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - run: >
           ./gradlew
           -PredwoodNoApps
@@ -64,7 +64,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - run: >
           ./gradlew
           -PredwoodNoApps
@@ -82,7 +82,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - run: >
           ./gradlew
           -PredwoodNoApps
@@ -103,7 +103,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -119,7 +119,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew dokkaHtmlMultiModule
 
@@ -141,7 +141,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew verifyPaparazzi
 
@@ -174,7 +174,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       # Run the tests that transitively depend on :test-app if it's available.
       - run: ./gradlew :redwood-treehouse-host:check
@@ -187,7 +187,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew -p samples/counter build
 
@@ -212,7 +212,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -228,7 +228,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew -p samples/emoji-search build
 
@@ -269,7 +269,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew -p test-app build
 
@@ -323,7 +323,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew publishToMavenCentral
         env:
