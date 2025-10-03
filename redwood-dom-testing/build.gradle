@@ -15,6 +15,7 @@ kotlin {
         implementation libs.kotlinx.coroutines.core
         implementation libs.okio
         implementation npm("html2canvas", "1.4.1")
+        implementation projects.redwoodSnapshotTesting
       }
     }
     commonTest {

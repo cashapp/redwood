@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.dom.testing
 
+import app.cash.redwood.snapshot.testing.Frame
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test

@@ -32,7 +32,8 @@ interface Snapshotter {
   )
 
   /** This interface extends [TestInterceptor] for platforms that need it to get test metadata. */
-  interface Factory<T : Any> : CoroutineTestInterceptor {
-    operator fun invoke(widget: T): Snapshotter
+  abstract class Factory<T : Any> : CoroutineTestInterceptor {
+    abstract val frame: Frame
+    abstract operator fun invoke(widget: T): Snapshotter
   }
 }

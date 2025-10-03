@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.dom.testing
 
+import app.cash.redwood.snapshot.testing.Frame
 import kotlin.math.ceil
 import kotlinx.browser.document
 import kotlinx.coroutines.await

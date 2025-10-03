@@ -16,7 +16,7 @@
 package app.cash.redwood.snapshot.testing
 
 import app.cash.burst.coroutines.CoroutineTestFunction
-import app.cash.redwood.dom.testing.Frame
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.dom.testing.SnapshotTester
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -52,8 +52,8 @@ class HTMLElementSnapshotter(
   }
 
   class Factory(
-    val frame: Frame,
-  ) : Snapshotter.Factory<HTMLElement> {
+    override val frame: Frame,
+  ) : Snapshotter.Factory<HTMLElement>() {
     private var testFunction: CoroutineTestFunction? = null
 
     override fun invoke(widget: HTMLElement): Snapshotter {

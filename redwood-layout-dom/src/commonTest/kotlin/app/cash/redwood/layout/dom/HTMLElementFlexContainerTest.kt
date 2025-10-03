@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.dom
 
-import app.cash.redwood.dom.testing.Frame
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.layout.AbstractFlexContainerTest
 import app.cash.redwood.layout.TestFlexContainer
 import app.cash.redwood.layout.api.Constraint

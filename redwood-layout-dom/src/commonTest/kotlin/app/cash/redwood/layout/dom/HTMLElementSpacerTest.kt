@@ -15,7 +15,7 @@
  */
 package app.cash.redwood.layout.dom
 
-import app.cash.redwood.dom.testing.Frame
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.layout.AbstractSpacerTest
 import app.cash.redwood.layout.widget.Spacer
 import app.cash.redwood.snapshot.testing.HTMLElementSnapshotter

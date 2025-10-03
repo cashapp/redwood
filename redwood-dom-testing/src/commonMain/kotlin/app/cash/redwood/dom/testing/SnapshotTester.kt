@@ -15,6 +15,7 @@
  */
 package app.cash.redwood.dom.testing
 
+import app.cash.redwood.snapshot.testing.Frame
 import org.w3c.dom.Element
 import org.w3c.files.Blob
 

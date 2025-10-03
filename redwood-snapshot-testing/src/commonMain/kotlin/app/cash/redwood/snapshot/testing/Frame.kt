@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.cash.redwood.dom.testing
+package app.cash.redwood.snapshot.testing
 
 /**
  * Configure the canvas that we will snapshot our element on.
  */
-public class Frame(
-  public val width: Int?,
-  public val height: Int?,
-  public val pixelRatio: Double,
+class Frame(
+  val width: Int?,
+  val height: Int?,
+  val pixelRatio: Double,
 ) {
-  public companion object {
-    public val None: Frame = Frame(width = null, height = null, pixelRatio = 1.0)
-    public val Iphone14: Frame = Frame(width = 390, height = 844, pixelRatio = 3.0)
+  companion object {
+    val None: Frame = Frame(width = null, height = null, pixelRatio = 1.0)
+    val Iphone14: Frame = Frame(width = 390, height = 844, pixelRatio = 2.0)
   }
 }

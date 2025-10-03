@@ -25,7 +25,6 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIColor
 import platform.UIKit.UIScrollView
 import platform.UIKit.UIView
-import platform.UIKit.UIViewNoIntrinsicMetric
 
 /**
  * Snapshot the subject on a white background.
@@ -36,8 +35,7 @@ import platform.UIKit.UIViewNoIntrinsicMetric
 class UIViewSnapshotter private constructor(
   private val callback: UIViewSnapshotCallback,
   private val subject: UIView,
-  private val widthConstraint: Constraint = Constraint.Fill,
-  private val heightConstraint: Constraint = Constraint.Fill,
+  private val frame: Frame,
 ) : Snapshotter {
 
   override suspend fun snapshot(name: String?, scrolling: Boolean) {
@@ -84,23 +82,6 @@ class UIViewSnapshotter private constructor(
 
   /** Do layout without taking a snapshot. */
   fun layoutSubject(scrolling: Boolean = false) {
-    require(widthConstraint == Constraint.Fill) {
-      "width wrap not yet implemented"
-    }
-
-    if (heightConstraint == Constraint.Wrap && !scrolling) {
-      val widget = subject.subviews[0] as UIView
-
-      widget.setFrame(CGRectMake(0.0, 0.0, 0.0, 0.0))
-      val wrapSize = widget.sizeThatFits(
-        screenSize.useContents { CGSizeMake(width, UIViewNoIntrinsicMetric) },
-      )
-
-      val frame = wrapSize.useContents { CGRectMake(0.0, 0.0, width, height) }
-      subject.setFrame(frame)
-      widget.setFrame(frame)
-    }
-
     subject.layoutIfNeeded()
   }
 
@@ -109,31 +90,33 @@ class UIViewSnapshotter private constructor(
     val widthConstraint: Constraint = Constraint.Fill,
     val heightConstraint: Constraint = Constraint.Fill,
     val framed: Boolean = true,
-  ) : Snapshotter.Factory<UIView> {
+    override val frame: Frame = Frame.Iphone14,
+  ) : Snapshotter.Factory<UIView>() {
     override fun invoke(widget: UIView): UIViewSnapshotter {
       if (!framed) {
-        return UIViewSnapshotter(callback, widget, widthConstraint, heightConstraint)
+        return UIViewSnapshotter(callback, widget, frame)
       }
 
-      val frame = UIView()
+      val subject = UIView()
         .apply {
           backgroundColor = UIColor.whiteColor
-          setFrame(screenRect)
+          setFrame(this@Factory.frame)
 
-          widget.setFrame(screenRect)
+          widget.setFrame(this@Factory.frame)
           addSubview(widget)
         }
-      return UIViewSnapshotter(callback, frame, widthConstraint, heightConstraint)
+      return UIViewSnapshotter(callback, subject, frame)
     }
 
     override suspend fun intercept(testFunction: CoroutineTestFunction) {
       testFunction()
     }
-  }
 
-  companion object {
-    private val screenSize = CGSizeMake(390.0, 844.0) // iPhone 14.
-    private val screenRect = screenSize.useContents { CGRectMake(0.0, 0.0, width, height) }
+    private fun UIView.setFrame(frame: Frame) {
+      val screenSize = CGSizeMake(frame.width!!.toDouble(), frame.height!!.toDouble())
+      val screenRect = screenSize.useContents { CGRectMake(0.0, 0.0, width, height) }
+      this.setFrame(screenRect)
+    }
   }
 
   enum class Constraint {

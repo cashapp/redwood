@@ -19,6 +19,7 @@ package app.cash.redwood.dom.testing
 
 import app.cash.burst.Burst
 import app.cash.burst.burstValues
+import app.cash.redwood.snapshot.testing.Frame
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.browser.document
