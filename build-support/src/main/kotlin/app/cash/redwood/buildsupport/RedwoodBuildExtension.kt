@@ -15,6 +15,10 @@
  */
 package app.cash.redwood.buildsupport
 
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.DeviceTestBuilder
+import com.android.build.api.variant.HasDeviceTestsBuilder
+import org.gradle.api.Project
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsTargetDsl
@@ -88,6 +92,24 @@ enum class TargetGroup {
 sealed interface TargetModifier {
   val key: Key<*>
   interface Key<V : Any>
+}
+
+enum class AndroidDeviceTests : TargetModifier {
+  Enable,
+  Disable,
+  ;
+
+  fun applyTo(project: Project) {
+    val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
+    androidComponents.beforeVariants { variant ->
+      if (variant is HasDeviceTestsBuilder) {
+        variant.deviceTests[DeviceTestBuilder.ANDROID_TEST_TYPE]?.enable = this == Enable
+      }
+    }
+  }
+
+  override val key get() = Companion
+  companion object : TargetModifier.Key<AndroidDeviceTests>
 }
 
 enum class JsTests : TargetModifier {

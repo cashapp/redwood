@@ -1,9 +1,10 @@
+import app.cash.redwood.buildsupport.AndroidDeviceTests
 import app.cash.redwood.buildsupport.JsTests
 
 import static app.cash.redwood.buildsupport.TargetGroup.CommonWithAndroid
 
 redwoodBuild {
-  targets(CommonWithAndroid + JsTests.Browser)
+  targets(CommonWithAndroid + JsTests.Browser + AndroidDeviceTests.Enable)
   publishing()
 }
 

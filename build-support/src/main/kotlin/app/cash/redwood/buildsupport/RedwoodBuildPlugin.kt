@@ -27,8 +27,9 @@ import app.cash.redwood.buildsupport.TargetGroup.ToolkitIos
 import app.cash.redwood.buildsupport.TargetGroup.TreehouseCommon
 import app.cash.redwood.buildsupport.TargetGroup.TreehouseGuest
 import app.cash.redwood.buildsupport.TargetGroup.TreehouseHost
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.AndroidComponentsExtension
-import com.android.build.gradle.BaseExtension
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import java.io.File
@@ -165,29 +166,31 @@ class RedwoodBuildPlugin : Plugin<Project> {
 
   private fun Project.configureCommonAndroid() {
     plugins.withId("com.android.base") {
-      val android = extensions.getByName("android") as BaseExtension
+      val android = extensions.getByName("android") as CommonExtension
       android.apply {
-        compileSdkVersion(35)
+        compileSdk = 35
         compileOptions {
-          it.sourceCompatibility = JavaVersion.VERSION_11
-          it.targetCompatibility = JavaVersion.VERSION_11
+          sourceCompatibility = JavaVersion.VERSION_11
+          targetCompatibility = JavaVersion.VERSION_11
         }
-        defaultConfig {
-          it.minSdk = 23
-          it.targetSdk = 33
-        }
-        lintOptions {
-          it.isCheckDependencies = true
-          it.isCheckReleaseBuilds = false // Full lint runs as part of 'build' task.
+        defaultConfig.minSdk = 23
+        lint {
+          checkDependencies = true
+          checkReleaseBuilds = false // Full lint runs as part of 'build' task.
         }
       }
     }
 
     plugins.withId("com.android.application") {
-      val android = extensions.getByName("android") as BaseExtension
-      android.packagingOptions.apply {
-        // Keep native symbols for diagnosing sample application crashes.
-        doNotStrip("**/*.so")
+      val android = extensions.getByName("android") as ApplicationExtension
+      android.apply {
+        defaultConfig {
+          targetSdk = 35
+        }
+        packaging.apply {
+          // Keep native symbols for diagnosing sample application crashes.
+          jniLibs.keepDebugSymbols.add("**/*.so")
+        }
       }
       val androidComponents = extensions.getByType(AndroidComponentsExtension::class.java)
       androidComponents.beforeVariants {
@@ -313,7 +316,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       Common -> {
         project.applyKotlinMultiplatform {
           iosTargets()
-          modifiedGroup[JsTests, NodeJs].applyTo(js())
+          js {
+            modifiedGroup[JsTests, NodeJs].applyTo(this)
+          }
           jvm()
         }
         // Needed for lint in downstream Android projects to analyze this dependency.
@@ -322,9 +327,13 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       CommonWithAndroid -> {
         project.plugins.apply("com.android.library")
         project.applyKotlinMultiplatform {
-          androidTarget().publishLibraryVariants("release")
+          androidTarget {
+            modifiedGroup[AndroidDeviceTests, AndroidDeviceTests.Disable].applyTo(project)
+          }
           iosTargets()
-          modifiedGroup[JsTests, NodeJs].applyTo(js())
+          js {
+            modifiedGroup[JsTests, NodeJs].applyTo(this)
+          }
           jvm()
         }
       }
@@ -348,6 +357,7 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       ToolkitAndroid -> {
         project.plugins.apply("com.android.library")
         project.plugins.apply("org.jetbrains.kotlin.android")
+        modifiedGroup[AndroidDeviceTests, AndroidDeviceTests.Disable].applyTo(project)
       }
       ToolkitIos -> {
         project.applyKotlinMultiplatform {
@@ -362,7 +372,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       ToolkitComposeUi -> {
         project.plugins.apply("com.android.library")
         project.applyKotlinMultiplatform {
-          androidTarget().publishLibraryVariants("release")
+          androidTarget {
+            modifiedGroup[AndroidDeviceTests, AndroidDeviceTests.Disable].applyTo(project)
+          }
           iosTargets()
           jvm()
         }
@@ -370,7 +382,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       TreehouseCommon -> {
         project.plugins.apply("com.android.library")
         project.applyKotlinMultiplatform {
-          androidTarget().publishLibraryVariants("release")
+          androidTarget {
+            modifiedGroup[AndroidDeviceTests, AndroidDeviceTests.Disable].applyTo(project)
+          }
           iosTargets()
           js().nodejs()
           jvm()
@@ -385,7 +399,9 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
       TreehouseHost -> {
         project.plugins.apply("com.android.library")
         project.applyKotlinMultiplatform {
-          androidTarget().publishLibraryVariants("release")
+          androidTarget {
+            modifiedGroup[AndroidDeviceTests, AndroidDeviceTests.Disable].applyTo(project)
+          }
           iosTargets()
           jvm()
         }

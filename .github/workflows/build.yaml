@@ -71,7 +71,6 @@ jobs:
           kotlinUpgradeYarnLock
           test
           jvmTest
-          -x testReleaseUnitTest
           -x dokkaHtml
 
   native-tests:

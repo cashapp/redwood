@@ -1,7 +1,9 @@
+import app.cash.redwood.buildsupport.AndroidDeviceTests
+
 import static app.cash.redwood.buildsupport.TargetGroup.TreehouseHost
 
 redwoodBuild {
-  targets(TreehouseHost)
+  targets(TreehouseHost + AndroidDeviceTests.Enable)
   publishing()
 }
 
