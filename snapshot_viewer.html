@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redwood Layout Test Snapshots Comparison</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      display: flex;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: 300px;
+      min-width: 200px;
+      max-width: 50vw;
+      background-color: white;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .resize-handle {
+      position: fixed;
+      top: 0;
+      left: 300px;
+      width: 8px;
+      height: 100vh;
+      background-color: transparent;
+      cursor: col-resize;
+      z-index: 10;
+      pointer-events: auto;
+    }
+
+    .resize-handle:hover {
+      background-color: #007bff;
+    }
+
+    .resize-handle.dragging {
+      background-color: #007bff;
+    }
+
+    .search-container {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      background-color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+
+
+    .test-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .test-item {
+      padding: 10px 15px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .test-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .test-item.active {
+      background-color: #e3f2fd;
+    }
+
+    .test-class {
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+
+    .test-name {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    .test-module {
+      font-size: 0.85em;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .comparison-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .platform-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .platform-label {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #2c3e50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .platform-label .image-size {
+      font-size: 0.8em;
+      color: #666;
+      font-weight: normal;
+    }
+
+    .screenshot {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: zoom-in;
+    }
+
+    .file-path {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    .image-container {
+      position: relative;
+    }
+
+    .no-image {
+      padding: 20px;
+      text-align: center;
+      background-color: #f8f9fa;
+      border: 1px dashed #dee2e6;
+      color: #6c757d;
+      border-radius: 4px;
+    }
+
+    .zoom-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .zoom-container img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .zoom-container.active {
+      display: flex;
+    }
+
+    .test-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .test-header h2 {
+      margin: 0;
+      color: #2c3e50;
+    }
+
+    .test-header .module-name {
+      font-size: 1.1em;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .scroll-selector {
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+
+    .scroll-selector-label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #495057;
+    }
+
+    .scroll-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .scroll-button {
+      padding: 6px 12px;
+      border: 1px solid #007bff;
+      background-color: white;
+      color: #007bff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.2s ease;
+    }
+
+    .scroll-button:hover {
+      background-color: #e7f3ff;
+    }
+
+    .scroll-button.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .scroll-button.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      border-color: #6c757d;
+      color: #6c757d;
+    }
+
+    .scan-button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+
+    .scan-button:hover {
+      background-color: #218838;
+    }
+
+    .scan-button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .scan-status {
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="resize-handle"></div>
+  <div class="search-container">
+    <button class="scan-button" id="scanButton">Select Redwood Directory</button>
+    <div class="scan-status" id="scanStatus">Click "Select Redwood Directory" to find snapshots</div>
+    <input type="text" id="searchInput" placeholder="Search tests...">
+  </div>
+  <div class="test-list" id="testList">
+    <!-- Test items will be populated by scanning -->
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="test-header" id="testHeader">
+    <h2>Select a test to view snapshots</h2>
+  </div>
+  <div class="comparison-container" id="comparisonContainer">
+    <div class="platform-container">
+      <div class="platform-label">ComposeUI</div>
+      <div class="image-container">
+        <div class="no-image">Select a test to view snapshots</div>
+      </div>
+    </div>
+
+    <div class="platform-container">
+      <div class="platform-label">Android</div>
+      <div class="image-container">
+        <div class="no-image">Select a test to view snapshots</div>
+      </div>
+    </div>
+
+    <div class="platform-container">
+      <div class="platform-label">iOS</div>
+      <div class="image-container">
+        <div class="no-image">Select a test to view snapshots</div>
+      </div>
+    </div>
+
+    <div class="platform-container">
+      <div class="platform-label">Web</div>
+      <div class="image-container">
+        <div class="no-image">Select a test to view snapshots</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="zoom-container" onclick="this.classList.remove('active')">
+  <img src="" alt="Zoomed Screenshot">
+</div>
+
+<script>
+  // ============================================================================
+  // CONSTANTS & CONFIGURATION
+  // ============================================================================
+
+  const PLATFORMS = ['composeui', 'android', 'ios', 'web'];
+  const DEFAULT_SCROLL_INDEX = 'null';
+
+  const PLATFORM_PATTERNS = {
+    web: /(?<module_name>redwood-[^/]*?)-dom\/src\/test\/snapshots\/[^/]+\/Abstract(?<class_name>[^/]+)Test\/(?<method_name>.+?)(?:_(?<scroll_index>\d+))?\.png$/,
+    ios: /(?<module_name>redwood-[^/]*?)-uiview(?:-[^/]+)?\/[^/]+\/__Snapshots__\/UIView(?<class_name>[^/]+)TestHost\/(?<method_name>[^/]+?)(?:\.1|\.?_(?<scroll_index>\d+))?\.png$/,
+    android: /(?<module_name>redwood-[^/]*?)-view(?:-[^/]+)?\/src\/test\/snapshots\/images\/[^_]+_View(?<class_name>[^_]+)Test_(?<method_name>[^_]+(?:_[^_]+)*)(?:__?(?<scroll_index>\d+))?\.png$/,
+    composeui: /(?<module_name>redwood-[^/]*?)-composeui\/src\/test\/snapshots\/images\/[^_]+_ComposeUi(?<class_name>[^_]+)Test_(?<method_name>[^_]+(?:_[^_]+)*)(?:__?(?<scroll_index>\d+))?\.png$/
+  };
+
+  const UI_TEXT = {
+    BUTTON_SELECT: 'Select Redwood Directory',
+    BUTTON_SCANNING: 'Scanning...',
+    BUTTON_RESCAN: 'Rescan Directory',
+    STATUS_INITIAL: 'Click "Select Redwood Directory" to find snapshots',
+    STATUS_REQUESTING: 'Requesting directory access...',
+    STATUS_SCANNING: 'Scanning for snapshots...',
+    STATUS_ERROR: 'Error: Directory access denied or not supported',
+    EMPTY_STATE: 'Click "Select Redwood Directory" above to find snapshots'
+  };
+
+  // ============================================================================
+  // GLOBAL STATE
+  // ============================================================================
+
+  let snapshotData = [];
+  let currentTest = null;
+  let currentScrollIndex = DEFAULT_SCROLL_INDEX;
+
+  // ============================================================================
+  // UTILITY FUNCTIONS
+  // ============================================================================
+
+  function normalizeMethodName(methodName) {
+    return methodName.toLowerCase().replace(/\./g, '_');
+  }
+
+  function formatPlatformName(platform) {
+    return platform === 'composeui' ? 'ComposeUI' :
+           platform.charAt(0).toUpperCase() + platform.slice(1);
+  }
+
+  // ============================================================================
+  // DIRECTORY SCANNING
+  // ============================================================================
+
+  async function scanDirectoryForSnapshots() {
+    const scanButton = document.getElementById('scanButton');
+    const scanStatus = document.getElementById('scanStatus');
+
+    try {
+      updateScanUI(scanButton, scanStatus, UI_TEXT.BUTTON_SCANNING, UI_TEXT.STATUS_REQUESTING, true);
+
+      const dirHandle = await window.showDirectoryPicker();
+      scanStatus.textContent = UI_TEXT.STATUS_SCANNING;
+
+      const snapshots = {};
+      await scanDirectory(dirHandle, '', snapshots);
+
+      const snapshotList = convertToListFormat(snapshots);
+      sortSnapshots(snapshotList);
+
+      updateSnapshotData(snapshotList);
+      updateScanUI(scanButton, scanStatus, UI_TEXT.BUTTON_RESCAN, `Found ${snapshotList.length} snapshot tests`, false);
+
+    } catch (error) {
+      console.error('Error scanning directory:', error);
+      updateScanUI(scanButton, scanStatus, UI_TEXT.BUTTON_SELECT, UI_TEXT.STATUS_ERROR, false);
+    }
+  }
+
+  function updateScanUI(button, status, buttonText, statusText, disabled) {
+    button.disabled = disabled;
+    button.textContent = buttonText;
+    status.textContent = statusText;
+  }
+
+  function sortSnapshots(snapshotList) {
+    snapshotList.sort((a, b) => {
+      const moduleCompare = a.module.localeCompare(b.module);
+      if (moduleCompare !== 0) return moduleCompare;
+
+      const classCompare = a.class.localeCompare(b.class);
+      if (classCompare !== 0) return classCompare;
+
+      return normalizeMethodName(a.method).localeCompare(normalizeMethodName(b.method));
+    });
+  }
+
+  function updateSnapshotData(snapshotList) {
+    snapshotData = snapshotList;
+    displayTests(snapshotData);
+    setupTestEventHandlers();
+  }
+
+  async function scanDirectory(dirHandle, relativePath, snapshots) {
+    for await (const [name, handle] of dirHandle.entries()) {
+      const currentPath = relativePath ? `${relativePath}/${name}` : name;
+
+      if (handle.kind === 'directory') {
+        await scanDirectory(handle, currentPath, snapshots);
+      } else if (name.endsWith('.png')) {
+        processSnapshotFile(currentPath, snapshots);
+      }
+    }
+  }
+
+  function processSnapshotFile(filePath, snapshots) {
+    for (const [platform, pattern] of Object.entries(PLATFORM_PATTERNS)) {
+      const match = filePath.match(pattern);
+      if (match) {
+        addSnapshotToCollection(match.groups, platform, filePath, snapshots);
+        break;
+      }
+    }
+  }
+
+  function addSnapshotToCollection(groups, platform, filePath, snapshots) {
+    const { module_name: moduleName, class_name: className, method_name: methodName, scroll_index: scrollIndex } = groups;
+    const normalizedMethod = normalizeMethodName(methodName);
+    const scrollKey = scrollIndex || DEFAULT_SCROLL_INDEX;
+
+    // Initialize nested structure
+    ensureNestedStructure(snapshots, moduleName, className, normalizedMethod, methodName, platform);
+
+    // Store the snapshot path
+    snapshots[moduleName][className][normalizedMethod].paths[platform][scrollKey] = filePath;
+  }
+
+  function ensureNestedStructure(snapshots, moduleName, className, normalizedMethod, originalMethod, platform) {
+    if (!snapshots[moduleName]) {
+      snapshots[moduleName] = {};
+    }
+    if (!snapshots[moduleName][className]) {
+      snapshots[moduleName][className] = {};
+    }
+    if (!snapshots[moduleName][className][normalizedMethod]) {
+      snapshots[moduleName][className][normalizedMethod] = {
+        original_method: originalMethod,
+        paths: {}
+      };
+    }
+    if (!snapshots[moduleName][className][normalizedMethod].paths[platform]) {
+      snapshots[moduleName][className][normalizedMethod].paths[platform] = {};
+    }
+  }
+
+  function convertToListFormat(snapshots) {
+    const result = [];
+
+    for (const [moduleName, classes] of Object.entries(snapshots)) {
+      for (const [className, methods] of Object.entries(classes)) {
+        for (const [normalizedMethod, data] of Object.entries(methods)) {
+          result.push({
+            module: moduleName,
+            class: className,
+            method: data.original_method,
+            paths: data.paths
+          });
+        }
+      }
+    }
+
+    return result;
+  }
+
+  // ============================================================================
+  // UI DISPLAY FUNCTIONS
+  // ============================================================================
+
+  function initializeEmptyState() {
+    snapshotData = [];
+    displayTests(snapshotData);
+    setupEventHandlers();
+    showEmptyState();
+  }
+
+  function showEmptyState() {
+    const emptyMessage = `<div class="test-item" style="text-align: center; color: #666; font-style: italic;">${UI_TEXT.EMPTY_STATE}</div>`;
+    document.getElementById('testList').innerHTML = emptyMessage;
+  }
+
+  function displayTests(tests) {
+    const testList = document.getElementById('testList');
+    testList.innerHTML = tests.map((test, index) =>
+      `<div class="test-item" data-index="${index}">
+        <div class="test-module">${test.module}/${test.class}</div>
+        <div class="test-name">${test.method}</div>
+      </div>`
+    ).join('');
+  }
+
+  function applyFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const testItems = document.querySelectorAll('.test-item');
+
+    testItems.forEach(item => {
+      const index = parseInt(item.dataset.index);
+      const test = snapshotData[index];
+
+      const matchesSearch = !searchTerm ||
+        test.class.toLowerCase().includes(searchTerm) ||
+        test.method.toLowerCase().includes(searchTerm) ||
+        test.module.toLowerCase().includes(searchTerm);
+
+      item.style.display = matchesSearch ? 'block' : 'none';
+    });
+  }
+
+  // ============================================================================
+  // EVENT HANDLERS
+  // ============================================================================
+
+  function setupEventHandlers() {
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('scanButton').addEventListener('click', scanDirectoryForSnapshots);
+    setupTestEventHandlers();
+    setupSidebarResize();
+  }
+
+  function setupTestEventHandlers() {
+    document.querySelectorAll('.test-item').forEach(item => {
+      item.addEventListener('click', () => handleTestSelection(item));
+    });
+  }
+
+  function handleTestSelection(selectedItem) {
+    // Update active state
+    document.querySelectorAll('.test-item').forEach(item => item.classList.remove('active'));
+    selectedItem.classList.add('active');
+
+    // Display test
+    const index = parseInt(selectedItem.dataset.index);
+    currentTest = snapshotData[index];
+    currentScrollIndex = DEFAULT_SCROLL_INDEX;
+
+    updateTestHeader(currentTest);
+    displayScrollSelector(currentTest);
+    displaySnapshots(currentTest, currentScrollIndex);
+  }
+
+  function setupSidebarResize() {
+    const sidebar = document.querySelector('.sidebar');
+    const resizeHandle = document.querySelector('.resize-handle');
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      resizeHandle.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+
+      // Prevent text selection during resize
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing) return;
+
+      const newWidth = e.clientX;
+      const minWidth = parseInt(getComputedStyle(sidebar).minWidth);
+      const maxWidth = parseInt(getComputedStyle(sidebar).maxWidth);
+
+      if (newWidth >= minWidth && newWidth <= maxWidth) {
+        sidebar.style.width = newWidth + 'px';
+        resizeHandle.style.left = newWidth + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isResizing) {
+        isResizing = false;
+        resizeHandle.classList.remove('dragging');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      }
+    });
+
+    // Handle double-click to reset to default width
+    resizeHandle.addEventListener('dblclick', () => {
+      sidebar.style.width = '300px';
+      resizeHandle.style.left = '300px';
+    });
+  }
+
+  function updateTestHeader(test) {
+    const header = document.getElementById('testHeader');
+    header.innerHTML = `
+      <h2>${test.method}</h2>
+      <div class="module-name">${test.module}/${test.class}</div>
+    `;
+  }
+
+  function displayScrollSelector(test) {
+    const header = document.getElementById('testHeader');
+
+    // Get all available scroll indices for this test
+    const scrollIndices = new Set();
+    Object.values(test.paths).forEach(platformPaths => {
+      Object.keys(platformPaths).forEach(scrollIndex => {
+        scrollIndices.add(scrollIndex);
+      });
+    });
+
+    const sortedScrollIndices = Array.from(scrollIndices).sort((a, b) => {
+      if (a === 'null' && b !== 'null') return -1;
+      if (a !== 'null' && b === 'null') return 1;
+      if (a === 'null' && b === 'null') return 0;
+      return parseInt(a) - parseInt(b);
+    });
+
+    if (sortedScrollIndices.length > 1) {
+      const scrollSelectorHTML = `
+        <div class="scroll-selector">
+          <div class="scroll-selector-label">Scroll Position:</div>
+          <div class="scroll-buttons">
+            ${sortedScrollIndices.map(scrollIndex => `
+              <button class="scroll-button ${scrollIndex === currentScrollIndex ? 'active' : ''}"
+                      data-scroll-index="${scrollIndex}">
+                ${scrollIndex === 'null' ? 'Default' : `Scroll ${scrollIndex}`}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      header.innerHTML += scrollSelectorHTML;
+
+      // Add event listeners to scroll buttons
+      document.querySelectorAll('.scroll-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const newScrollIndex = button.dataset.scrollIndex;
+          currentScrollIndex = newScrollIndex;
+
+          // Update button states
+          document.querySelectorAll('.scroll-button').forEach(btn => {
+            btn.classList.remove('active');
+          });
+          button.classList.add('active');
+
+          // Update snapshots
+          displaySnapshots(currentTest, currentScrollIndex);
+        });
+      });
+    }
+  }
+
+  function displaySnapshots(test, scrollIndex) {
+    const container = document.getElementById('comparisonContainer');
+    container.innerHTML = PLATFORMS.map(platform => createPlatformContainer(test, platform, scrollIndex)).join('');
+    setupImageInteractions();
+  }
+
+  function createPlatformContainer(test, platform, scrollIndex) {
+    const platformPaths = test.paths[platform];
+    const path = platformPaths ? platformPaths[scrollIndex] : null;
+    const displayName = formatPlatformName(platform);
+
+    return `
+      <div class="platform-container">
+        <div class="platform-label">
+          ${displayName}
+          <span class="image-size"></span>
+        </div>
+        <div class="image-container">
+          ${path ? createImageHTML(path, platform) : '<div class="no-image">No snapshot available</div>'}
+        </div>
+      </div>
+    `;
+  }
+
+  function createImageHTML(path, platform) {
+    return `
+      <img class="screenshot" src="${path}" alt="${platform} Screenshot">
+      <div class="file-path">Path: ${path}</div>
+    `;
+  }
+
+  function setupImageInteractions() {
+    document.querySelectorAll('.screenshot').forEach(img => {
+      img.addEventListener('click', () => showZoomedImage(img.src));
+      img.addEventListener('load', () => updateImageSize(img));
+    });
+  }
+
+  function showZoomedImage(imageSrc) {
+    const zoomContainer = document.querySelector('.zoom-container');
+    const zoomImg = zoomContainer.querySelector('img');
+    zoomImg.src = imageSrc;
+    zoomContainer.classList.add('active');
+  }
+
+  function updateImageSize(img) {
+    const sizeSpan = img.closest('.platform-container').querySelector('.image-size');
+    sizeSpan.textContent = `${img.naturalWidth} × ${img.naturalHeight}`;
+  }
+
+  // ============================================================================
+  // INITIALIZATION
+  // ============================================================================
+
+  // Initialize the page
+  initializeEmptyState();
+</script>
+</body>
+</html>
