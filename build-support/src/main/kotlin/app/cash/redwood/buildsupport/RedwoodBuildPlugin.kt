@@ -57,7 +57,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
@@ -512,10 +512,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
     if (!isBom) {
       project.plugins.apply("org.jetbrains.dokka")
 
-      // DokkaTaskPartial configures subprojects for multimodule docs
-      // All options: https://kotlinlang.org/docs/dokka-gradle.html#configuration-options
-      project.tasks.withType(DokkaTaskPartial::class.java) { task ->
-        task.dokkaSourceSets.configureEach {
+      // Add to multi-module documentation generation at root.
+      project.rootProject.dependencies.add("dokka", project)
+
+      project.extensions.getByType(DokkaExtension::class.java).apply {
+        dokkaSourceSets.configureEach {
           it.suppressGeneratedFiles.set(false) // document generated code
         }
       }
