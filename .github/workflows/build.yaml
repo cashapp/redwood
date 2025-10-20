@@ -71,7 +71,7 @@ jobs:
           kotlinUpgradeYarnLock
           test
           jvmTest
-          -x dokkaHtml
+          -x dokkaGeneratePublicationHtml
 
   native-tests:
     runs-on: macos-latest
@@ -120,14 +120,14 @@ jobs:
           java-version-file: .github/workflows/.java-version
       - uses: gradle/actions/setup-gradle@v5
 
-      - run: ./gradlew dokkaHtmlMultiModule
+      - run: ./gradlew dokkaGenerate
 
       # If we're on the integration branch, save the site to deploy from the publish job.
       - uses: actions/upload-artifact@v4
         if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'cashapp/redwood' }}
         with:
           name: site
-          path: build/dokka/htmlMultiModule/
+          path: build/dokka/html/
           if-no-files-found: error
 
   screenshot-tests:
