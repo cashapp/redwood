@@ -98,10 +98,8 @@ android {
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
   }
 
-  buildFeatures {
-    // Needed for unit tests which use ViewCompat whose static fields reference `R.id`s.
-    androidResources = true
-  }
+  // Needed for unit tests which use ViewCompat whose static fields reference `R.id`s.
+  androidResources.enable = true
 }
 
 // TreehouseTester expects to load our test application.

@@ -34,10 +34,8 @@ kotlin {
 android {
   namespace = 'app.cash.redwood.layout.composeui'
 
-  buildFeatures {
-    // For Paparazzi, which internally uses resources to set itself up.
-    androidResources = true
-  }
+  // For Paparazzi, which internally uses resources to set itself up.
+  androidResources.enable = true
 }
 
 afterEvaluate {

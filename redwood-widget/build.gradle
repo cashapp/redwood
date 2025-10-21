@@ -41,10 +41,8 @@ kotlin {
 android {
   namespace = 'app.cash.redwood.widget'
 
-  buildFeatures {
-    // Has default ID for RedwoodLayout.
-    androidResources = true
-  }
+  // Has default ID for RedwoodLayout.
+  androidResources.enable = true
 }
 
 spotless {

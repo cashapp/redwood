@@ -17,8 +17,6 @@ dependencies {
 android {
   namespace = 'app.cash.redwood.widget.view'
 
-  buildFeatures {
-    // For Paparazzi, which internally uses resources to set itself up.
-    androidResources = true
-  }
+  // For Paparazzi, which internally uses resources to set itself up.
+  androidResources.enable = true
 }
