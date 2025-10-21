@@ -1,7 +1,7 @@
-import static app.cash.redwood.buildsupport.TargetGroup.Common
+import static app.cash.redwood.buildsupport.TargetGroup.ToolkitComposeUi
 
 redwoodBuild {
-  targets(Common)
+  targets(ToolkitComposeUi)
   publishing()
 }
 
@@ -22,5 +22,13 @@ kotlin {
         implementation projects.redwoodWidgetTesting
       }
     }
+  }
+}
+
+android {
+  namespace = 'app.cash.redwood.widget.composeui'
+
+  testOptions {
+    unitTests.returnDefaultValues = true
   }
 }
