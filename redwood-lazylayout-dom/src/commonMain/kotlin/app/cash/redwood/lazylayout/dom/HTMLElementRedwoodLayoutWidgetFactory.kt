@@ -26,6 +26,5 @@ public class HTMLElementRedwoodLazyLayoutWidgetFactory(
 ) : RedwoodLazyLayoutWidgetFactory<HTMLElement> {
   override fun LazyList(): LazyList<HTMLElement> = HTMLLazyList(document)
 
-  override fun RefreshableLazyList(): RefreshableLazyList<HTMLElement> =
-    HTMLRefreshableLazyList(document)
+  override fun RefreshableLazyList(): RefreshableLazyList<HTMLElement> = HTMLRefreshableLazyList(document)
 }

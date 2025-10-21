@@ -25,10 +25,9 @@ import app.cash.redwood.ui.OnBackPressedDispatcher
 internal actual fun platformOnBackPressedDispatcher(): OnBackPressedDispatcher {
   return remember {
     object : OnBackPressedDispatcher {
-      override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable =
-        object : Cancellable {
-          override fun cancel() = Unit
-        }
+      override fun addCallback(onBackPressedCallback: OnBackPressedCallback): Cancellable = object : Cancellable {
+        override fun cancel() = Unit
+      }
     }
   }
 }

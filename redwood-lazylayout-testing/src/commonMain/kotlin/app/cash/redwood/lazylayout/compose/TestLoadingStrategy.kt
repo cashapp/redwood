@@ -43,6 +43,5 @@ public class TestLoadingStrategy : LoadingStrategy {
     loadRange = firstVisibleIndex..lastVisibleIndex
   }
 
-  override fun loadRange(itemCount: Int): IntRange =
-    loadRange.first.coerceIn(0, itemCount - 1)..loadRange.last.coerceIn(0, itemCount - 1)
+  override fun loadRange(itemCount: Int): IntRange = loadRange.first.coerceIn(0, itemCount - 1)..loadRange.last.coerceIn(0, itemCount - 1)
 }

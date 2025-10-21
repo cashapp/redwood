@@ -29,8 +29,7 @@ class HTMLElementSpacerTest : AbstractSpacerTest<HTMLElement>() {
 
   override val snapshotterFactory = HTMLElementSnapshotter.Factory(Frame.None)
 
-  override fun widget(): Spacer<HTMLElement> =
-    HTMLElementRedwoodLayoutWidgetFactory(document).Spacer()
+  override fun widget(): Spacer<HTMLElement> = HTMLElementRedwoodLayoutWidgetFactory(document).Spacer()
 
   override fun wrap(widget: Widget<HTMLElement>, horizontal: Boolean): HTMLElement {
     return (document.createElement("div") as HTMLDivElement)

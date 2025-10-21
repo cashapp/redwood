@@ -114,10 +114,9 @@ internal object JvmHeap : Heap {
    * Returns true if this package is a descendant of any prefix. For example, the descendants of
    * 'kotlin' are 'kotlin.collections' and 'kotlin' itself, but not 'kotlinx.coroutines'.
    */
-  private fun String.isDescendant(vararg prefixes: String) =
-    prefixes.any { prefix ->
-      startsWith(prefix) && (length == prefix.length || this[prefix.length] == '.')
-    }
+  private fun String.isDescendant(vararg prefixes: String) = prefixes.any { prefix ->
+    startsWith(prefix) && (length == prefix.length || this[prefix.length] == '.')
+  }
 
   private fun fields(type: Class<*>): List<Field> {
     return classToFields.getOrPut(type) {

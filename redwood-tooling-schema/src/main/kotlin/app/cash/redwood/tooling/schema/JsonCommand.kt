@@ -24,8 +24,7 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
 internal class JsonCommand : AbstractSchemaCommand("json") {
-  override fun help(context: Context) =
-    "Parse schema members into a JSON representation"
+  override fun help(context: Context) = "Parse schema members into a JSON representation"
 
   private val out by option().path().required()
     .help("Directory into which JSON is written")

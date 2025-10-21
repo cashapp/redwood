@@ -21,6 +21,5 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 
 @AutoService(SymbolProcessorProvider::class)
 class RedwoodSymbolProcessorProvider : SymbolProcessorProvider {
-  override fun create(environment: SymbolProcessorEnvironment) =
-    RedwoodSymbolProcessor(environment)
+  override fun create(environment: SymbolProcessorEnvironment) = RedwoodSymbolProcessor(environment)
 }

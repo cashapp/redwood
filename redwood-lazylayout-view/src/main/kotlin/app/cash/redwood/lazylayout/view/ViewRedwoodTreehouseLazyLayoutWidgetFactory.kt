@@ -26,6 +26,5 @@ public class ViewRedwoodLazyLayoutWidgetFactory(
 ) : RedwoodLazyLayoutWidgetFactory<View> {
   public override fun LazyList(): LazyList<View> = ViewLazyList(context)
 
-  public override fun RefreshableLazyList(): RefreshableLazyList<View> =
-    ViewRefreshableLazyList(context)
+  public override fun RefreshableLazyList(): RefreshableLazyList<View> = ViewRefreshableLazyList(context)
 }

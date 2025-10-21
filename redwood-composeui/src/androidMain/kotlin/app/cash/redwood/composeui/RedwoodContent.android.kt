@@ -45,9 +45,8 @@ internal actual fun platformOnBackPressedDispatcher(): RedwoodOnBackPressedDispa
   }
 }
 
-private fun RedwoodOnBackPressedCallback.toAndroid(): AndroidOnBackPressedCallback =
-  object : AndroidOnBackPressedCallback(this@toAndroid.isEnabled) {
-    override fun handleOnBackPressed() {
-      this@toAndroid.handleOnBackPressed()
-    }
+private fun RedwoodOnBackPressedCallback.toAndroid(): AndroidOnBackPressedCallback = object : AndroidOnBackPressedCallback(this@toAndroid.isEnabled) {
+  override fun handleOnBackPressed() {
+    this@toAndroid.handleOnBackPressed()
   }
+}

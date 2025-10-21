@@ -58,8 +58,7 @@ internal class FakeAppService private constructor(
    * This awkward pattern emulates `ZiplineScope`, which also only tracks objects on the scoped
    * wrapper.
    */
-  fun withListener(listener: Listener) =
-    FakeAppService(name, json, eventLog, listeners + listener, mutableUis)
+  fun withListener(listener: Listener) = FakeAppService(name, json, eventLog, listeners + listener, mutableUis)
 
   fun newUi(): ZiplineTreehouseUi {
     val result = FakeZiplineTreehouseUi("$name.uis[${mutableUis.size}]", json, eventLog)

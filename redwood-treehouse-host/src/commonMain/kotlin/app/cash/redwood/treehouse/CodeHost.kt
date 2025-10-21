@@ -154,8 +154,7 @@ internal abstract class CodeHost<A : AppService>(
     eventListenerFactory = null // Break a reference cycle.
   }
 
-  private fun newCodeUpdatesScope() =
-    CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
+  private fun newCodeUpdatesScope() = CoroutineScope(SupervisorJob(appScope.coroutineContext.job))
 
   private fun CoroutineScope.collectCodeUpdates(eventListenerFactory: EventListener.Factory) {
     launch(dispatchers.zipline) {

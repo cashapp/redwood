@@ -27,23 +27,19 @@ import org.w3c.dom.HTMLElement
 public class HTMLElementRedwoodLayoutWidgetFactory(
   private val document: Document,
 ) : RedwoodLayoutWidgetFactory<HTMLElement> {
-  override fun Box(): Box<HTMLElement> =
-    HTMLElementBox(value = document.createElement("div") as HTMLDivElement)
+  override fun Box(): Box<HTMLElement> = HTMLElementBox(value = document.createElement("div") as HTMLDivElement)
 
-  override fun Column(): Column<HTMLElement> =
-    HTMLFlexContainer(
-      value = document.createElement("div") as HTMLDivElement,
-      direction = "column",
-      overflowSetter = { overflowY = it },
-    )
+  override fun Column(): Column<HTMLElement> = HTMLFlexContainer(
+    value = document.createElement("div") as HTMLDivElement,
+    direction = "column",
+    overflowSetter = { overflowY = it },
+  )
 
-  override fun Row(): Row<HTMLElement> =
-    HTMLFlexContainer(
-      value = document.createElement("div") as HTMLDivElement,
-      direction = "row",
-      overflowSetter = { overflowX = it },
-    )
+  override fun Row(): Row<HTMLElement> = HTMLFlexContainer(
+    value = document.createElement("div") as HTMLDivElement,
+    direction = "row",
+    overflowSetter = { overflowX = it },
+  )
 
-  override fun Spacer(): Spacer<HTMLElement> =
-    HTMLSpacer(document.createElement("div") as HTMLDivElement)
+  override fun Spacer(): Spacer<HTMLElement> = HTMLSpacer(document.createElement("div") as HTMLDivElement)
 }

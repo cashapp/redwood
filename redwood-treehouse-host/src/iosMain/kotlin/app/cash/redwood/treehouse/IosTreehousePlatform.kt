@@ -33,6 +33,5 @@ internal class IosTreehousePlatform : TreehousePlatform {
     loaderEventListener = loaderEventListener,
   )
 
-  override fun newDispatchers(applicationName: String): TreehouseDispatchers =
-    IosTreehouseDispatchers(applicationName)
+  override fun newDispatchers(applicationName: String): TreehouseDispatchers = IosTreehouseDispatchers(applicationName)
 }

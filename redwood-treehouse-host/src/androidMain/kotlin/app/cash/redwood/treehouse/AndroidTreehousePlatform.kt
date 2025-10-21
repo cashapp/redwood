@@ -46,6 +46,5 @@ internal class AndroidTreehousePlatform(
     loaderEventListener = loaderEventListener,
   )
 
-  override fun newDispatchers(applicationName: String): TreehouseDispatchers =
-    AndroidTreehouseDispatchers(applicationName)
+  override fun newDispatchers(applicationName: String): TreehouseDispatchers = AndroidTreehouseDispatchers(applicationName)
 }

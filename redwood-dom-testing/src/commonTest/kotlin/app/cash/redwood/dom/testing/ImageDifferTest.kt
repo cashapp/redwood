@@ -143,6 +143,5 @@ internal class ImageDifferTest {
     assertThat(diffResult.percentDifference).isEqualTo(75f)
   }
 
-  internal suspend fun Element.toBlob(): Blob =
-    DomSnapshotter().snapshot(this, Frame.None, false).images.first()!!
+  internal suspend fun Element.toBlob(): Blob = DomSnapshotter().snapshot(this, Frame.None, false).images.first()!!
 }

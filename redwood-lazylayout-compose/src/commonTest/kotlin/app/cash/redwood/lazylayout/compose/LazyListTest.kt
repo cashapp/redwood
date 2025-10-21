@@ -47,12 +47,10 @@ class LazyListTest {
   }
 
   @Test
-  fun populatedLazyColumnVariesItemsAfter_0() =
-    populatedLazyColumnVariesItemsAfter(10, 0, 10)
+  fun populatedLazyColumnVariesItemsAfter_0() = populatedLazyColumnVariesItemsAfter(10, 0, 10)
 
   @Test
-  fun populatedLazyColumnVariesItemsAfter_1() =
-    populatedLazyColumnVariesItemsAfter(100, 85, 15)
+  fun populatedLazyColumnVariesItemsAfter_1() = populatedLazyColumnVariesItemsAfter(100, 85, 15)
 
   private fun populatedLazyColumnVariesItemsAfter(
     itemCount: Int,

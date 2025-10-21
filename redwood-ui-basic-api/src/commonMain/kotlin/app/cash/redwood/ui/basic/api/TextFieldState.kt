@@ -47,6 +47,5 @@ public data class TextFieldState(
    * Returns true if [other] and this are equal ignoring version metadata.
    * Use this to skip no-op user edits.
    */
-  public fun contentEquals(other: TextFieldState): Boolean =
-    copy(userEditCount = other.userEditCount) == other
+  public fun contentEquals(other: TextFieldState): Boolean = copy(userEditCount = other.userEditCount) == other
 }

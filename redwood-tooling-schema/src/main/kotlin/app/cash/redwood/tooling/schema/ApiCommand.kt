@@ -29,8 +29,7 @@ import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.path
 
 internal class ApiCommand : AbstractSchemaCommand("api") {
-  override fun help(context: Context) =
-    "Write schema protocol API to XML, or validate schema compatibility with existing XML"
+  override fun help(context: Context) = "Write schema protocol API to XML, or validate schema compatibility with existing XML"
 
   private val file by option("-f", "--file")
     .path()

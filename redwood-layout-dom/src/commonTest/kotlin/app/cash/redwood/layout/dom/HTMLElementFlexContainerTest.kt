@@ -76,10 +76,8 @@ private class HTMLElementTestFlexContainer(
     get() = delegate.children
   override fun width(width: Constraint) = delegate.width(width)
   override fun height(height: Constraint) = delegate.height(height)
-  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) =
-    delegate.crossAxisAlignment(crossAxisAlignment)
-  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) =
-    delegate.mainAxisAlignment(mainAxisAlignment)
+  override fun crossAxisAlignment(crossAxisAlignment: CrossAxisAlignment) = delegate.crossAxisAlignment(crossAxisAlignment)
+  override fun mainAxisAlignment(mainAxisAlignment: MainAxisAlignment) = delegate.mainAxisAlignment(mainAxisAlignment)
   override fun margin(margin: Margin) = delegate.margin(margin)
   override fun overflow(overflow: Overflow) = delegate.overflow(overflow)
   override fun onScroll(onScroll: ((Px) -> Unit)?) = delegate.onScroll(onScroll)

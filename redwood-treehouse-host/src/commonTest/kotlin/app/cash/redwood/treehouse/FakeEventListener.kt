@@ -27,8 +27,7 @@ class FakeEventListener(
   class Factory(
     private val eventLog: EventLog,
   ) : EventListener.Factory {
-    override fun create(app: TreehouseApp<*>, manifestUrl: String?) =
-      FakeEventListener(eventLog, app)
+    override fun create(app: TreehouseApp<*>, manifestUrl: String?) = FakeEventListener(eventLog, app)
 
     override fun close() {
       eventLog += "EventListener.Factory.close()"

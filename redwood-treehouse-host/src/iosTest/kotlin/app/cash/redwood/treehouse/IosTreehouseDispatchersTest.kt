@@ -31,8 +31,7 @@ internal class IosTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() 
   override val ignoreTestsThatExecuteOnUiThread: Boolean
     get() = true
 
-  override fun newTreehouseDispatchers(applicationName: String) =
-    IosTreehouseDispatchers(applicationName)
+  override fun newTreehouseDispatchers(applicationName: String) = IosTreehouseDispatchers(applicationName)
 
   @Test
   fun closeFinishesZiplineThreadWithoutExecutingSubsequentRunnable() = runBlocking {

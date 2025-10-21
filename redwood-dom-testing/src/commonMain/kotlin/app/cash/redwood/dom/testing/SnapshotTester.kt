@@ -69,7 +69,6 @@ public class SnapshotTester @PublishedApi internal constructor(
   }
 
   public companion object Companion {
-    public operator fun invoke(path: String): SnapshotTester =
-      SnapshotTester(path = path)
+    public operator fun invoke(path: String): SnapshotTester = SnapshotTester(path = path)
   }
 }

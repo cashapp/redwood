@@ -114,8 +114,7 @@ internal class UIViewBox :
       sizeListener?.invalidateSize()
     }
 
-    override fun intrinsicContentSize() =
-      sizeThatFits(CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric))
+    override fun intrinsicContentSize() = sizeThatFits(CGSizeMake(UIViewNoIntrinsicMetric, UIViewNoIntrinsicMetric))
 
     override fun layoutSubviews() {
       super.layoutSubviews()

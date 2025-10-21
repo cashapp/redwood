@@ -16,6 +16,5 @@
 package app.cash.redwood.treehouse
 
 internal class AndroidTreehouseDispatchersTest : AbstractTreehouseDispatchersTest() {
-  override fun newTreehouseDispatchers(applicationName: String) =
-    AndroidTreehouseDispatchers(applicationName)
+  override fun newTreehouseDispatchers(applicationName: String) = AndroidTreehouseDispatchers(applicationName)
 }

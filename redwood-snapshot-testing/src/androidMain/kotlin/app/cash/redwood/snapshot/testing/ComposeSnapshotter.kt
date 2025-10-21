@@ -33,8 +33,7 @@ class ComposeSnapshotter private constructor(
   class Factory(
     private val paparazzi: Paparazzi,
   ) : Snapshotter.Factory<@Composable (Modifier) -> Unit> {
-    override fun invoke(widget: @Composable ((Modifier) -> Unit)) =
-      ComposeSnapshotter(paparazzi, widget)
+    override fun invoke(widget: @Composable ((Modifier) -> Unit)) = ComposeSnapshotter(paparazzi, widget)
 
     override suspend fun intercept(testFunction: CoroutineTestFunction) {
       testFunction()
