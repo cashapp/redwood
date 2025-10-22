@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>EventListener</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
@@ -24,19 +24,17 @@
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
                     redwood
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
@@ -44,19 +42,19 @@
         <div class="library-version" id="library-version">0.19.0-SNAPSHOT
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">common</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":redwood-treehouse-host/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filter=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-treehouse-host/commonMain" data-filter=":redwood-treehouse-host/commonMain">
                                 <span class="checkbox--icon"></span>
                                 common
                             </label>
@@ -64,54 +62,56 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     redwood
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="redwood-treehouse-host::app.cash.redwood.treehouse/EventListener///PointingToDeclaration//723931153">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="redwood-treehouse-host::app.cash.redwood.treehouse/EventListener///PointingToDeclaration//-160632115">
   <div class="breadcrumbs"><a href="../../index.html">redwood-treehouse-host</a><span class="delimiter">/</span><a href="../index.html">app.cash.redwood.treehouse</a><span class="delimiter">/</span><span class="current">EventListener</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Event</span><wbr><span><span>Listener</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"EventListener"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">EventListener</a></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"EventListener"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">EventListener</a></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
-        <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-1257694277%2FConstructors%2F723931153" anchor-label="EventListener" id="-1257694277%2FConstructors%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="-1257694277%2FConstructors%2F-160632115" anchor-label="EventListener" id="-1257694277%2FConstructors%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-event-listener.html"><span>Event</span><wbr><span><span>Listener</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1257694277%2FConstructors%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1257694277%2FConstructors%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -119,33 +119,33 @@
         </div>
       </div>
       <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="537899152%2FClasslikes%2F723931153" anchor-label="Companion" id="537899152%2FClasslikes%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="537899152%2FClasslikes%2F-160632115" anchor-label="Companion" id="537899152%2FClasslikes%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="537899152%2FClasslikes%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="537899152%2FClasslikes%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1223525614%2FClasslikes%2F723931153" anchor-label="Factory" id="-1223525614%2FClasslikes%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1223525614%2FClasslikes%2F-160632115" anchor-label="Factory" id="-1223525614%2FClasslikes%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-factory/index.html"><span><span>Factory</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1223525614%2FClasslikes%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1223525614%2FClasslikes%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-factory/index.html">Factory</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Creates new instances of <a href="index.html">EventListener</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-factory/index.html">Factory</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></div><div class="brief "><p class="paragraph">Creates new instances of <a href="index.html">EventListener</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -153,468 +153,468 @@
         </div>
       </div>
       <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="-1775827121%2FFunctions%2F723931153" anchor-label="bindService" id="-1775827121%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-1775827121%2FFunctions%2F-160632115" anchor-label="bindService" id="-1775827121%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="bind-service.html"><span>bind</span><wbr><span><span>Service</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1775827121%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1775827121%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="bind-service.html"><span class="token function">bindService</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">service<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when something calls <span data-unresolved-link="app.cash.zipline/Zipline/bind/#kotlin.String#TypeParam(bounds=[app.cash.zipline.ZiplineService])/PointingToDeclaration/">Zipline.bind</span>, or a service is sent via an API.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="bind-service.html"><span class="token function">bindService</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">service<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when something calls <span data-unresolved-link="app.cash.zipline/Zipline/bind/#kotlin.String#TypeParam(bounds=[app.cash.zipline.ZiplineService])/PointingToDeclaration/">Zipline.bind</span>, or a service is sent via an API.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="331803861%2FFunctions%2F723931153" anchor-label="callEnd" id="331803861%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="331803861%2FFunctions%2F-160632115" anchor-label="callEnd" id="331803861%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="call-end.html"><span>call</span><wbr><span><span>End</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="331803861%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="331803861%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="call-end.html"><span class="token function">callEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">call<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Call///PointingToDeclaration/">Call</span><span class="token punctuation">, </span></span><span class="parameter ">result<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/CallResult///PointingToDeclaration/">CallResult</span><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a service function call completes.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="call-end.html"><span class="token function">callEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">call<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Call///PointingToDeclaration/">Call</span><span class="token punctuation">, </span></span><span class="parameter ">result<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/CallResult///PointingToDeclaration/">CallResult</span><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a service function call completes.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1662879064%2FFunctions%2F723931153" anchor-label="callStart" id="1662879064%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1662879064%2FFunctions%2F-160632115" anchor-label="callStart" id="1662879064%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="call-start.html"><span>call</span><wbr><span><span>Start</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1662879064%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1662879064%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="call-start.html"><span class="token function">callStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">call<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Call///PointingToDeclaration/">Call</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked when a service function is called. This may be invoked for either suspending or non-suspending functions.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="call-start.html"><span class="token function">callStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">call<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Call///PointingToDeclaration/">Call</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked when a service function is called. This may be invoked for either suspending or non-suspending functions.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="606913282%2FFunctions%2F723931153" anchor-label="codeLoadFailed" id="606913282%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="606913282%2FFunctions%2F-160632115" anchor-label="codeLoadFailed" id="606913282%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="code-load-failed.html"><span>code</span><wbr><span>Load</span><wbr><span><span>Failed</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="606913282%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="606913282%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-failed.html"><span class="token function">codeLoadFailed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a code load fails.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-failed.html"><span class="token function">codeLoadFailed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a code load fails.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1453101782%2FFunctions%2F723931153" anchor-label="codeLoadSkipped" id="1453101782%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1453101782%2FFunctions%2F-160632115" anchor-label="codeLoadSkipped" id="1453101782%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="code-load-skipped.html"><span>code</span><wbr><span>Load</span><wbr><span><span>Skipped</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1453101782%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1453101782%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-skipped.html"><span class="token function">codeLoadSkipped</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a code load is skipped because the code hasn't changed.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-skipped.html"><span class="token function">codeLoadSkipped</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a code load is skipped because the code hasn't changed.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="808148625%2FFunctions%2F723931153" anchor-label="codeLoadSkippedNotFresh" id="808148625%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="808148625%2FFunctions%2F-160632115" anchor-label="codeLoadSkippedNotFresh" id="808148625%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="code-load-skipped-not-fresh.html"><span>code</span><wbr><span>Load</span><wbr><span>Skipped</span><wbr><span>Not</span><wbr><span><span>Fresh</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="808148625%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="808148625%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-skipped-not-fresh.html"><span class="token function">codeLoadSkippedNotFresh</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a code load is skipped because the cached code isn't up-to-date.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-skipped-not-fresh.html"><span class="token function">codeLoadSkippedNotFresh</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a code load is skipped because the cached code isn't up-to-date.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1253805958%2FFunctions%2F723931153" anchor-label="codeLoadStart" id="-1253805958%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1253805958%2FFunctions%2F-160632115" anchor-label="codeLoadStart" id="-1253805958%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="code-load-start.html"><span>code</span><wbr><span>Load</span><wbr><span><span>Start</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1253805958%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1253805958%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-start.html"><span class="token function">codeLoadStart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked for each attempt at loading code. This will be followed by a <a href="code-load-success.html">codeLoadSuccess</a>, <a href="code-load-failed.html">codeLoadFailed</a>, or <a href="code-load-skipped.html">codeLoadSkipped</a> if the code is unchanged.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-start.html"><span class="token function">codeLoadStart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked for each attempt at loading code. This will be followed by a <a href="code-load-success.html">codeLoadSuccess</a>, <a href="code-load-failed.html">codeLoadFailed</a>, or <a href="code-load-skipped.html">codeLoadSkipped</a> if the code is unchanged.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1190171240%2FFunctions%2F723931153" anchor-label="codeLoadSuccess" id="-1190171240%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1190171240%2FFunctions%2F-160632115" anchor-label="codeLoadSuccess" id="-1190171240%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="code-load-success.html"><span>code</span><wbr><span>Load</span><wbr><span><span>Success</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1190171240%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1190171240%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-success.html"><span class="token function">codeLoadSuccess</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">manifest<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineManifest///PointingToDeclaration/">ZiplineManifest</span><span class="token punctuation">, </span></span><span class="parameter ">zipline<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when code is successfully downloaded and initialized.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-load-success.html"><span class="token function">codeLoadSuccess</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">manifest<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineManifest///PointingToDeclaration/">ZiplineManifest</span><span class="token punctuation">, </span></span><span class="parameter ">zipline<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when code is successfully downloaded and initialized.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-301072858%2FFunctions%2F723931153" anchor-label="codeUnloaded" id="-301072858%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-301072858%2FFunctions%2F-160632115" anchor-label="codeUnloaded" id="-301072858%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="code-unloaded.html"><span>code</span><wbr><span><span>Unloaded</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-301072858%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-301072858%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-unloaded.html"><span class="token function">codeUnloaded</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when code is unloaded because it is no longer needed. Typically this occurs when a hot code update is applied.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="code-unloaded.html"><span class="token function">codeUnloaded</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when code is unloaded because it is no longer needed. Typically this occurs when a hot code update is applied.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-771148728%2FFunctions%2F723931153" anchor-label="downloadFailed" id="-771148728%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-771148728%2FFunctions%2F-160632115" anchor-label="downloadFailed" id="-771148728%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="download-failed.html"><span>download</span><wbr><span><span>Failed</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-771148728%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-771148728%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="download-failed.html"><span class="token function">downloadFailed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a network download fails.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="download-failed.html"><span class="token function">downloadFailed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a network download fails.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="778419093%2FFunctions%2F723931153" anchor-label="downloadStart" id="778419093%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="778419093%2FFunctions%2F-160632115" anchor-label="downloadStart" id="778419093%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="download-start.html"><span>download</span><wbr><span><span>Start</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="778419093%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="778419093%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="download-start.html"><span class="token function">downloadStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked when a network download starts. This will be followed by <a href="download-success.html">downloadSuccess</a> or <a href="download-failed.html">downloadFailed</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="download-start.html"><span class="token function">downloadStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked when a network download starts. This will be followed by <a href="download-success.html">downloadSuccess</a> or <a href="download-failed.html">downloadFailed</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1318597273%2FFunctions%2F723931153" anchor-label="downloadSuccess" id="1318597273%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1318597273%2FFunctions%2F-160632115" anchor-label="downloadSuccess" id="1318597273%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="download-success.html"><span>download</span><wbr><span><span>Success</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1318597273%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1318597273%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="download-success.html"><span class="token function">downloadSuccess</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a network download completes successfully.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="download-success.html"><span class="token function">downloadSuccess</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">url<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a network download completes successfully.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1702423825%2FFunctions%2F723931153" anchor-label="initializerEnd" id="-1702423825%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1702423825%2FFunctions%2F-160632115" anchor-label="initializerEnd" id="-1702423825%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="initializer-end.html"><span>initializer</span><wbr><span><span>End</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1702423825%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1702423825%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="initializer-end.html"><span class="token function">initializerEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked after the host-side initializer completes.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="initializer-end.html"><span class="token function">initializerEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked after the host-side initializer completes.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1457694573%2FFunctions%2F723931153" anchor-label="initializerStart" id="-1457694573%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1457694573%2FFunctions%2F-160632115" anchor-label="initializerStart" id="-1457694573%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="initializer-start.html"><span>initializer</span><wbr><span><span>Start</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1457694573%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1457694573%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="initializer-start.html"><span class="token function">initializerStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked before Zipline runs the host-side initializer for an application.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="initializer-start.html"><span class="token function">initializerStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked before Zipline runs the host-side initializer for an application.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-384893720%2FFunctions%2F723931153" anchor-label="mainFunctionEnd" id="-384893720%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-384893720%2FFunctions%2F-160632115" anchor-label="mainFunctionEnd" id="-384893720%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="main-function-end.html"><span>main</span><wbr><span>Function</span><wbr><span><span>End</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-384893720%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-384893720%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="main-function-end.html"><span class="token function">mainFunctionEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked after Zipline runs the downloaded code's main function.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="main-function-end.html"><span class="token function">mainFunctionEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked after Zipline runs the downloaded code's main function.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-490097204%2FFunctions%2F723931153" anchor-label="mainFunctionStart" id="-490097204%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-490097204%2FFunctions%2F-160632115" anchor-label="mainFunctionStart" id="-490097204%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="main-function-start.html"><span>main</span><wbr><span>Function</span><wbr><span><span>Start</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-490097204%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-490097204%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="main-function-start.html"><span class="token function">mainFunctionStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked before Zipline runs the downloaded code's main function.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="main-function-start.html"><span class="token function">mainFunctionStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">applicationName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked before Zipline runs the downloaded code's main function.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="2037147782%2FFunctions%2F723931153" anchor-label="manifestParseFailed" id="2037147782%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="2037147782%2FFunctions%2F-160632115" anchor-label="manifestParseFailed" id="2037147782%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="manifest-parse-failed.html"><span>manifest</span><wbr><span>Parse</span><wbr><span><span>Failed</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2037147782%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2037147782%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="manifest-parse-failed.html"><span class="token function">manifestParseFailed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when the manifest couldn't be decoded as JSON. For example, this might occur if there's a captive portal on the network.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="manifest-parse-failed.html"><span class="token function">manifestParseFailed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-exception/index.html">Exception</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when the manifest couldn't be decoded as JSON. For example, this might occur if there's a captive portal on the network.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="2028247320%2FFunctions%2F723931153" anchor-label="manifestReady" id="2028247320%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="2028247320%2FFunctions%2F-160632115" anchor-label="manifestReady" id="2028247320%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="manifest-ready.html"><span>manifest</span><wbr><span><span>Ready</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2028247320%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2028247320%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="manifest-ready.html"><span class="token function">manifestReady</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">manifest<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineManifest///PointingToDeclaration/">ZiplineManifest</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when the loader has successfully fetched a manifest, verified it (if necessary), and will proceed to download and load each of its modules.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="manifest-ready.html"><span class="token function">manifestReady</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">manifest<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineManifest///PointingToDeclaration/">ZiplineManifest</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when the loader has successfully fetched a manifest, verified it (if necessary), and will proceed to download and load each of its modules.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1261349726%2FFunctions%2F723931153" anchor-label="manifestVerified" id="-1261349726%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1261349726%2FFunctions%2F-160632115" anchor-label="manifestVerified" id="-1261349726%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="manifest-verified.html"><span>manifest</span><wbr><span><span>Verified</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1261349726%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1261349726%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="manifest-verified.html"><span class="token function">manifestVerified</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">manifest<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineManifest///PointingToDeclaration/">ZiplineManifest</span><span class="token punctuation">, </span></span><span class="parameter ">verifiedKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a the manifest verifier successfully verifies a key. Manifest verification failures are signaled with <a href="code-load-failed.html">codeLoadFailed</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="manifest-verified.html"><span class="token function">manifestVerified</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">manifest<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineManifest///PointingToDeclaration/">ZiplineManifest</span><span class="token punctuation">, </span></span><span class="parameter ">verifiedKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a the manifest verifier successfully verifies a key. Manifest verification failures are signaled with <a href="code-load-failed.html">codeLoadFailed</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="118451143%2FFunctions%2F723931153" anchor-label="moduleLoadEnd" id="118451143%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="118451143%2FFunctions%2F-160632115" anchor-label="moduleLoadEnd" id="118451143%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="module-load-end.html"><span>module</span><wbr><span>Load</span><wbr><span><span>End</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="118451143%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="118451143%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="module-load-end.html"><span class="token function">moduleLoadEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">moduleId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a module load completes.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="module-load-end.html"><span class="token function">moduleLoadEnd</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">moduleId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">startValue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a module load completes.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1380032661%2FFunctions%2F723931153" anchor-label="moduleLoadStart" id="-1380032661%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1380032661%2FFunctions%2F-160632115" anchor-label="moduleLoadStart" id="-1380032661%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="module-load-start.html"><span>module</span><wbr><span>Load</span><wbr><span><span>Start</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1380032661%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1380032661%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="module-load-start.html"><span class="token function">moduleLoadStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">moduleId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked when a module load starts. This is the process of loading code into QuickJS.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="module-load-start.html"><span class="token function">moduleLoadStart</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">moduleId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Invoked when a module load starts. This is the process of loading code into QuickJS.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1448807566%2FFunctions%2F723931153" anchor-label="serviceLeaked" id="-1448807566%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1448807566%2FFunctions%2F-160632115" anchor-label="serviceLeaked" id="-1448807566%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="service-leaked.html"><span>service</span><wbr><span><span>Leaked</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1448807566%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1448807566%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="service-leaked.html"><span class="token function">serviceLeaked</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a service is garbage collected without being closed.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="service-leaked.html"><span class="token function">serviceLeaked</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a service is garbage collected without being closed.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1922731845%2FFunctions%2F723931153" anchor-label="takeService" id="1922731845%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1922731845%2FFunctions%2F-160632115" anchor-label="takeService" id="1922731845%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="take-service.html"><span>take</span><wbr><span><span>Service</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1922731845%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1922731845%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="take-service.html"><span class="token function">takeService</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">service<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when something calls <span data-unresolved-link="app.cash.zipline/Zipline/take/#kotlin.String#app.cash.zipline.ZiplineScope/PointingToDeclaration/">Zipline.take</span>, or a service is received via an API.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="take-service.html"><span class="token function">takeService</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">service<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/ZiplineService///PointingToDeclaration/">ZiplineService</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when something calls <span data-unresolved-link="app.cash.zipline/Zipline/take/#kotlin.String#app.cash.zipline.ZiplineScope/PointingToDeclaration/">Zipline.take</span>, or a service is received via an API.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1984827196%2FFunctions%2F723931153" anchor-label="uncaughtException" id="1984827196%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1984827196%2FFunctions%2F-160632115" anchor-label="uncaughtException" id="1984827196%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="uncaught-exception.html"><span>uncaught</span><wbr><span><span>Exception</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1984827196%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1984827196%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="uncaught-exception.html"><span class="token function">uncaughtException</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when <span data-unresolved-link="app////PointingToDeclaration/">app</span> has thrown an uncaught exception.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="uncaught-exception.html"><span class="token function">uncaughtException</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">exception<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html">Throwable</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when <span data-unresolved-link="app////PointingToDeclaration/">app</span> has thrown an uncaught exception.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1540649508%2FFunctions%2F723931153" anchor-label="unknownChildren" id="1540649508%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1540649508%2FFunctions%2F-160632115" anchor-label="unknownChildren" id="1540649508%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="unknown-children.html"><span>unknown</span><wbr><span><span>Children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1540649508%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1540649508%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-children.html"><span class="token function">unknownChildren</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/index.html">ChildrenTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to manipulate unknown children with <a href="unknown-children.html">tag</a> for a widget with <a href="unknown-children.html">widgetTag</a>. This is a schema mismatch and the child nodes are ignored.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-children.html"><span class="token function">unknownChildren</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-children-tag/index.html">ChildrenTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to manipulate unknown children with <a href="unknown-children.html">tag</a> for a widget with <a href="unknown-children.html">widgetTag</a>. This is a schema mismatch and the child nodes are ignored.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-283817436%2FFunctions%2F723931153" anchor-label="unknownEvent" id="-283817436%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-283817436%2FFunctions%2F-160632115" anchor-label="unknownEvent" id="-283817436%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="unknown-event.html"><span>unknown</span><wbr><span><span>Event</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-283817436%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-283817436%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-event.html"><span class="token function">unknownEvent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to process an unknown event with <a href="unknown-event.html">tag</a> for a widget with <a href="unknown-event.html">widgetTag</a>. This is a schema mismatch and the event is dropped.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-event.html"><span class="token function">unknownEvent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to process an unknown event with <a href="unknown-event.html">tag</a> for a widget with <a href="unknown-event.html">widgetTag</a>. This is a schema mismatch and the event is dropped.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1084687099%2FFunctions%2F723931153" anchor-label="unknownEventNode" id="1084687099%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="1084687099%2FFunctions%2F-160632115" anchor-label="unknownEventNode" id="1084687099%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="unknown-event-node.html"><span>unknown</span><wbr><span>Event</span><wbr><span><span>Node</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1084687099%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1084687099%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-event-node.html"><span class="token function">unknownEventNode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/index.html">Id</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when an event is received on a widget that no longer exists.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-event-node.html"><span class="token function">unknownEventNode</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-id/index.html">Id</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-event-tag/index.html">EventTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when an event is received on a widget that no longer exists.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1761929809%2FFunctions%2F723931153" anchor-label="unknownModifier" id="-1761929809%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1761929809%2FFunctions%2F-160632115" anchor-label="unknownModifier" id="-1761929809%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="unknown-modifier.html"><span>unknown</span><wbr><span><span>Modifier</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1761929809%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1761929809%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-modifier.html"><span class="token function">unknownModifier</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-modifier-tag/index.html">ModifierTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to create an unknown modifier with <a href="unknown-modifier.html">tag</a>. This is a schema mismatch and the modifier is ignored.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-modifier.html"><span class="token function">unknownModifier</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-modifier-tag/index.html">ModifierTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to create an unknown modifier with <a href="unknown-modifier.html">tag</a>. This is a schema mismatch and the modifier is ignored.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="461475024%2FFunctions%2F723931153" anchor-label="unknownProperty" id="461475024%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="461475024%2FFunctions%2F-160632115" anchor-label="unknownProperty" id="461475024%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="unknown-property.html"><span>unknown</span><wbr><span><span>Property</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="461475024%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="461475024%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-property.html"><span class="token function">unknownProperty</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-property-tag/index.html">PropertyTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to set an unknown property with <a href="unknown-property.html">tag</a> for a widget with <a href="unknown-property.html">widgetTag</a>. This is a schema mismatch and the property is ignored.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-property.html"><span class="token function">unknownProperty</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">widgetTag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a><span class="token punctuation">, </span></span><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-property-tag/index.html">PropertyTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to set an unknown property with <a href="unknown-property.html">tag</a> for a widget with <a href="unknown-property.html">widgetTag</a>. This is a schema mismatch and the property is ignored.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1877879%2FFunctions%2F723931153" anchor-label="unknownWidget" id="-1877879%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-1877879%2FFunctions%2F-160632115" anchor-label="unknownWidget" id="-1877879%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="unknown-widget.html"><span>unknown</span><wbr><span><span>Widget</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1877879%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1877879%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-widget.html"><span class="token function">unknownWidget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to create an unknown widget with <a href="unknown-widget.html">tag</a>. This is a schema mismatch and the widget is ignored.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="unknown-widget.html"><span class="token function">unknownWidget</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">tag<span class="token operator">: </span><a href="../../../redwood-protocol/app.cash.redwood.protocol/-widget-tag/index.html">WidgetTag</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked on a request to create an unknown widget with <a href="unknown-widget.html">tag</a>. This is a schema mismatch and the widget is ignored.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-37033808%2FFunctions%2F723931153" anchor-label="ziplineCreated" id="-37033808%2FFunctions%2F723931153" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-treehouse-host:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-treehouse-host:dokkaHtmlPartial/commonMain">
+<a data-name="-37033808%2FFunctions%2F-160632115" anchor-label="ziplineCreated" id="-37033808%2FFunctions%2F-160632115" data-filterable-set=":redwood-treehouse-host/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-treehouse-host/commonMain" data-filterable-set=":redwood-treehouse-host/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="zipline-created.html"><span>zipline</span><wbr><span><span>Created</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-37033808%2FFunctions%2F723931153"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-37033808%2FFunctions%2F-160632115"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="zipline-created.html"><span class="token function">ziplineCreated</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">zipline<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a Zipline is created, after <a href="code-load-start.html">codeLoadStart</a> and before any application code is loaded.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-treehouse-host/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="zipline-created.html"><span class="token function">ziplineCreated</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">zipline<span class="token operator">: </span><span data-unresolved-link="app.cash.zipline/Zipline///PointingToDeclaration/">Zipline</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Invoked when a Zipline is created, after <a href="code-load-start.html">codeLoadStart</a> and before any application code is loaded.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -625,17 +625,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2025 Copyright</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

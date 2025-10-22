@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>app.cash.redwood.protocol</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
@@ -24,19 +24,17 @@
 <link href="../../styles/main.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../index.html" tabindex="1">
                     redwood
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
@@ -44,19 +42,19 @@
         <div class="library-version" id="library-version">0.19.0-SNAPSHOT
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-protocol:dokkaHtmlPartial/commonMain">common</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":redwood-protocol/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filter=":redwood-protocol:dokkaHtmlPartial/commonMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-protocol/commonMain" data-filter=":redwood-protocol/commonMain">
                                 <span class="checkbox--icon"></span>
                                 common
                             </label>
@@ -64,33 +62,35 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     redwood
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
-<div class="main-content" data-page-type="package" id="content" pageids="redwood-protocol::app.cash.redwood.protocol////PointingToDeclaration//-1153201172">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageids="redwood-protocol::app.cash.redwood.protocol////PointingToDeclaration//-483427950">
   <div class="breadcrumbs"><a href="../index.html">redwood-protocol</a><span class="delimiter">/</span><span class="current">app.cash.redwood.protocol</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
@@ -99,273 +99,273 @@
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
     <div class="tabs-section-body">
       <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="-799333528%2FClasslikes%2F-1153201172" anchor-label="Change" id="-799333528%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-799333528%2FClasslikes%2F-483427950" anchor-label="Change" id="-799333528%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-change/index.html"><span><span>Change</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-799333528%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-799333528%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-change/index.html">Change</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-change/index.html">Change</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="665540724%2FClasslikes%2F-1153201172" anchor-label="ChangesSink" id="665540724%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="665540724%2FClasslikes%2F-483427950" anchor-label="ChangesSink" id="665540724%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-changes-sink/index.html"><span>Changes</span><wbr><span><span>Sink</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="665540724%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="665540724%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-changes-sink/index.html">ChangesSink</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-changes-sink/index.html">ChangesSink</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="2015487593%2FClasslikes%2F-1153201172" anchor-label="ChildrenChange" id="2015487593%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="2015487593%2FClasslikes%2F-483427950" anchor-label="ChildrenChange" id="2015487593%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-children-change/index.html"><span>Children</span><wbr><span><span>Change</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2015487593%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2015487593%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-children-change/index.html">ChildrenChange</a> : <a href="-change/index.html">Change</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-children-change/index.html">ChildrenChange</a> : <a href="-change/index.html">Change</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="747528943%2FClasslikes%2F-1153201172" anchor-label="ChildrenTag" id="747528943%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="747528943%2FClasslikes%2F-483427950" anchor-label="ChildrenTag" id="747528943%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-children-tag/index.html"><span>Children</span><wbr><span><span>Tag</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="747528943%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="747528943%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-children-tag/index.html">ChildrenTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-children-tag/index.html">ChildrenTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="718922652%2FClasslikes%2F-1153201172" anchor-label="Create" id="718922652%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="718922652%2FClasslikes%2F-483427950" anchor-label="Create" id="718922652%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-create/index.html"><span><span>Create</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="718922652%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="718922652%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"create"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-create/index.html">Create</a> : <a href="-change/index.html">Change</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"create"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-create/index.html">Create</a> : <a href="-change/index.html">Change</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1844031216%2FClasslikes%2F-1153201172" anchor-label="Event" id="-1844031216%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-1844031216%2FClasslikes%2F-483427950" anchor-label="Event" id="-1844031216%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-event/index.html"><span><span>Event</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1844031216%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1844031216%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">class </span><a href="-event/index.html">Event</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">class </span><a href="-event/index.html">Event</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-451029443%2FClasslikes%2F-1153201172" anchor-label="EventSink" id="-451029443%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-451029443%2FClasslikes%2F-483427950" anchor-label="EventSink" id="-451029443%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-event-sink/index.html"><span>Event</span><wbr><span><span>Sink</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-451029443%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-451029443%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-event-sink/index.html">EventSink</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="-event-sink/index.html">EventSink</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1252503736%2FClasslikes%2F-1153201172" anchor-label="EventTag" id="1252503736%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="1252503736%2FClasslikes%2F-483427950" anchor-label="EventTag" id="1252503736%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-event-tag/index.html"><span>Event</span><wbr><span><span>Tag</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1252503736%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1252503736%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-event-tag/index.html">EventTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-event-tag/index.html">EventTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1441164323%2FClasslikes%2F-1153201172" anchor-label="Id" id="-1441164323%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-1441164323%2FClasslikes%2F-483427950" anchor-label="Id" id="-1441164323%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-id/index.html"><span><span>Id</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1441164323%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1441164323%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-id/index.html">Id</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Identifies a widget instance.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-id/index.html">Id</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Identifies a widget instance.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="79537809%2FClasslikes%2F-1153201172" anchor-label="ModifierChange" id="79537809%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="79537809%2FClasslikes%2F-483427950" anchor-label="ModifierChange" id="79537809%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-modifier-change/index.html"><span>Modifier</span><wbr><span><span>Change</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="79537809%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="79537809%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"modifier"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-modifier-change/index.html">ModifierChange</a> : <a href="-value-change/index.html">ValueChange</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"modifier"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-modifier-change/index.html">ModifierChange</a> : <a href="-value-change/index.html">ValueChange</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-275206491%2FClasslikes%2F-1153201172" anchor-label="ModifierElement" id="-275206491%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-275206491%2FClasslikes%2F-483427950" anchor-label="ModifierElement" id="-275206491%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-modifier-element/index.html"><span>Modifier</span><wbr><span><span>Element</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-275206491%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-275206491%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span><span class="token punctuation">(</span><span>with<span class="token operator"> = </span><a href="../../redwood-protocol/app.cash.redwood.protocol/-modifier-element-serializer/index.html">ModifierElementSerializer::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-modifier-element/index.html">ModifierElement</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>tag<span class="token operator">: </span><a href="-modifier-tag/index.html">ModifierTag</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator"> = </span>DefaultValue</span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span><span class="token punctuation">(</span><span>with<span class="token operator"> = </span><a href="../../redwood-protocol/app.cash.redwood.protocol/-modifier-element-serializer/index.html">ModifierElementSerializer::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-modifier-element/index.html">ModifierElement</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>tag<span class="token operator">: </span><a href="-modifier-tag/index.html">ModifierTag</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization.json/JsonElement///PointingToDeclaration/">JsonElement</span><span class="token operator"> = </span>DefaultValue</span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-717302841%2FClasslikes%2F-1153201172" anchor-label="ModifierTag" id="-717302841%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-717302841%2FClasslikes%2F-483427950" anchor-label="ModifierTag" id="-717302841%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-modifier-tag/index.html"><span>Modifier</span><wbr><span><span>Tag</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-717302841%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-717302841%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-modifier-tag/index.html">ModifierTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-modifier-tag/index.html">ModifierTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1642326995%2FClasslikes%2F-1153201172" anchor-label="PropertyChange" id="1642326995%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="1642326995%2FClasslikes%2F-483427950" anchor-label="PropertyChange" id="1642326995%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-property-change/index.html"><span>Property</span><wbr><span><span>Change</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1642326995%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1642326995%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"property"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-property-change/index.html">PropertyChange</a> : <a href="-value-change/index.html">ValueChange</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/SerialName///PointingToDeclaration/"><span class="token annotation builtin">SerialName</span></span><span class="token punctuation">(</span><span>value<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"property"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-property-change/index.html">PropertyChange</a> : <a href="-value-change/index.html">ValueChange</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-686398011%2FClasslikes%2F-1153201172" anchor-label="PropertyTag" id="-686398011%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-686398011%2FClasslikes%2F-483427950" anchor-label="PropertyTag" id="-686398011%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-property-tag/index.html"><span>Property</span><wbr><span><span>Tag</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-686398011%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-686398011%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-property-tag/index.html">PropertyTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-property-tag/index.html">PropertyTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="94026526%2FClasslikes%2F-1153201172" anchor-label="RedwoodVersion" id="94026526%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="94026526%2FClasslikes%2F-483427950" anchor-label="RedwoodVersion" id="94026526%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-redwood-version/index.html"><span>Redwood</span><wbr><span><span>Version</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="94026526%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="94026526%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-redwood-version/index.html">RedwoodVersion</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-comparable/index.html">Comparable</a><span class="token operator">&lt;</span><a href="-redwood-version/index.html">RedwoodVersion</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Version string for the Redwood project. This is a very strict subset of <a href="https://docs.gradle.org/current/userguide/single_versions.html#version_ordering">Gradle's version parsing and ordering</a> semantics.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-redwood-version/index.html">RedwoodVersion</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-comparable/index.html">Comparable</a><span class="token operator">&lt;</span><a href="-redwood-version/index.html">RedwoodVersion</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Version string for the Redwood project. This is a very strict subset of <a href="https://docs.gradle.org/current/userguide/single_versions.html#version_ordering">Gradle's version parsing and ordering</a> semantics.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="68264326%2FClasslikes%2F-1153201172" anchor-label="SnapshotChangeList" id="68264326%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="68264326%2FClasslikes%2F-483427950" anchor-label="SnapshotChangeList" id="68264326%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-snapshot-change-list/index.html"><span>Snapshot</span><wbr><span>Change</span><wbr><span><span>List</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="68264326%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="68264326%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-snapshot-change-list/index.html">SnapshotChangeList</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>changes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-change/index.html">Change</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A set of <a href="-change/index.html">Change</a>s for creating a view hierarchy from scratch. Intended for use in tests, debugging, and development tools.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-snapshot-change-list/index.html">SnapshotChangeList</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>changes<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-change/index.html">Change</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A set of <a href="-change/index.html">Change</a>s for creating a view hierarchy from scratch. Intended for use in tests, debugging, and development tools.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2061459895%2FClasslikes%2F-1153201172" anchor-label="ValueChange" id="-2061459895%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="-2061459895%2FClasslikes%2F-483427950" anchor-label="ValueChange" id="-2061459895%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-value-change/index.html"><span>Value</span><wbr><span><span>Change</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2061459895%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2061459895%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-value-change/index.html">ValueChange</a> : <a href="-change/index.html">Change</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-value-change/index.html">ValueChange</a> : <a href="-change/index.html">Change</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1247608820%2FClasslikes%2F-1153201172" anchor-label="WidgetTag" id="1247608820%2FClasslikes%2F-1153201172" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-protocol:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-protocol:dokkaHtmlPartial/commonMain">
+<a data-name="1247608820%2FClasslikes%2F-483427950" anchor-label="WidgetTag" id="1247608820%2FClasslikes%2F-483427950" data-filterable-set=":redwood-protocol/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-protocol/commonMain" data-filterable-set=":redwood-protocol/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-widget-tag/index.html"><span>Widget</span><wbr><span><span>Tag</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1247608820%2FClasslikes%2F-1153201172"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1247608820%2FClasslikes%2F-483427950"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-widget-tag/index.html">WidgetTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-protocol/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.jvm/-jvm-inline/index.html"><span class="token annotation builtin">JvmInline</span></a></div><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span></div></div><span class="token keyword">value </span><span class="token keyword">class </span><a href="-widget-tag/index.html">WidgetTag</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>value<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -376,17 +376,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2025 Copyright</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

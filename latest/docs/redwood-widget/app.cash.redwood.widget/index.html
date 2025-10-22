@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>app.cash.redwood.widget</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
@@ -24,19 +24,17 @@
 <link href="../../styles/main.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../index.html" tabindex="1">
                     redwood
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
@@ -44,43 +42,43 @@
         <div class="library-version" id="library-version">0.19.0-SNAPSHOT
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":redwood-widget:dokkaHtmlPartial/androidMain">android</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-widget:dokkaHtmlPartial/commonMain">common</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-widget:dokkaHtmlPartial/iosMain">ios</button>
-                <button class="platform-tag platform-selector js-like" data-active="" data-filter=":redwood-widget:dokkaHtmlPartial/jsMain">js</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":redwood-widget/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":redwood-widget/commonMain">common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":redwood-widget/iosMain">ios</button>
+                <button class="platform-tag platform-selector js-like" data-active="" aria-pressed="true" data-filter=":redwood-widget/jsMain">js</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
                         <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-widget:dokkaHtmlPartial/androidMain" data-filter=":redwood-widget:dokkaHtmlPartial/androidMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-widget/androidMain" data-filter=":redwood-widget/androidMain">
                                 <span class="checkbox--icon"></span>
                                 android
                             </label>
                         </li>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-widget:dokkaHtmlPartial/commonMain" data-filter=":redwood-widget:dokkaHtmlPartial/commonMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-widget/commonMain" data-filter=":redwood-widget/commonMain">
                                 <span class="checkbox--icon"></span>
                                 common
                             </label>
                         </li>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-widget:dokkaHtmlPartial/iosMain" data-filter=":redwood-widget:dokkaHtmlPartial/iosMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-widget/iosMain" data-filter=":redwood-widget/iosMain">
                                 <span class="checkbox--icon"></span>
                                 ios
                             </label>
                         </li>
                         <li role="option" class="dropdown--option platform-selector-option js-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-widget:dokkaHtmlPartial/jsMain" data-filter=":redwood-widget:dokkaHtmlPartial/jsMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-widget/jsMain" data-filter=":redwood-widget/jsMain">
                                 <span class="checkbox--icon"></span>
                                 js
                             </label>
@@ -88,33 +86,35 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     redwood
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
-<div class="main-content" data-page-type="package" id="content" pageids="redwood-widget::app.cash.redwood.widget////PointingToDeclaration//-1514713812">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageids="redwood-widget::app.cash.redwood.widget////PointingToDeclaration//-1745757316">
   <div class="breadcrumbs"><a href="../index.html">redwood-widget</a><span class="delimiter">/</span><span class="current">app.cash.redwood.widget</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
@@ -123,148 +123,148 @@
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="1658609984%2FClasslikes%2F1081896384" anchor-label="ChangeListener" id="1658609984%2FClasslikes%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="1658609984%2FClasslikes%2F1195238718" anchor-label="ChangeListener" id="1658609984%2FClasslikes%2F1195238718" data-filterable-set=":redwood-widget/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/commonMain" data-filterable-set=":redwood-widget/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-change-listener/index.html"><span>Change</span><wbr><span><span>Listener</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1658609984%2FClasslikes%2F1081896384"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1658609984%2FClasslikes%2F1195238718"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-change-listener/index.html">ChangeListener</a></div><div class="brief "><p class="paragraph">A callback for <a href="-widget/index.html">Widget</a>s to know when the current set of changes has fully be applied.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-change-listener/index.html">ChangeListener</a></div><div class="brief "><p class="paragraph">A callback for <a href="-widget/index.html">Widget</a>s to know when the current set of changes has fully be applied.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1557588242%2FClasslikes%2F772003170" anchor-label="HTMLElementChildren" id="-1557588242%2FClasslikes%2F772003170" data-filterable-set=":redwood-widget:dokkaHtmlPartial/jsMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/jsMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/jsMain">
+<a data-name="-1557588242%2FClasslikes%2F26089952" anchor-label="HTMLElementChildren" id="-1557588242%2FClasslikes%2F26089952" data-filterable-set=":redwood-widget/jsMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/jsMain" data-filterable-set=":redwood-widget/jsMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-h-t-m-l-element-children/index.html"><span>HTMLElement</span><wbr><span><span>Children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1557588242%2FClasslikes%2F772003170"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1557588242%2FClasslikes%2F26089952"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/jsMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/jsMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/jsMain">js</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/jsMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-h-t-m-l-element-children/index.html">HTMLElementChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a></span></span><span class="token punctuation">)</span> : <a href="-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a><span class="token operator">&gt; </span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/jsMain" data-filterable-set=":redwood-widget/jsMain" data-active="" data-toggle=":redwood-widget/jsMain">js</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/jsMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-h-t-m-l-element-children/index.html">HTMLElementChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a></span></span><span class="token punctuation">)</span> : <a href="-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a><span class="token operator">&gt; </span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-775966373%2FClasslikes%2F1081896384" anchor-label="MutableListChildren" id="-775966373%2FClasslikes%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain">
+<a data-name="-775966373%2FClasslikes%2F1195238718" anchor-label="MutableListChildren" id="-775966373%2FClasslikes%2F1195238718" data-filterable-set=":redwood-widget/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/commonMain" data-filterable-set=":redwood-widget/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-mutable-list-children/index.html"><span>Mutable</span><wbr><span>List</span><wbr><span><span>Children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-775966373%2FClasslikes%2F1081896384"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-775966373%2FClasslikes%2F1195238718"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"MutableListChildren"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-mutable-list-children/index.html">MutableListChildren</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>mutableListOf()<span class="token punctuation">, </span></span><span class="parameter ">modifierUpdated<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span> : <a href="-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator">&gt; </span>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a> that is also a <a href="-widget/-children/index.html">Widget.Children</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"MutableListChildren"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="-mutable-list-children/index.html">MutableListChildren</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>mutableListOf()<span class="token punctuation">, </span></span><span class="parameter ">modifierUpdated<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span> : <a href="-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator">&gt; </span>, <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-mutable-list-children/index.html">W</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a> that is also a <a href="-widget/-children/index.html">Widget.Children</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="753452598%2FClasslikes%2F1015757850" anchor-label="RedwoodLayout" id="753452598%2FClasslikes%2F1015757850" data-filterable-set=":redwood-widget:dokkaHtmlPartial/androidMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/androidMain">
+<a data-name="753452598%2FClasslikes%2F-1474437924" anchor-label="RedwoodLayout" id="753452598%2FClasslikes%2F-1474437924" data-filterable-set=":redwood-widget/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/androidMain" data-filterable-set=":redwood-widget/androidMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-redwood-layout/index.html"><span>Redwood</span><wbr><span><span>Layout</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="753452598%2FClasslikes%2F1015757850"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="753452598%2FClasslikes%2F-1474437924"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-redwood-layout/index.html">RedwoodLayout</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">androidOnBackPressedDispatcher<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/activity/OnBackPressedDispatcher.html">OnBackPressedDispatcher</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>, <a href="-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt; </span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/androidMain" data-filterable-set=":redwood-widget/androidMain" data-active="" data-toggle=":redwood-widget/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-redwood-layout/index.html">RedwoodLayout</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">androidOnBackPressedDispatcher<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/activity/OnBackPressedDispatcher.html">OnBackPressedDispatcher</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a>, <a href="-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt; </span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-24101625%2FClasslikes%2F141335592" anchor-label="RedwoodUIView" id="-24101625%2FClasslikes%2F141335592" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain">
+<a data-name="-24101625%2FClasslikes%2F-1115354586" anchor-label="RedwoodUIView" id="-24101625%2FClasslikes%2F-1115354586" data-filterable-set=":redwood-widget/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/iosMain" data-filterable-set=":redwood-widget/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-redwood-u-i-view/index.html"><span>Redwood</span><wbr><span><span>UIView</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-24101625%2FClasslikes%2F141335592"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-24101625%2FClasslikes%2F-1115354586"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/iosMain">ios</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-redwood-u-i-view/index.html">RedwoodUIView</a></div><div class="brief "><p class="paragraph">This view must be explicitly configured to know whether its dimensions are derived by measuring its contents, or whether they are provided by the superview. Use <a href="-redwood-u-i-view/fill-width.html">fillWidth</a> and <a href="-redwood-u-i-view/fill-height.html">fillHeight</a> to accept the parent's provided width and height respectively.</p></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/iosMain" data-filterable-set=":redwood-widget/iosMain" data-active="" data-toggle=":redwood-widget/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/iosMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-redwood-u-i-view/index.html">RedwoodUIView</a> : <a href="../../redwood-widget/app.cash.redwood.widget/-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">This view must be explicitly configured to know whether its dimensions are derived by measuring its contents, or whether they are provided by the superview. Use <a href="-redwood-u-i-view/fill-width.html">fillWidth</a> and <a href="-redwood-u-i-view/fill-height.html">fillHeight</a> to accept the parent's provided width and height respectively.</p></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-726432037%2FClasslikes%2F1081896384" anchor-label="RedwoodView" id="-726432037%2FClasslikes%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain">
+<a data-name="-726432037%2FClasslikes%2F1195238718" anchor-label="RedwoodView" id="-726432037%2FClasslikes%2F1195238718" data-filterable-set=":redwood-widget/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/commonMain" data-filterable-set=":redwood-widget/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-redwood-view/index.html"><span>Redwood</span><wbr><span><span>View</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-726432037%2FClasslikes%2F1081896384"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-726432037%2FClasslikes%2F1195238718"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"RedwoodView"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="-redwood-view/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"RedwoodView"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="-redwood-view/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="2006939535%2FClasslikes%2F141335592" anchor-label="ResizableWidget" id="2006939535%2FClasslikes%2F141335592" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain">
+<a data-name="2006939535%2FClasslikes%2F-1115354586" anchor-label="ResizableWidget" id="2006939535%2FClasslikes%2F-1115354586" data-filterable-set=":redwood-widget/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/iosMain" data-filterable-set=":redwood-widget/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-resizable-widget/index.html"><span>Resizable</span><wbr><span><span>Widget</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2006939535%2FClasslikes%2F141335592"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2006939535%2FClasslikes%2F-1115354586"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/iosMain">ios</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-resizable-widget/index.html">ResizableWidget</a><span class="token operator">&lt;</span><a href="-resizable-widget/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Implement this optional interface in all UIView Widget bindings that dynamically resize. Implementations should call <a href="-resizable-widget/-size-listener/index.html">SizeListener</a> on each property changes that cause the widget's measured dimensions to change.</p></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/iosMain" data-filterable-set=":redwood-widget/iosMain" data-active="" data-toggle=":redwood-widget/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/iosMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-resizable-widget/index.html">ResizableWidget</a><span class="token operator">&lt;</span><a href="-resizable-widget/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span> : <a href="../../redwood-widget/app.cash.redwood.widget/-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-resizable-widget/index.html">W</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Implement this optional interface in all UIView <a href="../../redwood-widget/app.cash.redwood.widget/-widget/index.html">Widget</a> bindings that dynamically resize. Implementations should call <a href="-resizable-widget/-size-listener/index.html">SizeListener</a> on each property changes that cause the widget's measured dimensions to change.</p></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-184845059%2FClasslikes%2F1081896384" anchor-label="SavedStateRegistry" id="-184845059%2FClasslikes%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain">
+<a data-name="-184845059%2FClasslikes%2F1195238718" anchor-label="SavedStateRegistry" id="-184845059%2FClasslikes%2F1195238718" data-filterable-set=":redwood-widget/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/commonMain" data-filterable-set=":redwood-widget/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-saved-state-registry/index.html"><span>Saved</span><wbr><span>State</span><wbr><span><span>Registry</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-184845059%2FClasslikes%2F1081896384"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-184845059%2FClasslikes%2F1195238718"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-saved-state-registry/index.html">SavedStateRegistry</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-saved-state-registry/index.html">SavedStateRegistry</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-464467988%2FClasslikes%2F141335592" anchor-label="UIViewChildren" id="-464467988%2FClasslikes%2F141335592" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain">
+<a data-name="-464467988%2FClasslikes%2F-1115354586" anchor-label="UIViewChildren" id="-464467988%2FClasslikes%2F-1115354586" data-filterable-set=":redwood-widget/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/iosMain" data-filterable-set=":redwood-widget/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-u-i-view-children/index.html"><span>UIView</span><wbr><span><span>Children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-464467988%2FClasslikes%2F141335592"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-464467988%2FClasslikes%2F-1115354586"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/iosMain">ios</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-u-i-view-children/index.html">UIViewChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token punctuation">, </span></span><span class="parameter ">insert<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>when (container) {
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/iosMain" data-filterable-set=":redwood-widget/iosMain" data-active="" data-toggle=":redwood-widget/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-u-i-view-children/index.html">UIViewChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token punctuation">, </span></span><span class="parameter ">insert<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>widget<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget/index.html">Widget</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>when (container) {
     is UIStackView -&gt; { index, widget -&gt;
       container.insertArrangedSubview(widget.value, index.convert())
     }
@@ -278,26 +278,26 @@
     else -&gt; { index, count -&gt;
       container.typedSubviews.removeFromSuperview(index, count)
     }
-  }<span class="token punctuation">, </span></span><span class="parameter ">invalidateSize<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ (container.superview ?: container).setNeedsLayout() }<span class="token punctuation">, </span></span><span class="parameter ">onModifierUpdated<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">&lt;</span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ _, _ -&gt;
+  }<span class="token punctuation">, </span></span><span class="parameter ">invalidateSize<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ (container.superview ?: container).setNeedsLayout() }<span class="token punctuation">, </span></span><span class="parameter ">onModifierUpdated<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>widget<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget/index.html">Widget</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ _, _ -&gt;
     invalidateSize()
-  }</span></span><span class="token punctuation">)</span></div></div>                  </div>
+  }</span></span><span class="token punctuation">)</span> : <a href="../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><span data-unresolved-link="platform.UIKit/UIView///PointingToDeclaration/">UIView</span><span class="token operator">&gt; </span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-443939483%2FClasslikes%2F1015757850" anchor-label="ViewGroupChildren" id="-443939483%2FClasslikes%2F1015757850" data-filterable-set=":redwood-widget:dokkaHtmlPartial/androidMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/androidMain">
+<a data-name="-443939483%2FClasslikes%2F-1474437924" anchor-label="ViewGroupChildren" id="-443939483%2FClasslikes%2F-1474437924" data-filterable-set=":redwood-widget/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/androidMain" data-filterable-set=":redwood-widget/androidMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-view-group-children/index.html"><span>View</span><wbr><span>Group</span><wbr><span><span>Children</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-443939483%2FClasslikes%2F1015757850"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-443939483%2FClasslikes%2F-1474437924"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-view-group-children/index.html">ViewGroupChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token punctuation">, </span></span><span class="parameter ">insert<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>widget<span class="token operator">: </span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ index, widget -&gt;
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/androidMain" data-filterable-set=":redwood-widget/androidMain" data-active="" data-toggle=":redwood-widget/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-view-group-children/index.html">ViewGroupChildren</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/ViewGroup.html">ViewGroup</a><span class="token punctuation">, </span></span><span class="parameter ">insert<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>widget<span class="token operator">: </span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ index, widget -&gt;
     container.addView(widget.value, index)
   }<span class="token punctuation">, </span></span><span class="parameter ">remove<span class="token operator">: </span><span class="token punctuation">(</span>index<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span>count<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{ index, count -&gt;
     container.removeViews(index, count)
@@ -308,32 +308,32 @@
               </div>
             </div>
           </div>
-<a data-name="423972480%2FClasslikes%2F1081896384" anchor-label="Widget" id="423972480%2FClasslikes%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain">
+<a data-name="423972480%2FClasslikes%2F1195238718" anchor-label="Widget" id="423972480%2FClasslikes%2F1195238718" data-filterable-set=":redwood-widget/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/commonMain" data-filterable-set=":redwood-widget/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-widget/index.html"><span><span>Widget</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="423972480%2FClasslikes%2F1081896384"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="423972480%2FClasslikes%2F1195238718"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"Widget"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-widget/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The target of a composable function's values. Usually binds to an associated native UI toolkit element, but could also forward changes through a serialized protocol or record the latest values for testing.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.native/-obj-c-name/index.html"><span class="token annotation builtin">ObjCName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"Widget"</span></span><span class="token punctuation">, </span></span><wbr><span>exact<span class="token operator"> = </span><span class="breakable-word"><span class="token boolean">true</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">interface </span><a href="-widget/index.html">Widget</a><span class="token operator">&lt;</span><a href="-widget/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The target of a composable function's values. Usually binds to an associated native UI toolkit element, but could also forward changes through a serialized protocol or record the latest values for testing.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="929865681%2FClasslikes%2F1081896384" anchor-label="WidgetSystem" id="929865681%2FClasslikes%2F1081896384" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/commonMain">
+<a data-name="929865681%2FClasslikes%2F1195238718" anchor-label="WidgetSystem" id="929865681%2FClasslikes%2F1195238718" data-filterable-set=":redwood-widget/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/commonMain" data-filterable-set=":redwood-widget/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-widget-system/index.html"><span>Widget</span><wbr><span><span>System</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="929865681%2FClasslikes%2F1081896384"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="929865681%2FClasslikes%2F1195238718"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="-widget-system/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Interface for types whose properties expose factories for a schema and all its transitive dependencies.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="-widget-system/index.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Interface for types whose properties expose factories for a schema and all its transitive dependencies.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -341,20 +341,20 @@
         </div>
       </div>
       <div data-togglable="EXTENSION_FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="680863874%2FFunctions%2F772003170" anchor-label="asRedwoodView" id="680863874%2FFunctions%2F772003170" data-filterable-set=":redwood-widget:dokkaHtmlPartial/jsMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-widget:dokkaHtmlPartial/jsMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/jsMain">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="680863874%2FFunctions%2F26089952" anchor-label="asRedwoodView" id="680863874%2FFunctions%2F26089952" data-filterable-set=":redwood-widget/jsMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-widget/jsMain" data-filterable-set=":redwood-widget/jsMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="as-redwood-view.html"><span>as</span><wbr><span>Redwood</span><wbr><span><span>View</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="680863874%2FFunctions%2F772003170"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="680863874%2FFunctions%2F26089952"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget:dokkaHtmlPartial/jsMain" data-filterable-set=":redwood-widget:dokkaHtmlPartial/jsMain" data-active="" data-toggle=":redwood-widget:dokkaHtmlPartial/jsMain">js</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget:dokkaHtmlPartial/jsMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a><span class="token punctuation">.</span><a href="as-redwood-view.html"><span class="token function">asRedwoodView</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a><span class="token operator">&gt;</span></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-widget/jsMain" data-filterable-set=":redwood-widget/jsMain" data-active="" data-toggle=":redwood-widget/jsMain">js</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-widget/jsMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a><span class="token punctuation">.</span><a href="as-redwood-view.html"><span class="token function">asRedwoodView</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/org.w3c.dom/-h-t-m-l-element/index.html">HTMLElement</a><span class="token operator">&gt;</span></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -365,17 +365,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2025 Copyright</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

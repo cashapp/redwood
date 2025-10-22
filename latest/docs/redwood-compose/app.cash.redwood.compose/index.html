@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>app.cash.redwood.compose</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
@@ -24,19 +24,17 @@
 <link href="../../styles/main.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
 <link href="../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../index.html" tabindex="1">
                     redwood
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
@@ -44,43 +42,43 @@
         <div class="library-version" id="library-version">0.19.0-SNAPSHOT
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":redwood-compose:dokkaHtmlPartial/androidMain">android</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-compose:dokkaHtmlPartial/commonMain">common</button>
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":redwood-compose:dokkaHtmlPartial/iosMain">ios</button>
-                <button class="platform-tag platform-selector js-like" data-active="" data-filter=":redwood-compose:dokkaHtmlPartial/jsMain">js</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":redwood-compose/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":redwood-compose/commonMain">common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":redwood-compose/iosMain">ios</button>
+                <button class="platform-tag platform-selector js-like" data-active="" aria-pressed="true" data-filter=":redwood-compose/jsMain">js</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
                         <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-compose:dokkaHtmlPartial/androidMain" data-filter=":redwood-compose:dokkaHtmlPartial/androidMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-compose/androidMain" data-filter=":redwood-compose/androidMain">
                                 <span class="checkbox--icon"></span>
                                 android
                             </label>
                         </li>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-compose:dokkaHtmlPartial/commonMain" data-filter=":redwood-compose:dokkaHtmlPartial/commonMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-compose/commonMain" data-filter=":redwood-compose/commonMain">
                                 <span class="checkbox--icon"></span>
                                 common
                             </label>
                         </li>
                         <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-compose:dokkaHtmlPartial/iosMain" data-filter=":redwood-compose:dokkaHtmlPartial/iosMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-compose/iosMain" data-filter=":redwood-compose/iosMain">
                                 <span class="checkbox--icon"></span>
                                 ios
                             </label>
                         </li>
                         <li role="option" class="dropdown--option platform-selector-option js-like" tabindex="0">
                             <label class="checkbox">
-                                <input type="checkbox" class="checkbox--input" id=":redwood-compose:dokkaHtmlPartial/jsMain" data-filter=":redwood-compose:dokkaHtmlPartial/jsMain">
+                                <input type="checkbox" class="checkbox--input" id=":redwood-compose/jsMain" data-filter=":redwood-compose/jsMain">
                                 <span class="checkbox--icon"></span>
                                 js
                             </label>
@@ -88,33 +86,35 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     redwood
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
-<div class="main-content" data-page-type="package" id="content" pageids="redwood-compose::app.cash.redwood.compose////PointingToDeclaration//-245590652">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageids="redwood-compose::app.cash.redwood.compose////PointingToDeclaration//934628388">
   <div class="breadcrumbs"><a href="../index.html">redwood-compose</a><span class="delimiter">/</span><span class="current">app.cash.redwood.compose</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
@@ -123,86 +123,86 @@
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button><button class="section-tab" data-togglable="PROPERTY,EXTENSION_PROPERTY">Properties</button></div>
     <div class="tabs-section-body">
       <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="956806146%2FClasslikes%2F5783256" anchor-label="AndroidUiDispatcher" id="956806146%2FClasslikes%2F5783256" data-filterable-set=":redwood-compose:dokkaHtmlPartial/androidMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/androidMain">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="956806146%2FClasslikes%2F-1692021154" anchor-label="AndroidUiDispatcher" id="956806146%2FClasslikes%2F-1692021154" data-filterable-set=":redwood-compose/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/androidMain" data-filterable-set=":redwood-compose/androidMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-android-ui-dispatcher/index.html"><span>Android</span><wbr><span>Ui</span><wbr><span><span>Dispatcher</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="956806146%2FClasslikes%2F5783256"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="956806146%2FClasslikes%2F-1692021154"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":redwood-compose:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-dispatcher/index.html">AndroidUiDispatcher</a> : <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> that will perform dispatch during a <a href="../../redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/handler.html">handler</a> callback or <a href="-android-ui-dispatcher/choreographer.html">choreographer</a>'s animation frame stage, whichever comes first. Use <a href="-android-ui-dispatcher/-companion/-main.html">Main</a> to obtain a dispatcher for the process's main thread (i.e. the activity thread).</p></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose/androidMain" data-filterable-set=":redwood-compose/androidMain" data-active="" data-toggle=":redwood-compose/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-dispatcher/index.html">AndroidUiDispatcher</a> : <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span></div><div class="brief "><p class="paragraph">A <span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span> that will perform dispatch during a <a href="../../redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/--root--.html">handler</a> callback or <a href="../../redwood-compose/app.cash.redwood.compose/-android-ui-dispatcher/--root--.html">choreographer</a>'s animation frame stage, whichever comes first. Use <a href="-android-ui-dispatcher/-companion/-main.html">Main</a> to obtain a dispatcher for the process's main thread (i.e. the activity thread).</p></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="2007252296%2FClasslikes%2F5783256" anchor-label="AndroidUiFrameClock" id="2007252296%2FClasslikes%2F5783256" data-filterable-set=":redwood-compose:dokkaHtmlPartial/androidMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/androidMain">
+<a data-name="2007252296%2FClasslikes%2F-1692021154" anchor-label="AndroidUiFrameClock" id="2007252296%2FClasslikes%2F-1692021154" data-filterable-set=":redwood-compose/androidMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/androidMain" data-filterable-set=":redwood-compose/androidMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-android-ui-frame-clock/index.html"><span>Android</span><wbr><span>Ui</span><wbr><span>Frame</span><wbr><span><span>Clock</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2007252296%2FClasslikes%2F5783256"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2007252296%2FClasslikes%2F-1692021154"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose:dokkaHtmlPartial/androidMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":redwood-compose:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-frame-clock/index.html">AndroidUiFrameClock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">choreographer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/Choreographer.html">Choreographer</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose/androidMain" data-filterable-set=":redwood-compose/androidMain" data-active="" data-toggle=":redwood-compose/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-android-ui-frame-clock/index.html">AndroidUiFrameClock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">choreographer<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/Choreographer.html">Choreographer</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="218506180%2FClasslikes%2F547117738" anchor-label="DisplayLinkClock" id="218506180%2FClasslikes%2F547117738" data-filterable-set=":redwood-compose:dokkaHtmlPartial/iosMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/iosMain">
+<a data-name="218506180%2FClasslikes%2F1976086372" anchor-label="DisplayLinkClock" id="218506180%2FClasslikes%2F1976086372" data-filterable-set=":redwood-compose/iosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/iosMain" data-filterable-set=":redwood-compose/iosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-display-link-clock/index.html"><span>Display</span><wbr><span>Link</span><wbr><span><span>Clock</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="218506180%2FClasslikes%2F547117738"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="218506180%2FClasslikes%2F1976086372"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose:dokkaHtmlPartial/iosMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/iosMain" data-active="" data-toggle=":redwood-compose:dokkaHtmlPartial/iosMain">ios</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-display-link-clock/index.html">DisplayLinkClock</a> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose/iosMain" data-filterable-set=":redwood-compose/iosMain" data-active="" data-toggle=":redwood-compose/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/iosMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-display-link-clock/index.html">DisplayLinkClock</a> : <span data-unresolved-link="/<ERROR CLASS> ERROR CLASS: Symbol not found for MonotonicFrameClock///PointingToDeclaration/">&lt;ERROR CLASS&gt; ERROR CLASS: Symbol not found for MonotonicFrameClock</span></div></div>                  </div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="1513973066%2FClasslikes%2F-162544958" anchor-label="RedwoodComposition" id="1513973066%2FClasslikes%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="1513973066%2FClasslikes%2F-1254874116" anchor-label="RedwoodComposition" id="1513973066%2FClasslikes%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-redwood-composition/index.html"><span>Redwood</span><wbr><span><span>Composition</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1513973066%2FClasslikes%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1513973066%2FClasslikes%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-redwood-composition/index.html">RedwoodComposition</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-redwood-composition/index.html">RedwoodComposition</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-388585641%2FClasslikes%2F444407140" anchor-label="WindowAnimationFrameClock" id="-388585641%2FClasslikes%2F444407140" data-filterable-set=":redwood-compose:dokkaHtmlPartial/jsMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/jsMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/jsMain">
+<a data-name="-388585641%2FClasslikes%2F-1982986850" anchor-label="WindowAnimationFrameClock" id="-388585641%2FClasslikes%2F-1982986850" data-filterable-set=":redwood-compose/jsMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/jsMain" data-filterable-set=":redwood-compose/jsMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-window-animation-frame-clock/index.html"><span>Window</span><wbr><span>Animation</span><wbr><span>Frame</span><wbr><span><span>Clock</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-388585641%2FClasslikes%2F444407140"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-388585641%2FClasslikes%2F-1982986850"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose:dokkaHtmlPartial/jsMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/jsMain" data-active="" data-toggle=":redwood-compose:dokkaHtmlPartial/jsMain">js</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/jsMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-window-animation-frame-clock/index.html">WindowAnimationFrameClock</a> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":redwood-compose/jsMain" data-filterable-set=":redwood-compose/jsMain" data-active="" data-toggle=":redwood-compose/jsMain">js</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/jsMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-window-animation-frame-clock/index.html">WindowAnimationFrameClock</a> : <a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/MonotonicFrameClock.html">MonotonicFrameClock</a></div></div>                  </div>
                 </div>
               </div>
             </div>
@@ -210,108 +210,108 @@
         </div>
       </div>
       <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-1617978997%2FProperties%2F-162544958" anchor-label="current" id="-1617978997%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1617978997%2FProperties%2F-1254874116" anchor-label="current" id="-1617978997%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="current.html"><span><span>current</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1617978997%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1617978997%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">val </span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/-companion/index.html">OnBackPressedDispatcher.Companion</a><span class="token punctuation">.</span><a href="current.html">current</a><span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/index.html">OnBackPressedDispatcher</a></div><br><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">val </span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/-companion/index.html">UiConfiguration.Companion</a><span class="token punctuation">.</span><a href="current.html">current</a><span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a></div><div class="brief "><p class="paragraph">Expose various configuration properties of the host.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">val </span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/-companion/index.html">OnBackPressedDispatcher.Companion</a><span class="token punctuation">.</span><a href="current.html">current</a><span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/index.html">OnBackPressedDispatcher</a></div><br><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">val </span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/-companion/index.html">UiConfiguration.Companion</a><span class="token punctuation">.</span><a href="current.html">current</a><span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a></div><div class="brief "><p class="paragraph">Expose various configuration properties of the host.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-369588688%2FProperties%2F-162544958" anchor-label="LocalFocusDirector" id="-369588688%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-369588688%2FProperties%2F-1254874116" anchor-label="LocalFocusDirector" id="-369588688%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-local-focus-director.html"><span>Local</span><wbr><span>Focus</span><wbr><span><span>Director</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-369588688%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-369588688%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-focus-director.html">LocalFocusDirector</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-ui-core-api/app.cash.redwood.ui.core.api/-focus-director/index.html">FocusDirector</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-focus-director.html">LocalFocusDirector</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-ui-core-api/app.cash.redwood.ui.core.api/-focus-director/index.html">FocusDirector</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1378064079%2FProperties%2F-162544958" anchor-label="LocalOnBackPressedDispatcher" id="-1378064079%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-1378064079%2FProperties%2F-1254874116" anchor-label="LocalOnBackPressedDispatcher" id="-1378064079%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-local-on-back-pressed-dispatcher.html"><span>Local</span><wbr><span>On</span><wbr><span>Back</span><wbr><span>Pressed</span><wbr><span><span>Dispatcher</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1378064079%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1378064079%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-on-back-pressed-dispatcher.html">LocalOnBackPressedDispatcher</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/index.html">OnBackPressedDispatcher</a><span class="token operator">&gt;</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-on-back-pressed-dispatcher.html">LocalOnBackPressedDispatcher</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/index.html">OnBackPressedDispatcher</a><span class="token operator">&gt;</span></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-778046478%2FProperties%2F-162544958" anchor-label="LocalUiConfiguration" id="-778046478%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-778046478%2FProperties%2F-1254874116" anchor-label="LocalUiConfiguration" id="-778046478%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-local-ui-configuration.html"><span>Local</span><wbr><span>Ui</span><wbr><span><span>Configuration</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-778046478%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-778046478%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-ui-configuration.html">LocalUiConfiguration</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Provide various configurations of the UI. This value will be bound automatically. Custom values should only be provided into a composition for testing purposes!</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-ui-configuration.html">LocalUiConfiguration</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Provide various configurations of the UI. This value will be bound automatically. Custom values should only be provided into a composition for testing purposes!</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2109121781%2FProperties%2F-162544958" anchor-label="LocalViewInsets" id="-2109121781%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-2109121781%2FProperties%2F-1254874116" anchor-label="LocalViewInsets" id="-2109121781%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-local-view-insets.html"><span>Local</span><wbr><span>View</span><wbr><span><span>Insets</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2109121781%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2109121781%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-view-insets.html">LocalViewInsets</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The insets of the viewport that the composition is not safe for content because it is obscured by the system.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-view-insets.html">LocalViewInsets</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The insets of the viewport that the composition is not safe for content because it is obscured by the system.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="295482048%2FProperties%2F-162544958" anchor-label="LocalWidgetVersion" id="295482048%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="295482048%2FProperties%2F-1254874116" anchor-label="LocalWidgetVersion" id="295482048%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-local-widget-version.html"><span>Local</span><wbr><span>Widget</span><wbr><span><span>Version</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="295482048%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="295482048%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-widget-version.html">LocalWidgetVersion</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Provide the version of widgets in use. This value will be bound automatically when a protocol-based display is used. Custom values should only be provided into a composition for testing purposes!</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-local-widget-version.html">LocalWidgetVersion</a><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ProvidableCompositionLocal.html">ProvidableCompositionLocal</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-u-int/index.html">UInt</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Provide the version of widgets in use. This value will be bound automatically when a protocol-based display is used. Custom values should only be provided into a composition for testing purposes!</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-2138974819%2FProperties%2F-162544958" anchor-label="WidgetVersion" id="-2138974819%2FProperties%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-2138974819%2FProperties%2F-1254874116" anchor-label="WidgetVersion" id="-2138974819%2FProperties%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-widget-version.html"><span>Widget</span><wbr><span><span>Version</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2138974819%2FProperties%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2138974819%2FProperties%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">val </span><a href="-widget-version.html">WidgetVersion</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-u-int/index.html">UInt</a></div><div class="brief "><p class="paragraph">Exposes the version of the widgets for conditional logic (such as progressive enhancement).</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div><div class="block"><span class="token annotation builtin">@get:</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/ReadOnlyComposable.html"><span class="token annotation builtin">ReadOnlyComposable</span></a></div></div><span class="token keyword">val </span><a href="-widget-version.html">WidgetVersion</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-u-int/index.html">UInt</a></div><div class="brief "><p class="paragraph">Exposes the version of the widgets for conditional logic (such as progressive enhancement).</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -319,63 +319,63 @@
         </div>
       </div>
       <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
-        <div class="table"><a data-name="-1662259142%2FFunctions%2F-162544958" anchor-label="BackHandler" id="-1662259142%2FFunctions%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-1662259142%2FFunctions%2F-1254874116" anchor-label="BackHandler" id="-1662259142%2FFunctions%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-back-handler.html"><span>Back</span><wbr><span><span>Handler</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1662259142%2FFunctions%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1662259142%2FFunctions%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-back-handler.html"><span class="token function">BackHandler</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">enabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">onBack<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">An effect for handling presses of the system back button.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-back-handler.html"><span class="token function">BackHandler</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">enabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">onBack<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">An effect for handling presses of the system back button.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-1692909038%2FFunctions%2F-162544958" anchor-label="ConsumeInsets" id="-1692909038%2FFunctions%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-1692909038%2FFunctions%2F-1254874116" anchor-label="ConsumeInsets" id="-1692909038%2FFunctions%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-consume-insets.html"><span>Consume</span><wbr><span><span>Insets</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1692909038%2FFunctions%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1692909038%2FFunctions%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-consume-insets.html"><span class="token function">ConsumeInsets</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">maximumValue<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><a href="../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Consume <a href="-local-view-insets.html">LocalViewInsets</a> for the execution of <a href="-consume-insets.html">block</a>. This will consume all available insets unless <a href="-consume-insets.html">maximumValue</a> is set.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="-consume-insets.html"><span class="token function">ConsumeInsets</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">maximumValue<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">block<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><a href="../../redwood-runtime/app.cash.redwood.ui/-margin/index.html">Margin</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Consume <a href="-local-view-insets.html">LocalViewInsets</a> for the execution of <a href="-consume-insets.html">block</a>. This will consume all available insets unless <a href="-consume-insets.html">maximumValue</a> is set.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-498678489%2FFunctions%2F-162544958" anchor-label="RedwoodComposition" id="-498678489%2FFunctions%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="-498678489%2FFunctions%2F-1254874116" anchor-label="RedwoodComposition" id="-498678489%2FFunctions%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-redwood-composition.html"><span>Redwood</span><wbr><span><span>Composition</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-498678489%2FFunctions%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-498678489%2FFunctions%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="-redwood-composition.html"><span class="token function">RedwoodComposition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">view<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">widgetSystem<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onChanges<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-redwood-composition/index.html">RedwoodComposition</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="-redwood-composition.html"><span class="token function">RedwoodComposition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">container<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onBackPressedDispatcher<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/index.html">OnBackPressedDispatcher</a><span class="token punctuation">, </span></span><span class="parameter ">focusDirector<span class="token operator">: </span><a href="../../redwood-ui-core-api/app.cash.redwood.ui.core.api/-focus-director/index.html">FocusDirector</a><span class="token punctuation">, </span></span><span class="parameter ">saveableStateRegistry<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/saveable/SaveableStateRegistry.html">SaveableStateRegistry</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">uiConfigurations<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">widgetSystem<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onChanges<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-redwood-composition/index.html">RedwoodComposition</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="-redwood-composition.html"><span class="token function">RedwoodComposition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">view<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-redwood-view/index.html">RedwoodView</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">widgetSystem<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onChanges<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-redwood-composition/index.html">RedwoodComposition</a></div><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="-redwood-composition.html"><span class="token function">RedwoodComposition</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span><span class="token punctuation">, </span></span><span class="parameter ">container<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget/-children/index.html">Widget.Children</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onBackPressedDispatcher<span class="token operator">: </span><a href="../../redwood-runtime/app.cash.redwood.ui/-on-back-pressed-dispatcher/index.html">OnBackPressedDispatcher</a><span class="token punctuation">, </span></span><span class="parameter ">focusDirector<span class="token operator">: </span><a href="../../redwood-ui-core-api/app.cash.redwood.ui.core.api/-focus-director/index.html">FocusDirector</a><span class="token punctuation">, </span></span><span class="parameter ">saveableStateRegistry<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/saveable/SaveableStateRegistry.html">SaveableStateRegistry</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">uiConfigurations<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="../../redwood-runtime/app.cash.redwood.ui/-ui-configuration/index.html">UiConfiguration</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">widgetSystem<span class="token operator">: </span><a href="../../redwood-widget/app.cash.redwood.widget/-widget-system/index.html">WidgetSystem</a><span class="token operator">&lt;</span><a href="-redwood-composition.html">W</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">onChanges<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator"> = </span>{}</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-redwood-composition/index.html">RedwoodComposition</a></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="600379576%2FFunctions%2F-162544958" anchor-label="rememberFocusRequester" id="600379576%2FFunctions%2F-162544958" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":redwood-compose:dokkaHtmlPartial/commonMain" data-filterable-set=":redwood-compose:dokkaHtmlPartial/commonMain">
+<a data-name="600379576%2FFunctions%2F-1254874116" anchor-label="rememberFocusRequester" id="600379576%2FFunctions%2F-1254874116" data-filterable-set=":redwood-compose/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":redwood-compose/commonMain" data-filterable-set=":redwood-compose/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="remember-focus-requester.html"><span>remember</span><wbr><span>Focus</span><wbr><span><span>Requester</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="600379576%2FFunctions%2F-162544958"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="600379576%2FFunctions%2F-1254874116"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="remember-focus-requester.html"><span class="token function">rememberFocusRequester</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../redwood-ui-core-api/app.cash.redwood.ui.core.api/-focus-requester/index.html">FocusRequester</a></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":redwood-compose/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a></div></div><span class="token keyword">fun </span><a href="remember-focus-requester.html"><span class="token function">rememberFocusRequester</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../redwood-ui-core-api/app.cash.redwood.ui.core.api/-focus-requester/index.html">FocusRequester</a></div></div></div>
                 </div>
               </div>
             </div>
@@ -386,17 +386,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2025 Copyright</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

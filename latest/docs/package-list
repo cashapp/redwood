@@ -48,6 +48,8 @@ module:redwood-lazylayout-view
 app.cash.redwood.lazylayout.view
 module:redwood-lazylayout-widget
 app.cash.redwood.lazylayout.widget
+module:redwood-leak-detector
+app.cash.redwood.leaks
 module:redwood-protocol
 app.cash.redwood.protocol
 module:redwood-protocol-guest
@@ -119,3 +121,5 @@ module:redwood-widget-composeui
 app.cash.redwood.widget.compose
 module:redwood-widget-testing
 app.cash.redwood.widget.testing
+module:redwood-yoga
+app.cash.redwood.yoga
