@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.vanniktech.maven.publish.JavaPlatform
-
 apply plugin: 'java-platform'
 
 redwoodBuild {
   publishing()
-}
-
-mavenPublishing {
-  configure(new JavaPlatform())
 }
 
 dependencies {

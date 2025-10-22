@@ -472,6 +472,11 @@ private class RedwoodBuildExtensionImpl(private val project: Project) : RedwoodB
 
     val mavenPublishing = project.extensions.getByName("mavenPublishing") as MavenPublishBaseExtension
     mavenPublishing.apply {
+      // Disable Javadoc jars. They're basically useless relics, but enabling this will also cause
+      // AGP to use an old version of Dokka which fails to run on the latest Java versions.
+      @Suppress("UnstableApiUsage")
+      configureBasedOnAppliedPlugins(javadocJar = false)
+
       publishToMavenCentral(automaticRelease = true)
       if (project.providers.systemProperty("RELEASE_SIGNING_ENABLED").getOrElse("true").toBoolean()) {
         signAllPublications()
