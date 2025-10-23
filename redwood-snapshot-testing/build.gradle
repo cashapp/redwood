@@ -12,11 +12,11 @@ kotlin {
     commonMain {
       dependencies {
         api libs.burst
+        api libs.burst.coroutines
         api libs.jetbrains.compose.foundation
         api libs.kotlin.test
         api projects.redwoodWidget
         implementation libs.assertk
-        implementation libs.burst.coroutines
       }
     }
     androidMain {
