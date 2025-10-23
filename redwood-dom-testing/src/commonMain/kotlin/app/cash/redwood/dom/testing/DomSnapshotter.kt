@@ -50,7 +50,7 @@ public class DomSnapshotter {
       style.height = frame.height?.let { "${it}px" } ?: "max-content"
       style.display = "flex"
       style.flexDirection = "column"
-      style.alignItems = "stretch"
+      style.alignItems = "flex-start"
     }
     wrapper.appendChild(element)
     document.documentElement!!.appendChild(wrapper)
