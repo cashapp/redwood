@@ -45,7 +45,10 @@ class ViewSnapshotter private constructor(
   class Factory(
     private val paparazzi: Paparazzi,
   ) : Snapshotter.Factory<View> {
-    override fun invoke(widget: View) = ViewSnapshotter(paparazzi, widget)
+    override fun invoke(
+      widget: View,
+      frame: Frame,
+    ) = ViewSnapshotter(paparazzi, widget)
 
     override suspend fun intercept(testFunction: CoroutineTestFunction) {
       testFunction()

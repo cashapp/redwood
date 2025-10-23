@@ -17,6 +17,7 @@ package app.cash.redwood.layout
 
 import app.cash.burst.InterceptTest
 import app.cash.redwood.layout.widget.Spacer
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.ui.dp
 import app.cash.redwood.widget.Widget
@@ -39,21 +40,21 @@ abstract class AbstractSpacerTest<T : Any> {
 
   @Test fun testZeroSpacer() = runTest {
     val widget = widget(width = 0, height = 0)
-    snapshotterFactory(wrap(widget, horizontal = true)).snapshot()
+    snapshotterFactory(wrap(widget, horizontal = true), Frame.None).snapshot()
   }
 
   @Test fun testWidthOnlySpacer() = runTest {
     val widget = widget(width = 100, height = 0)
-    snapshotterFactory(wrap(widget, horizontal = true)).snapshot()
+    snapshotterFactory(wrap(widget, horizontal = true), Frame.None).snapshot()
   }
 
   @Test fun testHeightOnlySpacer() = runTest {
     val widget = widget(width = 0, height = 100)
-    snapshotterFactory(wrap(widget, horizontal = false)).snapshot()
+    snapshotterFactory(wrap(widget, horizontal = false), Frame.None).snapshot()
   }
 
   @Test fun testBothSpacer() = runTest {
     val widget = widget(width = 100, height = 100)
-    snapshotterFactory(wrap(widget, horizontal = false)).snapshot()
+    snapshotterFactory(wrap(widget, horizontal = false), Frame.None).snapshot()
   }
 }

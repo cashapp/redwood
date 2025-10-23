@@ -20,6 +20,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.lazylayout.api.ScrollItemIndex
 import app.cash.redwood.lazylayout.widget.LazyList
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.snapshot.testing.Snapshotter
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.argb
@@ -65,13 +66,13 @@ abstract class AbstractLazyListTest<T : Any> {
     }
     (lazyList as? ChangeListener)?.onEndChanges()
 
-    snapshotterFactory(lazyList.value).snapshot()
+    snapshotterFactory(lazyList.value, Frame.Phone).snapshot()
   }
 
   @Test
   fun testPlaceholderToLoadedAndLoadedToPlaceholder() = runTest {
     val lazyList = defaultLazyList()
-    val snapshotter = snapshotterFactory(lazyList.value)
+    val snapshotter = snapshotterFactory(lazyList.value, Frame.Phone)
 
     (lazyList as? ChangeListener)?.onEndChanges()
     snapshotter.snapshot("0 empty")
@@ -110,7 +111,7 @@ abstract class AbstractLazyListTest<T : Any> {
       lazyList.items.insert(index, widgetFactory.text(value))
     }
     (lazyList as? ChangeListener)?.onEndChanges()
-    snapshotterFactory(lazyList.value).snapshot()
+    snapshotterFactory(lazyList.value, Frame.Phone).snapshot()
   }
 }
 

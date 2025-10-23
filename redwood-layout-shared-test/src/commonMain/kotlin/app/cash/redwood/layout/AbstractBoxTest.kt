@@ -23,6 +23,7 @@ import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.snapshot.testing.Blue
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.snapshot.testing.Green
 import app.cash.redwood.snapshot.testing.Red
 import app.cash.redwood.snapshot.testing.Snapshotter
@@ -60,7 +61,7 @@ abstract class AbstractBoxTest<T : Any> {
   @Test
   fun testEmpty_Defaults() = runTest {
     val widget = box()
-    snapshotterFactory(widget.value).snapshot()
+    snapshotterFactory(widget.value, Frame.None).snapshot()
   }
 
   @Test
@@ -69,7 +70,7 @@ abstract class AbstractBoxTest<T : Any> {
       width(Constraint.Wrap)
       height(Constraint.Wrap)
     }
-    snapshotterFactory(widget.value).snapshot()
+    snapshotterFactory(widget.value, Frame.None).snapshot()
   }
 
   @Test
@@ -78,7 +79,7 @@ abstract class AbstractBoxTest<T : Any> {
       width(Constraint.Fill)
       height(Constraint.Fill)
     }
-    snapshotterFactory(widget.value).snapshot()
+    snapshotterFactory(widget.value, Frame.Phone).snapshot()
   }
 
   @Test
@@ -127,7 +128,8 @@ abstract class AbstractBoxTest<T : Any> {
         ),
       )
     }
-    snapshotterFactory(widget.value).snapshot()
+
+    snapshotterFactory(widget.value, Frame.Phone.apply(constraint)).snapshot()
   }
 
   @Test
@@ -153,7 +155,7 @@ abstract class AbstractBoxTest<T : Any> {
         ),
       )
     }
-    snapshotterFactory(widget.value).snapshot()
+    snapshotterFactory(widget.value, Frame.Phone).snapshot()
   }
 
   @Test
@@ -196,7 +198,7 @@ abstract class AbstractBoxTest<T : Any> {
 
     val scrollWrapper = widgetFactory.scrollWrapper()
     scrollWrapper.content = container.value
-    snapshotterFactory(scrollWrapper.value).snapshot()
+    snapshotterFactory(scrollWrapper.value, Frame.Phone.wrapHeight()).snapshot()
   }
 
   @Test
@@ -239,7 +241,7 @@ abstract class AbstractBoxTest<T : Any> {
         ),
       )
     }
-    snapshotterFactory(widget.value).snapshot()
+    snapshotterFactory(widget.value, Frame.Phone).snapshot()
   }
 
   @Test
@@ -282,7 +284,7 @@ abstract class AbstractBoxTest<T : Any> {
         ),
       )
     }
-    snapshotterFactory(widget.value).snapshot()
+    snapshotterFactory(widget.value, Frame.Phone).snapshot()
   }
 
   @Test
@@ -311,7 +313,7 @@ abstract class AbstractBoxTest<T : Any> {
         ),
       )
     }
-    val snapshotter = snapshotterFactory(widget.value)
+    val snapshotter = snapshotterFactory(widget.value, Frame.None)
     snapshotter.snapshot("Margin")
     redColor.modifier = Modifier
     widget.children.onModifierUpdated(0, redColor)
@@ -327,7 +329,7 @@ abstract class AbstractBoxTest<T : Any> {
       horizontalAlignment(CrossAxisAlignment.Start)
       verticalAlignment(CrossAxisAlignment.Start)
     }
-    val snapshotter = snapshotterFactory(widget.value)
+    val snapshotter = snapshotterFactory(widget.value, Frame.None)
 
     // Render before calling detach().
     widget.children.insert(
@@ -370,7 +372,7 @@ abstract class AbstractBoxTest<T : Any> {
         horizontalAlignment(CrossAxisAlignment.Start)
         verticalAlignment(CrossAxisAlignment.Start)
       }
-    val snapshotter = snapshotterFactory(container.value)
+    val snapshotter = snapshotterFactory(container.value, Frame.Phone)
 
     val a = widgetFactory.text(
       modifier = HorizontalAlignmentImpl(CrossAxisAlignment.Start),
@@ -396,7 +398,7 @@ abstract class AbstractBoxTest<T : Any> {
   @Test
   fun testLayoutUpdatesWithoutSizeChanges() = runTest {
     val container = widgetFactory.column()
-    val snapshotter = snapshotterFactory(container.value)
+    val snapshotter = snapshotterFactory(container.value, Frame.None)
 
     val box = box()
       .apply {
@@ -430,7 +432,7 @@ abstract class AbstractBoxTest<T : Any> {
         horizontalAlignment(CrossAxisAlignment.Stretch)
         verticalAlignment(CrossAxisAlignment.Center)
       }
-    val snapshotter = snapshotterFactory(container.value)
+    val snapshotter = snapshotterFactory(container.value, Frame.Phone)
 
     val box = box()
       .apply {
@@ -462,7 +464,7 @@ abstract class AbstractBoxTest<T : Any> {
         horizontalAlignment(CrossAxisAlignment.Center)
         verticalAlignment(CrossAxisAlignment.Stretch)
       }
-    val snapshotter = snapshotterFactory(container.value)
+    val snapshotter = snapshotterFactory(container.value, Frame.Phone)
 
     val box = box()
       .apply {
@@ -495,7 +497,7 @@ abstract class AbstractBoxTest<T : Any> {
         horizontalAlignment(CrossAxisAlignment.Start)
         verticalAlignment(CrossAxisAlignment.Start)
       }
-    val snapshotter = snapshotterFactory(container.value)
+    val snapshotter = snapshotterFactory(container.value, Frame.Phone)
 
     val box = box()
       .apply {

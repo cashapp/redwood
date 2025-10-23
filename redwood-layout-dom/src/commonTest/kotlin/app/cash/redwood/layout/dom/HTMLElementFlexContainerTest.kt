@@ -37,7 +37,7 @@ import org.w3c.dom.HTMLElement
 
 class HTMLElementFlexContainerTest : AbstractFlexContainerTest<HTMLElement>() {
   override val snapshotterFactory: Snapshotter.Factory<HTMLElement> =
-    HTMLElementSnapshotter.Factory(Frame.Companion.Iphone14)
+    HTMLElementSnapshotter.Factory()
   override val widgetFactory: TestWidgetFactory<HTMLElement> =
     HTMLElementTestWidgetFactory()
   private val layoutWidgetFactory = HTMLElementRedwoodLayoutWidgetFactory(document)

@@ -15,7 +15,6 @@
  */
 package app.cash.redwood.layout.dom
 
-import app.cash.redwood.dom.testing.Frame
 import app.cash.redwood.layout.AbstractBoxTest
 import app.cash.redwood.layout.widget.Box
 import app.cash.redwood.snapshot.testing.HTMLElementSnapshotter
@@ -28,7 +27,7 @@ import org.w3c.dom.HTMLElement
 
 class HTMLElementBoxTest : AbstractBoxTest<HTMLElement>() {
   override val snapshotterFactory: Snapshotter.Factory<HTMLElement> =
-    HTMLElementSnapshotter.Factory(Frame.Companion.Iphone14)
+    HTMLElementSnapshotter.Factory()
   override val widgetFactory: TestWidgetFactory<HTMLElement> =
     HTMLElementTestWidgetFactory()
   private val layoutWidgetFactory = HTMLElementRedwoodLayoutWidgetFactory(document)

@@ -27,7 +27,7 @@ import org.w3c.dom.HTMLElement
 
 class HTMLElementSpacerTest : AbstractSpacerTest<HTMLElement>() {
 
-  override val snapshotterFactory = HTMLElementSnapshotter.Factory(Frame.None)
+  override val snapshotterFactory = HTMLElementSnapshotter.Factory()
 
   override fun widget(): Spacer<HTMLElement> = HTMLElementRedwoodLayoutWidgetFactory(document).Spacer()
 

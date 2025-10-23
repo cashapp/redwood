@@ -110,7 +110,10 @@ class UIViewSnapshotter private constructor(
     val heightConstraint: Constraint = Constraint.Fill,
     val framed: Boolean = true,
   ) : Snapshotter.Factory<UIView> {
-    override fun invoke(widget: UIView): UIViewSnapshotter {
+    override fun invoke(
+      widget: UIView,
+      frame: Frame,
+    ): UIViewSnapshotter {
       if (!framed) {
         return UIViewSnapshotter(callback, widget, widthConstraint, heightConstraint)
       }

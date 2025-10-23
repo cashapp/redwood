@@ -17,6 +17,7 @@
 
 package app.cash.redwood.layout
 
+import app.cash.redwood.layout.api.Constraint
 import app.cash.redwood.layout.api.CrossAxisAlignment
 import app.cash.redwood.layout.modifier.Flex
 import app.cash.redwood.layout.modifier.Grow
@@ -26,6 +27,7 @@ import app.cash.redwood.layout.modifier.Shrink
 import app.cash.redwood.layout.modifier.Size
 import app.cash.redwood.layout.modifier.VerticalAlignment
 import app.cash.redwood.layout.modifier.Width
+import app.cash.redwood.snapshot.testing.Frame
 import app.cash.redwood.ui.Dp
 import app.cash.redwood.ui.Margin
 import app.cash.redwood.ui.dp
@@ -79,3 +81,16 @@ internal fun shortText() = "Short\n".repeat(2).trim()
 internal fun mediumText() = "MediumMedium\n".repeat(7).trim()
 
 internal fun longText() = "LongLongLongLongLongLongLong\n".repeat(12).trim()
+
+fun Frame.apply(constraint: Constraint): Frame {
+  return apply(constraint, constraint)
+}
+
+fun Frame.apply(widthConstraint: Constraint, heightConstraint: Constraint): Frame {
+  return when {
+    widthConstraint == Constraint.Wrap && heightConstraint == Constraint.Wrap -> wrapWidthAndHeight()
+    heightConstraint == Constraint.Wrap -> wrapHeight()
+    widthConstraint == Constraint.Wrap -> wrapWidth()
+    else -> this
+  }
+}
