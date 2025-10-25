@@ -123,7 +123,7 @@ jobs:
       - run: ./gradlew dokkaGenerate
 
       # If we're on the integration branch, save the site to deploy from the publish job.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: site
           path: build/dokka/html/
@@ -155,7 +155,7 @@ jobs:
 
       - run: ./gradlew redwood-layout-dom:jsBrowserTest
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ always() }}
         with:
           name: screenshot-test-results
@@ -312,7 +312,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: site
           path: site
