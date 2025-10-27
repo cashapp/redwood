@@ -12,6 +12,7 @@ dependencies {
   testImplementation projects.redwoodWidgetSharedTest
   testImplementation libs.androidx.activity
   testImplementation libs.burst
+  testImplementation libs.robolectric
 }
 
 android {

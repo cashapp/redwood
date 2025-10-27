@@ -17,29 +17,22 @@ package app.cash.redwood.widget.view
 
 import android.view.View
 import androidx.activity.OnBackPressedDispatcher
-import app.cash.paparazzi.DeviceConfig
-import app.cash.paparazzi.Paparazzi
 import app.cash.redwood.snapshot.testing.TestWidgetFactory
 import app.cash.redwood.snapshot.testing.ViewTestWidgetFactory
 import app.cash.redwood.widget.AbstractRedwoodViewFocusTest
 import app.cash.redwood.widget.RedwoodLayout
 import app.cash.redwood.widget.RedwoodView
 import app.cash.redwood.widget.Widget
-import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
+@RunWith(RobolectricTestRunner::class)
 class ViewRedwoodViewFocusTest : AbstractRedwoodViewFocusTest<View, RedwoodLayout>() {
-  /** We don't use Paparazzi for snapshots, but it's an easy way to get an Android Context. */
-  @get:Rule
-  val paparazzi = Paparazzi(
-    deviceConfig = DeviceConfig.PIXEL_6,
-    theme = "android:Theme.Material.Light.NoActionBar",
-    supportsRtl = true,
-  )
-
   override val widgetFactory: TestWidgetFactory<View>
-    get() = ViewTestWidgetFactory(paparazzi.context)
+    get() = ViewTestWidgetFactory(RuntimeEnvironment.getApplication())
 
-  override fun redwoodView() = RedwoodLayout(paparazzi.context, OnBackPressedDispatcher())
+  override fun redwoodView() = RedwoodLayout(RuntimeEnvironment.getApplication(), OnBackPressedDispatcher())
 
   override fun getFocused(redwoodView: RedwoodView<View>): Widget<View>? {
     return redwoodView.children.widgets.firstOrNull { it.value.isFocused }
