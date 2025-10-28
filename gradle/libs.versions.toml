@@ -36,7 +36,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 
-xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.91.2'
+xmlutil-serialization = 'io.github.pdvrieze.xmlutil:serialization:0.91.3'
 
 dokkaPlugin = "org.jetbrains.dokka:dokka-gradle-plugin:2.1.0"
 spotlessPlugin = "com.diffplug.spotless:spotless-plugin-gradle:8.0.0"
