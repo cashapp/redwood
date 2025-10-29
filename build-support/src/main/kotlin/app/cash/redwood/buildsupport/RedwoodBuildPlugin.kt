@@ -168,7 +168,7 @@ class RedwoodBuildPlugin : Plugin<Project> {
     plugins.withId("com.android.base") {
       val android = extensions.getByName("android") as CommonExtension
       android.apply {
-        compileSdk = 35
+        compileSdk = 36
         compileOptions {
           sourceCompatibility = JavaVersion.VERSION_11
           targetCompatibility = JavaVersion.VERSION_11
