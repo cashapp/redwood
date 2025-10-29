@@ -10,7 +10,7 @@ lint = "31.13.0"
 paparazzi = "2.0.0-alpha02"
 zipline = "1.24.0"
 coil = "3.3.0"
-okio = "3.16.0"
+okio = "3.16.2"
 burst = "2.9.0"
 
 [libraries]
