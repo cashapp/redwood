@@ -86,10 +86,10 @@ import org.jetbrains.kotlin.fir.types.ConeTypeProjection
 import org.jetbrains.kotlin.fir.types.classId
 import org.jetbrains.kotlin.fir.types.isBasicFunctionType
 import org.jetbrains.kotlin.fir.types.isMarkedNullable
-import org.jetbrains.kotlin.fir.types.parameterName
 import org.jetbrains.kotlin.fir.types.receiverType
 import org.jetbrains.kotlin.fir.types.renderReadable
 import org.jetbrains.kotlin.fir.types.type
+import org.jetbrains.kotlin.fir.types.valueParameterName
 import org.jetbrains.kotlin.fir.types.variance
 import org.jetbrains.kotlin.fir.visitors.FirDefaultVisitor
 import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil.DEFAULT_MODULE_NAME
@@ -457,7 +457,7 @@ private fun FirContext.parseWidget(
             documentation = documentation,
             parameters = arguments.map {
               ParsedParameter(
-                name = it.type?.parameterName?.identifier,
+                name = it.type?.valueParameterName(firSession)?.identifier,
                 type = it.toFqType(),
               )
             },
