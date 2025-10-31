@@ -65,27 +65,36 @@ internal class ImageDiffer {
     val deltaData = ctx.createImageData(maxWidth.toDouble(), maxHeight.toDouble())
     val deltaArray = deltaData.data.asDynamic()
 
-    var differentPixels = (maxWidth.toLong() * maxHeight) - (minWidth.toLong() * minHeight)
+    var differentPixels = 0L
     var deltaRGB = 0L
-    var deltaA = (differentPixels * 255)
+    var deltaA = 0L
 
     // Compare pixels
-    for (y in 0 until minWidth) {
-      for (x in 0 until minHeight) {
+    for (y in 0 until maxHeight) {
+      for (x in 0 until maxWidth) {
         val i = (y * maxWidth + x) * 4
 
-        val expectedR = expectedData.data[i].toInt()
-        val expectedG = expectedData.data[i + 1].toInt()
-        val expectedB = expectedData.data[i + 2].toInt()
-        val expectedA = expectedData.data[i + 3].toInt()
+        // Check if pixel exists in image
+        val hasExpected = x < expectedWidth && y < expectedHeight
+        val hasActual = x < actualWidth && y < actualHeight
 
-        val actualR = actualData.data[i].toInt()
-        val actualG = actualData.data[i + 1].toInt()
-        val actualB = actualData.data[i + 2].toInt()
-        val actualA = actualData.data[i + 3].toInt()
+        // Skip if neither image has a pixel at this location
+        if (!hasExpected && !hasActual) {
+          continue
+        }
+
+        val expectedR = if (hasExpected) expectedData.data[i].toInt() else 0
+        val expectedG = if (hasExpected) expectedData.data[i + 1].toInt() else 0
+        val expectedB = if (hasExpected) expectedData.data[i + 2].toInt() else 0
+        val expectedA = if (hasExpected) expectedData.data[i + 3].toInt() else 0
+
+        val actualR = if (hasActual) actualData.data[i].toInt() else 0
+        val actualG = if (hasActual) actualData.data[i + 1].toInt() else 0
+        val actualB = if (hasActual) actualData.data[i + 2].toInt() else 0
+        val actualA = if (hasActual) actualData.data[i + 3].toInt() else 0
 
         // If pixels are identical, make it transparent
-        if (actualR == expectedR && actualG == expectedG && actualB == expectedB && actualA == expectedA) {
+        if (hasExpected && hasActual && actualR == expectedR && actualG == expectedG && actualB == expectedB && actualA == expectedA) {
           deltaArray[i] = expectedR
           deltaArray[i + 1] = expectedG
           deltaArray[i + 2] = expectedB
@@ -101,10 +110,17 @@ internal class ImageDiffer {
         deltaArray[i + 2] = 0
         deltaArray[i + 3] = 255
 
-        deltaRGB += abs(actualR - expectedR).toLong()
-        deltaRGB += abs(actualG - expectedG).toLong()
-        deltaRGB += abs(actualB - expectedB).toLong()
-        deltaA += abs(actualA - expectedA).toLong()
+        // For missing pixels, treat as maximum difference
+        if (!hasExpected || !hasActual) {
+          deltaRGB += 255L * 3  // Maximum RGB difference
+          deltaA += 255L        // Maximum alpha difference
+        } else {
+          // For actual pixel differences, use real deltas
+          deltaRGB += abs(actualR - expectedR).toLong()
+          deltaRGB += abs(actualG - expectedG).toLong()
+          deltaRGB += abs(actualB - expectedB).toLong()
+          deltaA += abs(actualA - expectedA).toLong()
+        }
       }
     }
 

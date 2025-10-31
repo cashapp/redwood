@@ -113,7 +113,7 @@ internal class ImageDifferTest {
   /**
    * Compare a 100x200 transparent image against a 200x100 transparent image. We consider any pixel
    * that isn't in the bounds of the other image to be different, so these two rectangles differ by
-   * 75%.
+   * 50%.
    */
   @Test
   fun fullAlphaSizeMismatch() = runTest {
@@ -140,7 +140,7 @@ internal class ImageDifferTest {
 
     val diffResult = ImageDiffer().compare(transparent200x100, transparent100x200)
     assertThat(diffResult.isDifferent).isEqualTo(true)
-    assertThat(diffResult.percentDifference).isEqualTo(75f)
+    assertThat(diffResult.percentDifference).isEqualTo(50f)
   }
 
   internal suspend fun Element.toBlob(): Blob = DomSnapshotter().snapshot(this, Frame.None, false).images.first()!!
