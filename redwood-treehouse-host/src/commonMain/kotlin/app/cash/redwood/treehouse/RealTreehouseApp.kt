@@ -183,7 +183,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     eventListenerFactory?.close()
     eventListenerFactory = null
     stop()
-    // This fixes the leak on Android but doesn't fix on iOS
+    // This fixes the leak on Android but doesn't fix it on iOS
     appScope.launch(dispatchers.zipline) {
       withContext(dispatchers.ui) {
         dispatchers.close()
