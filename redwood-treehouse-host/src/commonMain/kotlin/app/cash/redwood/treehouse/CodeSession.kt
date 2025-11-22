@@ -80,6 +80,7 @@ internal abstract class CodeSession<A : AppService>(
       listener.onStop(this)
     }
 
+    // This code block will never be executed because dispatchers.close is already called
     scope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
       ziplineStop()
       scope.cancel()

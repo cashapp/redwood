@@ -22,9 +22,12 @@ import SnackBar
 class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     // MARK: - Private Properties
 
-    private let urlSession: URLSession = .init(configuration: .default)
+    private static let urlSession: URLSession = .init(configuration: .default)
+    private static let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
+
     private var success = true
     private var snackBar: SnackBarPresentable? = nil
+    private var app: TreehouseApp<EmojiSearchPresenter>? = nil
 
     // MARK: - UIViewController
 
@@ -35,8 +38,7 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     }
 
     override func loadView() {
-        let emojiSearchLauncher = EmojiSearchLauncher(nsurlSession: urlSession, hostApi: IosHostApi())
-        let treehouseApp = emojiSearchLauncher.createTreehouseApp(listener: self)
+        let treehouseApp = Self.emojiSearchLauncher.createTreehouseApp(listener: self)
         let treehouseView = TreehouseUIView(
             widgetSystem: ExposedKt.basicWidgetSystem(),
             dynamicContentWidgetFactory: EmojiSearchDynamicContentWidgetFactory()
@@ -45,6 +47,7 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
             source: EmojiSearchContent()
         )
         ExposedKt.bindWhenReady(content: content, view: treehouseView)
+        self.app = treehouseApp
         view = treehouseView.value
     }
 
@@ -62,6 +65,10 @@ class EmojiSearchViewController : UIViewController, EmojiSearchEventListener {
     func codeLoadSuccess() {
         success = true
         maybeDismissSnackBar()
+    }
+
+    deinit {
+        app?.close()
     }
 
     private func maybeDismissSnackBar() {
