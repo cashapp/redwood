@@ -49,7 +49,7 @@ public class HostProtocolAdapter<W : Any>(
   guestVersion: RedwoodVersion,
   container: Widget.Children<W>,
   protocol: HostProtocol,
-  private val widgetSystem: WidgetSystem<W>,
+  widgetSystem: WidgetSystem<W>,
   private val eventSink: UiEventSink,
   private val leakDetector: LeakDetector,
 ) : UiChangesSink {
@@ -67,6 +67,8 @@ public class HostProtocolAdapter<W : Any>(
   /** Nodes available for reuse. */
   private val pool = ArrayDeque<ProtocolNode<W>>()
 
+  private var widgetSystem: WidgetSystem<W>? = widgetSystem
+
   private var closed = false
 
   override fun sendChanges(changes: List<UiChange>) {
@@ -81,6 +83,7 @@ public class HostProtocolAdapter<W : Any>(
       when (change) {
         is UiCreate -> {
           val widgetProtocol = protocol.widget(change.tag) ?: continue
+          val widgetSystem = this.widgetSystem ?: return
           val node = widgetProtocol.createNode(id, widgetSystem)
           val old = nodes.put(change.id.value, node)
           require(old == null) {
@@ -126,6 +129,7 @@ public class HostProtocolAdapter<W : Any>(
           val node = node(id)
           node.reuse = change.reuse
 
+          val widgetSystem = this.widgetSystem ?: return
           change.modifier.forEachUnscoped { element ->
             widgetSystem.apply(node.widget.value, element)
           }
@@ -178,6 +182,9 @@ public class HostProtocolAdapter<W : Any>(
       node.detach()
     }
     pool.clear()
+
+    // Clear the widget system to break the reference to Swift objects.
+    widgetSystem = null
   }
 
   private fun poolOrDetach(removedNode: ProtocolNode<W>) {
