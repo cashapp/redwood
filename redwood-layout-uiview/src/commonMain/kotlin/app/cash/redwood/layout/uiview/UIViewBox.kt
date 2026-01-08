@@ -31,6 +31,8 @@ import app.cash.redwood.ui.Margin
 import app.cash.redwood.widget.ResizableWidget
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.widget.Widget
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
@@ -89,13 +91,15 @@ internal class UIViewBox :
     var sizeListener: ResizableWidget.SizeListener? = null
     private val measurer = Measurer()
 
+    @OptIn(ExperimentalNativeApi::class)
     val children = UIViewChildren(
       container = this,
       insert = { index, widget ->
         if (widget is ResizableWidget<*>) {
+          val weakView = WeakReference(this@View)
           widget.sizeListener = object : ResizableWidget.SizeListener {
             override fun invalidateSize() {
-              this@View.invalidateSize()
+              weakView.get()?.invalidateSize()
             }
           }
         }

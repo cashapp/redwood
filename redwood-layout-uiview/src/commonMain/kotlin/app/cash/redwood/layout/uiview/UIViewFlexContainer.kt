@@ -27,6 +27,8 @@ import app.cash.redwood.widget.ResizableWidget.SizeListener
 import app.cash.redwood.widget.UIViewChildren
 import app.cash.redwood.yoga.FlexDirection
 import app.cash.redwood.yoga.Node
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.convert
 import platform.UIKit.UIView
 import platform.darwin.NSInteger
@@ -119,15 +121,18 @@ private fun Node(view: UIView): Node {
   return result
 }
 
+@OptIn(ExperimentalNativeApi::class)
 private class NodeSizeListener(
   private val node: Node,
   private val view: UIView,
-  private val enclosing: UIViewFlexContainer,
+  enclosing: UIViewFlexContainer,
 ) : SizeListener {
+  private val weakEnclosing = WeakReference(enclosing)
+
   override fun invalidateSize() {
     if (node.markDirty()) {
       view.setNeedsLayout()
-      enclosing.invalidateSize()
+      weakEnclosing.get()?.invalidateSize()
     }
   }
 }
