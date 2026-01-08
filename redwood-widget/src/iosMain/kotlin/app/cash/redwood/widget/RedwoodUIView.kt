@@ -24,6 +24,8 @@ import app.cash.redwood.ui.OnBackPressedCallback
 import app.cash.redwood.ui.OnBackPressedDispatcher
 import app.cash.redwood.ui.Size
 import app.cash.redwood.ui.UiConfiguration
+import kotlin.experimental.ExperimentalNativeApi
+import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.convert
@@ -60,15 +62,19 @@ public open class RedwoodUIView : RedwoodView<UIView> {
   override val value: UIView
     get() = valueRootView
 
+  @OptIn(ExperimentalNativeApi::class)
   private val sizeListener = object : ResizableWidget.SizeListener {
+    private val weakRootView = WeakReference(valueRootView)
+
     override fun invalidateSize() {
+      val rootView = weakRootView.get() ?: return
       // This view's size may have changed.
-      valueRootView.setNeedsLayout() // For autolayout.
-      valueRootView.invalidateIntrinsicContentSize() // For SwiftUI.
+      rootView.setNeedsLayout() // For autolayout.
+      rootView.invalidateIntrinsicContentSize() // For SwiftUI.
 
       // And the superview should redo its layout also, if it exists.
-      valueRootView.superview?.setNeedsLayout() // For autolayout.
-      valueRootView.superview?.invalidateIntrinsicContentSize() // For SwiftUI.
+      rootView.superview?.setNeedsLayout() // For autolayout.
+      rootView.superview?.invalidateIntrinsicContentSize() // For SwiftUI.
     }
   }
 
