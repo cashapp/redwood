@@ -1,5 +1,13 @@
 # Change Log
 
+## Unreleased
+
+Fixed:
+- Fix memory leaks in UIView layout components (`UIViewBox`, `UIViewFlexContainer`, `RedwoodUIView`)
+- Fix memory leak in `HostProtocolAdapter`
+
+These leaks affected some Treehouse-based screens and prevented UI components and their associated memory from being released after dismissal.
+
 ## [0.19.0]
 [0.19.0]: https://github.com/cashapp/redwood/releases/tag/0.19.0
 
