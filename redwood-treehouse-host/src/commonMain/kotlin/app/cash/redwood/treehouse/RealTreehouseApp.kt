@@ -29,6 +29,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.Path
 
@@ -181,7 +183,12 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     eventListenerFactory?.close()
     eventListenerFactory = null
     stop()
-    dispatchers.close()
+    // This fixes the leak on Android but doesn't fix it on iOS
+    appScope.launch(dispatchers.zipline) {
+      withContext(dispatchers.ui) {
+        dispatchers.close()
+      }
+    }
   }
 
   class Factory internal constructor(

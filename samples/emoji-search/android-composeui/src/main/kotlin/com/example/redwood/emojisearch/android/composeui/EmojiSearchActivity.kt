@@ -21,13 +21,24 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration.Indefinite
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.NoLiveLiterals
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import app.cash.redwood.compose.AndroidUiDispatcher.Companion.Main
 import app.cash.redwood.leaks.LeakDetector
@@ -79,8 +90,6 @@ class EmojiSearchActivity : ComponentActivity() {
     WindowCompat.setDecorFitsSystemWindows(window, false)
 
     val client = OkHttpClient()
-    val treehouseApp = createTreehouseApp(client)
-    val treehouseContentSource = TreehouseContentSource(EmojiSearchPresenter::launch)
 
     val imageLoader = ImageLoader.Builder(this)
       .serviceLoaderEnabled(false)
@@ -94,13 +103,37 @@ class EmojiSearchActivity : ComponentActivity() {
         Scaffold(
           snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->
-          TreehouseContent(
-            treehouseApp = treehouseApp,
-            widgetSystem = ComposeUiRedwoodUiBasicWidgetSystem(imageLoader),
-            contentSource = treehouseContentSource,
-            modifier = Modifier.padding(contentPadding),
-            dynamicContentWidgetFactory = EmojiSearchDynamicContentWidgetFactory(),
-          )
+          var showed by remember { mutableStateOf(false) }
+          Box(modifier = Modifier.fillMaxSize()) {
+            if (showed) {
+              val treehouseApp = remember { createTreehouseApp(client) }
+              val treehouseContentSource = remember {
+                TreehouseContentSource(EmojiSearchPresenter::launch)
+              }
+              TreehouseContent(
+                treehouseApp = treehouseApp,
+                widgetSystem = remember { ComposeUiRedwoodUiBasicWidgetSystem(imageLoader) },
+                contentSource = treehouseContentSource,
+                modifier = Modifier.padding(contentPadding),
+                dynamicContentWidgetFactory = remember { EmojiSearchDynamicContentWidgetFactory() },
+              )
+              DisposableEffect(treehouseApp) {
+                onDispose {
+                  treehouseApp.close()
+                }
+              }
+            }
+            Button(
+              modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 60.dp),
+              onClick = {
+                showed = !showed
+              },
+            ) {
+              Text(if (showed) "Hide" else "Show")
+            }
+          }
         }
       }
     }
