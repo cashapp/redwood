@@ -5,6 +5,7 @@
 Fixed:
 - Fix memory leaks in UIView layout components (`UIViewBox`, `UIViewFlexContainer`, `RedwoodUIView`)
 - Fix memory leak in `HostProtocolAdapter`
+- Fix memory leak in `RealTreehouseApp.close`
 
 These leaks affected some Treehouse-based screens and prevented UI components and their associated memory from being released after dismissal.
 
