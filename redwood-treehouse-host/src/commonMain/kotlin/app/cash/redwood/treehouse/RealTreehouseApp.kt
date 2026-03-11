@@ -183,7 +183,7 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     eventListenerFactory?.close()
     eventListenerFactory = null
     stop()
-    appScope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
+    appScope.launch(dispatchers.ui, start = CoroutineStart.ATOMIC) {
       // Await zipline closure that must be done on dispatchers.zipline
       codeHost.codeSession?.ziplineStopJob?.join()
       dispatchers.close()
