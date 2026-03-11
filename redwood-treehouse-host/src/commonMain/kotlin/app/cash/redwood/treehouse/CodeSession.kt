@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
@@ -37,6 +38,9 @@ internal abstract class CodeSession<A : AppService>(
   private val listeners = mutableListOf<Listener<A>>()
 
   private var stopped = false
+
+  // Used to wait for zipline closure before shutting down the zipline dispatcher
+  internal var ziplineStopJob: Job? = null
 
   /** This scope is canceled when this session stops. */
   val scope: CoroutineScope = run {
@@ -80,10 +84,11 @@ internal abstract class CodeSession<A : AppService>(
       listener.onStop(this)
     }
 
-    scope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
+    ziplineStopJob = scope.launch(dispatchers.zipline, start = CoroutineStart.ATOMIC) {
       ziplineStop()
       scope.cancel()
       eventPublisher.close() // Must be last to prevent lost events.
+      ziplineStopJob = null
     }
   }
 
