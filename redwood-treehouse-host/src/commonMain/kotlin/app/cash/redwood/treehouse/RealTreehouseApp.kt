@@ -26,9 +26,11 @@ import app.cash.zipline.loader.ZiplineHttpClient
 import app.cash.zipline.loader.ZiplineLoader
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import okio.FileSystem
 import okio.Path
 
@@ -180,8 +182,16 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     codeHost.close()
     eventListenerFactory?.close()
     eventListenerFactory = null
+    val session = codeHost.codeSession
     stop()
-    dispatchers.close()
+    appScope.launch(dispatchers.ui, start = CoroutineStart.ATOMIC) {
+      try {
+        // Await zipline closure that must be done on dispatchers.zipline
+        session?.ziplineStopJob?.join()
+      } finally {
+        dispatchers.close()
+      }
+    }
   }
 
   class Factory internal constructor(
