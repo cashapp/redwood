@@ -182,11 +182,12 @@ internal class RealTreehouseApp<A : AppService> private constructor(
     codeHost.close()
     eventListenerFactory?.close()
     eventListenerFactory = null
+    val session = codeHost.codeSession
     stop()
     appScope.launch(dispatchers.ui, start = CoroutineStart.ATOMIC) {
       try {
         // Await zipline closure that must be done on dispatchers.zipline
-        codeHost.codeSession?.ziplineStopJob?.join()
+        session?.ziplineStopJob?.join()
       } finally {
         dispatchers.close()
       }
